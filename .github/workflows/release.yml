@@ -15,8 +15,8 @@ jobs:
     name: Web / PWA / tek dosya HTML
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with: { node-version: 22, cache: npm }
       - run: npm ci
       - run: npm test
@@ -41,8 +41,8 @@ jobs:
           - { name: linux, os: ubuntu-22.04, args: '' }
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with: { node-version: 22, cache: npm }
       - uses: dtolnay/rust-toolchain@stable
         with:
@@ -83,12 +83,11 @@ jobs:
     name: Android APK
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with: { node-version: 22, cache: npm }
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with: { distribution: temurin, java-version: 21 }
-      - uses: android-actions/setup-android@v3
       - run: npm ci
       - run: npm run build
       - run: npx cap add android
@@ -122,8 +121,8 @@ jobs:
     name: iOS (imzasız IPA)
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with: { node-version: 22, cache: npm }
       - run: npm ci
       - run: npm run build
