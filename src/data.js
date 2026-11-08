@@ -50,10 +50,34 @@ export function resolve(ref) {
       usda: { ndb: f.n, desc: f.en, refuse: f.r, refDesc: f.rd, sci: f.sci }, ifct: null, estFrom: null,
     };
   }
+  if (ref.t === 'u') {
+    const f = CUSTOM.find((x) => x.id === ref.id);
+    if (!f) return null;
+    const v = { ...f.v }, s = {};
+    if (v.energy != null) v.energy_kj = v.energy * 4.184;
+    if (v.carb_avail != null && v.fiber != null) v.carb = v.carb_avail + v.fiber;
+    for (const k of Object.keys(v)) s[k] = 'k';
+    if (v.energy_kj != null) s.energy_kj = 'd';
+    if (v.carb != null && f.v.carb == null) s.carb = 'd';
+    return {
+      ref, custom: f, name: f.name, formLabel: 'Kendi besinim (etiket)', cat: 'custom',
+      liquid: !!f.liquid, v, s, alt: {}, sd: {}, portions: f.portion ? [{ g: f.portion, label: '1 porsiyon (etiket)', en: 'label serving' }] : [],
+      allergens: [], note: f.note || 'Değerler kullanıcı tarafından ürün etiketinden girildi.', sci: null,
+      usda: null, ifct: null, estFrom: null,
+    };
+  }
   return null;
 }
 
-export const refKey = (ref) => (ref.t === 'c' ? `c:${ref.id}:${ref.f}` : `x:${ref.n}`);
+export const refKey = (ref) => (ref.t === 'c' ? `c:${ref.id}:${ref.f}` : ref.t === 'u' ? `u:${ref.id}` : `x:${ref.n}`);
+
+// Kullanıcının etiketten girdiği besinler (cihazda saklanır)
+let CUSTOM = [];
+export function setCustomFoods(list) {
+  CUSTOM = list;
+  for (const f of CUSTOM) f._k = norm(`${f.name} kendi etiket`);
+}
+export const customFoods = () => CUSTOM;
 
 export function search(q, { cat = null, ext = false } = {}) {
   const k = norm(q);
@@ -65,7 +89,8 @@ export function search(q, { cat = null, ext = false } = {}) {
   }
   let extOut = [];
   if (ext && EXT && terms.length) extOut = EXT.foods.filter((f) => match(f._k)).slice(0, 80);
-  return { curated: out, ext: extOut };
+  const custom = terms.length ? CUSTOM.filter((f) => match(f._k)) : [];
+  return { curated: out, ext: extOut, custom };
 }
 function score(s, k) { return s.startsWith(k) ? 3 : s.includes(' ' + k) ? 2 : 1; }
 

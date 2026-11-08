@@ -232,6 +232,7 @@ i.sci, .dsub i { font-style: italic; }
 .src-i { color: #b0468a; background: color-mix(in srgb, #b0468a 10%, var(--card)); border-color: color-mix(in srgb, #b0468a 30%, transparent); }
 .src-e { color: var(--warn); background: var(--warnbg); border-style: dashed; }
 .src-d, .src-m { color: var(--ok); background: var(--okbg); }
+.src-k { color: #8a5a00; background: color-mix(in srgb, #d99a00 14%, var(--card)); border-color: color-mix(in srgb, #d99a00 40%, transparent); }
 :root[data-theme="dark"] .src-u, :root[data-theme="oled"] .src-u, :root[data-theme="contrast-dark"] .src-u { color: #8db4ff; }
 :root[data-theme="dark"] .src-i, :root[data-theme="oled"] .src-i, :root[data-theme="contrast-dark"] .src-i { color: #f29bd2; }
 .flag.partial { color: var(--warn); border-color: var(--warn); }
@@ -383,4 +384,18 @@ table.cmp td.miss { color: var(--muted); font-style: italic; }
   .top, .cats, .list, .amount, .dact, .back, #ruler { display: none !important; }
   .explore { display: block; }
   details.sec { break-inside: avoid; }
+}
+
+/* ============ Kendi besinim formu ============ */
+.field { display: flex; flex-direction: column; gap: .2rem; margin: .4rem 0; }
+.field > span { font-size: .85rem; color: var(--muted); }
+.field em { font-style: normal; opacity: .8; }
+.field input { min-height: var(--tap); border-radius: calc(var(--radius) * .6); border: 1px solid var(--line); background: var(--card); padding: 0 .7rem; }
+.field.indent { padding-left: 1rem; }
+.cu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0 .8rem; }
+@media print {
+  .modal, .toast, .tabs, .ings .amount, .ropts, .rlist, .rhead .btn { display: none !important; }
+  .recipe { display: block; }
+  details.sec:not([open]) > *:not(summary) { display: block; }
+  body { background: #fff; color: #000; }
 }

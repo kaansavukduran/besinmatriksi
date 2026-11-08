@@ -3,10 +3,10 @@ import { NUTRIENTS, SECTIONS, SOURCES, ALLERGENS } from './nutrients.js';
 import { derive } from './calc.js';
 import { esc, fmtNum, fmtAmount, fmtPct } from './util.js';
 
-const SRC_LABEL = { u: 'USDA', i: 'IFCT', e: 'Tahmin', d: 'Hesap', m: 'Karma' };
+const SRC_LABEL = { u: 'USDA', i: 'IFCT', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
 const SRC_TITLE = {
   u: SOURCES.u.long, i: SOURCES.i.long, e: SOURCES.e.long,
-  d: 'Diğer ölçülmüş değerlerden hesaplandı (ör. tuz = sodyum × 2,5)', m: 'Tarifteki malzemeler farklı kaynaklardan',
+  d: 'Diğer ölçülmüş değerlerden hesaplandı (ör. tuz = sodyum × 2,5)', m: 'Tarifteki malzemeler farklı kaynaklardan', k: 'Kullanıcının ürün etiketinden girdiği değer',
 };
 
 function srcChip(s) {
@@ -31,7 +31,7 @@ function row(n, r, cfg) {
       <span class="pct">${fmtPct(p)}</span></span>`;
   }
   const extra = [];
-  if (x === 0 && (s === 'u' || s === 'i')) extra.push('<span class="flag" title="Kaynak bu değeri 0 olarak bildiriyor (tespit sınırının altında olabilir)">kaynak 0</span>');
+  if (x === 0 && (s === 'u' || s === 'i' || s === 'k')) extra.push('<span class="flag" title="Kaynak bu değeri 0 olarak bildiriyor (tespit sınırının altında olabilir)">kaynak 0</span>');
   if (cfg.showSd && r.sd?.[n.key] != null) extra.push(`<span class="sd" title="IFCT standart sapması">± ${fmtAmount(r.sd[n.key], n.unit, cfg.precision).n}</span>`);
   if (cfg.showAlt && r.alt?.[n.key] != null) {
     const a = fmtAmount(r.alt[n.key], n.unit, cfg.precision);
@@ -184,6 +184,7 @@ function identityCard(item, r, cfg, ctx) {
     rows.push(['Besin', `${esc(item.name)}${item.sci ? ` <i class="sci">${esc(item.sci)}</i>` : ''}`]);
     rows.push(['Tüketim biçimi', esc(item.formLabel)]);
     rows.push(['Ölçüm temeli', `${fmtNum(r.grams)} ${item.liquid ? 'g (sıvılarda ≈ mL; yoğunluk ≈ 1 kabulü)' : 'g yenebilir kısım'} · kaynak değerleri 100 g başına`]);
+    if (item.custom) rows.push(['Kaynak', 'Ürün etiketinden elle girildi; girilmeyen bileşenler “veri yok” sayılır.']);
     if (item.usda) {
       let part = 'Yenebilir kısım';
       if (item.usda.refuse) part += ` · satın alınan ağırlığın %${item.usda.refuse}'i atılır${item.usda.refDesc ? ` (${esc(item.usda.refDesc)})` : ''}`;

@@ -3,6 +3,7 @@ import { uid } from './util.js';
 
 const KEY_SETTINGS = 'bm.settings.v1';
 const KEY_RECIPES = 'bm.recipes.v1';
+const KEY_CUSTOM = 'bm.custom.v1';
 
 export const DEFAULT_SETTINGS = {
   theme: 'light',
@@ -69,9 +70,12 @@ export function loadRecipes() {
 }
 export function saveRecipes(r) { return write(KEY_RECIPES, r); }
 
+export function loadCustom() { const c = read(KEY_CUSTOM, []); return Array.isArray(c) ? c : []; }
+export function saveCustom(c) { return write(KEY_CUSTOM, c); }
+
 // Dışa/içe aktarma biçimi
-export function exportPayload(recipes, settings) {
-  return JSON.stringify({ app: 'besin-matriksi', version: 1, exported: new Date().toISOString(), recipes, settings }, null, 2);
+export function exportPayload(recipes, settings, custom = []) {
+  return JSON.stringify({ app: 'besin-matriksi', version: 1, exported: new Date().toISOString(), recipes, settings, custom }, null, 2);
 }
 export function parseImport(text) {
   const o = JSON.parse(text);
@@ -80,5 +84,6 @@ export function parseImport(text) {
     ...newRecipe(r.name), ...r, id: uid(),
     items: r.items.filter((it) => it && it.ref && Number(it.g) > 0).map((it) => ({ id: uid(), ref: it.ref, g: Math.min(1000, Number(it.g)) })),
   }));
-  return { recipes, settings: o.settings && typeof o.settings === 'object' ? o.settings : null };
+  const custom = Array.isArray(o.custom) ? o.custom.filter((f) => f && typeof f.name === 'string' && f.id && f.v && typeof f.v === 'object') : [];
+  return { recipes, settings: o.settings && typeof o.settings === 'object' ? o.settings : null, custom };
 }
