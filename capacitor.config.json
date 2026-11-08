@@ -1,0 +1,7 @@
+{
+  "appId": "io.github.kaansavukduran.besinmatriksi",
+  "appName": "Besin Matriksi",
+  "webDir": "dist",
+  "android": { "allowMixedContent": false },
+  "ios": { "contentInset": "automatic" }
+}

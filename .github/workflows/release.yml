@@ -1,0 +1,154 @@
+name: Derle ve yayınla
+
+# v* etiketiyle (ör. v1.0.0) tüm platformlar derlenip bir GitHub Release'e eklenir.
+# Actions sekmesinden elle de çalıştırılabilir; o zaman çıktılar "Artifacts" olarak indirilir.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  web:
+    name: Web / PWA / tek dosya HTML
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npm run build:single
+      - name: Paketle
+        run: |
+          mkdir -p out
+          cp dist-single/besin-matriksi.html out/besin-matriksi-tek-dosya.html
+          (cd dist && zip -qr ../out/besin-matriksi-web-pwa.zip .)
+      - uses: actions/upload-artifact@v4
+        with: { name: web, path: out/* }
+
+  desktop:
+    name: Masaüstü (${{ matrix.name }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: windows, os: windows-latest, args: '' }
+          - { name: macos, os: macos-latest, args: '--target universal-apple-darwin' }
+          - { name: linux, os: ubuntu-22.04, args: '' }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.name == 'macos' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+      - uses: swatinem/rust-cache@v2
+        with: { workspaces: './src-tauri -> target' }
+      - name: Linux bağımlılıkları
+        if: matrix.name == 'linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+      - run: npm ci
+      - run: npx tauri build ${{ matrix.args }}
+      - name: Çıktıları topla
+        shell: bash
+        run: |
+          mkdir -p out
+          T=src-tauri/target
+          if [ "${{ matrix.name }}" = "windows" ]; then
+            cp $T/release/bundle/nsis/*.exe out/ || true
+            cp $T/release/bundle/msi/*.msi out/ || true
+            # Kurulum gerektirmeyen tek exe (Windows 10/11'de yerleşik WebView2 kullanır)
+            cp $T/release/besin-matriksi.exe "out/BesinMatriksi-portable-x64.exe"
+          elif [ "${{ matrix.name }}" = "macos" ]; then
+            cp $T/universal-apple-darwin/release/bundle/dmg/*.dmg out/
+          else
+            cp $T/release/bundle/appimage/*.AppImage out/
+            cp $T/release/bundle/deb/*.deb out/
+            cp $T/release/bundle/rpm/*.rpm out/ || true
+          fi
+          ls -la out
+      - uses: actions/upload-artifact@v4
+        with: { name: desktop-${{ matrix.name }}, path: out/* }
+
+  android:
+    name: Android APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 21 }
+      - uses: android-actions/setup-android@v3
+      - run: npm ci
+      - run: npm run build
+      - run: npx cap add android
+      - run: node scripts/mobile-icons.mjs android
+      - run: npx cap sync android
+      - name: APK derle
+        working-directory: android
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KS_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          chmod +x gradlew
+          mkdir -p ../out
+          if [ -n "$KS_B64" ]; then
+            echo "$KS_B64" | base64 -d > release.keystore
+            ./gradlew assembleRelease
+            APK=$(ls app/build/outputs/apk/release/*-unsigned.apk)
+            BT=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -1)
+            $BT/zipalign -p 4 "$APK" aligned.apk
+            $BT/apksigner sign --ks release.keystore --ks-pass env:KS_PASS --ks-key-alias "$KS_ALIAS" --out ../out/BesinMatriksi.apk aligned.apk
+          else
+            # İmza anahtarı tanımlı değil: doğrudan kurulabilen debug imzalı APK
+            ./gradlew assembleDebug
+            cp app/build/outputs/apk/debug/app-debug.apk ../out/BesinMatriksi.apk
+          fi
+      - uses: actions/upload-artifact@v4
+        with: { name: android, path: out/* }
+
+  ios:
+    name: iOS (imzasız IPA)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run build
+      - run: npx cap add ios
+      - run: node scripts/mobile-icons.mjs ios
+      - run: npx cap sync ios
+      - name: Derle (imzasız)
+        run: |
+          xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Release \
+            -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" build
+          mkdir -p Payload out
+          cp -R build/Build/Products/Release-iphoneos/App.app Payload/
+          zip -qr out/BesinMatriksi-unsigned.ipa Payload
+      - uses: actions/upload-artifact@v4
+        with: { name: ios, path: out/* }
+
+  release:
+    name: GitHub Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [web, desktop, android, ios]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with: { path: artifacts, merge-multiple: true }
+      - run: ls -la artifacts
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+          generate_release_notes: true

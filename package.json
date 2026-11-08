@@ -1,0 +1,35 @@
+{
+  "name": "besin-matriksi",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Çevrimdışı, özelleştirilebilir bitkisel besin matriksi ve tarif hesaplayıcı",
+  "type": "module",
+  "scripts": {
+    "data": "node scripts/build-data.mjs",
+    "dev": "vite",
+    "build": "vite build && node scripts/postbuild.mjs",
+    "build:single": "vite build --mode single && node scripts/postbuild.mjs --single",
+    "preview": "vite preview",
+    "test": "node --test tests/*.test.mjs",
+    "tauri": "tauri",
+    "cap": "cap"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.6.0",
+    "@tauri-apps/cli": "^2.12.4",
+    "vite": "^8.3.4"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.6.0",
+    "@capacitor/core": "^8.6.0",
+    "@capacitor/ios": "^8.6.0",
+    "@fontsource/andika": "^5.3.0",
+    "@fontsource/atkinson-hyperlegible-next": "^5.3.0",
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/lexend": "^5.3.0",
+    "@fontsource/literata": "^5.3.0",
+    "@fontsource/noto-sans-mono": "^5.3.0",
+    "@fontsource/nunito": "^5.3.0",
+    "@fontsource/opendyslexic": "^5.3.0"
+  }
+}

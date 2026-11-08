@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f7fb">
+  <meta name="description" content="Çevrimdışı bitkisel besin matriksi ve tarif hesaplayıcı">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Besin Matriksi">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; style-src 'self' 'unsafe-inline' data:; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' ipc: http://ipc.localhost data:">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <title>Besin Matriksi</title>
+</head>
+<body>
+  <div id="ruler" aria-hidden="true"></div>
+  <div id="app"><p style="padding:2rem;font-family:sans-serif">Besin Matriksi yükleniyor…</p></div>
+  <noscript>Bu uygulama JavaScript gerektirir.</noscript>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
