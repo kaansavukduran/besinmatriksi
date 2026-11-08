@@ -399,3 +399,5 @@ table.cmp td.miss { color: var(--muted); font-style: italic; }
   details.sec:not([open]) > *:not(summary) { display: block; }
   body { background: #fff; color: #000; }
 }
+.quick .food { align-content: center; min-height: 64px; }
+@media (max-width: 900px) { .row { padding: .5rem 0; } .row .meta { margin-top: -.15rem; } }
