@@ -1,20 +1,48 @@
 # Kaynak araştırması · 2026-11-09
 
-## EFSA (B003b)
+## EFSA (B003b) · 9 Kasım 2026
 
-Resmî kaynak: https://www.efsa.europa.eu/en/topics/topic/dietary-reference-values
-(son inceleme 5 Ağustos 2024; erişim 9 Kasım 2026).
-DRV Finder: https://multimedia.efsa.europa.eu/drvs/index.htm
+Resmî DRV Finder İngilizce veri tablosu canlı okundu:
+https://multimedia.efsa.europa.eu/drvs/assets/data/languages/en/data.json
+Resmî açıklama: https://www.efsa.europa.eu/en/topics/topic/dietary-reference-values
+Yeniden kullanım: https://www.efsa.europa.eu/en/legalnotice
 
-DRV; AR, PRI, AI ve RI gibi farklı referans türlerini kapsar. EFSA bu değerlerin
-bireysel besin hedefleri veya önerileri olmadığını açıkça belirtir. Bu nedenle
-AB etiket BRD'si, kullanıcının elle girdiği hedef ve ileride eklenecek EFSA grup
-referansı birbirinin yerine kullanılamaz.
+EFSA kaynak gösterilmesi koşuluyla web sitesi içeriğinin yeniden kullanımına izin
+veriyor; tekil belgelerin özel koşulları ayrıca geçerli olabilir. Bu Forge yalnız
+resmî web JSON sayısal verisinin açıkça belirtilen bir alt kümesini dönüştürür;
+jurnal PDF/şekil, logo veya üçüncü taraf fotoğrafı dağıtılmaz. Kaynak dosyası,
+erişim anı, SHA-256 ve özgün bildirim `data/references/EFSA_SOURCE.json` ile
+`EFSA_REUSE_NOTICE.txt` içinde; kod MIT etiketi bu materyali MIT yapmaz.
 
-Bu sürümde AB/TGK etiketi ve elle girilen hedefler uygulanmıştır. Yaş/cinsiyet
-EFSA tabloları henüz eklenmemiştir. Sonraki Forge, her bileşen için grup, referans
-türü, özgün birim, sürüm/yıl ve tam kaynak tablosunu eşleştirmeli; PRI/AI ile UL'yi
-aynı hedef tablosunda karıştırmamalı ve testlerle sayısal eşleşmeyi doğrulamalıdır.
+Tablo 578 kaynak satırından oluşuyor; sağlayıcı sürüm numarası sunmuyor.
+Bu yüzden “en yeni 2017 sürümü” denmedi: 2026-11-09 tarihli SHA ile sabitlenmiş
+DRV Finder görüntüsü kullanılır. Eski özet PDF de incelendi:
+https://www.efsa.europa.eu/sites/default/files/assets/DRV_Summary_tables_jan_17.pdf
+Dosya adı jan_17 olsa da içerik v4/Eylül 2017; sodyum/klorürü henüz devam eden
+inceleme olarak gösteriyor. Bu arşiv, canlı Finder yerine üretim kaynağı sayılmadı.
+
+Kapsam: mevcut matriks alanlarıyla biçim ve birimi eşleşen 23 bileşen, çocuk ve
+yetişkin 1–99 yaş için 169 sayısal PRI/AI kaydı. Her kayıtta özgün satır no,
+yaş aralığı/cinsiyet bayrağı, koşul, referans türü, özgün birim/değer, dönüşüm,
+görüş yılı ve DOI tutulur. Florür mg → µg ×1000 olarak açıkça dönüştürülür.
+Folat yalnız DFE alanına; E yalnız alfa-tokoferole; K yalnız K1'e bağlanır.
+D2+D3 için AI'nin en düşük deri sentezi varsayımı görünür.
+
+Yetişkin çinko için 300/600/900/1200 mg/gün fitat koşulu seçilmeden PRI yüzdesi
+yok. Yetişkin kadın demirinde pre/postmenopoz yaştan çıkarılmaz; seçilen koşul
+ve kaydın yaş sınırı birlikte uygulanır. Eşleşme yoksa veya birden çoksa yüzde
+üretilmez; AB BRD'sine sessiz geri dönüş yapılmaz. PRI/AI türleri görünür ve
+CSV'de tür, değer/birim, yıl, grup ve kaynak taşınır. Elle girilen hedefler korunur.
+
+Kapsam dışı: bebeklik ve gebelik/emzirme; vücut ağırlığı/enerji tabanı gerektiren
+protein/tiamin/niasin ve yağ/karbonhidrat RI değerleri; A vitamini RE→RAE,
+L su→g su, tek bileşene EPA+DHA toplamı; SSI ve UL/AR; matrikste tanımı
+olmayan iyot. Bunlar eksik veri yerine sıfır veya hedef olarak eklenmez.
+Bu referanslar kişisel ihtiyaç/öneri, emilim veya sağlık kanıtı değildir.
+
+Derleyici: `scripts/build-efsa.mjs`; `npm run data` çevrimdışı yeniden üretir.
+Kaynak/bildirim özeti uyuşmazlığında kapı hata verir. Yeni bağımlılık eklenmedi.
+TürKomp'un değişmemiş erişim engeline bu tur yeniden istek yapılmadı.
 
 ## TürKomp (B021)
 
@@ -25,7 +53,7 @@ herkes için kapalı olduğunu veya verinin lisanssız olduğunu göstermez.
 
 Durum: BLOCKED_SOURCE_VERIFICATION. Son deneme yalnız gün olarak kaydedildiği
 için aynı değişmemiş engel en erken 11 Kasım 2026 00:00 UTC sonrasında yeniden
-denenir; bu arada B020b ilerletilebilir. TürKomp verisi içe aktarılmadı, USDA kaydı
+denenir; bu arada ilerletilebilir diğer Forge yapılır. TürKomp verisi içe aktarılmadı, USDA kaydı
 Türkiye'ye özgü bir ürünmüş gibi yeniden adlandırılmadı. Sonraki adım resmî erişimi
 ve çevrimdışı uygulamada yeniden dağıtım koşullarını doğrulamak; ardından hazırlama
 biçimi ve 100 g yenebilir kısım temeli eşleşen kayıtları küratörlü eklemektir.

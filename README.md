@@ -33,7 +33,7 @@ Windows WebView2 gerektirir. Fiziksel cihaz kabulü henüz tamamlanmamıştır.
 - **Tarif oluştur:** malzemeleri ekle, porsiyon veya pişmiş son ağırlık seç. Toplam/1 porsiyon/son ürünün 100 g'ı, TL/kg fiyat ve porsiyon maliyeti. Eksik fiyat veya besin bilgisi kısmi kapsamla gösterilir. Malzeme ve kaynak dökümünde her bileşenin malzeme katkısı, USDA kayıt no/etiket kaynağı ve hesap girdileri incelenir.
 - **Karşılaştır:** 2–4 besini aynı miktar ve biçimde yan yana incele. En yüksek değer vurgusu sağlık açısından 'en iyi' anlamına gelmez.
 - **Ayarlar:** 9 tema ve yedi renk alanlı özel tema; renk seçim penceresi, hazır renkler/HEX, canlı önizleme ve metin kontrast ölçümü; 8 gömülü font ve sistem fontu; OpenDyslexic, Atkinson, Lexend; punto ve aralıklar; okuma cetveli; büyük imleç; atanabilir kısayollar; 12 görünüm profili.
-- **Kendi matriksin:** bölümleri gizle/sırala, 24 öğeye kadar sabitle. AB/TGK etiket BRD'si veya elle girilen hedef. kcal/kJ ve sayı/birim tercihleri.
+- **Kendi matriksin:** bölümleri gizle/sırala, 24 öğeye kadar sabitle. AB/TGK etiket BRD'si, elle girilen hedef veya kaynak/tür/yıl gösteren EFSA grup PRI/AI referansı. kcal/kJ ve sayı/birim tercihleri.
 - **Yedek/çıktı:** tarif/etiket/profil yedeği; ayrı ayar veya tema dosyası; CSV; Türkçe karakterli ve sayfa numaralı A4 yazdırma/PDF. Yazdırmadan sonra bölüm durumları korunur.
 - **Hakkında:** lisans ve telif bildirimleri internet olmadan okunabilir.
 
@@ -42,7 +42,8 @@ PWA'nın ilk çevrimiçi yüklemesi önbelleğe alınmalıdır; tek HTML dosyas�
 
 ## Veri kapsamı ve lisanslar
 
-**1.1.1 dağıtımı USDA SR28 tam ASCII bileşen tablosunu kullanır.**
+**Besin bileşimi USDA SR28 tam ASCII tablosundan gelir.**
+EFSA DRV Finder ayrıca 23 bileşen / 169 PRI-AI kaydıyla isteğe bağlı grup referansıdır; besin ölçümü değildir. Ayarlar → Yüzde referansı → EFSA: yaş ve kaynak cinsiyet grubunu seç. Yetişkin çinko için fitat, yetişkin kadın demiri için menopoz grubu ayrıca seçilir. Eşleşmeyen veya kapsam dışı alanda yüzde gösterilmez. Kaynak/görüş yılı ve koşullar açılabilir tabloda, PRI/AI türü matrikste ve CSV'de korunur. Kişisel hedefler değişmez.
 285 Türkçe besin / 363 tüketim biçimi; 1672 ek bitkisel USDA kaydı.
 Kaynakta bulunan amino asitler, şekerler, yağ asitleri, vitamin biçimleri,
 fitosteroller, kafein ve betain gibi ayrıntılar dahil edilmiştir.
@@ -84,6 +85,8 @@ macOS, Linux, Android ve iOS paketlerini kendi runner'larında oluşturur.
 `v*` etiketi tüm kapılar başarılıysa GitHub Release yayımlar.
 `workflow_dispatch` yalnız test/paket artifact'leri üretir.
 Her artifact lisans metinleri ve kurulum rehberini içerir. Doğrulanan ZIP özetleri, kaynak SHA ve test/paket/çalışma zamanı ayrımı [kanıt kaydında](docs/evidence/B005b-packages.json).
+
+EFSA ham JSON/bildirim URL ve özetleri `data/references/EFSA_SOURCE.json` içinde; dönüşüm `scripts/build-efsa.mjs` ile çevrimdışıdır. [Kapsam, izin ve birim ayrımları](docs/DATA_RESEARCH.md).
 
 USDA ham kaynak URL'si, arşiv özeti ve dönüşümler `data/raw/USDA_SR28_SOURCE.json`
 içindedir. `NUT_DATA.txt.gz` yalnız geliştirme için sıkıştırılmış ham kaynaktır;

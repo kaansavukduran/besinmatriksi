@@ -5,7 +5,7 @@
   "description": "Çevrimdışı, özelleştirilebilir bitkisel besin matriksi ve tarif hesaplayıcı",
   "type": "module",
   "scripts": {
-    "data": "node scripts/build-data.mjs",
+    "data": "node scripts/build-data.mjs && node scripts/build-efsa.mjs",
     "dev": "vite",
     "build": "npm run notices && vite build && node scripts/postbuild.mjs",
     "build:single": "npm run notices && vite build --mode single && node scripts/postbuild.mjs --single",

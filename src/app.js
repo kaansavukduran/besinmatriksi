@@ -14,6 +14,7 @@ import { focusSelector, syncModalFocus, trapModalTab } from './accessibility.js'
 import { recentSearches } from './search.js';
 import { recipeCost, normalizeCustom } from './records.js';
 import { renderRecipeSources, renderRecipeSourceRows } from './recipe-sources.js';
+import { renderEfsaSettings } from './efsa-ui.js';
 import { normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS } from './settings.js';
 
 const PRESETS = [1, 5, 10, 25, 50, 100, 150, 200, 250, 500, 750, 1000];
@@ -40,6 +41,7 @@ const S = {
   picker: null, // { target, cat, q, sel, amount }
   customEdit: null, // { id?, name, liquid, portion, v: {} }
   themeEditor: null,
+  efsaTableOpen: false,
 };
 setCustomFoods(loadCustom());
 S.amount = S.settings.defaultAmount;
@@ -406,7 +408,7 @@ function renderSettings() {
     </section>
 
     <section class="card"><h2>Matriks gösterimi</h2><button class="btn ghost" data-action="reset-group" data-group="matrix">Matriks ayarlarını sıfırla</button>
-      ${tog('showNrv', '%BRD çubukları', 'Beslenme Referans Değeri (AB 1169/2011, TGK): yetişkin için etiket referansı; kişisel ihtiyaç değildir.')}
+      ${tog('showNrv', 'Yüzde referansı çubukları', 'Seçili BRD, elle girilen hedef veya EFSA PRI/AI referansıyla karşılaştırma; kişisel ihtiyaç veya emilim ölçümü değildir.')}
       ${tog('showSource', 'Kaynak etiketleri (USDA / Hesap / Etiket)')}
       ${tog('showAlt', 'Varsa ikinci kaynağı göster (bu sürümde ikinci veri seti yok)')}
       ${tog('showSd', 'Varsa kaynak standart sapmasını göster')}
@@ -435,8 +437,9 @@ function renderSettings() {
       <p class="hint">CSV her zaman Türkçe Excel uyumlu ondalık virgül ve tanımlı besin birimlerini kullanır.</p>
     </section>
     <section class="card"><h2>Yüzde referansı</h2>
-      <div class="presets">${opt('referenceMode', 'eu', 'AB / TGK BRD')}${opt('referenceMode', 'custom', 'Kendi hedeflerim')}</div>
+      <div class="presets">${opt('referenceMode', 'eu', 'AB / TGK BRD')}${opt('referenceMode', 'custom', 'Kendi hedeflerim')}${opt('referenceMode', 'efsa', 'EFSA grup referansı')}</div>
       <p class="hint">AB 1169/2011 (2011) yetişkin etiket referansıdır. Kişisel hedeflerin elle girilir; yaşa veya sağlık durumuna göre otomatik öneri yapılmaz. Eksik hedefe BRD değeri atanmaz.</p>
+      ${s.referenceMode === 'efsa' ? renderEfsaSettings(s, S.efsaTableOpen) : ''}
       ${s.referenceMode === 'custom' ? `<label class="field"><span>Hedef eklenecek bileşen</span><select id="target-nutrient"><option value="">Bileşen seç</option>${NUTRIENTS.filter(n => n.key !== 'energy_kj' && s.targets[n.key] == null).map(n => `<option value="${n.key}">${esc(n.label)} (${esc(n.unit)})</option>`).join('')}</select></label><label class="field"><span>Yeni hedef miktarı (seçili bileşenin biriminde)</span><input type="number" min="0" step="any" id="target-new-value"></label><button class="btn" data-action="target-add">Hedef ekle</button>
       ${Object.entries(s.targets).map(([k, value]) => { const n = NUTRIENTS.find(n => n.key === k); return `<label class="field"><span>${esc(n.label)} hedefi (${esc(n.unit)})</span><input type="number" min="0" step="any" data-target-value="${k}" value="${value}"></label><button class="btn ghost" data-action="target-remove" data-key="${k}">${esc(n.label)} hedefini kaldır</button>`; }).join('')}` : ''}
     </section>
@@ -482,6 +485,7 @@ function renderAbout() {
       <li>Veriler kaynakta tanımlanan besin ve hazırlama biçimine aittir; çeşit, toprak, olgunluk ve yöntem değerleri değiştirebilir. Bu sürümde ikinci veri seti yoktur.</li>
       <li>Varlık ≠ ölçülen miktar ≠ emilen miktar ≠ sağlık etkisi. Göstergeler eğitim amaçlıdır, tıbbi tavsiye değildir.</li>
       <li>%BRD, AB/TGK etiket referansıdır; kişisel ihtiyacın yaşa, cinsiyete, sağlık durumuna göre değişir.</li>
+      <li>EFSA seçeneği, çocuk/yetişkin grup referanslarındaki PRI ve AI türlerini ayırır; üst sınır veya kişisel hedef önermez. Kaynak koşulları ve görüş yılı Ayarlar'daki referans tablosunda okunur.</li>
     </ul>
     <section class="license-notices" aria-label="Lisanslar ve telif bildirimleri"><h3>Lisanslar ve telif bildirimleri</h3>
       <p>Kod MIT lisanslıdır. Veriler, yazı tipleri ve diğer yazılımlar kendi koşullarına tabidir. Aşağıdaki özgün bildirimler internetsiz okunabilir.</p>
@@ -911,6 +915,9 @@ function onInput(e) {
 }
 function onChange(e) {
   const t = e.target;
+  if (['efsaAge', 'efsaSex', 'efsaPhytate', 'efsaIronGroup'].includes(t.dataset.efsa)) {
+    setSetting(t.dataset.efsa, t.dataset.efsa === 'efsaAge' ? Number(t.value) : t.value); render(); return;
+  }
   if (t.id === 'recipe-source-nutrient') {
     S.recipeSource = t.value;
     $('#recipe-source-rows').innerHTML = renderRecipeSourceRows(activeRecipe(), resolve, S.recipeSource, recipeResult(activeRecipe()).factor, S.settings.precision);
@@ -951,6 +958,7 @@ export function start() {
   document.addEventListener('toggle', (e) => {
     const d = e.target;
     if (d.isConnected && d.matches?.('details.recipe-sources')) S.recipeSourcesOpen = d.open;
+    if (d.isConnected && d.matches?.('details.efsa-table')) S.efsaTableOpen = d.open;
     if (!printController.active && d.matches?.('details.sec')) { if (d.open) S.closed.delete(d.dataset.sec); else S.closed.add(d.dataset.sec); }
   }, true);
   document.addEventListener('keydown', (e) => {

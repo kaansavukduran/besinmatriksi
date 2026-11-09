@@ -42,12 +42,16 @@ Durum etiketleri: PLANNED · IN_PROGRESS · DONE (yalnızca test kanıtıyla). S
 
 ## Devam sırası (2026-11-09)
 
-1. **B020b**: toplamların kaynağını malzeme başına izlenebilir yap.
-2. B003b: EFSA yaş/cinsiyet grup referansları; kaynak/sürüm/AI/PRI ayrımıyla doğrula. B003a'nın elle girilen hedeflerinin üstüne yazma.
-3. B021: resmî erişim ve lisans teyidi sağlanınca ilerle; aynı engeli günlükten sık tekrar etme.
-4. B031: gerçek cihaz/OS ortamı varsa paketleri smoke test et; derlenmiş olmak cihazda test edilmiş olmak değildir.
+1. **B031**: uygun ortamda native kurulum/çalışma kabulünü dene; mevcut Linux ortamında WebKitGTK 4.1 ve Xvfb yok, yalnız derlenmiş paket test edilmiş sayılmaz. Diğer fiziksel OS/cihaz kabulü hâlâ NOT_RUN.
+2. B021: resmî erişim/lisans teyidi, kayıtlı retry_not_before sonrasında tekrar araştırılır; aynı engel günlükten sık tekrarlanmaz.
+3. UX-TASKS: görev/saat ekranının kapsamı için kullanıcının yanıtı beklenir; bu istek tamamlandı sayılmaz.
 
-B003b henüz PLANNED. Kalıcı durum dosyası, son test ve paket SHA'larını ayırır. Yeni kapsam ekleyerek bitişi sürekli öteleme; bu listedeki uygulanabilir maddeleri doğrulayıp kapanış kaydı bırak.
+B003b **RUNTIME_TESTED locally; PACKAGING_PENDING**: 1–99 yaş çocuk/yetişkin,
+23 karşılaştırılabilir bileşende 169 PRI/AI kaydı; kapsam/izin/birim istisnaları
+DATA_RESEARCH.md'de. Kaynak doğrulama + 49 birim testi, üretim PWA/tek HTML
+ve hedefli telefon/masaüstü EFSA tarayıcı kapıları PASS. Son GitHub tam kapısı
+ve native paketler henüz bekleniyor. Kalıcı durum kod/paket SHA'larını ayırır.
+Kapsam dışı bilimsel tabloları ekleyerek bitişi sürekli öteleme.
 
 ## 1.1.1 yayın ve izin düzeltmesi
 

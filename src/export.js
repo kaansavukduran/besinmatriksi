@@ -2,6 +2,7 @@
 import { NUTRIENTS, SECTIONS } from './nutrients.js';
 import { referenceFor, normalizeSettings } from './settings.js';
 import { derive } from './calc.js';
+import { referenceLabel, percentColumnLabel } from './references.js';
 
 const SRC = { u: 'USDA SR28', i: 'IFCT 2017', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
 const num = (x) => (x == null ? '' : String(Number(x.toPrecision(6))).replace('.', ','));
@@ -9,13 +10,14 @@ const cell = (s) => (/[;"\n]/.test(s) ? `"${String(s).replace(/"/g, '""')}"` : S
 
 export function matrixCSV(r, title, settings = {}) {
   settings = normalizeSettings(settings);
-  const rows = [[title], [], ['Bölüm', 'Bileşen', 'Miktar', 'Birim', settings.referenceMode === 'custom' ? '%hedef' : '%BRD', 'Kaynak', 'Kapsam']];
+  const efsa = settings.referenceMode === 'efsa';
+  const rows = [[title], [], ['Bölüm', 'Bileşen', 'Miktar', 'Birim', percentColumnLabel(settings), 'Kaynak', 'Kapsam', ...(efsa ? ['Referans türü', 'Referans miktarı', 'Referans birimi', 'Referans yılı', 'Referans kaynak/grup'] : [])]];
   for (const sec of SECTIONS) {
     for (const n of NUTRIENTS.filter((x) => x.section === sec.id)) {
       const x = r.v[n.key];
       const cov = r.cov && r.n > 1 ? `${r.cov[n.key] || 0}/${r.n}` : '';
       const ref = referenceFor(n, settings);
-      rows.push([sec.title, n.label, x == null ? 'veri yok' : num(x), n.unit, x != null && ref.value ? num((x / ref.value) * 100) : '', x == null ? '' : SRC[r.s[n.key]] || '', cov]);
+      rows.push([sec.title, n.label, x == null ? 'veri yok' : num(x), n.unit, x != null && ref.value ? num((x / ref.value) * 100) : '', x == null ? '' : SRC[r.s[n.key]] || '', cov, ...(efsa ? [ref.type || '', ref.value == null ? '' : num(ref.value), ref.value == null ? '' : n.unit + '/gün', ref.year || '', ref.title] : [])]);
     }
   }
   const d = derive(r);
@@ -24,5 +26,6 @@ export function matrixCSV(r, title, settings = {}) {
   add('PRAL (mEq)', d.pral); add('Omega-6 : Omega-3', d.n6n3); add('Na : K (molar)', d.naK);
   add('Fitat : Zn (molar)', d.phyZn); add('Fitat : Fe (molar)', d.phyFe); add('Fitat : Ca (molar)', d.phyCa); add('Oksalat : Ca (molar)', d.oxCa);
   if (d.aas) rows.push(['Gösterge', `Amino asit skoru (sınırlayıcı: ${d.aas.limiting})`, num(d.aas.raw), '%']);
+  if (efsa) rows.push([], ['Yüzde referansı', referenceLabel(settings)]);
   return '﻿' + rows.map((r) => r.map((c) => cell(c ?? '')).join(';')).join('\r\n');
 }

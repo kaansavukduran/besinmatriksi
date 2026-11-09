@@ -89,5 +89,12 @@
     "version": "SR28 full ASCII",
     "license": "Public domain / CC0",
     "text": "Source: U.S. Department of Agriculture, Agricultural Research Service, National Nutrient Database for Standard Reference, Release 28.\nData are in the public domain. USDA licensing statement: https://fdc.nal.usda.gov/api-guide/\nDataset and documentation: https://www.ars.usda.gov/northeast-area/beltsville-md-bhnrc/beltsville-human-nutrition-research-center/methods-and-application-of-food-composition-laboratory/mafcl-site-pages/sr11-sr28/"
+  },
+  {
+    "id": "efsa",
+    "name": "EFSA DRV Finder",
+    "version": "2026-11-09 snapshot",
+    "license": "Re-use with EFSA source acknowledgement",
+    "text": "European Food Safety Authority – EFSA\nSource: DRV Finder, English data snapshot retrieved 9 November 2026.\nhttps://multimedia.efsa.europa.eu/drvs/assets/data/languages/en/data.json\nWebsite copyright/re-use notice (verified 9 November 2026):\nhttps://www.efsa.europa.eu/en/legalnotice\n\nCopyright © for the entire content of this website unless otherwise stated: European Food Safety Authority – EFSA. Re-use is authorised, provided that EFSA is acknowledged as the source of the material.\nFor individual documents, the general principle of re-use outlined above may be subject to specific conditions as indicated in individual copyright notices contained therein. Users are advised to refer to these individual copyright notices.\nThe EFSA logo is the exclusive property of the European Food Safety Authority – EFSA and is registered under Article 6ter of the Paris Convention for the protection of industrial property. Its use is prohibited without the prior written permission of EFSA.\n\nBesin Matriksi transforms a subset of numerical PRI/AI records from the EFSA website JSON into an offline reference table. This is an independent transformation, not an EFSA product or endorsement. No EFSA logo or third-party images are used. Journal PDFs/figures are not redistributed. Opinion years, original units and source row positions are retained; EFSA reference values are not personal requirements or medical advice. The application code's MIT license does not relicense EFSA material."
   }
 ]

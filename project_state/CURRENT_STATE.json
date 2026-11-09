@@ -2,11 +2,11 @@
   "schema_version": "1",
   "project": "Besin Matriksi",
   "product_version": "1.1.1",
-  "development_state": "RESEARCHING",
+  "development_state": "PACKAGING",
   "last_forge_at": "2026-11-09T09:54:27.250573+00:00",
   "last_completed_forge": "B005b",
   "active_forge": "B003b",
-  "next_recommended_forge": "B003b",
+  "next_recommended_forge": "B031",
   "branch": "codex/forge-devam",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
   "validated_code_commit": "8e0b3178bc41864338a3fdf91afb6cf49e5497be",
@@ -96,9 +96,9 @@
     "stop_when": "All applicable roadmap items and final gates are verified; pause only this own automation.",
     "note": "Hourly schedule enabled with inherited cloud environment; availability and usage limits still apply."
   },
-  "notes": "B020b and B005b PACKAGED at 8e0b317. 43 unit + 28 GitHub browser tests PASS; 6 artifact groups verified against source SHA. Native runtime remains NOT_RUN. Next single Forge B003b; new task/time scope needs user clarification and remains open. Documentation commits after package source do not rebuild app code.",
+  "notes": "B003b local gates: 49 unit PASS; PWA/single HTML builds PASS; EFSA targeted desktop/phone 2/2 PASS, axe/overflow and offline CSV included. Official source/legal verified. Current code CI/packages pending; prior package SHA is historical.",
   "release_target": null,
-  "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission.",
+  "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission. EFSA group reference data are separate from food measurements; only verified compatible PRI/AI records, EFSA attribution required.",
   "historical_verified_gates": [
     {
       "id": "unit",

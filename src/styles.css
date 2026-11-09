@@ -412,6 +412,9 @@ select { max-width: 100%; background: var(--card); border: 1px solid var(--line)
 .source-ingredients > li { border-top: 1px solid var(--line); padding: .75rem 0; }
 .source-ingredients p { margin: .25rem 0; }
 .source-contribution { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; }
+.ref-kind { display: block; font-size: .72rem; font-weight: bold; }
+.efsa-settings { overflow-wrap: anywhere; }
+.efsa-table > summary { cursor: pointer; min-height: var(--tap); }
 
 .profile-bar { display: flex; align-items: center; gap: .4rem; padding: .5rem 1rem; overflow-x: auto; border-bottom: 1px solid var(--line); background: var(--card); }
 .profile-bar .pchip { white-space: nowrap; }

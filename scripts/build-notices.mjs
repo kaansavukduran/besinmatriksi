@@ -14,6 +14,7 @@ export function collectNotices(base = root) {
     ...['andika', 'atkinson-hyperlegible-next', 'inter', 'lexend', 'literata', 'noto-sans-mono', 'nunito', 'opendyslexic'].map(n => packageNotice('@fontsource/' + n)),
     ...['core', 'android', 'ios'].map(n => packageNotice('@capacitor/' + n)),
     { id: 'usda', name: 'USDA SR28 (2015)', version: 'SR28 full ASCII', license: 'Public domain / CC0', text: 'Source: U.S. Department of Agriculture, Agricultural Research Service, National Nutrient Database for Standard Reference, Release 28.\nData are in the public domain. USDA licensing statement: https://fdc.nal.usda.gov/api-guide/\nDataset and documentation: https://www.ars.usda.gov/northeast-area/beltsville-md-bhnrc/beltsville-human-nutrition-research-center/methods-and-application-of-food-composition-laboratory/mafcl-site-pages/sr11-sr28/' },
+    { id: 'efsa', name: 'EFSA DRV Finder', version: '2026-11-09 snapshot', license: 'Re-use with EFSA source acknowledgement', text: read('data/references/EFSA_REUSE_NOTICE.txt') },
   ];
 }
 export function noticesText(notices) {

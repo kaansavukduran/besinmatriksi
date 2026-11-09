@@ -1,0 +1,16 @@
+{
+  "source": "European Food Safety Authority (EFSA), DRV Finder",
+  "source_url": "https://multimedia.efsa.europa.eu/drvs/assets/data/languages/en/data.json",
+  "finder_url": "https://multimedia.efsa.europa.eu/drvs/index.htm",
+  "retrieved_at": "2026-11-09T11:01:09.755082+00:00",
+  "snapshot": "2026-11-09",
+  "upstream_version": "No release identifier provided; immutable snapshot identified by SHA-256",
+  "file": "EFSA_DRV_FINDER_2026-11-09.json",
+  "sha256": "f67a4e418e361662aca30fa8cd128832a6eaef14dff59b5fcdda1b722e53525e",
+  "source_rows": 578,
+  "license_url": "https://www.efsa.europa.eu/en/legalnotice",
+  "license_notice_file": "EFSA_REUSE_NOTICE.txt",
+  "license_notice_sha256": "594a4b26bddda1090c3b549233a056cbca20ddcc211aad5bddce0b2f37d6865b",
+  "legal_page_sha256": "95a4691722e5a56c3ac0cf5a27c093def83ee9996aa9b12bf80b7c8b16fbe481",
+  "scope": "Numerical PRI/AI for children and adults age 1–99; explicit comparable nutrient forms/units only. No infant/pregnancy/lactation, AR/RI/SSI/UL, energy/body-weight derived targets or RE→RAE conversion."
+}

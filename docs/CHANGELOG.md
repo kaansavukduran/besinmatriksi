@@ -1,5 +1,7 @@
 # 1.1.1 · 9 Kasım 2026
 
+- B003b: EFSA grup PRI/AI referansları; 23 bileşen / 169 kaynak kaydı. Yaş/cinsiyet ve açık demir/çinko koşulları, görüş yılı/DOI, özgün birimler ve CSV dökümü; kişisel hedefler korunur. UL/AR/RI/SSI ve uyumsuz biçimlere yüzde atanmaz. EFSA yeniden kullanım/kaynak bildirimi çevrimdışı gömülür.
+
 - B020b: tarifte seçilen bileşenin malzeme katkısı, veri boşluğu/sıfır ayrımı, USDA kayıt/etiket kaynağı ve hesap girdileri; porsiyon/100 g ile eşzamanlı.
 - B005b: yedi ayrı tema rengi; hazır renkli seçim penceresi, sistem renk alanı, HEX, canlı önizleme, iptal/kaydet ve kontrast denetimi. Eski dört renkli v1 dosyası korunur; yeni v2 dosyası yedi rengi taşır.
 

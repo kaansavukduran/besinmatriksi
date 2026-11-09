@@ -52,7 +52,7 @@ yazar telifleri ve tam metinleri değiştirilmeden üretime taşınır.
 OpenDyslexic'in Reserved Font Name bildirimi korunur; font dosyaları değiştirilmez.
 Capacitor core/android/ios MIT metinleri ve uygulamanın MIT metni de dahil edilir.
 
-`scripts/build-notices.mjs` 13 kaynak/lisans kaydını üretir. Tam metinler
+`scripts/build-notices.mjs` EFSA bildirimiyle birlikte 14 kaynak/lisans kaydını üretir. Tam metinler
 `src/data/notices.json` ile uygulamaya gömülür ve
 `public/THIRD_PARTY_NOTICES.txt` olarak PWA/native içeriğine eklenir. Tek HTML'de
 Hakkında bölümünden çevrimdışı okunur. CI özgün metinlerin güncelliğini denetler.
@@ -79,3 +79,17 @@ Metin özeti değişirse veya yeni bir bağımlılığın lisans metni bulunamaz
 paket kapısı hata verir. Bu denetim sistem kütüphaneleri veya hukuki risklerin
 bütünü için garanti değildir. Her platform artifact arşivine uygulama MIT ve
 font/Capacitor bildirimleri de eklenir.
+
+## EFSA DRV Finder (B003b)
+
+9 Kasım 2026 resmî web yeniden kullanım bildirimi ve Finder JSON tablosu okundu.
+Copyright © European Food Safety Authority – EFSA; kaynak gösterilerek yeniden
+kullanım yetkilidir. Tekil belgelerin özel koşulları ayrıca geçerlidir. İzin metni
+ve ürünün bağımsız dönüşüm açıklaması `data/references/EFSA_REUSE_NOTICE.txt`
+içinde korunur; Hakkında/tek HTML/PWA/native indirme bildirimlerine gömülür.
+Bu materyal MIT veya CC0 diye etiketlenmez; EFSA onayı iddia edilmez.
+
+Yalnız resmî web JSON'undaki bir sayısal PRI/AI alt kümesi dönüştürülür. Görüş
+PDF/şekilleri, EFSA logosu ve üçüncü taraf fotoğraflar içe alınmaz. Kaynak/bildirim
+SHA'ları ve erişim anı EFSA_SOURCE.json'dadır. Kaynak dosyaları checkout sırasında
+satır sonu dönüşümüyle değişmesin diye `.gitattributes` bu dosyaları byte olarak korur.

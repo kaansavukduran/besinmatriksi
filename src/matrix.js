@@ -3,6 +3,7 @@ import { NUTRIENTS, SECTIONS, SOURCES, ALLERGENS } from './nutrients.js';
 import { derive } from './calc.js';
 import { esc, fmtNum, fmtAmount, fmtPct } from './util.js';
 import { normalizeSettings, referenceFor } from './settings.js';
+import { referenceLabel } from './references.js';
 
 const SRC_LABEL = { u: 'USDA', i: 'IFCT', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
 const SRC_TITLE = {
@@ -31,7 +32,7 @@ function row(n, r, cfg) {
     const p = (x / ref.value) * 100;
     pct = `<span class="nrv" title="${esc(ref.title)}; ${ref.label}: ${fmtNum(ref.value)} ${esc(n.unit)}">
       <span class="bar"><i style="width:${Math.min(100, p).toFixed(1)}%"></i>${p > 100 ? '<b class="over"></b>' : ''}</span>
-      <span class="pct">${fmtPct(p)}</span></span>`;
+      <span class="pct">${fmtPct(p)}${ref.type ? `<small class="ref-kind">${ref.type}</small>` : ''}</span></span>`;
   }
   const extra = [];
   if (x === 0 && (s === 'u' || s === 'i' || s === 'k')) extra.push('<span class="flag" title="Kaynak bu değeri 0 olarak bildiriyor (tespit sınırının altında olabilir)">kaynak 0</span>');
@@ -219,7 +220,7 @@ export function renderMatrix(r, cfg, ctx = {}) {
   const item = ctx.item || null;
   cfg.sourceItem = item;
   const open = (id) => !ctx.closed?.has(id);
-  const d = [identityCard(item, r, cfg, ctx), coverage(r, cfg), `<p class="hint reference-label">${cfg.referenceMode === 'custom' ? '%hedef: elle girilen hedefler, öneri değildir. Hedef girilmeyen bileşenlerde yüzde gösterilmez.' : '%BRD: AB 1169/2011 (2011) yetişkin etiket referansı / TGK. Kişisel ihtiyaç değildir.'}</p>`];
+  const d = [identityCard(item, r, cfg, ctx), coverage(r, cfg), `<p class="hint reference-label">${esc(referenceLabel(cfg))}</p>`];
   if (cfg.hiddenSections.length) d.push(`<p class="hint">${cfg.hiddenSections.length} bölüm ayarlarda gizlendi. Kapsam özeti ve CSV tüm bileşenleri içerir.</p>`);
   if (cfg.pinnedNutrients.length) {
     const rows = cfg.pinnedNutrients.map(k => NUTRIENTS.find(n => n.key === k)).map(n => {

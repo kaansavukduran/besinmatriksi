@@ -11,4 +11,7 @@ test('gömülü sekiz fontun asıl OFL telifleri ve yazılım MIT bildirimleri e
   assert.match(text, /Kaan Savukduran/); assert.match(text, /Abbie Gonzalez/); assert.ok(notices.some(n => n.id === '@capacitor/core' && n.text.includes('Permission is hereby granted')));
   assert.deepEqual(JSON.parse(fs.readFileSync(new URL('../src/data/notices.json', import.meta.url))), notices);
   assert.equal(fs.readFileSync(new URL('../public/THIRD_PARTY_NOTICES.txt', import.meta.url), 'utf8'), text);
+  const efsa = notices.find(n => n.id === 'efsa');
+  assert.match(efsa.text, /European Food Safety Authority/); assert.match(efsa.text, /Re-use is authorised/);
+  assert.notEqual(efsa.license, 'MIT');
 });
