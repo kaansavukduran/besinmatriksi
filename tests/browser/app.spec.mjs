@@ -86,3 +86,19 @@ test('ana ekranlar WCAG 2.1 AA otomatik denetimi ve yatay taşma kontrolünden g
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), id).toBe(true);
   }
 });
+
+test('malzeme penceresinde odak tutulur, Escape ile açan düğmeye döner', async ({ page }) => {
+  await page.goto('/'); await tab(page, 'tarif');
+  await page.locator('[data-action="rc-add"]').click();
+  const modal = page.locator('.modal');
+  await expect(modal).toBeVisible();
+  expect(await page.evaluate(() => !!document.activeElement.closest('.modal'))).toBe(true);
+  await page.keyboard.press('Shift+Tab');
+  expect(await page.evaluate(() => !!document.activeElement.closest('.modal'))).toBe(true);
+  await page.keyboard.press('Tab');
+  expect(await page.evaluate(() => !!document.activeElement.closest('.modal'))).toBe(true);
+  const result = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+  expect(result.violations.map(v => v.id)).toEqual([]);
+  await page.keyboard.press('Escape');
+  await expect(modal).toHaveCount(0); await expect(page.locator('[data-action="rc-add"]')).toBeFocused();
+});

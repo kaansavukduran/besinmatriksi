@@ -6,6 +6,7 @@ import { FONTS, fontStack, ensureFont } from './fonts.js';
 import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles } from './store.js';
 import { esc, fmtNum, fmtAmount, clamp, download, uid } from './util.js';
 import { matrixCSV } from './export.js';
+import { focusSelector, syncModalFocus, trapModalTab } from './accessibility.js';
 import { recentSearches } from './search.js';
 import { recipeCost, normalizeCustom } from './records.js';
 import { normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection } from './settings.js';
@@ -39,6 +40,7 @@ S.activeRecipe = S.recipes[0].id;
 
 const $ = (sel, el = document) => el.querySelector(sel);
 const app = () => $('#app');
+let modalOpener = null;
 
 // ---------------------------------------------------------------- ayarlar
 function applySettings() {
@@ -170,7 +172,7 @@ function formChips(prefix, ref) {
   if (ref.t !== 'c') return '';
   const food = FOODS.find((f) => f.id === ref.id);
   if (food.forms.length < 2) return `<div class="forms"><span class="pchip on static">${esc(food.forms[0].label)}</span></div>`;
-  return `<div class="forms" role="radiogroup" aria-label="Tüketim biçimi">${food.forms.map((fm, i) => `<button role="radio" aria-checked="${i === ref.f}" class="pchip ${i === ref.f ? 'on' : ''}" data-action="${prefix}-form" data-f="${i}">${esc(fm.label)}${fm.ifct ? ' <span class="dot" title="Derin matriks (IFCT) bağlı">●</span>' : ''}</button>`).join('')}</div>`;
+  return `<div class="forms" role="group" aria-label="Tüketim biçimi">${food.forms.map((fm, i) => `<button aria-pressed="${i === ref.f}" class="pchip ${i === ref.f ? 'on' : ''}" data-action="${prefix}-form" data-f="${i}">${esc(fm.label)}${fm.ifct ? ' <span class="dot" title="Derin matriks (IFCT) bağlı">●</span>' : ''}</button>`).join('')}</div>`;
 }
 
 function renderExplore() {
@@ -276,7 +278,7 @@ function renderRecipe() {
         ${rc.items.length ? '<button class="btn ghost" data-action="csv">⬇ CSV</button><button class="btn ghost" data-action="print">🖨 Yazdır</button>' : ''}</div>
       <div class="ings">${items || `<p class="empty">Henüz malzeme yok. “Malzeme ekle”ye tıkla veya Keşfet'te bir besinde “Tarife ekle”yi kullan. Ör: muz + yaban mersini.</p>`}</div>
       ${rc.items.length ? `<div class="ropts">
-        <div class="kv"><span>Porsiyon sayısı</span><span class="stepper"><button class="nudge" data-action="rc-serv" data-d="-1">−</button><b>${rc.servings}</b><button class="nudge" data-action="rc-serv" data-d="1">+</button></span></div>
+        <div class="kv"><span>Porsiyon sayısı</span><span class="stepper"><button class="nudge" data-action="rc-serv" data-d="-1" aria-label="Porsiyon sayısını azalt">−</button><b>${rc.servings}</b><button class="nudge" data-action="rc-serv" data-d="1" aria-label="Porsiyon sayısını artır">+</button></span></div>
         <div class="kv"><span>Pişmiş son ağırlık <span class="help" title="Pişirmede su kaybı/kazancı olur. Son ürünü tartıp girersen 100 g son ürün değeri doğru hesaplanır. Pişirme kayıpları (vitamin vb.) hesaba katılmaz.">?</span></span>
           <span class="stepper"><button class="nudge" data-action="rc-cw" data-d="-50">−50</button><button class="nudge" data-action="rc-cw" data-d="-10">−10</button>
           <b>${rc.cookedWeight ? fmtNum(rc.cookedWeight) + ' g' : 'girilmedi'}</b>
@@ -348,8 +350,8 @@ function renderSettings() {
   const opt = (k, v, label) => `<button class="pchip ${s[k] === v ? 'on' : ''}" data-action="set" data-k="${k}" data-v="${esc(JSON.stringify(v))}">${label}</button>`;
   const tog = (k, label, help = '') => `<label class="toggle"><input type="checkbox" data-setbool="${k}" ${s[k] ? 'checked' : ''}><span class="sw"></span><span>${label}${help ? ` <span class="help" title="${esc(help)}">?</span>` : ''}</span></label>`;
   const step = (k, label, min, max, st, unit, f = (x) => fmtNum(x)) => `<div class="kv"><span>${label}</span><span class="stepper">
-      <button class="nudge" data-action="setstep" data-k="${k}" data-d="${-st}" data-min="${min}" data-max="${max}">−</button><b>${f(s[k])}${unit}</b>
-      <button class="nudge" data-action="setstep" data-k="${k}" data-d="${st}" data-min="${min}" data-max="${max}">+</button></span></div>`;
+      <button class="nudge" data-action="setstep" data-k="${k}" data-d="${-st}" data-min="${min}" data-max="${max}" aria-label="${label} azalt">−</button><b>${f(s[k])}${unit}</b>
+      <button class="nudge" data-action="setstep" data-k="${k}" data-d="${st}" data-min="${min}" data-max="${max}" aria-label="${label} artır">+</button></span></div>`;
   return `<div class="settings">
     <section class="card"><h2>Hızlı ön ayarlar</h2><div class="presets">
       <button class="btn" data-action="preset" data-p="dyslexia">Disleksi dostu</button>
@@ -406,13 +408,13 @@ function renderSettings() {
     <section class="card"><h2>Yalnızca ayarları taşı</h2>
       <p class="hint">Görünümünü başka cihaza taşı. Tarifler ve kendi besinlerin bu işlemden etkilenmez.</p>
       <div class="presets"><button class="btn" data-action="settings-export">Ayarları indir</button>
-      <label class="btn file-btn" tabindex="0" role="button">Ayar dosyası aç<input type="file" accept="application/json,.json" id="settings-file" class="sr"></label></div>
+      <button class="btn" data-action="open-file" data-id="settings-file">Ayar dosyası aç</button><input type="file" accept="application/json,.json" id="settings-file" hidden></div>
     </section>
     <section class="card"><h2>Yedekleme</h2>
       <p class="hint">Tarifler ve ayarlar yalnızca bu cihazda saklanır. Başka cihaza taşımak veya yedeklemek için dışa aktar.</p>
       <div class="presets"><button class="btn" data-action="exp-file">Dosyaya kaydet (.json)</button>
       <button class="btn" data-action="exp-copy">Panoya kopyala</button>
-      <label class="btn">Dosyadan içe aktar<input type="file" accept="application/json,.json" id="imp-file" hidden></label>
+      <button class="btn" data-action="open-file" data-id="imp-file">Dosyadan içe aktar</button><input type="file" accept="application/json,.json" id="imp-file" hidden>
       <button class="btn" data-action="imp-paste">Yapıştırarak içe aktar</button></div>
     </section>
   </div>`;
@@ -505,6 +507,8 @@ export function render() {
   document.querySelectorAll('[data-keep-scroll]').forEach((el) => (keep[el.dataset.keepScroll] = el.scrollTop));
   const winY = window.scrollY;
   const focusedId = document.activeElement?.id;
+  const focusedSelector = focusSelector(document.activeElement);
+  const wasModal = !!document.querySelector('.modal');
   const selStart = document.activeElement?.selectionStart;
   let view = '';
   if (S.tab === 'kesfet') view = renderExplore();
@@ -523,6 +527,7 @@ export function render() {
   document.querySelectorAll('.list, .detail, .pk-list, .cats').forEach((el, i) => (el.dataset.keepScroll = el.className.split(' ')[0] + i));
   document.querySelectorAll('[data-keep-scroll]').forEach((el) => { if (keep[el.dataset.keepScroll] != null) el.scrollTop = keep[el.dataset.keepScroll]; });
   window.scrollTo(0, winY);
+  syncModalFocus(!document.querySelector('.modal') && wasModal ? modalOpener : focusedSelector);
   if (focusedId) {
     const el = document.getElementById(focusedId);
     if (el) { el.focus(); if (selStart != null && el.setSelectionRange) try { el.setSelectionRange(selStart, selStart); } catch {} }
@@ -582,20 +587,26 @@ function uiDialog(message, { input = null, ok = 'Tamam', cancel = null } = {}) {
   return new Promise((resolveP) => {
     const wrap = document.createElement('div');
     wrap.className = 'modal dlg';
-    wrap.innerHTML = `<div class="modal-box small" role="alertdialog" aria-modal="true"><p>${esc(message)}</p>
+    wrap.innerHTML = `<div class="modal-box small" role="alertdialog" aria-modal="true" aria-label="Onay"><p>${esc(message)}</p>
       ${input != null ? `<textarea rows="6">${esc(input)}</textarea>` : ''}
       <div class="presets end">${cancel ? `<button class="btn" data-r="0">${esc(cancel)}</button>` : ''}<button class="btn primary" data-r="1">${esc(ok)}</button></div></div>`;
+    const previousFocus = focusSelector(document.activeElement);
     document.body.appendChild(wrap);
+    syncModalFocus();
     const ta = wrap.querySelector('textarea');
     (ta || wrap.querySelector('[data-r="1"]')).focus();
     if (ta && input) ta.select();
+    const finish = yes => {
+      wrap.remove(); syncModalFocus(previousFocus);
+      resolveP(input != null ? (yes ? ta.value : null) : yes);
+    };
+    wrap.addEventListener('keydown', e => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); finish(!cancel); } });
     wrap.addEventListener('click', (e) => {
       const r = e.target.closest('[data-r]');
       if (!r) return;
       e.stopPropagation();
       const yes = r.dataset.r === '1';
-      wrap.remove();
-      resolveP(input != null ? (yes ? ta.value : null) : yes);
+      finish(yes);
     });
   });
 }
@@ -635,6 +646,7 @@ async function onClick(e) {
   const b = e.target.closest('[data-action]');
   if (!b) return;
   const a = b.dataset.action;
+  if (!document.querySelector('.modal')) modalOpener = focusSelector(b);
   switch (a) {
     case 'tab': S.tab = b.dataset.tab; render(); window.scrollTo(0, 0); break;
     // keşfet
@@ -707,6 +719,7 @@ async function onClick(e) {
       render(); break;
     }
     // ayarlar
+    case 'open-file': document.getElementById(b.dataset.id)?.click(); break;
     case 'profile-save': {
       const name = $('#profile-name')?.value.trim();
       if (!name) { toast('Bir profil adı gir'); break; }
@@ -836,7 +849,7 @@ export function start() {
     const d = e.target;
     if (d.matches?.('details.sec')) { if (d.open) S.closed.delete(d.dataset.sec); else S.closed.add(d.dataset.sec); }
   }, true);
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && (S.picker || S.customEdit)) { S.picker = null; S.customEdit = null; render(); } });
+  document.addEventListener('keydown', (e) => { trapModalTab(e); if (!e.defaultPrevented && e.key === 'Escape' && (S.picker || S.customEdit)) { if (S.customEdit) S.customEdit = null; else S.picker = null; render(); } });
   // Modal arka planına tıklayınca kapat
   document.addEventListener('mousedown', (e) => { if (e.target.classList?.contains('modal') && !e.target.classList.contains('dlg') && !S.customEdit) { S.picker = null; render(); } });
   const ruler = $('#ruler');

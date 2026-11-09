@@ -62,11 +62,11 @@ function section(sec, r, cfg, open) {
       have++;
       const kj = r.v.energy_kj;
       const p = (r.v.energy / 2000) * 100;
-      html += `<div class="row" role="row"><span class="lbl">Enerji</span>
-        <span class="val"><span class="num">${fmtNum(r.v.energy, cfg.precision)}</span> <span class="unit">kcal</span>
+      html += `<div class="row" role="row"><span class="lbl" role="cell">Enerji</span>
+        <span class="val" role="cell"><span class="num">${fmtNum(r.v.energy, cfg.precision)}</span> <span class="unit">kcal</span>
         ${kj != null ? `<span class="kj">· ${fmtNum(kj, cfg.precision)} kJ</span>` : ''}</span>
-        <span class="pctc">${cfg.showNrv ? `<span class="nrv" title="BRD 2000 kcal / 8400 kJ"><span class="bar"><i style="width:${Math.min(100, p).toFixed(1)}%"></i></span><span class="pct">${fmtPct(p)}</span></span>` : ''}</span>
-        <span class="meta">${cfg.showSource ? srcChip(r.s.energy) : ''}</span></div>`;
+        <span class="pctc" role="cell">${cfg.showNrv ? `<span class="nrv" title="BRD 2000 kcal / 8400 kJ"><span class="bar"><i style="width:${Math.min(100, p).toFixed(1)}%"></i></span><span class="pct">${fmtPct(p)}</span></span>` : ''}</span>
+        <span class="meta" role="cell">${cfg.showSource ? srcChip(r.s.energy) : ''}</span></div>`;
       continue;
     }
     const rr = row(n, r, cfg);
@@ -74,7 +74,7 @@ function section(sec, r, cfg, open) {
       missing.push(n.label);
       if (cfg.showMissing) {
         if (n.sub !== sub) { sub = n.sub; if (sub) html += `<div class="sub">${esc(sub)}</div>`; }
-        html += `<div class="row miss"><span class="lbl">${esc(n.label)}</span><span class="val">veri yok</span><span class="pctc"></span><span class="meta"></span></div>`;
+        html += `<div class="row miss" role="row"><span class="lbl" role="cell">${esc(n.label)}</span><span class="val" role="cell">veri yok</span><span class="pctc" role="cell"></span><span class="meta" role="cell"></span></div>`;
       }
       continue;
     }
@@ -87,7 +87,7 @@ function section(sec, r, cfg, open) {
     ? `<button class="linkish miss-note" data-action="toggle-missing" title="${esc(missing.join(', '))}">Veri yok: ${missing.length} bileşen · göster</button>`
     : '';
   const body = have
-    ? `<div class="rows" role="table">${html}</div>${missNote}`
+    ? `<div class="rows" role="table" aria-label="${esc(sec.title)}">${html}</div>${missNote}`
     : `<p class="empty">Bu form için bu başlıkta ölçüm verisi yok. ${missing.length ? `(${missing.length} bileşen tanımlı, hiçbiri ölçülmemiş.)` : ''}</p>${cfg.showMissing ? `<div class="rows">${html}</div>` : ''}`;
   return `<details class="sec" data-sec="${sec.id}" ${open ? 'open' : ''}>
     <summary><span class="ico" aria-hidden="true">${cfg.emoji ? sec.icon : ''}</span><span class="st">${esc(sec.title)}</span>
@@ -217,7 +217,7 @@ export function renderMatrix(r, cfg, ctx = {}) {
   if (cfg.pinnedNutrients.length) {
     const rows = cfg.pinnedNutrients.map(k => NUTRIENTS.find(n => n.key === k)).map(n => {
       const result = row(n, r, cfg);
-      return result.missing ? `<div class="row miss"><span class="lbl">${esc(n.label)}</span><span class="val">veri yok</span></div>` : result.html;
+      return result.missing ? `<div class="row miss" role="row"><span class="lbl" role="cell">${esc(n.label)}</span><span class="val" role="cell">veri yok</span></div>` : result.html;
     }).join('');
     d.push(`<section class="pinned card" aria-label="Sabitlenen besin öğeleri"><h3>Sabitlenen besin öğeleri</h3><div class="rows" role="table" aria-label="Sabitlenen değerler">${rows}</div></section>`);
   }
