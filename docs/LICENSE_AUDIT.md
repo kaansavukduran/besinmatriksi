@@ -62,3 +62,20 @@ lisans dosyalarını platforma ait ek metinlerde toplar. Tam metni bulunmayan
 paketler açıkça sayılır; metadata dökümü bütün işletim sistemi/kütüphane lisansları
 hakkında genel bir hukuki denetim yerine geçmez. Gelecek bağımlılık/font/veri
 eklemelerinde aynı koşul ve kaynak kontrolü yeniden yapılmalıdır.
+
+## Native kaynak metni eksikleri (B040b)
+
+İlk Cargo dökümü 404 paket arasında tam dosyası bulunmayan 36 kayıt gösterdi.
+`COPYRIGHT-RUST.txt` gibi dosyalar da taramaya dahil edildi. Diğer eksiklerin
+kaynak depoları ve crate arşivlerindeki `.cargo_vcs_info.json` commit'leri
+incelendi. Gerekli metinler `data/licenses/native/` altında URL ve SHA-256 ile
+saklanır; kaynakta olmayan yazar/telif metni uydurulmaz. R-efi'nin AUTHORS dosyası
+MIT koşullarını içerir; selectors'ın MPL başlığı ve Mozilla'nın resmî MPL metni
+korunur. Git VCS metadata'sı olmayan winapi GNU destek paketleri için upstream
+0.3.9 kaynak referansı ayrıca `crate_vcs_verified: false` olarak işaretlidir;
+exact crate commit'i doğrulanmış gibi gösterilmez.
+
+Metin özeti değişirse veya yeni bir bağımlılığın lisans metni bulunamazsa native
+paket kapısı hata verir. Bu denetim sistem kütüphaneleri veya hukuki risklerin
+bütünü için garanti değildir. Her platform artifact arşivine uygulama MIT ve
+font/Capacitor bildirimleri de eklenir.

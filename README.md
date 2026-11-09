@@ -3,13 +3,13 @@
 Türkçe, çevrimdışı, özelleştirilebilir bitkisel besin matriksi ve tarif hesaplayıcı.
 Windows · macOS · Linux · Android · iPhone · tarayıcı/PWA · tek HTML.
 
-**[Hazır sürümü indir](https://github.com/kaansavukduran/besinmatriksi/releases/latest)** ·
-[1.1.1 sürümü](https://github.com/kaansavukduran/besinmatriksi/releases/tag/v1.1.1) ·
+**[Paketleri indir: Actions / Artifacts](https://github.com/kaansavukduran/besinmatriksi/actions/workflows/release.yml)** ·
 [Kurulum adımları](docs/INSTALL.md) · [Geliştirme PR #2](https://github.com/kaansavukduran/besinmatriksi/pull/2)
 
 ## İndirip dene
 
-Releases sayfasındaki **Assets** bölümünden platformunu seç:
+Başarılı **Derle ve yayınla** çalışmasını aç, **Artifacts** bölümünden platform arşivini indir ve içindeki dosyayı aç. GitHub hesabınla oturum açman gerekir.
+Son kullanıcı talimatı yeni herkese açık Release yayınına izin vermediği için bu sürüm yalnız Actions çıktısıdır:
 
 | Platform | Dosya |
 |---|---|

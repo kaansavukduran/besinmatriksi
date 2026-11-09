@@ -1,6 +1,8 @@
 # Besin Matriksi 1.1.1 kurulumu
 
-Tüm dosyalar: https://github.com/kaansavukduran/besinmatriksi/releases/tag/v1.1.1
+Paketler: https://github.com/kaansavukduran/besinmatriksi/actions/workflows/release.yml
+
+GitHub hesabınla oturum aç; başarılı çalışmanın Artifacts bölümünde platform arşivini indir. Son talimat yeni herkese açık Release yayımlanmamasını istediği için bu sürüm Actions çıktısı olarak sunulur.
 
 - Windows: `BesinMatriksi-portable-x64.exe` kurulumsuz açılır. Alternatif setup EXE veya MSI. WebView2 çalışma zamanı gerekir; olmayan cihazda Microsoft'un WebView2 kurulumu gerekir.
 - Linux: `.AppImage` dosyasını yürütülebilir yapıp aç (`chmod +x dosya.AppImage`). Debian/Ubuntu için `.deb`, RPM tabanlı sistemler için `.rpm` de bulunur.

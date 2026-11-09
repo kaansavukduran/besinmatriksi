@@ -80,6 +80,9 @@ jobs:
             cp $T/release/bundle/deb/*.deb out/
             cp $T/release/bundle/rpm/*.rpm out/ || true
           fi
+          cp LICENSE out/LICENSE.txt
+          cp public/THIRD_PARTY_NOTICES.txt out/THIRD_PARTY_NOTICES.txt
+          cp docs/INSTALL.md out/KURULUM.md
           ls -la out
       - uses: actions/upload-artifact@v4
         with:
@@ -122,6 +125,7 @@ jobs:
             ./gradlew assembleDebug
             cp app/build/outputs/apk/debug/app-debug.apk ../out/BesinMatriksi.apk
           fi
+      - run: cp LICENSE out/LICENSE.txt && cp public/THIRD_PARTY_NOTICES.txt out/THIRD_PARTY_NOTICES.txt && cp docs/INSTALL.md out/KURULUM.md
       - uses: actions/upload-artifact@v4
         with: { name: android, path: out/* }
 
@@ -146,12 +150,13 @@ jobs:
           mkdir -p Payload out
           cp -R build/Build/Products/Release-iphoneos/App.app Payload/
           zip -qr out/BesinMatriksi-unsigned.ipa Payload
+      - run: cp LICENSE out/LICENSE.txt && cp public/THIRD_PARTY_NOTICES.txt out/THIRD_PARTY_NOTICES.txt && cp docs/INSTALL.md out/KURULUM.md
       - uses: actions/upload-artifact@v4
         with: { name: ios, path: out/* }
 
   release:
     name: GitHub Release
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     needs: [web, desktop, android, ios]
     runs-on: ubuntu-latest
     steps:

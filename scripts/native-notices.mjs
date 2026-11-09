@@ -3,15 +3,28 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-export function nativeNotices(metadata) {
+import { createHash } from 'node:crypto';
+const fallbackDirectory = fileURLToPath(new URL('../data/licenses/native/', import.meta.url));
+const fallbackManifest = JSON.parse(fs.readFileSync(path.join(fallbackDirectory, 'manifest.json'), 'utf8'));
+export function nativeNotices(metadata, options = {}) {
+  const manifest = options.manifest || fallbackManifest;
+  const directory = options.directory || fallbackDirectory;
   const sections = [];
   let missing = 0;
   for (const pkg of [...metadata.packages].sort((a, b) => a.name.localeCompare(b.name) || a.version.localeCompare(b.version))) {
     const dir = path.dirname(pkg.manifest_path);
-    const files = fs.readdirSync(dir).filter(n => /^(licen[sc]e|copying|notice)([._-]|$)/i.test(n) && fs.statSync(path.join(dir, n)).isFile());
+    const files = fs.readdirSync(dir).filter(n => /^(licen[sc]e|copying|copyright|notice|authors)([._-]|$)/i.test(n) && fs.statSync(path.join(dir, n)).isFile());
     if (pkg.license_file && !files.includes(pkg.license_file)) files.push(pkg.license_file);
     if (!pkg.source && pkg.name === 'besin-matriksi' && !files.length) files.push('../LICENSE');
     const texts = files.sort().map(file => `${path.basename(file)}\n${fs.readFileSync(path.isAbsolute(file) ? file : path.join(dir, file), 'utf8').trim()}`);
+    if (!texts.length) {
+      const fallback = manifest[`${pkg.name}@${pkg.version}`];
+      for (const record of fallback?.records || []) {
+        const bytes = fs.readFileSync(path.join(directory, record.file));
+        if (createHash('sha256').update(bytes).digest('hex') !== record.sha256) throw new Error('Lisans özeti eşleşmedi: ' + record.file);
+        texts.push(`Upstream notice: ${record.url}\n${bytes.toString('utf8').trim()}`);
+      }
+    }
     if (!texts.length) missing++;
     sections.push(`${pkg.name} ${pkg.version}\nSPDX: ${pkg.license || 'see license file'}\nSource: ${pkg.repository || pkg.source || 'https://github.com/kaansavukduran/besinmatriksi'}\n\n${texts.join('\n\n') || 'Full license text was not present in this package archive; see the source above.'}`);
   }
@@ -21,6 +34,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const result = spawnSync('cargo', ['metadata', '--locked', '--format-version', '1', '--manifest-path', 'src-tauri/Cargo.toml'], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
   if (result.status !== 0) throw new Error(result.stderr || 'cargo metadata başarısız');
   const data = nativeNotices(JSON.parse(result.stdout));
+  if (data.missing) throw new Error(`${data.missing} paket için tam lisans metni eksik; artifact üretilmedi.`);
   const output = process.argv[2]; if (!output) throw new Error('Çıktı yolu gerekli');
   fs.mkdirSync(path.dirname(output), { recursive: true }); fs.writeFileSync(output, data.text);
   console.log(`Cargo: ${data.count} paket; tam lisans dosyası bulunmayan ${data.missing}.`);

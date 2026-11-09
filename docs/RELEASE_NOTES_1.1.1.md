@@ -1,3 +1,5 @@
+> Yayımlanmamış taslak. Son kullanıcı talimatıyla yeni herkese açık Release yayını yapılmaz; paketler yalnız workflow_dispatch artifact çıktısıdır.
+
 ## İndir ve dene
 
 | Platform | İndirilecek dosya |
