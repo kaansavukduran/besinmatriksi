@@ -6,7 +6,7 @@ test('CSV sıfır ve eksik değeri ayırır; kısmi kapsamı ve Türkçe kaçı�
   const csv = matrixCSV({ v: { protein: 0 }, s: { protein: 'k' }, cov: { protein: 1 }, n: 2 }, 'Muz; "Tarif"');
   assert.ok(csv.startsWith('\ufeff"Muz; ""Tarif"""'));
   assert.match(csv, /Protein \(toplam\);0;g;0;Etiket;1\/2/);
-  assert.match(csv, /Demir;veri yok;mg;;;0\/2/);
+  assert.match(csv, /Demir \(Fe\);veri yok;mg;;;0\/2/);
 });
 test('kaynak etiketi veri seti yılı ve kayıt kimliğini taşır; bilinmeyen alerjen boşluk olarak görünür', () => {
   const r = { v: { protein: 1 }, s: { protein: 'u' }, grams: 100, n: 1 };
