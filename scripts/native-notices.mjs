@@ -11,7 +11,7 @@ export function nativeNotices(metadata) {
     const files = fs.readdirSync(dir).filter(n => /^(licen[sc]e|copying|notice)([._-]|$)/i.test(n) && fs.statSync(path.join(dir, n)).isFile());
     if (pkg.license_file && !files.includes(pkg.license_file)) files.push(pkg.license_file);
     if (!pkg.source && pkg.name === 'besin-matriksi' && !files.length) files.push('../LICENSE');
-    const texts = files.sort().map(file => `${path.basename(file)}\n${fs.readFileSync(path.join(dir, file), 'utf8').trim()}`);
+    const texts = files.sort().map(file => `${path.basename(file)}\n${fs.readFileSync(path.isAbsolute(file) ? file : path.join(dir, file), 'utf8').trim()}`);
     if (!texts.length) missing++;
     sections.push(`${pkg.name} ${pkg.version}\nSPDX: ${pkg.license || 'see license file'}\nSource: ${pkg.repository || pkg.source || 'https://github.com/kaansavukduran/besinmatriksi'}\n\n${texts.join('\n\n') || 'Full license text was not present in this package archive; see the source above.'}`);
   }
