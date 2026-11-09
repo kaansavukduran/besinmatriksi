@@ -146,3 +146,26 @@ test('tek HTML içeriği harici istek olmadan çalışır', async ({ page, conte
   await expect(page.locator('[data-sec="enerji"]')).toContainText('890');
   expect(requests.filter(url => /^https?:/.test(url))).toEqual([]);
 });
+
+test('A4 çıktısı tabloyu ve tüm değerleri korur, bölüm durumunu geri yükler', async ({ page }, testInfo) => {
+  await page.goto('/'); await pickBanana(page);
+  const before = await page.locator('#matrix .row').allTextContents();
+  const protein = page.locator('[data-sec="protein"]');
+  await protein.locator('summary').click(); await expect(protein).not.toHaveAttribute('open', '');
+  const pdf = await page.pdf({ path: testInfo.outputPath('muz-a4.pdf'), preferCSSPageSize: true, printBackground: true });
+  const pages = (pdf.toString('latin1').match(/\/Type\s*\/Page\b/g) || []).length;
+  expect(pages).toBeGreaterThan(0); expect(pages).toBeLessThanOrEqual(10);
+  await expect(protein).not.toHaveAttribute('open', '');
+  expect(await page.locator('#matrix .row').allTextContents()).toEqual(before);
+  await page.locator('[data-amount="ex"] [data-val="250"]').click();
+  await expect(page.locator('[data-sec="protein"]')).not.toHaveAttribute('open', '');
+});
+
+test('lisanslar çevrimdışı okunur ve veri kapsamı açıkça belirtilir', async ({ page, context }) => {
+  await page.goto('/'); await context.setOffline(true); await tab(page, 'hakkinda');
+  await expect(page.locator('.about')).toContainText('NIN ürün kullanım izni doğrulanmadığı için');
+  const font = page.locator('.notice').filter({ has: page.locator('summary', { hasText: '@fontsource/opendyslexic' }) });
+  await font.locator('summary').click();
+  await expect(font.locator('pre')).toContainText('Abbie Gonzalez');
+  await expect(font.locator('pre')).toContainText('SIL OPEN FONT LICENSE');
+});

@@ -17,6 +17,7 @@ jobs:
         run: |
           npm run data
           git diff --exit-code -- src/data || (echo "src/data güncel değil: npm run data çalıştırıp işle" && exit 1)
+      - run: node scripts/build-notices.mjs --check
       - run: npm test
       - run: npm run build
       - run: npm run build:single

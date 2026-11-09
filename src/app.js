@@ -2,6 +2,8 @@ import { CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, e
 import { NUTRIENTS, SECTIONS, SOURCES } from './nutrients.js';
 import { scaleItem, aggregate, scaleAggregate } from './calc.js';
 import { renderMatrix } from './matrix.js';
+import NOTICES from './data/notices.json';
+import { createPrintController } from './print.js';
 import { FONTS, fontStack, ensureFont } from './fonts.js';
 import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles } from './store.js';
 import { esc, fmtNum, fmtAmount, clamp, download, uid, configureFormatting } from './util.js';
@@ -42,6 +44,7 @@ S.activeRecipe = S.recipes[0].id;
 const $ = (sel, el = document) => el.querySelector(sel);
 const app = () => $('#app');
 let modalOpener = null;
+let printController;
 
 // ---------------------------------------------------------------- ayarlar
 function applySettings() {
@@ -184,7 +187,7 @@ function formChips(prefix, ref) {
   if (ref.t !== 'c') return '';
   const food = FOODS.find((f) => f.id === ref.id);
   if (food.forms.length < 2) return `<div class="forms"><span class="pchip on static">${esc(food.forms[0].label)}</span></div>`;
-  return `<div class="forms" role="group" aria-label="Tüketim biçimi">${food.forms.map((fm, i) => `<button aria-pressed="${i === ref.f}" class="pchip ${i === ref.f ? 'on' : ''}" data-action="${prefix}-form" data-f="${i}">${esc(fm.label)}${fm.ifct ? ' <span class="dot" title="Derin matriks (IFCT) bağlı">●</span>' : ''}</button>`).join('')}</div>`;
+  return `<div class="forms" role="group" aria-label="Tüketim biçimi">${food.forms.map((fm, i) => `<button aria-pressed="${i === ref.f}" class="pchip ${i === ref.f ? 'on' : ''}" data-action="${prefix}-form" data-f="${i}">${esc(fm.label)}</button>`).join('')}</div>`;
 }
 
 function renderExplore() {
@@ -227,7 +230,7 @@ function welcome() {
       <li><b>Biçimi</b> (çiğ / haşlanmış…) ve <b>miktarı</b> (1 g – 1 kg) tıklayarak seç.</li>
       <li><b>Tarife ekle</b> ile birden çok besinin toplam matriksini gör.</li>
     </ol>
-    <p class="hint">${META.curated} besin, ${META.forms} form, ${META.ifctLinked} derin (IFCT) eşleşme · tamamen çevrimdışı · klavye gerekmez.</p>
+    <p class="hint">${META.curated} besin, ${META.forms} form, USDA tam bileşim tablosu · tamamen çevrimdışı · klavye gerekmez.</p>
     <div class="quick">${['muz', 'yesil_mercimek', 'nohut', 'ispanak', 'yulaf', 'ceviz', 'tofu_sert', 'yabanmersini'].map((id) => { const f = FOODS.find((x) => x.id === id); return f ? foodButton(f, 'ex-pick') : ''; }).join('')}</div>
   </div>`;
 }
@@ -398,9 +401,9 @@ function renderSettings() {
 
     <section class="card"><h2>Matriks gösterimi</h2><button class="btn ghost" data-action="reset-group" data-group="matrix">Matriks ayarlarını sıfırla</button>
       ${tog('showNrv', '%BRD çubukları', 'Beslenme Referans Değeri (AB 1169/2011, TGK): yetişkin için etiket referansı; kişisel ihtiyaç değildir.')}
-      ${tog('showSource', 'Kaynak etiketleri (USDA / IFCT / Tahmin)')}
-      ${tog('showAlt', 'İkinci kaynağın değerini göster (aralık)')}
-      ${tog('showSd', 'IFCT standart sapmasını göster')}
+      ${tog('showSource', 'Kaynak etiketleri (USDA / Hesap / Etiket)')}
+      ${tog('showAlt', 'Varsa ikinci kaynağı göster (bu sürümde ikinci veri seti yok)')}
+      ${tog('showSd', 'Varsa kaynak standart sapmasını göster')}
       ${tog('showMissing', '“Veri yok” satırlarını listele')}
       <div class="kv"><span>Ondalık hassasiyeti</span><span class="presets">${opt('precision', 'low', 'Az')}${opt('precision', 'normal', 'Normal')}${opt('precision', 'high', 'Çok')}</span></div>
       <div class="kv"><span>Varsayılan miktar</span><span class="presets">${[50, 100, 250, 1000].map((g) => opt('defaultAmount', g, g === 1000 ? '1 kg' : g + ' g')).join('')}</span></div>
@@ -464,17 +467,21 @@ function renderAbout() {
     <h3>Veri kaynakları</h3>
     <ul>
       <li><b>${esc(SOURCES.u.short)}</b>: ${esc(SOURCES.u.long)}. Su, enerji, makrolar, lif, şeker, vitaminler, mineraller, yağ sınıfları; pişmiş formlar dahil.</li>
-      <li><b>${esc(SOURCES.i.short)}</b>: ${esc(SOURCES.i.long)}. Amino asitler, tek tek yağ asitleri, şeker türleri, lif fraksiyonları, karotenoidler, polifenoller, fitosteroller, organik asitler, fitat, oksalat, saponin, iz ve toksik mineraller. Çiğ/kuru örnekler.</li>
-      <li><b>Tahmin</b>: ${esc(SOURCES.e.long)}.</li>
+      <li><b>USDA tam bileşim tablosu:</b> Ölçümü bulunan amino asitler, şeker türleri, yağ asitleri, D2/D3, tokoferoller, fitosteroller, kafein ve betain. Eksik değerler sıfıra çevrilmez.</li>
+      <li><b>IFCT 2017:</b> NIN ürün kullanım izni doğrulanmadığı için veri ve bu veriye dayanan tahminler bu sürümde dağıtılmıyor.</li>
     </ul>
     <h3>Veri dürüstlüğü</h3>
     <ul>
       <li>Ölçülmemiş bileşen <b>“veri yok”</b> olarak gösterilir, asla 0 yazılmaz. 0 yalnızca kaynak 0 bildirdiğinde görünür.</li>
-      <li>İki kaynak farklı örnekleri ölçer; fark doğal değişkenliği gösterir (çeşit, toprak, olgunluk, yöntem).</li>
+      <li>Veriler kaynakta tanımlanan besin ve hazırlama biçimine aittir; çeşit, toprak, olgunluk ve yöntem değerleri değiştirebilir. Bu sürümde ikinci veri seti yoktur.</li>
       <li>Varlık ≠ ölçülen miktar ≠ emilen miktar ≠ sağlık etkisi. Göstergeler eğitim amaçlıdır, tıbbi tavsiye değildir.</li>
       <li>%BRD, AB/TGK etiket referansıdır; kişisel ihtiyacın yaşa, cinsiyete, sağlık durumuna göre değişir.</li>
     </ul>
-    <p class="hint">Sürüm ${esc(window.__APP_VERSION__ || '')} · veri: ${esc(META.sources)} · ${META.curated} küratörlü besin / ${META.forms} form / ${META.estimated} tahmini değer.</p>
+    <section class="license-notices" aria-label="Lisanslar ve telif bildirimleri"><h3>Lisanslar ve telif bildirimleri</h3>
+      <p>Kod MIT lisanslıdır. Veriler, yazı tipleri ve diğer yazılımlar kendi koşullarına tabidir. Aşağıdaki özgün bildirimler internetsiz okunabilir.</p>
+      ${NOTICES.map(n => `<details class="notice"><summary>${esc(n.name)} · ${esc(n.license)} · ${esc(n.version)}</summary><pre>${esc(n.text)}</pre></details>`).join('')}
+    </section>
+    <p class="hint">Sürüm ${esc(window.__APP_VERSION__ || '')} · veri: ${esc(META.sources)} · ${META.curated} küratörlü besin / ${META.forms} form.</p>
   </div>`;
 }
 
@@ -706,7 +713,7 @@ async function onClick(e) {
       setCustomFoods(list); saveCustom(list); S.customEdit = null; if (S.sel?.t === 'u') S.sel = null; render(); break;
     }
     case 'csv': exportCSV(); break;
-    case 'print': document.querySelectorAll('details.sec').forEach((d) => (d.open = true)); setTimeout(() => window.print(), 50); break;
+    case 'print': try { printController.print(); } catch { toast('Yazdırma bu ortamda kullanılamıyor; CSV olarak indirebilirsin'); } break;
     case 'ex-form': S.sel = { ...S.sel, f: +b.dataset.f }; render(); break;
     case 'ex-back': S.sel = null; render(); break;
     case 'search-recent': S.q = b.dataset.q; S.cat = null; render(); break;
@@ -897,6 +904,7 @@ function onChange(e) {
 }
 
 export function start() {
+  printController = createPrintController(document, window);
   applySettings();
   if (S.settings.showExt || S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) loadExt().then(render);
   render();
@@ -906,7 +914,7 @@ export function start() {
   // Bölümlerin açık/kapalı durumunu hatırla
   document.addEventListener('toggle', (e) => {
     const d = e.target;
-    if (d.matches?.('details.sec')) { if (d.open) S.closed.delete(d.dataset.sec); else S.closed.add(d.dataset.sec); }
+    if (!printController.active && d.matches?.('details.sec')) { if (d.open) S.closed.delete(d.dataset.sec); else S.closed.add(d.dataset.sec); }
   }, true);
   document.addEventListener('keydown', (e) => {
     if (!document.querySelector('.modal') && !e.target.closest('input, textarea, select, [contenteditable="true"]') && e.altKey && !e.ctrlKey && !e.metaKey) {

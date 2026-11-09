@@ -36,7 +36,7 @@ export function resolve(ref) {
       liquid: ['icecek', 'demleme', 'suyu', 'yag'].includes(form.key),
       v: form.v, s: form.s, alt: form.alt || {}, sd: form.sd || {},
       portions: form.portions || [],
-      allergens: food.allergens, note: food.note, sci: food.sci,
+      allergens: food.allergens, note: [food.note, form.unavailable].filter(Boolean).join(' ') || null, sci: food.sci,
       usda: form.usda, ifct: form.ifct, estFrom: form.estFrom,
     };
   }

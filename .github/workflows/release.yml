@@ -22,16 +22,22 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run build:single
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
       - name: Paketle
         run: |
           mkdir -p out
           cp dist-single/besin-matriksi.html out/besin-matriksi-tek-dosya.html
+          cp public/THIRD_PARTY_NOTICES.txt out/THIRD_PARTY_NOTICES.txt
+          cp LICENSE out/LICENSE.txt
+          cp docs/INSTALL.md out/KURULUM.md
           (cd dist && zip -qr ../out/besin-matriksi-web-pwa.zip .)
       - uses: actions/upload-artifact@v4
         with: { name: web, path: out/* }
 
   desktop:
     name: Masaüstü (${{ matrix.name }})
+    needs: web
     strategy:
       fail-fast: false
       matrix:
@@ -56,6 +62,7 @@ jobs:
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
       - run: npm ci
       - run: npx tauri build ${{ matrix.args }}
+      - run: node scripts/native-notices.mjs out/THIRD_PARTY_NOTICES-RUST-${{ matrix.name }}.txt
       - name: Çıktıları topla
         shell: bash
         run: |
@@ -81,6 +88,7 @@ jobs:
 
   android:
     name: Android APK
+    needs: web
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -119,6 +127,7 @@ jobs:
 
   ios:
     name: iOS (imzasız IPA)
+    needs: web
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v5
@@ -146,10 +155,15 @@ jobs:
     needs: [web, desktop, android, ios]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v5
       - uses: actions/download-artifact@v4
         with: { path: artifacts, merge-multiple: true }
-      - run: ls -la artifacts
+      - name: Paketlerin bütünlüğünü kaydet
+        run: |
+          cd artifacts
+          sha256sum * > SHA256SUMS.txt
       - uses: softprops/action-gh-release@v2
         with:
           files: artifacts/*
           generate_release_notes: true
+          body_path: docs/RELEASE_NOTES_1.1.1.md

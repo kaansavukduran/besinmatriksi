@@ -380,11 +380,7 @@ table.cmp td.miss { color: var(--muted); font-style: italic; }
   .modal { padding: 0; }
   .modal-box { max-height: 100vh; height: 100%; border-radius: 0; }
 }
-@media print {
-  .top, .cats, .list, .amount, .dact, .back, #ruler { display: none !important; }
-  .explore { display: block; }
-  details.sec { break-inside: avoid; }
-}
+
 
 /* ============ Kendi besinim formu ============ */
 .field { display: flex; flex-direction: column; gap: .2rem; margin: .4rem 0; }
@@ -393,12 +389,7 @@ table.cmp td.miss { color: var(--muted); font-style: italic; }
 .field input { min-height: var(--tap); border-radius: calc(var(--radius) * .6); border: 1px solid var(--line); background: var(--card); padding: 0 .7rem; }
 .field.indent { padding-left: 1rem; }
 .cu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0 .8rem; }
-@media print {
-  .modal, .toast, .tabs, .ings .amount, .ropts, .rlist, .rhead .btn { display: none !important; }
-  .recipe { display: block; }
-  details.sec:not([open]) > *:not(summary) { display: block; }
-  body { background: #fff; color: #000; }
-}
+
 .quick .food { align-content: center; min-height: 64px; }
 @media (max-width: 900px) { .row { padding: .5rem 0; } .row .meta { margin-top: -.15rem; } }
 
@@ -445,16 +436,39 @@ html { scroll-padding-top: 100px; scroll-padding-bottom: 110px; }
 
 .theme-preview { border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem; }
 input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
-@media print { .profile-bar { display: none !important; } }
+
 
 .portions .pchip { white-space: normal; text-align: left; max-width: 100%; height: auto; overflow-wrap: anywhere; }
 :root[data-cursor="large"] body, :root[data-cursor="large"] button, :root[data-cursor="large"] a, :root[data-cursor="large"] summary { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='48' viewBox='0 0 40 48'%3E%3Cpath d='M3 2v37l10-9 7 15 7-3-7-15h14Z' fill='black' stroke='white' stroke-width='3'/%3E%3C/svg%3E") 3 2, auto; }
 @page { size: A4; margin: 14mm; @bottom-right { content: counter(page) " / " counter(pages); font-size: 9pt; } }
+
+:root[data-theme="custom"] .src { color: var(--fg); background: var(--card); }
+
+/* A4 genişliği telefon kırılımlarından etkilenmesin. */
 @media print {
-  .card, .sec, .idcard { box-shadow: none; }
+  :root { --bg: #fff !important; --fg: #000 !important; --card: #fff !important; --card2: #f3f3f3 !important; --muted: #333 !important; --line: #bbb !important; --ac: #222 !important; --ac-fg: #fff !important; }
+  html { font-size: 11pt; }
+  body { margin: 0; background: #fff; color: #000; overflow: visible; }
+  .top, .cats, .list, .amount, .dact, .back, #ruler, .modal, .toast, .tabs, .profile-bar, .forms, .ropts, .rlist, .rhead .btn, .ings { display: none !important; }
+  .view { margin: 0; padding: 0; max-width: none; }
+  .explore, .recipe { display: block; }
+  .detail, .rmain { overflow: visible; max-height: none; }
+  .matrix { gap: 7pt; }
+  .card, .sec, .idcard { box-shadow: none; border-color: #bbb; background: #fff; }
+  .idcard { padding: 7pt 9pt; }
+  .kv { display: grid; grid-template-columns: minmax(0, 30%) minmax(0, 1fr); gap: 3pt 8pt; padding: 4pt 0; }
+  .row { grid-template-columns: minmax(0, 1.65fr) minmax(0, 1.1fr) minmax(0, .85fr) minmax(0, 1.05fr); gap: 3pt 6pt; padding: 4pt 0; line-height: 1.35; }
+  .row .pctc, .row .meta { grid-column: auto; margin: 0; }
+  .row .val { white-space: normal; overflow-wrap: anywhere; }
+  .row .meta { justify-content: flex-end; }
+  .bar { min-width: 15pt; }
+  .src, .flag, .chip, .cov, .covchip, .alt, .sd { color: #000 !important; background: #fff !important; font-size: 9pt; white-space: normal; }
   .sec { break-inside: auto; }
-  summary, .row, .kv { break-inside: avoid; }
-  .src, .flag, .chip, .cov, .covchip { color: #000 !important; background: #fff !important; }
+  .sec > summary { padding: 6pt 9pt; break-after: avoid; }
+  summary, .row, .kv, .aabar { break-inside: avoid; }
   .reference-label { color: #000; }
 }
-:root[data-theme="custom"] .src { color: var(--fg); background: var(--card); }
+
+.notice { margin: .5rem 0; border: 1px solid var(--line); border-radius: var(--radius); padding: .6rem; }
+.notice summary { cursor: pointer; min-height: var(--tap); overflow-wrap: anywhere; }
+.notice pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; font-size: .85rem; max-height: 28rem; overflow: auto; }

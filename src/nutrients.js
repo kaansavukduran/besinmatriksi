@@ -19,7 +19,7 @@ export const SECTIONS = [
 
 const N = (key, label, unit, section, sub, u, i, extra = {}) => ({ key, label, unit, section, sub, u, i, ...extra });
 
-export const NUTRIENTS = [
+const DEFINITIONS = [
   // --- Su ve enerji
   N('water', 'Su (nem)', 'g', 'enerji', null, 2, 'water'),
   N('energy', 'Enerji', 'kcal', 'enerji', null, 3, null, { nrv: 2000, d: 0 }),
@@ -222,6 +222,21 @@ export const NUTRIENTS = [
   N('gcarotene', 'Gama-karoten', 'µg', 'fito', 'Pigmentler (karotenoidler)', null, 'cartg'),
   N('saponins', 'Saponinler (toplam)', 'mg', 'anti', null, null, 'sapon'),
 
+  // USDA kayıtlarında izomer ayrımı, özel izomer adlarıyla birleştirilmez.
+  N('f14d1_total', 'C14:1 (izomer ayrımı yok)', 'mg', 'yag', 'Diğer USDA yağ asidi tanımları', null, null, { fa: true }),
+  N('f16d1_c', 'C16:1 cis (çift bağ konumu belirtilmemiş)', 'mg', 'yag', 'Diğer USDA yağ asidi tanımları', null, null, { fa: true }),
+  N('f18d1_c', 'C18:1 cis (çift bağ konumu belirtilmemiş)', 'mg', 'yag', 'Diğer USDA yağ asidi tanımları', null, null, { fa: true }),
+  N('f18d1_trans', 'C18:1 trans (çift bağ konumu belirtilmemiş)', 'mg', 'yag', 'Diğer USDA yağ asidi tanımları', null, null, { fa: true }),
+  N('f20d1_total', 'C20:1 (izomer ayrımı yok)', 'mg', 'yag', 'Diğer USDA yağ asidi tanımları', null, null, { fa: true }),
+  N('f22d1_c', 'C22:1 cis (çift bağ konumu belirtilmemiş)', 'mg', 'yag', 'Diğer USDA yağ asidi tanımları', null, null, { fa: true }),
+  N('f24d1_c', 'C24:1 cis (çift bağ konumu belirtilmemiş)', 'mg', 'yag', 'Diğer USDA yağ asidi tanımları', null, null, { fa: true }),
+  N('mk4', 'K2 – Menakinon-4 (MK-4, toplam K2 değil)', 'µg', 'vitamin', 'K vitamini', null, null),
+  N('caffeine', 'Kafein', 'mg', 'organik', 'Diğer küçük bileşikler', null, null),
+  N('theobromine', 'Teobromin', 'mg', 'organik', 'Diğer küçük bileşikler', null, null),
+  N('betaine', 'Betain', 'mg', 'organik', 'Diğer küçük bileşikler', null, null),
+  N('fluoride', 'Florür', 'µg', 'mineral', 'Diğer iz bileşenler', null, null),
+  N('galactose', 'Galaktoz', 'g', 'karb', 'Tekli ve ikili şekerler', null, null),
+
   // --- Antinutrientler
   N('phytate', 'Fitat (fitik asit)', 'mg', 'anti', null, null, 'phytac'),
   N('oxalate', 'Oksalat (toplam)', 'mg', 'anti', null, null, 'oxalt'),
@@ -235,6 +250,8 @@ export const NUTRIENTS = [
   N('pb', 'Kurşun (Pb)', 'µg', 'toksik', null, null, 'pb'),
   N('hg', 'Cıva (Hg)', 'µg', 'toksik', null, null, 'hg'),
 ];
+
+export const NUTRIENTS = SECTIONS.flatMap(section => DEFINITIONS.filter(n => n.section === section.id));
 
 export const UNIT_FROM_G = { g: 1, mg: 1e3, 'µg': 1e6 };
 

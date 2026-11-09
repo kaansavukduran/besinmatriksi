@@ -1,11 +1,13 @@
 // Ham kaynaklardan (data/raw) uygulamanın çevrimdışı veri dosyalarını üretir.
-//   src/data/foods.json      küratörlü Türkçe katalog (USDA SR28 + IFCT 2017 birleşik)
+//   src/data/foods.json      küratörlü Türkçe katalog (USDA SR28 tam bileşim)
 //   src/data/foods-ext.json  geniş katalog (USDA SR28 bitkisel gruplar, İngilizce adlar)
 // Kullanım: node scripts/build-data.mjs
 import fs from 'node:fs';
+import { gunzipSync } from 'node:zlib';
+import { USDA_NUTRIENTS, unitFactor } from '../data/usda-nutrients.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { NUTRIENTS, UNIT_FROM_G } from '../src/nutrients.js';
+import { NUTRIENTS } from '../src/nutrients.js';
 import { FOODS, CATEGORIES, FORM_LABELS } from '../data/catalog.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -27,32 +29,29 @@ for (const line of raw('ABBREV.txt').split(/\r?\n/)) {
   abbrev.set(f[0], f);
 }
 
-// ---------- IFCT 2017 ----------
-function parseCSV(text) {
-  const rows = [];
-  let row = [], cur = '', q = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (q) {
-      if (c === '"' && text[i + 1] === '"') { cur += '"'; i++; }
-      else if (c === '"') q = false;
-      else cur += c;
-    } else if (c === '"') q = true;
-    else if (c === ',') { row.push(cur); cur = ''; }
-    else if (c === '\n') { row.push(cur); rows.push(row); row = []; cur = ''; }
-    else if (c !== '\r') cur += c;
+// ---------- USDA tam bileşen tablosu ----------
+const definitions = new Map(raw('NUTR_DEF.txt').split(/\r?\n/).filter(Boolean).map(line => {
+  const fields = line.split('^').map(unq); return [fields[0], { unit: fields[1], description: fields[3] }];
+}));
+const mappings = new Map();
+for (const n of NUTRIENTS) {
+  const id = USDA_NUTRIENTS[n.key];
+  if (id) {
+    if (!definitions.has(id)) throw new Error('USDA bileşen tanımı yok: ' + id);
+    mappings.set(id, { key: n.key, factor: unitFactor(definitions.get(id).unit, n.unit) });
   }
-  if (cur || row.length) { row.push(cur); rows.push(row); }
-  return rows;
 }
-const ifctRows = parseCSV(raw('IFCT2017.csv'));
-const ifctHead = ifctRows[0].map((h) => h.split('; ')[1]);
-const ifct = new Map();
-for (const r of ifctRows.slice(1)) {
-  if (r.length < 5) continue;
-  const o = {};
-  ifctHead.forEach((k, idx) => (o[k] = r[idx]));
-  ifct.set(o.code, o);
+const fullValues = new Map();
+const nutrientText = gunzipSync(fs.readFileSync(path.join(root, 'data/raw/NUT_DATA.txt.gz'))).toString('utf8');
+for (const line of nutrientText.split('\n')) {
+  if (!line) continue;
+  const fields = line.split('^').map(unq);
+  const mapping = mappings.get(fields[1]);
+  if (!mapping || fields[2] === '') continue;
+  const value = Number(fields[2]);
+  if (!Number.isFinite(value) || value < 0) throw new Error('USDA miktarı geçersiz: ' + fields[0] + '/' + fields[1]);
+  if (!fullValues.has(fields[0])) fullValues.set(fields[0], {});
+  fullValues.get(fields[0])[mapping.key] = Number((value * mapping.factor).toPrecision(12));
 }
 
 // ---------- yardımcılar ----------
@@ -73,25 +72,8 @@ function usdaValues(ndb) {
     if (s === '' || s == null) continue;
     v[n.key] = Number(s);
   }
-  if (v.energy != null) v.energy_kj = Math.round(v.energy * 4.184);
+  Object.assign(v, fullValues.get(ndb) || {});
   return v;
-}
-
-function ifctValues(code) {
-  const o = ifct.get(code);
-  if (!o) throw new Error('IFCT kodu bulunamadı: ' + code);
-  const v = {}, sd = {};
-  for (const n of NUTRIENTS) {
-    if (!n.i) continue;
-    const s = o[n.i];
-    if (s === '' || s == null) continue;
-    const factor = n.unit === 'kJ' ? 1 : UNIT_FROM_G[n.unit];
-    v[n.key] = round(Number(s) * factor);
-    const e = o[n.i + '_e'];
-    if (e !== '' && e != null && Number(e) > 0) sd[n.key] = round(Number(e) * factor);
-  }
-  if (v.energy_kj != null) v.energy = Math.round(v.energy_kj / 4.184);
-  return { v, sd, name: o.name, sci: o.scie, group: o.grup, regions: Number(o.regn) || null };
 }
 
 // Porsiyon açıklamalarını Türkçeleştir (bilinmeyen kısım İngilizce kalır).
@@ -179,7 +161,6 @@ function usdaPortions(ndb) {
   return out;
 }
 
-const COOKED = new Set(['haslanmis', 'pismis', 'konserve', 'firin']);
 
 // ---------- küratörlü katalog ----------
 const catIds = new Set(CATEGORIES.map((c) => c[0]));
@@ -190,9 +171,6 @@ for (const food of FOODS) {
   if (ids.has(food.id)) throw new Error('Yinelenen id: ' + food.id);
   ids.add(food.id);
   if (!catIds.has(food.cat)) throw new Error('Bilinmeyen kategori: ' + food.cat);
-  // Aynı besinin IFCT ölçümlü (çiğ/kuru) formu: pişmiş formlar için profil tahmini kaynağı
-  const refIfct = food.forms.find((fm) => fm[2])?.[2] ?? null;
-  const refData = refIfct ? ifctValues(refIfct) : null;
   const forms = food.forms.map(([key, ndb, ifc, custom]) => {
     if (!FORM_LABELS[key]) throw new Error('Bilinmeyen form: ' + key);
     const v = {}, s = {}, alt = {}, sd = {};
@@ -204,37 +182,15 @@ for (const food of FOODS) {
       for (const k of Object.keys(v)) s[k] = 'u';
       usda = { ndb, desc: d.long, refuse: d.refuse, refDesc: d.refDesc || null, sci: d.sci || null };
     }
-    if (ifc) {
-      ifctLinked++;
-      const d = ifctValues(ifc);
-      for (const [k, val] of Object.entries(d.v)) {
-        if (v[k] == null) { v[k] = val; s[k] = 'i'; if (d.sd[k] != null) sd[k] = d.sd[k]; }
-        else alt[k] = val;
-      }
-      ic = { code: ifc, name: d.name, sci: d.sci || null, regions: d.regions };
-    } else if (refData && ndb && (COOKED.has(key) || key !== food.forms.find((fm) => fm[2])[0])) {
-      // Amino asit profili proteine, yağ asidi profili toplam yağa oranlanarak tahmin edilir.
-      const rp = refData.v.protein, rf = refData.v.fat;
-      for (const n of NUTRIENTS) {
-        const rv = refData.v[n.key];
-        if (rv == null || v[n.key] != null) continue;
-        let est = null;
-        if (n.aa && rp > 0 && v.protein != null) est = (rv / rp) * v.protein;
-        else if ((n.fa || ['n3', 'n6', 'n9', 'trans'].includes(n.key)) && rf > 0 && v.fat != null) {
-          // rf g, rv birimi n.unit (mg veya g) -> oran aynı birimde kalır
-          est = (rv / rf) * v.fat;
-        }
-        if (est != null) { v[n.key] = round(est); s[n.key] = 'e'; estimated++; }
-      }
-    }
-    if (!ndb && !ifc) throw new Error('Formun kaynağı yok: ' + food.id);
+    const unavailable = !ndb ? 'Bu besin için dağıtıma uygun doğrulanmış bileşim kaydı henüz yok. Önceki IFCT verileri NIN yazılı izni doğrulanmadığı için bu sürüme dahil edilmedi.' : null;
     const portions = ndb ? usdaPortions(ndb) : [];
     return {
       key,
       label: custom || FORM_LABELS[key],
       usda,
       ifct: ic,
-      estFrom: Object.values(s).includes('e') ? refIfct : null,
+      estFrom: null,
+      ...(unavailable ? { unavailable } : {}),
       portions,
       v, s,
       ...(Object.keys(alt).length ? { alt } : {}),
@@ -276,7 +232,9 @@ ext.sort((a, b) => a.en.localeCompare(b.en));
 const outDir = path.join(root, 'src/data');
 fs.mkdirSync(outDir, { recursive: true });
 const meta = {
-  sources: 'USDA SR28 (2015) + IFCT 2017',
+  sources: 'USDA SR28 (2015), tam ASCII bileşen tablosu',
+  dataPolicy: 'USDA public domain / CC0; IFCT ve IFCT tabanlı tahminler dağıtıma dahil değil',
+  unavailableForms: foods.flatMap(f => f.forms).filter(f => f.unavailable).length,
   curated: foods.length,
   forms: foods.reduce((a, f) => a + f.forms.length, 0),
   ifctLinked, estimated, ext: ext.length,
