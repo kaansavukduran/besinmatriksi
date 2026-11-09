@@ -405,6 +405,13 @@ select { max-width: 100%; background: var(--card); border: 1px solid var(--line)
 .nutrition-label > div { display: flex; flex-direction: column; border-top: 1px solid var(--line); padding: .5rem; }
 .nutrition-label small { color: var(--muted); }
 .recipe-summary { margin: 1rem 0; }
+.recipe-sources { margin: 1rem 0; padding: 1rem; overflow-wrap: anywhere; }
+.recipe-sources > summary { cursor: pointer; min-height: var(--tap); font-weight: bold; }
+.recipe-sources select { width: 100%; min-height: var(--tap); }
+.source-ingredients { list-style: none; margin: 0; padding: 0; }
+.source-ingredients > li { border-top: 1px solid var(--line); padding: .75rem 0; }
+.source-ingredients p { margin: .25rem 0; }
+.source-contribution { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; }
 
 .profile-bar { display: flex; align-items: center; gap: .4rem; padding: .5rem 1rem; overflow-x: auto; border-bottom: 1px solid var(--line); background: var(--card); }
 .profile-bar .pchip { white-space: nowrap; }

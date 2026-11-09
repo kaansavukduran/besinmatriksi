@@ -169,3 +169,39 @@ test('lisanslar çevrimdışı okunur ve veri kapsamı açıkça belirtilir', as
   await expect(font.locator('pre')).toContainText('Abbie Gonzalez');
   await expect(font.locator('pre')).toContainText('SIL OPEN FONT LICENSE');
 });
+
+test('tarif kaynak dökümü eksik/sıfır veriyi ve porsiyon/100 g katkılarını çevrimdışı korur', async ({ page, context }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('bm.custom.v1', JSON.stringify([{ id: 'label', name: 'Deneme etiketi', v: { energy: 40, protein: 0, na: 20 } }]));
+    localStorage.setItem('bm.recipes.v1', JSON.stringify([{ id: 'trace', name: 'Kaynaklı tarif', servings: 2, cookedWeight: 200, items: [
+      { id: 'banana', ref: { t: 'c', id: 'muz', f: 0 }, g: 250 },
+      { id: 'label', ref: { t: 'u', id: 'label' }, g: 100 },
+      { id: 'lost', ref: { t: 'u', id: 'deleted' }, g: 50 },
+    ] }]));
+  });
+  await page.goto('/'); await tab(page, 'tarif'); await context.setOffline(true);
+  const panel = page.locator('.recipe-sources');
+  await panel.locator('summary').click();
+  const firstValue = panel.locator('.source-contribution strong').first();
+  await expect(firstValue).toHaveText('223 kcal');
+  await expect(panel).toContainText('USDA SR28 (2015) · NDB 09040');
+  await expect(panel).toContainText('Kullanıcının ürün etiketi');
+  await expect(panel).toContainText('Kayıt bulunamadı; katkı bilinmiyor.');
+  await expect(panel.locator('.source-total')).toContainText('2/3 malzemede veri · kısmi toplam');
+  await page.locator('[data-action="rc-basis"][data-b="serving"]').click();
+  await expect(panel).toHaveAttribute('open', ''); await expect(firstValue).toHaveText('111 kcal');
+  await page.locator('[data-action="rc-basis"][data-b="per100"]').click();
+  await expect(panel).toContainText('pişmiş ağırlık 200 g'); await expect(firstValue).toHaveText('111 kcal');
+  await page.locator('[data-amount="rc:banana"] [data-val="500"]').click();
+  await expect(firstValue).toHaveText('223 kcal');
+  await panel.locator('select').selectOption('protein');
+  await expect(panel.locator('.source-ingredients > li').nth(1)).toContainText('0 g');
+  await panel.locator('select').selectOption('salt');
+  await expect(panel).toContainText('Tuz (g) = sodyum (mg) × 2,5 / 1000');
+  await panel.locator('select').selectOption('oxalate');
+  await expect(panel.locator('.source-total')).toContainText('veri yok');
+  await expect(panel.locator('.source-total')).toContainText('0/3');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+  const result = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa']).analyze();
+  expect(result.violations.map(v => ({ id: v.id, targets: v.nodes.map(n => n.target) }))).toEqual([]);
+});

@@ -12,6 +12,7 @@ import { contrastRatio, accentText, exportTheme, parseTheme } from './theme.js';
 import { focusSelector, syncModalFocus, trapModalTab } from './accessibility.js';
 import { recentSearches } from './search.js';
 import { recipeCost, normalizeCustom } from './records.js';
+import { renderRecipeSources, renderRecipeSourceRows } from './recipe-sources.js';
 import { normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS } from './settings.js';
 
 const PRESETS = [1, 5, 10, 25, 50, 100, 150, 200, 250, 500, 750, 1000];
@@ -31,6 +32,8 @@ const S = {
   recipes: loadRecipes(),
   activeRecipe: null,
   basis: 'total',
+  recipeSource: 'energy',
+  recipeSourcesOpen: false,
   compare: [],
   cmpSection: 'all',
   picker: null, // { target, cat, q, sel, amount }
@@ -251,13 +254,13 @@ function persistRecipes() {
 function recipeResult(rc) {
   const scaled = rc.items.map((it) => { const item = resolve(it.ref); return item ? scaleItem(item, it.g) : { v: {}, s: {}, grams: it.g }; });
   const agg = aggregate(scaled);
-  let r = agg, basisLabel = `Toplam tarif (${fmtNum(agg.grams)} g malzeme)`;
-  if (S.basis === 'serving') { r = scaleAggregate(agg, 1 / rc.servings); basisLabel = `1 porsiyon (${rc.servings} porsiyondan biri, ≈ ${fmtNum(agg.grams / rc.servings)} g malzeme)`; }
+  let factor = 1, r = agg, basisLabel = `Toplam tarif (${fmtNum(agg.grams)} g malzeme)`;
+  if (S.basis === 'serving') { factor = 1 / rc.servings; r = scaleAggregate(agg, factor); basisLabel = `1 porsiyon (${rc.servings} porsiyondan biri, ≈ ${fmtNum(agg.grams / rc.servings)} g malzeme)`; }
   if (S.basis === 'per100') {
     const finalW = rc.cookedWeight || agg.grams;
-    if (finalW > 0) { r = scaleAggregate(agg, 100 / finalW); basisLabel = `Son ürünün 100 g'ı (${rc.cookedWeight ? 'pişmiş ağırlık ' + fmtNum(rc.cookedWeight) + ' g' : 'pişmiş ağırlık girilmedi; çiğ toplam kullanıldı'})`; }
+    if (finalW > 0) { factor = 100 / finalW; r = scaleAggregate(agg, factor); basisLabel = `Son ürünün 100 g'ı (${rc.cookedWeight ? 'pişmiş ağırlık ' + fmtNum(rc.cookedWeight) + ' g' : 'pişmiş ağırlık girilmedi; çiğ toplam kullanıldı'})`; }
   }
-  return { r, basisLabel, agg };
+  return { r, basisLabel, agg, factor };
 }
 
 function renderRecipe() {
@@ -276,7 +279,7 @@ function renderRecipe() {
       <label class="price-field">Kilogram fiyatı (TL/kg, isteğe bağlı)<input type="number" min="0" step="any" inputmode="decimal" data-price="${it.id}" value="${it.pricePerKg ?? ''}" aria-label="${esc(item.name)} kilogram fiyatı"></label>
     </div>`;
   }).join('');
-  const { r, basisLabel, agg } = recipeResult(rc);
+  const { r, basisLabel, agg, factor } = recipeResult(rc);
   const basisBtn = (id, label) => `<button class="pchip ${S.basis === id ? 'on' : ''}" data-action="rc-basis" data-b="${id}">${label}</button>`;
   return `<div class="recipe">
     <aside class="rlist" aria-label="Tarifler">
@@ -302,6 +305,7 @@ function renderRecipe() {
         <div class="presets">${basisBtn('total', 'Toplam')}${basisBtn('serving', '1 porsiyon')}${basisBtn('per100', 'Son ürün 100 g')}</div>
       </div>
       <div id="recipe-summary">${renderRecipeSummary(rc, r)}</div>
+      <div id="recipe-sources">${renderRecipeSources(rc, resolve, { key: S.recipeSource, factor, basisLabel, open: S.recipeSourcesOpen, precision: S.settings.precision })}</div>
       <div id="matrix" class="matrix">${renderMatrix(r, S.settings, { recipe: rc, basisLabel, closed: S.closed })}</div>` : ''}
     </section>
   </div>`;
@@ -584,9 +588,10 @@ function refreshMatrix() {
   if (S.tab === 'kesfet' && S.sel) m.innerHTML = matrixForExplore(resolve(S.sel));
   else if (S.tab === 'tarif') {
     const rc = activeRecipe();
-    const { r, basisLabel } = recipeResult(rc);
+    const { r, basisLabel, factor } = recipeResult(rc);
     m.innerHTML = renderMatrix(r, S.settings, { recipe: rc, basisLabel, closed: S.closed });
     const summary = $('#recipe-summary'); if (summary) summary.innerHTML = renderRecipeSummary(rc, r);
+    const sources = $('#recipe-sources'); if (sources) sources.innerHTML = renderRecipeSources(rc, resolve, { key: S.recipeSource, factor, basisLabel, open: S.recipeSourcesOpen, precision: S.settings.precision });
     rc.items.forEach((it) => {
       const item = resolve(it.ref);
       const el = document.querySelector(`[data-amount="rc:${it.id}"]`)?.closest('.ing')?.querySelector('.ing-kcal');
@@ -880,6 +885,11 @@ function onInput(e) {
 }
 function onChange(e) {
   const t = e.target;
+  if (t.id === 'recipe-source-nutrient') {
+    S.recipeSource = t.value;
+    $('#recipe-source-rows').innerHTML = renderRecipeSourceRows(activeRecipe(), resolve, S.recipeSource, recipeResult(activeRecipe()).factor, S.settings.precision);
+    return;
+  }
   if (t.dataset.shortcut) {
     if (t.value && Object.entries(S.settings.shortcuts).some(([id, key]) => id !== t.dataset.shortcut && key === t.value)) { toast('Bu kısayol başka bölüme atanmış; önce onu kapat'); render(); return; }
     setSetting('shortcuts', { ...S.settings.shortcuts, [t.dataset.shortcut]: t.value }); return;
@@ -914,6 +924,7 @@ export function start() {
   // Bölümlerin açık/kapalı durumunu hatırla
   document.addEventListener('toggle', (e) => {
     const d = e.target;
+    if (d.isConnected && d.matches?.('details.recipe-sources')) S.recipeSourcesOpen = d.open;
     if (!printController.active && d.matches?.('details.sec')) { if (d.open) S.closed.delete(d.dataset.sec); else S.closed.add(d.dataset.sec); }
   }, true);
   document.addEventListener('keydown', (e) => {

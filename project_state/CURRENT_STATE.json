@@ -3,10 +3,10 @@
   "project": "Besin Matriksi",
   "product_version": "1.1.1",
   "development_state": "IN_PROGRESS",
-  "last_forge_at": "2026-11-09T09:33:53.916577+00:00",
-  "last_completed_forge": "B040b",
-  "active_forge": "B020b",
-  "next_recommended_forge": "B020b",
+  "last_forge_at": "2026-11-09T09:42:14.016917+00:00",
+  "last_completed_forge": "B020b",
+  "active_forge": "B005b",
+  "next_recommended_forge": "B003b",
   "branch": "codex/forge-devam",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
   "validated_code_commit": "a93e8a5903183f560adf0a1c8403dead5740c194",
@@ -90,7 +90,7 @@
     }
   ],
   "remaining_forges": [
-    "B020b",
+    "B005b",
     "B003b",
     "B021",
     "B031"
@@ -102,7 +102,7 @@
     "stop_when": "All applicable roadmap items and final gates are verified; pause only this own automation.",
     "note": "Hourly schedule enabled with inherited cloud environment; availability and usage limits still apply."
   },
-  "notes": "B040b complete; native notices closed and all 1.1.1 artifacts verified. Package source differs from subsequent documentation commits. Next single Forge B020b. Evidence: docs/evidence/1.1.1-packages.json.",
+  "notes": "B020b RUNTIME_TESTED locally: 42 unit, builds PASS, browser 24 PASS + 2 managed file:// SKIP. CI/package evidence for new source pending; historical package SHA remains separate. B005b theme expansion follows new user request.",
   "release_target": null,
   "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission.",
   "historical_verified_gates": [
@@ -154,9 +154,10 @@
   "publication_policy": "No auto merge, force push, new public Release, or store publication. Only workflow_dispatch artifacts; v1.1.1 tag not moved.",
   "work_session": {
     "state": "ACTIVE",
-    "owner": "interactive-codex-20261109-B020b",
+    "owner": "interactive-codex-20261109-B005b",
     "started_at": "2026-11-09T09:37:30.008911+00:00",
     "lease_expires_at": "2026-11-09T10:40:00Z",
-    "note": "Interactive Forge in progress in work/besinmatriksi. Preserve active checkout edits; scheduled concurrent turns must not take over while this lease is current."
-  }
+    "note": "B020b local gates complete; user requested expanded theme editor, B005b active. Preserve live edits."
+  },
+  "pending_user_clarification": "User asked drag-reorder tasks and task times. Besin Matriksi has no tasks; async question pending: existing sections/recipes versus separate planning screen."
 }

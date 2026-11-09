@@ -30,7 +30,7 @@ Durum etiketleri: PLANNED · IN_PROGRESS · DONE (yalnızca test kanıtıyla). S
 | ID | Forge | Durum |
 |---|---|---|
 | B020a | Tek besin kaynak etiketlerinde veri seti/yıl/kayıt no; kapsam özetinde kısmi malzemeyi ayır | DONE (UNIT_TESTED + BUILT) |
-| B020b | Tarif toplamındaki her değerin katkı veren malzeme/kaynak dökümü | PLANNED |
+| B020b | Tarif toplamındaki her değerin katkı veren malzeme/kaynak dökümü | DONE (RUNTIME_TESTED locally; CI final kapısı bekleniyor) |
 | B021 | Türkiye'ye özgü besinler (TürKomp erişimi ve lisansı araştırılıp kaydedilmeden veri eklenmez) | BLOCKED_SOURCE_VERIFICATION (docs/DATA_RESEARCH.md) |
 
 ## Dağıtım
@@ -56,3 +56,8 @@ B003b henüz PLANNED. Kalıcı durum dosyası, son test ve paket SHA'larını ay
 - B040b: **DONE (PACKAGED)**. 35 crate/sürüm için özgün kaynak lisansları URL/özet ile saklandı; üç masaüstü kapısında 404 paket / 0 eksik dosya. Run 42593575878, kaynak `a93e8a5903183f560adf0a1c8403dead5740c194`; 38 birim ve 24 tarayıcı testi, altı artifact grubu PASS. Kanıt: `docs/evidence/1.1.1-packages.json`. Sonraki tek Forge **B020b**.
 - GitHub Pages etkinleştirme: HTTP 403, entegrasyon yetkisi yok. PWA arşivi ve imzasız IPA sağlanır; Safari için yayımlanmış PWA adresi olduğu iddia edilmez.
 - NIN yazılı izin kanıtı olmadan IFCT verileri ve bu veriye dayanan tahminler tekrar eklenmez. Eski Git geçmişi bu turda yeniden yazılmadı.
+
+## Yeni kullanıcı isteği · 9 Kasım 2026
+
+- B005b: **IN_PROGRESS**. Ayrıntılı renk seçim penceresi, hazır renkler/HEX ve kart/ikincil yazı/kenarlık renkleri; eski tema dosyaları korunacak.
+- Sürüklenen “görev” ve saat alanının Besin Matriksi bölümleri/tarifleri mi ayrı plan ekranı mı olduğu soruldu; yanıt gelmeden bir görev modeli uydurulmaz.
