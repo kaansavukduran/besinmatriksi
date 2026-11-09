@@ -52,6 +52,7 @@ B003b henüz PLANNED. Kalıcı durum dosyası, son test ve paket SHA'larını ay
 ## 1.1.1 yayın ve izin düzeltmesi
 
 - B040: **DONE**. IFCT ürün izni asıl NIN metninden kontrol edildi; izin doğrulanmadığı için IFCT CSV/değer/tahmin dağıtımı kaldırıldı. USDA tam bileşen tablosu eklendi, izomer/birim dönüşümleri test edildi. 13 lisans/kaynak metni uygulamaya gömülür.
-- B030-release: **IN_PROGRESS**. Kullanıcı Releases üzerinden platform dosyalarını indirmeyi açıkça istedi. `v1.1.1` yayın kapısı tüm web/tarayıcı/platform işleridir. Sürüm yayımlanmadan tamamlandı denmez.
+- B030-release: **CLOSED_USER_SCOPE**. Son talimat yeni herkese açık Release yayınını yasakladı; etiket çalışması 42591741380 iptal edildi. Yeni yayın veya etiket taşıma yok.
+- B040b: **DONE (PACKAGED)**. 35 crate/sürüm için özgün kaynak lisansları URL/özet ile saklandı; üç masaüstü kapısında 404 paket / 0 eksik dosya. Run 42593575878, kaynak `a93e8a5903183f560adf0a1c8403dead5740c194`; 38 birim ve 24 tarayıcı testi, altı artifact grubu PASS. Kanıt: `docs/evidence/1.1.1-packages.json`. Sonraki tek Forge **B020b**.
 - GitHub Pages etkinleştirme: HTTP 403, entegrasyon yetkisi yok. PWA arşivi ve imzasız IPA sağlanır; Safari için yayımlanmış PWA adresi olduğu iddia edilmez.
 - NIN yazılı izin kanıtı olmadan IFCT verileri ve bu veriye dayanan tahminler tekrar eklenmez. Eski Git geçmişi bu turda yeniden yazılmadı.

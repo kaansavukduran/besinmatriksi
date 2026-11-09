@@ -23,7 +23,9 @@ Resmî adres: https://turkomp.gov.tr/
 seti için doğrulanabilir bir yeniden dağıtım lisansı sağlamadı. Bu sonuç sitenin
 herkes için kapalı olduğunu veya verinin lisanssız olduğunu göstermez.
 
-Durum: BLOCKED_SOURCE_VERIFICATION. TürKomp verisi içe aktarılmadı, USDA kaydı
+Durum: BLOCKED_SOURCE_VERIFICATION. Son deneme yalnız gün olarak kaydedildiği
+için aynı değişmemiş engel en erken 11 Kasım 2026 00:00 UTC sonrasında yeniden
+denenir; bu arada B020b ilerletilebilir. TürKomp verisi içe aktarılmadı, USDA kaydı
 Türkiye'ye özgü bir ürünmüş gibi yeniden adlandırılmadı. Sonraki adım resmî erişimi
 ve çevrimdışı uygulamada yeniden dağıtım koşullarını doğrulamak; ardından hazırlama
 biçimi ve 100 g yenebilir kısım temeli eşleşen kayıtları küratörlü eklemektir.

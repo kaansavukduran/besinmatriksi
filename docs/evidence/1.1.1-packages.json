@@ -1,0 +1,124 @@
+{
+  "version": "1.1.1",
+  "source_sha": "a93e8a5903183f560adf0a1c8403dead5740c194",
+  "run_url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42593575878",
+  "event": "workflow_dispatch",
+  "tests": {
+    "unit": "PASS 38/38",
+    "browser_ci": "PASS 24/24 (desktop + phone; file:// and offline PWA included)",
+    "browser_local": "PASS 22, SKIP 2 (managed file:// policy); later print/license regression PASS 4/4",
+    "data_rebuild": "PASS; no JSON diff",
+    "notices": "PASS 13 original texts"
+  },
+  "builds": {
+    "web": "PASS",
+    "single_html": "PASS",
+    "desktop_windows": "PASS",
+    "desktop_macos_universal": "PASS",
+    "desktop_linux": "PASS",
+    "android": "PASS",
+    "ios_unsigned": "PASS"
+  },
+  "packages": [
+    {
+      "id": 13663130011,
+      "name": "ios",
+      "digest": "sha256:b9a320fea2c283ae5534fdb9cd7fca4cf7aba33668167a31181e0562c1d2d446",
+      "size_in_bytes": 2399371,
+      "expires_at": "2027-02-07T09:27:35Z"
+    },
+    {
+      "id": 13662966376,
+      "name": "android",
+      "digest": "sha256:79f04a058b514864db0c41306e2db0e1156b6f09c992a6ce49f75dacf477fda9",
+      "size_in_bytes": 5506079,
+      "expires_at": "2027-02-07T09:27:35Z"
+    },
+    {
+      "id": 13662402841,
+      "name": "desktop-macos",
+      "digest": "sha256:7cf176817448d88f6ea5f4dfa1a0fa7eabbd47af797f5717a49b4e879be2b758",
+      "size_in_bytes": 6538053,
+      "expires_at": "2027-02-07T09:27:35Z"
+    },
+    {
+      "id": 13662059043,
+      "name": "desktop-windows",
+      "digest": "sha256:77357b3d512ca90004de1b780b4adf99d00a97292e2525c8427f1b5de2771c81",
+      "size_in_bytes": 12004682,
+      "expires_at": "2027-02-07T09:27:35Z"
+    },
+    {
+      "id": 13662033577,
+      "name": "web",
+      "digest": "sha256:666c7ee17dd2aa21f910a26d87a4c0ff8efdbb9015a4f3012847e754dda3dea0",
+      "size_in_bytes": 2848796,
+      "expires_at": "2027-02-07T09:27:35Z"
+    },
+    {
+      "id": 13661424998,
+      "name": "desktop-linux",
+      "digest": "sha256:b14585f0139656cec823f54e68d79946740e32b0f06bdf84f12e86cbac410571",
+      "size_in_bytes": 86839511,
+      "expires_at": "2027-02-07T09:27:35Z"
+    }
+  ],
+  "artifact_verification": {
+    "all_six_source_sha_match": true,
+    "downloaded_zip_checks": [
+      {
+        "name": "web",
+        "digest_match": true,
+        "files": [
+          "KURULUM.md",
+          "LICENSE.txt",
+          "THIRD_PARTY_NOTICES.txt",
+          "besin-matriksi-tek-dosya.html",
+          "besin-matriksi-web-pwa.zip"
+        ],
+        "runtime_test": "NOT_RUN"
+      },
+      {
+        "name": "desktop-windows",
+        "digest_match": true,
+        "files": [
+          "BesinMatriksi-portable-x64.exe",
+          "Besin Matriksi_1.1.1_x64-setup.exe",
+          "Besin Matriksi_1.1.1_x64_en-US.msi",
+          "KURULUM.md",
+          "LICENSE.txt",
+          "THIRD_PARTY_NOTICES-RUST-windows.txt",
+          "THIRD_PARTY_NOTICES.txt"
+        ],
+        "runtime_test": "NOT_RUN"
+      }
+    ],
+    "desktop_license_files": {
+      "windows": {
+        "packages": 404,
+        "missing": 0
+      },
+      "macos": {
+        "packages": 404,
+        "missing": 0
+      },
+      "linux": {
+        "packages": 404,
+        "missing": 0
+      }
+    }
+  },
+  "runtime": {
+    "web": "RUNTIME_TESTED (24 CI tests)",
+    "native_devices": "NOT_RUN; package production does not prove installation or native runtime",
+    "ios_installation": "Requires Apple signing; unsigned IPA not directly installable"
+  },
+  "publication": {
+    "public_release": "NOT_PUBLISHED; forbidden by latest user instruction",
+    "release_job": "SKIPPED",
+    "cancelled_tag_run": 42591741380,
+    "existing_tag": "v1.1.1 remains at 2304e2d; not moved; not this artifact source",
+    "pages": "BLOCKED_PERMISSIONS HTTP 403"
+  },
+  "documentation_note": "Packaged KURULUM.md mentions SHA256SUMS.txt; manual artifacts do not contain that file. ZIP digests above come from GitHub and downloaded web/Windows ZIPs were checked. Current INSTALL.md corrects this statement."
+}

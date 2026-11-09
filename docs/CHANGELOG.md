@@ -1,6 +1,6 @@
 # 1.1.1 · 9 Kasım 2026
 
-- Releases üzerinden doğrudan Windows/Linux/macOS/Android/imzasız iOS ve web paketleri; kurulum rehberi, lisans dökümleri ve SHA-256 dosyası.
+- Windows/Linux/macOS/Android/imzasız iOS ve web paketleri Actions / Artifacts üzerinden; kurulum rehberi ve lisans dökümleri. Son talimat uyarınca yeni herkese açık Release yayımlanmadı. ZIP özetleri ve kaynak SHA kanıt kaydında.
 - IFCT paketinin MIT etiketi ile NIN asıl yayın izni ayrıldı. Ürün izni doğrulanmadığı için IFCT CSV, değer ve tahminler dağıtımdan çıkarıldı.
 - USDA tam ASCII tablosundan amino asit, yağ asidi, şeker, vitamin biçimi, sterol ve küçük bileşik değerleri eklendi. Jaggery açık kaynak boşluğuyla korunur.
 - 13 lisans/kaynak metni gömülü ve ayrı dosya olarak sunulur; fontların OFL ve asıl telif metinleri korunur. Native Cargo dökümleri pakete eklenir.
