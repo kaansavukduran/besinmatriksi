@@ -3,7 +3,7 @@
 Türkçe, çevrimdışı, özelleştirilebilir bitkisel besin matriksi ve tarif hesaplayıcı.
 Windows · macOS · Linux · Android · iPhone · tarayıcı/PWA · tek HTML.
 
-**[Paketleri indir: Actions / Artifacts](https://github.com/kaansavukduran/besinmatriksi/actions/runs/42593575878)** ·
+**[Paketleri indir: Actions / Artifacts](https://github.com/kaansavukduran/besinmatriksi/actions/runs/42596270782)** ·
 [Kurulum adımları](docs/INSTALL.md) · [Geliştirme PR #2](https://github.com/kaansavukduran/besinmatriksi/pull/2)
 
 ## İndirip dene
@@ -83,7 +83,7 @@ Masaüstü paketleri Tauri, mobil paketler Capacitor ile üretilir.
 macOS, Linux, Android ve iOS paketlerini kendi runner'larında oluşturur.
 `v*` etiketi tüm kapılar başarılıysa GitHub Release yayımlar.
 `workflow_dispatch` yalnız test/paket artifact'leri üretir.
-Her artifact lisans metinleri ve kurulum rehberini içerir. Doğrulanan ZIP özetleri, kaynak SHA ve test/paket/çalışma zamanı ayrımı [kanıt kaydında](docs/evidence/1.1.1-packages.json).
+Her artifact lisans metinleri ve kurulum rehberini içerir. Doğrulanan ZIP özetleri, kaynak SHA ve test/paket/çalışma zamanı ayrımı [kanıt kaydında](docs/evidence/B005b-packages.json).
 
 USDA ham kaynak URL'si, arşiv özeti ve dönüşümler `data/raw/USDA_SR28_SOURCE.json`
 içindedir. `NUT_DATA.txt.gz` yalnız geliştirme için sıkıştırılmış ham kaynaktır;

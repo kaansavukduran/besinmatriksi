@@ -2,16 +2,148 @@
   "schema_version": "1",
   "project": "Besin Matriksi",
   "product_version": "1.1.1",
-  "development_state": "PACKAGING",
-  "last_forge_at": "2026-11-09T09:42:14.016917+00:00",
-  "last_completed_forge": "B020b",
-  "active_forge": "B005b",
+  "development_state": "READY_FOR_NEXT_FORGE",
+  "last_forge_at": "2026-11-09T09:54:27.250573+00:00",
+  "last_completed_forge": "B005b",
+  "active_forge": null,
   "next_recommended_forge": "B003b",
   "branch": "codex/forge-devam",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
-  "validated_code_commit": "a93e8a5903183f560adf0a1c8403dead5740c194",
-  "package_source_commit": "a93e8a5903183f560adf0a1c8403dead5740c194",
+  "validated_code_commit": "8e0b3178bc41864338a3fdf91afb6cf49e5497be",
+  "package_source_commit": "8e0b3178bc41864338a3fdf91afb6cf49e5497be",
   "verified_gates": [
+    {
+      "id": "unit",
+      "command": "npm test",
+      "result": "PASS 43/43",
+      "level": "UNIT_TESTED",
+      "source_sha": "8e0b3178bc41864338a3fdf91afb6cf49e5497be",
+      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42596270782"
+    },
+    {
+      "id": "data",
+      "command": "Test CI: npm run data && git diff --exit-code -- src/data",
+      "result": "PASS",
+      "level": "BUILT",
+      "source_sha": "8e0b3178bc41864338a3fdf91afb6cf49e5497be",
+      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42596269733"
+    },
+    {
+      "id": "web",
+      "command": "npm run build && npm run build:single",
+      "result": "PASS",
+      "level": "BUILT",
+      "source_sha": "8e0b3178bc41864338a3fdf91afb6cf49e5497be",
+      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42596270782"
+    },
+    {
+      "id": "browser",
+      "command": "npm run test:browser",
+      "result": "PASS 28/28 CI; local 26 PASS + 2 managed file:// SKIP",
+      "level": "RUNTIME_TESTED",
+      "source_sha": "8e0b3178bc41864338a3fdf91afb6cf49e5497be",
+      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42596270782"
+    },
+    {
+      "id": "packages",
+      "command": "release.yml workflow_dispatch",
+      "result": "PASS 6 artifact groups; SHA matched; Cargo 404/0 on each desktop; GitHub Release SKIPPED",
+      "level": "PACKAGED",
+      "source_sha": "8e0b3178bc41864338a3fdf91afb6cf49e5497be",
+      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42596270782"
+    },
+    {
+      "id": "native-runtime",
+      "result": "NOT_RUN: physical installation/native runtime acceptance",
+      "level": "NOT_RUN"
+    }
+  ],
+  "blockers": [
+    {
+      "forge": "B021",
+      "state": "BLOCKED_SOURCE_VERIFICATION",
+      "reason": "TürKomp official site timed out; redistribution license unverified; no new data imported.",
+      "last_attempt_date": "2026-11-09",
+      "retry_not_before": "2026-11-11T00:00:00Z",
+      "next_step": "Verify official access and offline redistribution permission; progress B020b meanwhile. Conservative retry time because original attempt recorded date only."
+    },
+    {
+      "forge": "B031",
+      "state": "NOT_RUN",
+      "reason": "Physical device / native OS acceptance testing requires corresponding devices."
+    },
+    {
+      "forge": "PWA-hosting",
+      "state": "BLOCKED_PERMISSIONS",
+      "reason": "GitHub Pages create API returned HTTP 403 Resource not accessible by integration. No hosted PWA URL claimed."
+    },
+    {
+      "forge": "UX-TASKS",
+      "state": "NEEDS_CLARIFICATION",
+      "reason": "User requests dragging tasks up/down and entering task times. Existing nutrition app has sections/recipes, no task model. Await existing sections/recipes versus separate planning screen choice. Do not silently invent a task module or mark this request complete."
+    }
+  ],
+  "remaining_forges": [
+    "B003b",
+    "B021",
+    "B031",
+    "UX-TASKS"
+  ],
+  "continuation": {
+    "schedule": "hourly",
+    "timezone": "Europe/Istanbul",
+    "first_scheduled_local": "2026-11-09T12:40:00+03:00",
+    "stop_when": "All applicable roadmap items and final gates are verified; pause only this own automation.",
+    "note": "Hourly schedule enabled with inherited cloud environment; availability and usage limits still apply."
+  },
+  "notes": "B020b and B005b PACKAGED at 8e0b317. 43 unit + 28 GitHub browser tests PASS; 6 artifact groups verified against source SHA. Native runtime remains NOT_RUN. Next single Forge B003b; new task/time scope needs user clarification and remains open. Documentation commits after package source do not rebuild app code.",
+  "release_target": null,
+  "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission.",
+  "historical_verified_gates": [
+    {
+      "id": "unit",
+      "command": "npm test",
+      "result": "PASS 29/29",
+      "level": "UNIT_TESTED",
+      "version": "1.1.0"
+    },
+    {
+      "id": "data",
+      "command": "npm run data && git diff --exit-code -- src/data",
+      "result": "PASS, no diff",
+      "level": "BUILT",
+      "version": "1.1.0"
+    },
+    {
+      "id": "web",
+      "command": "npm run build && npm run build:single",
+      "result": "PASS",
+      "level": "BUILT",
+      "version": "1.1.0"
+    },
+    {
+      "id": "browser-ci",
+      "command": "npm run test:browser",
+      "result": "PASS 20/20 on GitHub CI; desktop + phone",
+      "level": "RUNTIME_TESTED",
+      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42586943816",
+      "version": "1.1.0"
+    },
+    {
+      "id": "native-packages",
+      "command": "release.yml workflow_dispatch",
+      "result": "PASS web/windows/macos/linux/android/ios; public release skipped",
+      "level": "PACKAGED",
+      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42586943869",
+      "version": "1.1.0"
+    },
+    {
+      "id": "print-sample",
+      "command": "Chromium PDF + pdftotext + first-page render",
+      "result": "Turkish glyphs and page numbers PASS; 24-page layout needs B010b",
+      "level": "RUNTIME_TESTED",
+      "version": "1.1.0"
+    },
     {
       "id": "unit",
       "command": "npm test",
@@ -69,96 +201,15 @@
       "level": "RUNTIME_TESTED"
     }
   ],
-  "blockers": [
-    {
-      "forge": "B021",
-      "state": "BLOCKED_SOURCE_VERIFICATION",
-      "reason": "TürKomp official site timed out; redistribution license unverified; no new data imported.",
-      "last_attempt_date": "2026-11-09",
-      "retry_not_before": "2026-11-11T00:00:00Z",
-      "next_step": "Verify official access and offline redistribution permission; progress B020b meanwhile. Conservative retry time because original attempt recorded date only."
-    },
-    {
-      "forge": "B031",
-      "state": "NOT_RUN",
-      "reason": "Physical device / native OS acceptance testing requires corresponding devices."
-    },
-    {
-      "forge": "PWA-hosting",
-      "state": "BLOCKED_PERMISSIONS",
-      "reason": "GitHub Pages create API returned HTTP 403 Resource not accessible by integration. No hosted PWA URL claimed."
-    }
-  ],
-  "remaining_forges": [
-    "B005b",
-    "B003b",
-    "B021",
-    "B031"
-  ],
-  "continuation": {
-    "schedule": "hourly",
-    "timezone": "Europe/Istanbul",
-    "first_scheduled_local": "2026-11-09T12:40:00+03:00",
-    "stop_when": "All applicable roadmap items and final gates are verified; pause only this own automation.",
-    "note": "Hourly schedule enabled with inherited cloud environment; availability and usage limits still apply."
-  },
-  "notes": "B020b CI PASS at be114fe; B005b final local gates PASS: 43 unit, production builds, 26 browser PASS + 2 file:// policy SKIP. Current code not yet packaged; previous package SHA remains historical until workflow_dispatch completes.",
-  "release_target": null,
-  "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission.",
-  "historical_verified_gates": [
-    {
-      "id": "unit",
-      "command": "npm test",
-      "result": "PASS 29/29",
-      "level": "UNIT_TESTED",
-      "version": "1.1.0"
-    },
-    {
-      "id": "data",
-      "command": "npm run data && git diff --exit-code -- src/data",
-      "result": "PASS, no diff",
-      "level": "BUILT",
-      "version": "1.1.0"
-    },
-    {
-      "id": "web",
-      "command": "npm run build && npm run build:single",
-      "result": "PASS",
-      "level": "BUILT",
-      "version": "1.1.0"
-    },
-    {
-      "id": "browser-ci",
-      "command": "npm run test:browser",
-      "result": "PASS 20/20 on GitHub CI; desktop + phone",
-      "level": "RUNTIME_TESTED",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42586943816",
-      "version": "1.1.0"
-    },
-    {
-      "id": "native-packages",
-      "command": "release.yml workflow_dispatch",
-      "result": "PASS web/windows/macos/linux/android/ios; public release skipped",
-      "level": "PACKAGED",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42586943869",
-      "version": "1.1.0"
-    },
-    {
-      "id": "print-sample",
-      "command": "Chromium PDF + pdftotext + first-page render",
-      "result": "Turkish glyphs and page numbers PASS; 24-page layout needs B010b",
-      "level": "RUNTIME_TESTED",
-      "version": "1.1.0"
-    }
-  ],
   "publication_policy": "No auto merge, force push, new public Release, or store publication. Only workflow_dispatch artifacts; v1.1.1 tag not moved.",
   "work_session": {
-    "state": "ACTIVE",
+    "state": "COMPLETED",
     "owner": "interactive-codex-20261109-B005b",
     "started_at": "2026-11-09T09:37:30.008911+00:00",
-    "lease_expires_at": "2026-11-09T10:40:00Z",
-    "note": "B020b local gates complete; user requested expanded theme editor, B005b active. Preserve live edits."
+    "lease_expires_at": null,
+    "note": "B020b + B005b completed and artifacts verified; no active editing lease.",
+    "finished_at": "2026-11-09T09:54:27.250617+00:00"
   },
   "pending_user_clarification": "User asked drag-reorder tasks and task times. Besin Matriksi has no tasks; async question pending: existing sections/recipes versus separate planning screen.",
-  "package_evidence_file": "docs/evidence/1.1.1-packages.json"
+  "package_evidence_file": "docs/evidence/B005b-packages.json"
 }

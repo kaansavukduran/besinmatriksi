@@ -1,0 +1,112 @@
+{
+  "forges": [
+    "B020b",
+    "B005b"
+  ],
+  "version": "1.1.1",
+  "source_sha": "8e0b3178bc41864338a3fdf91afb6cf49e5497be",
+  "run_url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42596270782",
+  "event": "workflow_dispatch",
+  "test_evidence": {
+    "unit": "PASS 43/43",
+    "browser_ci": "PASS 28/28 desktop + phone, including file:// and offline PWA",
+    "browser_local": "PASS 26 + SKIP 2 (managed file:// policy)",
+    "build_web": "PASS",
+    "build_single_html": "PASS",
+    "data_reproducibility": "PASS on Test CI for this source",
+    "visual_review": "Desktop + phone theme picker screenshots inspected",
+    "regression_fixed": "First theme UI pass caught temporary unnamed download link; hidden download anchor fixed axe link-name; complete final suite PASS"
+  },
+  "package_evidence": {
+    "artifacts": [
+      {
+        "id": 13663911952,
+        "name": "web",
+        "digest": "sha256:52607b028ab1027e0553f7ca9982ef3c4065085563c4ad7c3ae3ddba43d82c6b",
+        "size_in_bytes": 2854352,
+        "expires_at": "2027-02-07T09:48:58Z"
+      },
+      {
+        "id": 13663512244,
+        "name": "ios",
+        "digest": "sha256:2fd39815121a656dde971942a9b09b2996ea4e1a3f5e1889d1aefa0aaffcecf8",
+        "size_in_bytes": 2402097,
+        "expires_at": "2027-02-07T09:48:58Z"
+      },
+      {
+        "id": 13663148831,
+        "name": "android",
+        "digest": "sha256:f2d7d56feeeaa8aec35d87dc860615834edacf1f0567ac23d4fb9569db562688",
+        "size_in_bytes": 5510198,
+        "expires_at": "2027-02-07T09:48:58Z"
+      },
+      {
+        "id": 13663128385,
+        "name": "desktop-linux",
+        "digest": "sha256:e3310f78aafb58076c2402267db3c05e884a59bfa5957f8ad7405be51f376956",
+        "size_in_bytes": 86848502,
+        "expires_at": "2027-02-07T09:48:58Z"
+      },
+      {
+        "id": 13663123399,
+        "name": "desktop-windows",
+        "digest": "sha256:04ccc8904750e4420162e01eba911f05c5206583758764aa14e0294254764a3d",
+        "size_in_bytes": 12011899,
+        "expires_at": "2027-02-07T09:48:58Z"
+      },
+      {
+        "id": 13662874573,
+        "name": "desktop-macos",
+        "digest": "sha256:cf10fd8cfd155c697b2ca888bdcdbca11a5f5f563a421ff70114395f33876bef",
+        "size_in_bytes": 6542699,
+        "expires_at": "2027-02-07T09:48:58Z"
+      }
+    ],
+    "all_artifacts_source_sha_match": true,
+    "download_checks": [
+      {
+        "artifact": "web",
+        "sha256_matches_github": true,
+        "files": [
+          "KURULUM.md",
+          "THIRD_PARTY_NOTICES.txt",
+          "LICENSE.txt",
+          "besin-matriksi-tek-dosya.html",
+          "besin-matriksi-web-pwa.zip"
+        ],
+        "downloaded_artifact_runtime": "NOT_RUN"
+      },
+      {
+        "artifact": "desktop-windows",
+        "sha256_matches_github": true,
+        "files": [
+          "Besin Matriksi_1.1.1_x64-setup.exe",
+          "Besin Matriksi_1.1.1_x64_en-US.msi",
+          "BesinMatriksi-portable-x64.exe",
+          "KURULUM.md",
+          "LICENSE.txt",
+          "THIRD_PARTY_NOTICES-RUST-windows.txt",
+          "THIRD_PARTY_NOTICES.txt"
+        ],
+        "downloaded_artifact_runtime": "NOT_RUN"
+      }
+    ],
+    "native_notices": {
+      "windows": "404 packages / 0 missing license files",
+      "macos": "404 packages / 0 missing license files",
+      "linux": "404 packages / 0 missing license files"
+    }
+  },
+  "runtime_evidence": {
+    "web": "RUNTIME_TESTED",
+    "native_installation_and_runtime": "NOT_RUN; compile/package success is not device acceptance",
+    "ios": "Unsigned IPA; Apple signing required"
+  },
+  "publication": {
+    "github_release": "SKIPPED; latest user forbids new public releases",
+    "merge": "NOT_PERFORMED",
+    "store": "NOT_PUBLISHED",
+    "pwa_hosting": "BLOCKED_PERMISSIONS HTTP 403; no hosted URL claimed"
+  },
+  "open_user_scope": "Task drag ordering and times need screen clarification; nutrition app currently has no task entity. Async question pending; independent theme work completed."
+}

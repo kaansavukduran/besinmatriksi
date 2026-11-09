@@ -133,3 +133,9 @@
 - İlk tarayıcı kapısı indirme için kullanılan 500 ms'lik adsız bağlantıyı axe link-name hatası olarak yakaladı. Bağlantı `hidden` yapıldı; son tam regresyon geçti.
 - Son yerel kanıt: `npm test` 43/43 PASS; `npm run build`, `npm run build:single` PASS; tarayıcı 26 PASS + 2 file:// politika SKIP. Renk penceresi masaüstü/telefon ekran görüntüleri incelendi; panel axe/taşma, odak, iptal, kalıcılık, paylaşım ve eski dosya uyumu kapıları PASS. GitHub tam CI/native paket kapısı bekleniyor; RUNTIME_TESTED, PACKAGING_PENDING.
 - B020b GitHub CI run 42595437544 / 42595446579 başarılı. Sonraki tek Forge **B003b**; görev/saat ekranı kapsam sorusu hâlâ yanıt bekliyor.
+
+## B020b/B005b son kapıları · 2026-11-09
+- Kaynak `8e0b3178bc41864338a3fdf91afb6cf49e5497be`; devam dalına normal commit/push. Test CI 42596269733 ve 42596276024 PASS; paket run 42596270782 workflow_dispatch başarılı. Web işinin logunda 43/43 birim ve 28/28 tarayıcı testi PASS; üretim PWA ve tek HTML derlemeleri PASS.
+- Altı artifact grubunun kaynak SHA eşleşmesi doğrulandı. Web ve Windows ZIP indirildi, SHA-256 GitHub digest ile karşılaştırıldı ve dosyaları listelendi. Web HTML yeni kaynak dökümü/renk alanını içeriyor. Üç masaüstü işinde Cargo: 404 paket, 0 eksik lisans metni. Paket kanıtı: `docs/evidence/B005b-packages.json`.
+- Web çalışma zamanı RUNTIME_TESTED; fiziksel/native kurulum çalışma zamanı NOT_RUN. iOS imzasız, Apple imzası gerekir. GitHub Release SKIPPED; merge/force-push/mağaza yayını yapılmadı. Eski paket ve kaynak kanıtları tarihsel olarak korunur.
+- B020b ve B005b düzeyi PACKAGED. Sonraki tek Forge **B003b**. Yeni sürükleme/saat isteğinin hangi ekrana uygulanacağı soruldu; UX-TASKS NEEDS_CLARIFICATION olarak açık bırakıldı, hayalî görev modeli eklenmedi. Saatlik görev açık; yol haritası bütünü tamamlanmadı. Etkin düzenleme oturumu kapandı; sonraki commit yalnız teslim belgeleridir.
