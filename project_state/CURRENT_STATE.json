@@ -1,0 +1,15 @@
+{
+  "schema_version": "1",
+  "project": "Besin Matriksi",
+  "product_version": "1.0.0",
+  "development_state": "IMPLEMENTING",
+  "last_forge_at": "2026-11-08T08:30:00Z",
+  "last_completed_forge": "B000 (forge çekirdeği kuruldu)",
+  "active_forge": null,
+  "next_recommended_forge": "B001",
+  "verified_gates": [
+    { "id": "EV-B000-test", "command": "npm ci && npm test", "result": "PASS 9/9", "at": "2026-11-08", "level": "UNIT_TESTED" }
+  ],
+  "blockers": [],
+  "notes": "Yol haritası docs/ROADMAP.md. Kaan'ın öncelikleri: kullanıcı dostu, fareyle kullanılabilir, özelleştirilebilir, tam Türkçe, Windows/Android/Linux/Mac indirmeleri güncel."
+}
