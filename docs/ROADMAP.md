@@ -74,8 +74,8 @@ B003b son kanıtı: `docs/evidence/B003b-packages.json`; 49 birim / 30 tarayıc�
 
 ## B050 · kişisel profil, günlük ve erişilebilir görünüm
 
-- **IMPLEMENTED / yerel RUNTIME_TESTED; son SHA paket kapısı bekliyor.** Yaş/boy/kilo/aktivite, Tanita fişi alanları; Mifflin 1990 veya cihaz tahmini kaynakları ayrı; planlanan/tüketilen günlük, 206 bileşen kaynak/kapsam/referans farkı ve yerel yedek. [Rehber](PERSONAL_DAILY.md).
+- **DONE (PACKAGED; kaynak d78b8da).** Yaş/boy/kilo/aktivite, Tanita fişi alanları; Mifflin 1990 veya cihaz tahmini kaynakları ayrı; planlanan/tüketilen günlük, 206 bileşen kaynak/kapsam/referans farkı ve yerel yedek. [Rehber](PERSONAL_DAILY.md).
 - TR/EN yeni ekranlar, cihaz dili seçimi, %80–200 ölçek (%135 elle), bağımsız font/yazı/aralıklar, sistem teması, isteğe bağlı ve geri alınabilir sakin ilerleme. Sağlık sonucu/kalori/ağırlık ödülü veya seri baskısı yok.
-- Yerel 57 birim testi PASS; son tam tarayıcı 34 PASS + 2 yönetilen file:// SKIP. Son değişiklik sonrası tekrar ve temiz commit CI kanıtı ayrıca kaydedilecek.
+- Son CI 58/58 birim ve 36/36 tarayıcı PASS; yerel 34 PASS + 2 yönetilen file:// SKIP. Run 42617550175, yedi artifact grubu aynı kaynak SHA; aday ZIP ve içindeki 21 dosya özeti doğrulandı.
 - B030 aday paket hazırlığı: 1.1.2-beta.1; yalnız workflow_dispatch/publish=false. Herkese açık Release yok. B051/B052 henüz tamamlanmadı; tüm uygulanabilir işler bitmediği için otomasyon açık kalır.
-- Kaynak ZIP/Git geçmişi Drive yedeği otomatik onay incelemesince engellendi; ek yetki olmadan başka yoldan yüklenmez. Yerel arşiv kanıtı ile uzak yedek kanıtı ayrıdır.
+- Kaynak ZIP/Git geçmişi/manifest Drive yedeği, önceki otomatik onay engeli kullanıcının açık onayıyla çözüldükten sonra yüklendi; üçü de geri indirilip SHA256 ile doğrulandı. Sağlık çalışma zamanı kayıtları dahil değil.

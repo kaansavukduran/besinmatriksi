@@ -3,7 +3,7 @@
 Türkçe, çevrimdışı, özelleştirilebilir bitkisel besin matriksi, günlük ve tarif hesaplayıcı. Yeni profil/günlük/görünüm ekranlarında İngilizce seçeneği de vardır; eski ekranların çevirisi henüz tamamlanmadı.
 Windows · macOS · Linux · Android · iPhone · tarayıcı/PWA · tek HTML.
 
-**[Paketleri indir: Actions / Artifacts](https://github.com/kaansavukduran/besinmatriksi/actions/runs/42606995870)** ·
+**[Paketleri indir: Actions / Artifacts](https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175)** ·
 [Kurulum adımları](docs/INSTALL.md) · [Geliştirme PR #2](https://github.com/kaansavukduran/besinmatriksi/pull/2)
 
 ## İndirip dene
@@ -13,14 +13,16 @@ Son kullanıcı talimatı yeni herkese açık Release yayınına izin vermediği
 
 | Platform | Dosya |
 |---|---|
-| Windows, kurulumsuz | `BesinMatriksi-portable-x64.exe` |
-| Windows, kurulum | `Besin Matriksi_1.1.1_x64-setup.exe` veya `Besin Matriksi_1.1.1_x64_en-US.msi` |
-| macOS Intel + Apple Silicon | `Besin Matriksi_1.1.1_universal.dmg` |
-| Linux | `Besin Matriksi_1.1.1_amd64.AppImage`, `.deb` veya `.rpm` |
-| Android | `BesinMatriksi.apk` |
-| iPhone | `BesinMatriksi-unsigned.ipa`, Apple imzası gerekir |
-| Her platformda tarayıcı | `besin-matriksi-tek-dosya.html` |
-| HTTPS sunucusuna kurulan PWA | `besin-matriksi-web-pwa.zip` |
+| Windows, kurulumsuz | `BesinMatriksi-1.1.2-beta.1-windows-x64-portable.exe` |
+| Windows, kurulum | `BesinMatriksi-1.1.2-beta.1-windows-x64-Setup.exe` veya `*-windows-x64.msi` |
+| macOS Intel + Apple Silicon | `BesinMatriksi-1.1.2-beta.1-macos-universal-unsigned.dmg` |
+| Linux | `BesinMatriksi-1.1.2-beta.1-linux-x86_64.AppImage`, `*-linux-amd64.deb` veya `*-linux-x86_64.rpm` |
+| Android | `BesinMatriksi-1.1.2-beta.1-android.apk` (debug imzalı) |
+| iPhone | `BesinMatriksi-1.1.2-beta.1-ios-UNSIGNED-NOT-INSTALLABLE.ipa`, Apple imzası gerekir |
+| Her platformda tarayıcı | `BesinMatriksi-1.1.2-beta.1-offline.html` |
+| HTTPS sunucusuna kurulan PWA | `BesinMatriksi-1.1.2-beta.1-web-pwa.zip` |
+
+Bu adlar **[release-candidate arşivinde](https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175/artifacts/13674510954)** bulunur (124 MB). Tek platform isteyen ayrı `desktop-windows`, `desktop-macos`, `desktop-linux`, `android` veya `web` artifact'ini seçebilir; bu ayrı arşivlerde kısa/eski dosya adları bulunur. Kaynak SHA `d78b8da`; arşivdeki `SHA256SUMS.txt` ve `BUILD_INFO.json` doğrulandı.
 
 iPhone IPA **imzasızdır, doğrudan dokunup kurulamaz**; kendi Apple imzanla yükleme gerekir.
 Windows ve macOS paketleri de geliştirici sertifikasıyla imzalanmamıştır.
@@ -86,7 +88,7 @@ macOS, Linux, Android ve iOS paketlerini kendi runner'larında oluşturur.
 Güncel izin yalnız `workflow_dispatch` ile `publish=false` test/paket çıktısı üretmektir.
 Etiket taşınmaz, herkese açık Release veya mağaza yayını yapılmaz.
 `release-candidate` çıktısı platform dosyalarını açık adlarla, kaynak ZIP, kaynak SHA ve SHA256SUMS ile toplar.
-Her artifact lisans metinleri ve kurulum rehberini içerir. Doğrulanan ZIP özetleri, kaynak SHA ve test/paket/çalışma zamanı ayrımı [kanıt kaydında](docs/evidence/B003b-packages.json).
+Her artifact lisans metinleri ve kurulum rehberini içerir. Doğrulanan ZIP özetleri, kaynak SHA ve test/paket/çalışma zamanı ayrımı [kanıt kaydında](docs/evidence/B050-packages.json).
 
 EFSA ham JSON/bildirim URL ve özetleri `data/references/EFSA_SOURCE.json` içinde; dönüşüm `scripts/build-efsa.mjs` ile çevrimdışıdır. [Kapsam, izin ve birim ayrımları](docs/DATA_RESEARCH.md).
 

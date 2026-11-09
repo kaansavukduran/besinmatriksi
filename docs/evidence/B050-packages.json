@@ -1,0 +1,170 @@
+{
+  "forge": "B050",
+  "version": "1.1.2-beta.1",
+  "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
+  "run_url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175",
+  "event": "workflow_dispatch",
+  "inputs": {
+    "publish": false,
+    "prerelease": true
+  },
+  "test_evidence": {
+    "unit": "PASS 58/58 final CI",
+    "browser_ci": "PASS 36/36 desktop + phone, TR/EN new screens, file:// and offline PWA, axe and UI scale 200%",
+    "browser_local": "PASS 34 + 2 managed file:// skips; final UI/import implementation f3f140c; d78b8da changes native RPM mapping/release packaging only",
+    "build_web": "PASS final CI",
+    "build_single_html": "PASS final CI",
+    "data_reproducibility": "PASS clean data regeneration in Test CI 42617531021 / 42617540750; USDA/EFSA unchanged",
+    "notices": "14 original notices; eight font OFL and app/Capacitor MIT preserved",
+    "visual_review": "Phone TR and desktop EN personal form screenshots at UI scale 200% inspected"
+  },
+  "package_evidence": {
+    "artifacts": [
+      {
+        "id": 13674510954,
+        "name": "release-candidate",
+        "digest": "sha256:c9212b7cc60c24bedf40d4003e92d24dcf2267328fd9c90fddaa52bafdf9db9f",
+        "size_in_bytes": 124348438,
+        "expires_at": "2027-02-07T12:30:16Z"
+      },
+      {
+        "id": 13673840985,
+        "name": "android",
+        "digest": "sha256:1c0cced29306c9c7c3fcb52ec1c3695cb48c8382ce9b22ebb386a5d46b4d5bb8",
+        "size_in_bytes": 5537900,
+        "expires_at": "2027-02-07T12:30:16Z"
+      },
+      {
+        "id": 13673512562,
+        "name": "desktop-windows",
+        "digest": "sha256:12ec8585f33265141a49acc1e732cd7efa5586989761fb152ad7d20fc2bbe2aa",
+        "size_in_bytes": 12071781,
+        "expires_at": "2027-02-07T12:30:16Z"
+      },
+      {
+        "id": 13673063470,
+        "name": "desktop-macos",
+        "digest": "sha256:8617c47a5eb6c25127e9c16cc731849b2ac746356c423a70bb01fb9d17fb2a1c",
+        "size_in_bytes": 6583617,
+        "expires_at": "2027-02-07T12:30:16Z"
+      },
+      {
+        "id": 13672749070,
+        "name": "desktop-linux",
+        "digest": "sha256:7cf671df98f80977a265634bba363d342c178f9af4e19bd1d807b63ca1efe1e6",
+        "size_in_bytes": 86915022,
+        "expires_at": "2027-02-07T12:30:16Z"
+      },
+      {
+        "id": 13672354830,
+        "name": "ios",
+        "digest": "sha256:7ea7693b8ab1ffa4639e6fe6af3a6c451788385d5f80af409a0db4ee82156d69",
+        "size_in_bytes": 2425958,
+        "expires_at": "2027-02-07T12:30:16Z"
+      },
+      {
+        "id": 13672184143,
+        "name": "web",
+        "digest": "sha256:2ab2e279928688cdeffc34b9854ad688007e1ee95a029400ef84e79bcede741a",
+        "size_in_bytes": 2902959,
+        "expires_at": "2027-02-07T12:30:16Z"
+      }
+    ],
+    "all_artifact_source_sha_match": true,
+    "downloaded_verified": [
+      "web",
+      "android",
+      "desktop-windows",
+      "release-candidate"
+    ],
+    "verification": {
+      "archive_sha256": "c9212b7cc60c24bedf40d4003e92d24dcf2267328fd9c90fddaa52bafdf9db9f",
+      "zip_crc": "PASS",
+      "sha256_entries_verified": 21,
+      "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
+      "files": [
+        "ANDROID-SIGNING.txt",
+        "BUILD_INFO.json",
+        "BesinMatriksi-1.1.2-beta.1-android.apk",
+        "BesinMatriksi-1.1.2-beta.1-ios-UNSIGNED-NOT-INSTALLABLE.ipa",
+        "BesinMatriksi-1.1.2-beta.1-linux-amd64.deb",
+        "BesinMatriksi-1.1.2-beta.1-linux-x86_64.AppImage",
+        "BesinMatriksi-1.1.2-beta.1-linux-x86_64.rpm",
+        "BesinMatriksi-1.1.2-beta.1-macos-universal-unsigned.dmg",
+        "BesinMatriksi-1.1.2-beta.1-offline.html",
+        "BesinMatriksi-1.1.2-beta.1-source.zip",
+        "BesinMatriksi-1.1.2-beta.1-web-pwa.zip",
+        "BesinMatriksi-1.1.2-beta.1-windows-x64-Setup.exe",
+        "BesinMatriksi-1.1.2-beta.1-windows-x64-portable.exe",
+        "BesinMatriksi-1.1.2-beta.1-windows-x64.msi",
+        "KURULUM.md",
+        "LICENSE.txt",
+        "RELEASE_NOTES.md",
+        "SHA256SUMS.txt",
+        "THIRD_PARTY_NOTICES-RUST-linux.txt",
+        "THIRD_PARTY_NOTICES-RUST-macos.txt",
+        "THIRD_PARTY_NOTICES-RUST-windows.txt",
+        "THIRD_PARTY_NOTICES.txt"
+      ],
+      "build_info": {
+        "version": "1.1.2-beta.1",
+        "tag": "v1.1.2-beta.1",
+        "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
+        "source_branch": "codex/forge-devam",
+        "native_version_mapping": {
+          "linux": "1.1.2",
+          "rpm_release": "0.beta.1",
+          "windows_msi": "1.1.2",
+          "ios_marketing": "1.1.2",
+          "app_display": "1.1.2-beta.1"
+        },
+        "ios": "Unsigned development artifact; not directly installable. App Store/TestFlight signing pending.",
+        "macos": "Universal Intel + Apple Silicon; unsigned, not notarized.",
+        "android_signing": "See ANDROID-SIGNING.txt; debug certificate is not a production signing continuity guarantee.",
+        "native_device_acceptance": "NOT_RUN"
+      },
+      "native_runtime": "NOT_RUN; file verification is not installation acceptance"
+    },
+    "cargo_notices": {
+      "windows": "404 packages / 0 missing source license texts",
+      "macos": "404 packages / 0 missing source license texts",
+      "linux": "404 packages / 0 missing source license texts"
+    },
+    "android_signer": "Android Debug; certificate SHA256 b06eed18bb941d30bd5d16cb3dd548f13bf12633aba7dc9ae2cb0082e6cef6e9",
+    "first_failed_attempt": {
+      "run": 42616787051,
+      "reason": "RPM version cannot contain prerelease hyphen",
+      "resolved_by": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62"
+    }
+  },
+  "runtime_evidence": {
+    "web": "RUNTIME_TESTED",
+    "native": "NOT_RUN: physical OS/device installation acceptance separate",
+    "ios": "Unsigned IPA; NOT directly installable; Apple signing/TestFlight/App Store pending",
+    "macos": "Universal unsigned and not notarized",
+    "updater": "NOT_IMPLEMENTED: signed update settings and two-real-package upgrade test B052 open"
+  },
+  "publication": {
+    "github_release": "SKIPPED; no public Release created",
+    "tag_moved": false,
+    "merge": false,
+    "store": "NOT_PUBLISHED",
+    "hosted_pwa": "No URL claimed; prior Pages integration HTTP403"
+  },
+  "backup": {
+    "state": "VERIFIED_REMOTE",
+    "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
+    "files": "source ZIP + full Git --all bundle + commit/hash manifest",
+    "verification": "all 3 downloaded back and SHA256 matched; parent/size checked; private Drive IDs intentionally omitted",
+    "secret_scan": "347 historical blobs, known credential/private-key patterns and sensitive filenames: 0 findings; not exhaustive",
+    "health_runtime_data": "NOT_INCLUDED"
+  },
+  "remaining": [
+    "B051 legacy-screen TR/EN",
+    "B052 signed updater / two-version upgrade acceptance",
+    "B031 native physical install/runtime",
+    "B021 source/license retry after recorded cooldown",
+    "UX-TASKS clarification"
+  ],
+  "verified_at": "2026-11-09T12:39:11.475163+00:00"
+}
