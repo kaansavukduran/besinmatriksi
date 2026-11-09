@@ -2,6 +2,7 @@
 import { NUTRIENTS, SECTIONS, SOURCES, ALLERGENS } from './nutrients.js';
 import { derive } from './calc.js';
 import { esc, fmtNum, fmtAmount, fmtPct } from './util.js';
+import { normalizeSettings } from './settings.js';
 
 const SRC_LABEL = { u: 'USDA', i: 'IFCT', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
 const SRC_TITLE = {
@@ -208,17 +209,27 @@ function coverage(r, cfg) {
 }
 
 export function renderMatrix(r, cfg, ctx = {}) {
+  cfg = normalizeSettings(cfg);
   const item = ctx.item || null;
   const open = (id) => !ctx.closed?.has(id);
-  const d = [
-    identityCard(item, r, cfg, ctx),
-    coverage(r, cfg),
-    ...SECTIONS.map((s) => section(s, r, cfg, open(s.id))),
-    derivedCard(r, cfg, open('hesap')),
-    toleranceCard(r, item, cfg, open('tolerans')),
-    safetyExtra(cfg, open('kalinti')),
-  ];
+  const d = [identityCard(item, r, cfg, ctx), coverage(r, cfg)];
+  if (cfg.hiddenSections.length) d.push(`<p class="hint">${cfg.hiddenSections.length} bölüm ayarlarda gizlendi. Kapsam özeti ve CSV tüm bileşenleri içerir.</p>`);
+  if (cfg.pinnedNutrients.length) {
+    const rows = cfg.pinnedNutrients.map(k => NUTRIENTS.find(n => n.key === k)).map(n => {
+      const result = row(n, r, cfg);
+      return result.missing ? `<div class="row miss"><span class="lbl">${esc(n.label)}</span><span class="val">veri yok</span></div>` : result.html;
+    }).join('');
+    d.push(`<section class="pinned card" aria-label="Sabitlenen besin öğeleri"><h3>Sabitlenen besin öğeleri</h3><div class="rows" role="table" aria-label="Sabitlenen değerler">${rows}</div></section>`);
+  }
   const prep = preparationNotes(r, item);
-  if (prep) d.push(`<details class="sec" data-sec="hazirlik" ${open('hazirlik') ? 'open' : ''}><summary><span class="ico">${cfg.emoji ? '🍳' : ''}</span><span class="st">Hazırlama ve emilim</span></summary>${prep}</details>`);
+  for (const id of cfg.sectionOrder) {
+    if (cfg.hiddenSections.includes(id)) continue;
+    const sec = SECTIONS.find(s => s.id === id);
+    if (sec) d.push(section(sec, r, cfg, open(id)));
+    else if (id === 'hesap') d.push(derivedCard(r, cfg, open(id)));
+    else if (id === 'tolerans') d.push(toleranceCard(r, item, cfg, open(id)));
+    else if (id === 'kalinti') d.push(safetyExtra(cfg, open(id)));
+    else if (id === 'hazirlik' && prep) d.push(`<details class="sec" data-sec="hazirlik" ${open('hazirlik') ? 'open' : ''}><summary><span class="ico">${cfg.emoji ? '🍳' : ''}</span><span class="st">Hazırlama ve emilim</span></summary>${prep}</details>`);
+  }
   return d.join('');
 }

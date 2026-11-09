@@ -1,33 +1,13 @@
 // Ayarlar ve tarifler cihazda (localStorage) saklanır; hiçbir şey ağa gönderilmez.
 import { uid } from './util.js';
+import { DEFAULT_SETTINGS, SETTINGS_VERSION, normalizeSettings } from './settings.js';
+import { normalizeRecipe, normalizeCustom } from './records.js';
+import { recentSearches } from './search.js';
+export { DEFAULT_SETTINGS } from './settings.js';
 
-const KEY_SETTINGS = 'bm.settings.v1';
+const KEY_SETTINGS = 'bm.settings.v2';
 const KEY_RECIPES = 'bm.recipes.v1';
 const KEY_CUSTOM = 'bm.custom.v1';
-
-export const DEFAULT_SETTINGS = {
-  theme: 'light',
-  accent: 'auto',
-  font: 'atkinson',
-  fontSize: 17,
-  lineHeight: 1.55,
-  letterSpacing: 0,
-  wordSpacing: 0,
-  density: 'comfy',
-  radius: 14,
-  bold: false,
-  reduceMotion: false,
-  ruler: false,
-  showNrv: true,
-  showSource: true,
-  showSd: false,
-  showAlt: true,
-  showMissing: false,
-  precision: 'normal',
-  showExt: false,
-  emoji: true,
-  defaultAmount: 100,
-};
 
 export const THEMES = [
   { id: 'light', name: 'Gün ışığı', bg: '#f7f7fb', fg: '#1e2233', ac: '#6b4de6' },
@@ -56,34 +36,49 @@ function write(key, val) {
 }
 
 export function loadSettings() {
-  return { ...DEFAULT_SETTINGS, ...read(KEY_SETTINGS, {}) };
+  const saved = read(KEY_SETTINGS, null);
+  if (saved?.version === SETTINGS_VERSION) return normalizeSettings(saved.settings);
+  const migrated = normalizeSettings(read('bm.settings.v1', {}));
+  saveSettings(migrated); // Eski kopya korunur; depolama kapalıysa bellekte çalışır.
+  return migrated;
 }
-export function saveSettings(s) { return write(KEY_SETTINGS, s); }
+export function saveSettings(s) { return write(KEY_SETTINGS, { version: SETTINGS_VERSION, settings: normalizeSettings(s) }); }
+export function loadSearches() { return recentSearches(read('bm.searches.v1', [])); }
+export function saveSearches(list) { return write('bm.searches.v1', recentSearches(list)); }
+
+export function normalizeProfiles(list) {
+  return (Array.isArray(list) ? list : []).filter(p => p && typeof p.name === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(p.id)).slice(0, 12)
+    .map(p => ({ id: p.id, name: p.name.trim().slice(0, 40) || 'Adsız profil', settings: normalizeSettings(p.settings) }));
+}
+export function loadProfiles() { return normalizeProfiles(read('bm.profiles.v1', [])); }
+export function saveProfiles(profiles) { return write('bm.profiles.v1', normalizeProfiles(profiles)); }
 
 export function newRecipe(name = 'Yeni tarif') {
   return { id: uid(), name, items: [], cookedWeight: null, servings: 1, created: Date.now(), updated: Date.now() };
 }
 export function loadRecipes() {
   const r = read(KEY_RECIPES, null);
-  if (Array.isArray(r) && r.length) return r;
+  if (Array.isArray(r) && r.length) return r.map(x => normalizeRecipe(x)).filter(Boolean);
   return [];
 }
 export function saveRecipes(r) { return write(KEY_RECIPES, r); }
 
-export function loadCustom() { const c = read(KEY_CUSTOM, []); return Array.isArray(c) ? c : []; }
+export function loadCustom() { const c = read(KEY_CUSTOM, []); return Array.isArray(c) ? c.map(normalizeCustom).filter(Boolean) : []; }
 export function saveCustom(c) { return write(KEY_CUSTOM, c); }
 
 // Dışa/içe aktarma biçimi
-export function exportPayload(recipes, settings, custom = []) {
-  return JSON.stringify({ app: 'besin-matriksi', version: 1, exported: new Date().toISOString(), recipes, settings, custom }, null, 2);
+export function exportPayload(recipes, settings, custom = [], profiles = []) {
+  return JSON.stringify({ app: 'besin-matriksi', version: 1, exported: new Date().toISOString(), recipes, settings, custom, profiles }, null, 2);
 }
 export function parseImport(text) {
   const o = JSON.parse(text);
   if (!o || o.app !== 'besin-matriksi' || !Array.isArray(o.recipes)) throw new Error('Bu dosya Besin Matriksi yedeği değil.');
-  const recipes = o.recipes.filter((r) => r && typeof r.name === 'string' && Array.isArray(r.items)).map((r) => ({
-    ...newRecipe(r.name), ...r, id: uid(),
-    items: r.items.filter((it) => it && it.ref && Number(it.g) > 0).map((it) => ({ id: uid(), ref: it.ref, g: Math.min(1000, Number(it.g)) })),
-  }));
-  const custom = Array.isArray(o.custom) ? o.custom.filter((f) => f && typeof f.name === 'string' && f.id && f.v && typeof f.v === 'object') : [];
-  return { recipes, settings: o.settings && typeof o.settings === 'object' ? o.settings : null, custom };
+  if (o.version !== 1) throw new Error('Bu yedek sürümü desteklenmiyor.');
+  const recipes = o.recipes.map(r => normalizeRecipe(r, { freshIds: true })).filter(Boolean);
+  const custom = Array.isArray(o.custom) ? o.custom.map(normalizeCustom).filter(Boolean) : [];
+  const ids = new Map();
+  for (const f of custom) { const original = f.id; f.id = uid(); ids.set(original, f.id); }
+  for (const r of recipes) for (const it of r.items) if (it.ref.t === 'u' && ids.has(it.ref.id)) it.ref.id = ids.get(it.ref.id);
+  const profiles = normalizeProfiles(o.profiles).map(p => ({ ...p, id: uid() }));
+  return { recipes, settings: o.settings && typeof o.settings === 'object' ? normalizeSettings(o.settings) : null, custom, profiles };
 }

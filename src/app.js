@@ -3,15 +3,20 @@ import { NUTRIENTS, SECTIONS, SOURCES } from './nutrients.js';
 import { scaleItem, aggregate, scaleAggregate } from './calc.js';
 import { renderMatrix } from './matrix.js';
 import { FONTS, fontStack, ensureFont } from './fonts.js';
-import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, loadCustom, saveCustom } from './store.js';
+import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles } from './store.js';
 import { esc, fmtNum, fmtAmount, clamp, download, uid } from './util.js';
 import { matrixCSV } from './export.js';
+import { recentSearches } from './search.js';
+import { recipeCost, normalizeCustom } from './records.js';
+import { normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection } from './settings.js';
 
 const PRESETS = [1, 5, 10, 25, 50, 100, 150, 200, 250, 500, 750, 1000];
 const MAX_G = 1000;
 
 const S = {
   tab: 'kesfet',
+  searches: loadSearches(),
+  profiles: loadProfiles(),
   cat: null,
   extGroup: null,
   q: '',
@@ -56,8 +61,8 @@ function applySettings() {
   $('#ruler')?.classList.toggle('on', !!s.ruler);
 }
 function setSetting(k, v) {
-  S.settings[k] = v;
-  saveSettings(S.settings);
+  S.settings = normalizeSettings({ ...S.settings, [k]: v });
+  if (!saveSettings(S.settings)) toast('Ayarlar bu oturumda uygulandı; cihaz depolamasına yazılamadı');
   applySettings();
   if (k === 'showExt' && v) loadExt().then(render);
 }
@@ -126,7 +131,7 @@ function customButton(f, action) {
 
 function foodList(prefix, cat, q, extGroup) {
   if (cat === 'custom') {
-    const list = customFoods();
+    const list = q ? search(q).custom : customFoods();
     return `<button class="btn primary block" data-action="cu-new">＋ Etiketten yeni besin ekle</button>
       <p class="hint">Markalı ürünler (bitkisel süt, protein tozu, hazır gıda…) için etiketteki 100 g değerlerini gir. Cihazda saklanır, yedeğe dahil edilir.</p>
       <div class="foods">${list.map((f) => customButton(f, prefix + '-pick-custom')).join('') || '<p class="empty">Henüz kendi besinin yok.</p>'}</div>`;
@@ -137,7 +142,7 @@ function foodList(prefix, cat, q, extGroup) {
     const chips = Object.entries(groups).map(([g, n]) => `<button class="pchip ${extGroup === g ? 'on' : ''}" data-action="${prefix}-extgroup" data-g="${g}">${esc(n)}</button>`).join('');
     let list = extFoods();
     if (extGroup) list = list.filter((f) => f.g === extGroup);
-    if (q) list = search(q, { ext: true }).ext;
+    if (q) list = search(q, { ext: true }).ext.filter(f => !extGroup || f.g === extGroup);
     const shown = list.slice(0, 400);
     return `<div class="presets extgroups">${chips}</div>
       <p class="hint">USDA SR28'den bitkisel gruplar; hayvansal içerikli ve marka ürünler otomatik ayıklandı, yine de vegan uygunluğu ürün bazında doğrulanmalıdır.</p>
@@ -192,6 +197,7 @@ function renderExplore() {
     <section class="list" aria-label="Besinler">
       <div class="searchbar"><input type="search" id="q" placeholder="Ara (isteğe bağlı): muz, mercimek, lentil…" value="${esc(S.q)}" autocomplete="off" aria-label="Besin ara">
       ${S.q ? '<button class="btn ghost" data-action="ex-clear">Temizle</button>' : ''}</div>
+      ${S.searches.length ? `<div class="recent-searches" aria-label="Son aramalar"><span class="hint">Son aramalar</span><div class="presets">${S.searches.map(q => `<button class="pchip" data-action="search-recent" data-q="${esc(q)}">${esc(q)}</button>`).join('')}<button class="btn ghost" data-action="search-clear">Geçmişi temizle</button></div></div>` : ''}
       <div id="foodlist">${foodList('ex', S.cat, S.q, S.extGroup)}</div>
     </section>
     <section class="detail" aria-label="Besin matriksi">${detail}</section>
@@ -226,10 +232,10 @@ function persistRecipes() {
 }
 
 function recipeResult(rc) {
-  const scaled = rc.items.map((it) => { const item = resolve(it.ref); return item ? scaleItem(item, it.g) : null; }).filter(Boolean);
+  const scaled = rc.items.map((it) => { const item = resolve(it.ref); return item ? scaleItem(item, it.g) : { v: {}, s: {}, grams: it.g }; });
   const agg = aggregate(scaled);
-  let r = agg, basisLabel = `Toplam tarif (${fmtNum(agg.grams)} g çiğ malzeme)`;
-  if (S.basis === 'serving' && rc.servings > 1) { r = scaleAggregate(agg, 1 / rc.servings); basisLabel = `1 porsiyon (${rc.servings} porsiyondan biri, ≈ ${fmtNum(agg.grams / rc.servings)} g malzeme)`; }
+  let r = agg, basisLabel = `Toplam tarif (${fmtNum(agg.grams)} g malzeme)`;
+  if (S.basis === 'serving') { r = scaleAggregate(agg, 1 / rc.servings); basisLabel = `1 porsiyon (${rc.servings} porsiyondan biri, ≈ ${fmtNum(agg.grams / rc.servings)} g malzeme)`; }
   if (S.basis === 'per100') {
     const finalW = rc.cookedWeight || agg.grams;
     if (finalW > 0) { r = scaleAggregate(agg, 100 / finalW); basisLabel = `Son ürünün 100 g'ı (${rc.cookedWeight ? 'pişmiş ağırlık ' + fmtNum(rc.cookedWeight) + ' g' : 'pişmiş ağırlık girilmedi; çiğ toplam kullanıldı'})`; }
@@ -250,6 +256,7 @@ function renderRecipe() {
       <span class="ing-kcal">${item.v.energy != null ? fmtNum((item.v.energy * it.g) / 100) + ' kcal' : ''}</span>
       <button class="btn ghost danger" data-action="rc-del-item" data-id="${it.id}" aria-label="Malzemeyi kaldır">✕</button></div>
       ${amountControls('rc:' + it.id, it.g, item.portions, { compact: true, liquid: item.liquid })}
+      <label class="price-field">Kilogram fiyatı (TL/kg, isteğe bağlı)<input type="number" min="0" step="any" inputmode="decimal" data-price="${it.id}" value="${it.pricePerKg ?? ''}" aria-label="${esc(item.name)} kilogram fiyatı"></label>
     </div>`;
   }).join('');
   const { r, basisLabel, agg } = recipeResult(rc);
@@ -277,9 +284,25 @@ function renderRecipe() {
           ${rc.cookedWeight ? '<button class="btn ghost" data-action="rc-cw-clear">Sıfırla</button>' : `<button class="btn ghost" data-action="rc-cw-set">= çiğ toplam (${fmtNum(agg.grams)} g)</button>`}</span></div>
         <div class="presets">${basisBtn('total', 'Toplam')}${basisBtn('serving', '1 porsiyon')}${basisBtn('per100', 'Son ürün 100 g')}</div>
       </div>
+      <div id="recipe-summary">${renderRecipeSummary(rc, r)}</div>
       <div id="matrix" class="matrix">${renderMatrix(r, S.settings, { recipe: rc, basisLabel, closed: S.closed })}</div>` : ''}
     </section>
   </div>`;
+}
+
+function renderRecipeSummary(rc, r) {
+  const cost = recipeCost(rc);
+  const missing = rc.items.filter(it => !resolve(it.ref)).length;
+  const nutrient = (key, label, unit) => {
+    const x = r.v[key], partial = x != null && (r.cov[key] || 0) < r.n;
+    return `<div><span>${label}</span><b>${x == null ? 'veri yok' : fmtNum(x) + ' ' + unit}</b>${partial ? `<small>kısmi ${r.cov[key]}/${r.n}</small>` : ''}</div>`;
+  };
+  return `<section class="card recipe-summary" aria-label="Tarif özeti">
+    <h3>${S.basis === 'serving' ? '1 porsiyon' : S.basis === 'per100' ? 'Son ürün 100 g' : 'Toplam tarif'}</h3>
+    <div class="nutrition-label">${nutrient('energy', 'Enerji', 'kcal')}${nutrient('protein', 'Protein', 'g')}${nutrient('carb_avail', 'Karbonhidrat (lif hariç)', 'g')}${nutrient('fat', 'Yağ', 'g')}${nutrient('fiber', 'Lif', 'g')}${nutrient('salt', 'Tuz', 'g')}</div>
+    <p><b>Maliyet:</b> ${cost.known ? `${fmtNum(cost.total)} TL toplam · ${fmtNum(cost.perServing)} TL / porsiyon` : 'fiyat girilmedi'}${cost.complete ? '' : ` · kısmi ${cost.known}/${cost.count} malzeme`}</p>
+    ${missing ? `<p class="note" role="status">${missing} malzemenin kaydı bulunamadı. Bu malzemelerin ağırlığı toplamda, besin değerleri eksik kapsamda tutuldu.</p>` : ''}
+  </section>`;
 }
 
 // ---------------------------------------------------------------- KARŞILAŞTIR
@@ -335,10 +358,10 @@ function renderSettings() {
       <button class="btn" data-action="preset" data-p="cute">Pastel ve sevimli</button>
       <button class="btn ghost" data-action="preset" data-p="reset">Varsayılana dön</button></div></section>
 
-    <section class="card"><h2>Tema</h2><div class="themes">${THEMES.map((t) => `<button class="theme ${s.theme === t.id ? 'on' : ''}" data-action="set" data-k="theme" data-v='"${t.id}"' style="--tbg:${t.bg};--tfg:${t.fg};--tac:${t.ac}"><span class="tprev"><i></i><b>Aa</b></span>${esc(t.name)}</button>`).join('')}</div>
+    <section class="card"><h2>Tema</h2><button class="btn ghost" data-action="reset-group" data-group="appearance">Tema ayarlarını sıfırla</button><div class="themes">${THEMES.map((t) => `<button class="theme ${s.theme === t.id ? 'on' : ''}" data-action="set" data-k="theme" data-v='"${t.id}"' style="--tbg:${t.bg};--tfg:${t.fg};--tac:${t.ac}"><span class="tprev"><i></i><b>Aa</b></span>${esc(t.name)}</button>`).join('')}</div>
       <h3>Vurgu rengi</h3><div class="swatches">${ACCENTS.map((a) => `<button class="sw-btn ${s.accent === a ? 'on' : ''}" data-action="set" data-k="accent" data-v='"${a}"' style="${a === 'auto' ? '' : `--sw:${a}`}" aria-label="${a === 'auto' ? 'Tema rengi' : a}">${a === 'auto' ? 'Tema' : ''}</button>`).join('')}</div></section>
 
-    <section class="card"><h2>Yazı tipi</h2><div class="fonts">${FONTS.map((f) => `<button class="fontbtn ${s.font === f.id ? 'on' : ''}" data-action="font" data-v="${f.id}" style="font-family:${esc(fontStack(f.id))}"><b>${esc(f.name)}</b><span>Işık, ağaç, şeftali — İıĞğŞş 0O 1lI</span><small>${esc(f.note)}</small></button>`).join('')}</div>
+    <section class="card"><h2>Yazı tipi</h2><button class="btn ghost" data-action="reset-group" data-group="reading">Yazı ayarlarını sıfırla</button><div class="fonts">${FONTS.map((f) => `<button class="fontbtn ${s.font === f.id ? 'on' : ''}" data-action="font" data-v="${f.id}" style="font-family:${esc(fontStack(f.id))}"><b>${esc(f.name)}</b><span>Işık, ağaç, şeftali — İıĞğŞş 0O 1lI</span><small>${esc(f.note)}</small></button>`).join('')}</div>
       ${step('fontSize', 'Yazı boyutu', 13, 28, 1, ' px')}
       ${step('lineHeight', 'Satır aralığı', 1.2, 2.4, 0.1, '', (x) => fmtNum(x))}
       ${step('letterSpacing', 'Harf aralığı', 0, 0.2, 0.01, ' em', (x) => fmtNum(x))}
@@ -346,7 +369,7 @@ function renderSettings() {
       ${tog('bold', 'Daha kalın yazı')}
     </section>
 
-    <section class="card"><h2>Düzen ve erişilebilirlik</h2>
+    <section class="card"><h2>Düzen ve erişilebilirlik</h2><button class="btn ghost" data-action="reset-group" data-group="accessibility">Erişilebilirlik ayarlarını sıfırla</button>
       <div class="kv"><span>Yoğunluk</span><span class="presets">${opt('density', 'comfy', 'Rahat')}${opt('density', 'compact', 'Sıkı')}${opt('density', 'large', 'Büyük dokunma')}</span></div>
       ${step('radius', 'Köşe yuvarlaklığı', 0, 24, 2, ' px')}
       ${tog('ruler', 'Okuma cetveli', 'İmlecin olduğu satırı vurgulayan yatay şerit; satır takibini kolaylaştırır.')}
@@ -354,7 +377,7 @@ function renderSettings() {
       ${tog('emoji', 'Simgeleri / emojileri göster')}
     </section>
 
-    <section class="card"><h2>Matriks gösterimi</h2>
+    <section class="card"><h2>Matriks gösterimi</h2><button class="btn ghost" data-action="reset-group" data-group="matrix">Matriks ayarlarını sıfırla</button>
       ${tog('showNrv', '%BRD çubukları', 'Beslenme Referans Değeri (AB 1169/2011, TGK): yetişkin için etiket referansı; kişisel ihtiyaç değildir.')}
       ${tog('showSource', 'Kaynak etiketleri (USDA / IFCT / Tahmin)')}
       ${tog('showAlt', 'İkinci kaynağın değerini göster (aralık)')}
@@ -365,6 +388,26 @@ function renderSettings() {
       ${tog('showExt', 'Geniş katalog (USDA, ~1900 bitkisel kayıt, İngilizce adlar)')}
     </section>
 
+    <section class="card"><h2>Matriks bölümleri</h2>
+      <p class="hint">Görünür bölümleri seç, oklarla sırala. Kimlik ve kapsam özeti her zaman görünür.</p>
+      <div class="section-settings">${s.sectionOrder.map((id, i) => `<div class="section-option">
+        <label><input type="checkbox" data-section-visible="${id}" ${s.hiddenSections.includes(id) ? '' : 'checked'}> ${esc(MATRIX_SECTIONS.find(x => x.id === id).title)}</label>
+        <span class="presets"><button class="btn ghost" data-action="section-move" data-id="${id}" data-d="-1" ${i === 0 ? 'disabled' : ''} aria-label="${esc(MATRIX_SECTIONS.find(x => x.id === id).title)} yukarı">↑</button><button class="btn ghost" data-action="section-move" data-id="${id}" data-d="1" ${i === s.sectionOrder.length - 1 ? 'disabled' : ''} aria-label="${esc(MATRIX_SECTIONS.find(x => x.id === id).title)} aşağı">↓</button></span>
+      </div>`).join('')}</div>
+      <h3>Sabitlenen besin öğeleri</h3><p class="hint">En fazla 24 öğeyi matriksin en üstünde izle.</p>
+      <label class="field"><span>Öğe sabitle</span><select id="pin-nutrient"><option value="">Bir bileşen seç</option>${NUTRIENTS.filter(n => !['energy', 'energy_kj'].includes(n.key) && !s.pinnedNutrients.includes(n.key)).map(n => `<option value="${n.key}">${esc(n.label)} (${esc(n.unit)})</option>`).join('')}</select></label>
+      <div class="presets">${s.pinnedNutrients.map(k => `<button class="pchip on" data-action="unpin" data-key="${k}" aria-label="${esc(NUTRIENTS.find(n => n.key === k).label)} sabitlemesini kaldır">${esc(NUTRIENTS.find(n => n.key === k).label)} ×</button>`).join('')}</div>
+    </section>
+    <section class="card"><h2>Görünüm profilleri</h2>
+      <p class="hint">Okuma, sunum veya gece için en fazla 12 görünüm kaydet. Profiller üst çubuktan uygulanabilir ve tam yedeğe dahildir.</p>
+      <div class="presets"><input id="profile-name" aria-label="Yeni profil adı" placeholder="Ör. Gece okuması" maxlength="40"><button class="btn" data-action="profile-save">Görünümü kaydet</button></div>
+      ${S.profiles.map(p => `<div class="section-option"><b>${esc(p.name)}</b><span class="presets"><button class="btn" data-action="profile-apply" data-id="${p.id}">Uygula</button><button class="btn" data-action="profile-update" data-id="${p.id}" aria-label="${esc(p.name)} profilini güncelle">Güncelle</button><button class="btn danger" data-action="profile-delete" data-id="${p.id}" aria-label="${esc(p.name)} profilini sil">Sil</button></span></div>`).join('')}
+    </section>
+    <section class="card"><h2>Yalnızca ayarları taşı</h2>
+      <p class="hint">Görünümünü başka cihaza taşı. Tarifler ve kendi besinlerin bu işlemden etkilenmez.</p>
+      <div class="presets"><button class="btn" data-action="settings-export">Ayarları indir</button>
+      <label class="btn file-btn" tabindex="0" role="button">Ayar dosyası aç<input type="file" accept="application/json,.json" id="settings-file" class="sr"></label></div>
+    </section>
     <section class="card"><h2>Yedekleme</h2>
       <p class="hint">Tarifler ve ayarlar yalnızca bu cihazda saklanır. Başka cihaza taşımak veya yedeklemek için dışa aktar.</p>
       <div class="presets"><button class="btn" data-action="exp-file">Dosyaya kaydet (.json)</button>
@@ -442,7 +485,8 @@ function saveCustomEdit() {
   const E = S.customEdit;
   if (!E.name.trim()) { toast('Bir ad gir'); return false; }
   const list = customFoods().slice();
-  const rec = { id: E.id || uid(), name: E.name.trim().slice(0, 80), liquid: !!E.liquid, portion: E.portion > 0 ? Math.min(1000, E.portion) : null, v: { ...E.v } };
+  if (Object.values(E.v).some(v => !Number.isFinite(v) || v < 0)) { toast('Besin değerleri sıfır veya pozitif sonlu sayılar olmalı'); return false; }
+  const rec = normalizeCustom({ ...E, id: E.id || uid() });
   const i = list.findIndex((x) => x.id === rec.id);
   if (i >= 0) list[i] = rec; else list.push(rec);
   setCustomFoods(list);
@@ -473,6 +517,7 @@ export function render() {
       <div class="brand">${S.settings.emoji ? '<span class="logo" aria-hidden="true">🫐</span>' : ''}<b>Besin Matriksi</b></div>
       <nav class="tabs" aria-label="Bölümler">${TABS.map(([id, t, ic]) => `<button class="tab ${S.tab === id ? 'on' : ''}" data-action="tab" data-tab="${id}" ${S.tab === id ? 'aria-current="page"' : ''}><span class="ti" aria-hidden="true">${S.settings.emoji ? ic : ''}</span><span class="tt">${t}</span>${id === 'tarif' && activeRecipe()?.items.length ? `<span class="badge">${activeRecipe().items.length}</span>` : ''}${id === 'karsilastir' && S.compare.length ? `<span class="badge">${S.compare.length}</span>` : ''}</button>`).join('')}</nav>
     </header>
+    ${S.profiles.length ? `<div class="profile-bar" role="group" aria-label="Görünüm profilleri"><span class="hint">Görünüm:</span>${S.profiles.map(p => `<button class="pchip" data-action="profile-apply" data-id="${p.id}">${esc(p.name)}</button>`).join('')}</div>` : ''}
     <main class="view view-${S.tab}">${view}</main>
     ${renderPicker()}${renderCustomEditor()}`;
   document.querySelectorAll('.list, .detail, .pk-list, .cats').forEach((el, i) => (el.dataset.keepScroll = el.className.split(' ')[0] + i));
@@ -492,6 +537,7 @@ function refreshMatrix() {
     const rc = activeRecipe();
     const { r, basisLabel } = recipeResult(rc);
     m.innerHTML = renderMatrix(r, S.settings, { recipe: rc, basisLabel, closed: S.closed });
+    const summary = $('#recipe-summary'); if (summary) summary.innerHTML = renderRecipeSummary(rc, r);
     rc.items.forEach((it) => {
       const item = resolve(it.ref);
       const el = document.querySelector(`[data-amount="rc:${it.id}"]`)?.closest('.ing')?.querySelector('.ing-kcal');
@@ -556,6 +602,9 @@ function uiDialog(message, { input = null, ok = 'Tamam', cancel = null } = {}) {
 
 // ---------------------------------------------------------------- olaylar
 function selectFood(prefix, ref) {
+  const q = prefix === 'ex' ? S.q : S.picker?.q;
+  if (q?.trim()) { S.searches = recentSearches(S.searches, q); saveSearches(S.searches); }
+
   if (prefix === 'ex') { S.sel = ref; S.amount = S.settings.defaultAmount; render(); const d = $('.detail'); if (d) d.scrollTop = 0; if (window.innerWidth < 900) window.scrollTo(0, 0); }
   else { S.picker.sel = ref; S.picker.amount = S.settings.defaultAmount; render(); }
 }
@@ -610,6 +659,8 @@ async function onClick(e) {
     case 'print': document.querySelectorAll('details.sec').forEach((d) => (d.open = true)); setTimeout(() => window.print(), 50); break;
     case 'ex-form': S.sel = { ...S.sel, f: +b.dataset.f }; render(); break;
     case 'ex-back': S.sel = null; render(); break;
+    case 'search-recent': S.q = b.dataset.q; S.cat = null; render(); break;
+    case 'search-clear': S.searches = []; saveSearches([]); render(); break;
     case 'ex-clear': S.q = ''; render(); break;
     case 'ex-add-recipe': addToRecipe(S.sel, S.amount); render(); break;
     case 'ex-add-compare': addToCompare(S.sel, S.amount); render(); break;
@@ -656,6 +707,29 @@ async function onClick(e) {
       render(); break;
     }
     // ayarlar
+    case 'profile-save': {
+      const name = $('#profile-name')?.value.trim();
+      if (!name) { toast('Bir profil adı gir'); break; }
+      if (S.profiles.length >= 12) { toast('En fazla 12 profil kaydedilebilir'); break; }
+      S.profiles.push({ id: uid(), name: name.slice(0, 40), settings: normalizeSettings(S.settings) });
+      if (!saveProfiles(S.profiles)) toast('Profil cihaz depolamasına yazılamadı'); else toast('Görünüm kaydedildi'); render(); break;
+    }
+    case 'profile-apply': {
+      const p = S.profiles.find(p => p.id === b.dataset.id);
+      if (p) { S.settings = normalizeSettings(p.settings); saveSettings(S.settings); applySettings(); if (S.settings.showExt) loadExt().then(render); render(); toast(`Görünüm: ${p.name}`); } break;
+    }
+    case 'profile-update': {
+      const p = S.profiles.find(p => p.id === b.dataset.id);
+      if (p && await uiDialog(`“${p.name}” geçerli görünümle güncellensin mi?`, { ok: 'Güncelle', cancel: 'Vazgeç' })) { p.settings = normalizeSettings(S.settings); saveProfiles(S.profiles); toast('Profil güncellendi'); } break;
+    }
+    case 'profile-delete': {
+      const p = S.profiles.find(p => p.id === b.dataset.id);
+      if (p && await uiDialog(`“${p.name}” görünüm profili silinsin mi?`, { ok: 'Sil', cancel: 'Vazgeç' })) { S.profiles = S.profiles.filter(x => x.id !== p.id); saveProfiles(S.profiles); render(); } break;
+    }
+    case 'section-move': S.settings = moveSection(S.settings, b.dataset.id, Number(b.dataset.d)); saveSettings(S.settings); render(); break;
+    case 'unpin': setSetting('pinnedNutrients', S.settings.pinnedNutrients.filter(k => k !== b.dataset.key)); render(); break;
+    case 'reset-group': S.settings = resetSettingGroup(S.settings, b.dataset.group); saveSettings(S.settings); applySettings(); render(); toast('Bölüm ayarları sıfırlandı'); break;
+    case 'settings-export': download('besin-matriksi-ayarlar.json', exportSettings(S.settings)); break;
     case 'set': setSetting(b.dataset.k, JSON.parse(b.dataset.v)); render(); break;
     case 'font': setSetting('font', b.dataset.v); render(); break;
     case 'setstep': {
@@ -669,10 +743,10 @@ async function onClick(e) {
       saveSettings(S.settings); applySettings(); render(); toast('Ön ayar uygulandı'); break;
     }
     case 'toggle-missing': setSetting('showMissing', true); refreshMatrix(); break;
-    case 'exp-file': download(`besin-matriksi-yedek-${new Date().toISOString().slice(0, 10)}.json`, exportPayload(S.recipes, S.settings, customFoods())); toast('Yedek dosyası hazırlandı'); break;
+    case 'exp-file': download(`besin-matriksi-yedek-${new Date().toISOString().slice(0, 10)}.json`, exportPayload(S.recipes, S.settings, customFoods(), S.profiles)); toast('Yedek dosyası hazırlandı'); break;
     case 'exp-copy':
-      try { await navigator.clipboard.writeText(exportPayload(S.recipes, S.settings, customFoods())); toast('Panoya kopyalandı'); }
-      catch { await uiDialog('Pano kullanılamadı. Metni seçip kopyala:', { input: exportPayload(S.recipes, S.settings, customFoods()), ok: 'Tamam' }); }
+      try { await navigator.clipboard.writeText(exportPayload(S.recipes, S.settings, customFoods(), S.profiles)); toast('Panoya kopyalandı'); }
+      catch { await uiDialog('Pano kullanılamadı. Metni seçip kopyala:', { input: exportPayload(S.recipes, S.settings, customFoods(), S.profiles), ok: 'Tamam' }); }
       break;
     case 'imp-paste': {
       const t = await uiDialog('Yedek metnini yapıştır:', { input: '', ok: 'İçe aktar', cancel: 'Vazgeç' });
@@ -684,14 +758,16 @@ async function onClick(e) {
 
 async function importText(t) {
   try {
-    const { recipes, settings, custom } = parseImport(t);
+    const { recipes, settings, custom, profiles } = parseImport(t);
     S.recipes.push(...recipes);
+    if (profiles.length) { S.profiles = [...S.profiles, ...profiles].slice(0, 12); saveProfiles(S.profiles); }
     if (custom.length) {
       const have = new Set(customFoods().map((f) => f.id));
       const merged = [...customFoods(), ...custom.filter((f) => !have.has(f.id))];
       setCustomFoods(merged); saveCustom(merged);
     }
-    if (settings && (await uiDialog('Yedekteki ayarlar da uygulansın mı?', { ok: 'Evet', cancel: 'Hayır' }))) { S.settings = { ...DEFAULT_SETTINGS, ...settings }; saveSettings(S.settings); applySettings(); }
+    if (S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) await loadExt();
+    if (settings && (await uiDialog('Yedekteki ayarlar da uygulansın mı?', { ok: 'Evet', cancel: 'Hayır' }))) { S.settings = normalizeSettings(settings); saveSettings(S.settings); applySettings(); }
     persistRecipes();
     toast(`${recipes.length} tarif içe aktarıldı`);
     render();
@@ -712,6 +788,12 @@ function exportCSV() {
 
 function onInput(e) {
   const t = e.target;
+  if (t.dataset.price) {
+    const it = activeRecipe().items.find(i => i.id === t.dataset.price);
+    const x = t.value === '' ? null : Number(t.value);
+    if (it) { it.pricePerKg = x != null && Number.isFinite(x) && x >= 0 ? x : null; persistRecipes(); refreshMatrix(); }
+    return;
+  }
   if (t.dataset.cu && S.customEdit) {
     const k = t.dataset.cu, x = t.value === '' ? null : Number(String(t.value).replace(',', '.'));
     if (k === 'salt') { if (x == null || Number.isNaN(x)) delete S.customEdit.v.na; else S.customEdit.v.na = (x / 2.5) * 1000; }
@@ -727,14 +809,24 @@ function onInput(e) {
 }
 function onChange(e) {
   const t = e.target;
+  if (t.dataset.sectionVisible) { setSetting('hiddenSections', t.checked ? S.settings.hiddenSections.filter(id => id !== t.dataset.sectionVisible) : [...S.settings.hiddenSections, t.dataset.sectionVisible]); render(); return; }
+  if (t.id === 'pin-nutrient' && t.value) { setSetting('pinnedNutrients', [...S.settings.pinnedNutrients, t.value]); render(); return; }
   if (t.dataset.setbool) { setSetting(t.dataset.setbool, t.checked); render(); return; }
+  if (t.id === 'settings-file' && t.files?.[0]) {
+    t.files[0].text().then((text) => {
+      S.settings = parseSettings(text); saveSettings(S.settings); applySettings();
+      if (S.settings.showExt || S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) loadExt().then(render);
+      render(); toast('Ayarlar içe aktarıldı');
+    }).catch((err) => uiDialog('Ayarlar içe aktarılamadı: ' + err.message));
+    return;
+  }
   if (t.id === 'imp-file' && t.files?.[0]) { t.files[0].text().then(importText); return; }
   if (t.id === 'rc-name') render();
 }
 
 export function start() {
   applySettings();
-  if (S.settings.showExt) loadExt().then(render);
+  if (S.settings.showExt || S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) loadExt().then(render);
   render();
   document.addEventListener('click', onClick);
   document.addEventListener('input', onInput);

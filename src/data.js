@@ -1,11 +1,12 @@
 import DB from './data/foods.json';
 import { norm } from './util.js';
+import { searchKey } from './search.js';
 
 export const META = DB.meta;
 export const CATEGORIES = DB.categories.map(([id, name, icon]) => ({ id, name, icon }));
 export const FOODS = DB.foods;
 const byId = new Map(FOODS.map((f) => [f.id, f]));
-for (const f of FOODS) f._k = norm(`${f.tr} ${f.en} ${f.sci || ''}`);
+for (const f of FOODS) f._k = searchKey(f);
 
 let EXT = null; // geniş katalog tembel yüklenir
 const extByNdb = new Map();
@@ -27,7 +28,8 @@ export function resolve(ref) {
   if (ref.t === 'c') {
     const food = byId.get(ref.id);
     if (!food) return null;
-    const form = food.forms[ref.f] || food.forms[0];
+    const form = food.forms[ref.f];
+    if (!form) return null;
     return {
       ref, food, form,
       name: food.tr, formLabel: form.label, cat: food.cat,

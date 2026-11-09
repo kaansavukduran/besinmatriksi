@@ -12,10 +12,13 @@
     "preview": "vite preview",
     "test": "node --test tests/*.test.mjs",
     "tauri": "tauri",
-    "cap": "cap"
+    "cap": "cap",
+    "test:browser": "playwright test"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@capacitor/cli": "^8.6.0",
+    "@playwright/test": "^1.65.0",
     "@tauri-apps/cli": "^2.12.4",
     "vite": "^8.3.4"
   },

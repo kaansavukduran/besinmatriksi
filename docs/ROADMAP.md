@@ -6,21 +6,22 @@ Durum etiketleri: PLANNED · IN_PROGRESS · DONE (yalnızca test kanıtıyla). S
 
 | ID | Forge | Neden | Durum |
 |---|---|---|---|
-| B001 | Ayar şeması sürümü (`bm.settings.v2` + göç), yalnızca ayarları dışa/içe aktar, bölüm bazında "varsayılana dön" | Yeni ayarların eski kayıtları bozmaması; cihazlar arası taşıma | PLANNED |
-| B002 | Matriks bölümlerini göster/gizle ve sürükle-bırak ya da ↑↓ ile **sırala**; "sabitlenen besin öğeleri" (ör. B12, demir, ω-3) en üstte | Herkes farklı şeye bakar | PLANNED |
+| B001 | Ayar şeması sürümü (`bm.settings.v2` + göç), yalnızca ayarları dışa/içe aktar, bölüm bazında "varsayılana dön" | Yeni ayarların eski kayıtları bozmaması; cihazlar arası taşıma | DONE (UNIT_TESTED) |
+| B002 | Matriks bölümlerini göster/gizle ve sürükle-bırak ya da ↑↓ ile **sırala**; "sabitlenen besin öğeleri" (ör. B12, demir, ω-3) en üstte | Herkes farklı şeye bakar | DONE (UNIT_TESTED) |
 | B003 | Referans profili seçimi: AB BRD (varsayılan) / yaş-cinsiyet grubu için EFSA DRV; %BRD yerine "%hedef" ile kullanıcının kendi hedefleri (g, mg, µg) | Kişisel hedef ≠ etiket referansı; kaynağı ve yılı kartta | PLANNED |
 | B004 | Birim tercihleri: kcal/kJ/ikisi, g/oz, µg↔mg otomatik ölçek kapalı/açık, ondalık ayracı virgül/nokta | Okunabilirlik | PLANNED |
 | B005 | Özel tema oluşturucu (arka plan, yazı, vurgu, kart renkleri) + WCAG kontrast denetimi ve uyarısı; temayı paylaşılabilir kod olarak dışa aktar | 9 hazır tema yetmeyebilir | PLANNED |
 | B006 | Klavye kısayolları ekranı ve yeniden atama; odak halkası kalınlığı; imleç büyüklüğü | Fare + klavye kullanımı | PLANNED |
-| B007 | Birden çok ayar profili (ör. "Okuma", "Sunum", "Gece") ve hızlı geçiş | Bağlama göre görünüm | PLANNED |
+| B007 | Birden çok ayar profili (ör. "Okuma", "Sunum", "Gece") ve hızlı geçiş | Bağlama göre görünüm | DONE (UNIT_TESTED) |
 
 ## Kullanılabilirlik ve çıktı
 
 | ID | Forge | Durum |
 |---|---|---|
 | B010 | Matriksi yazdır / PDF (Türkçe glifli, sayfa numaralı) ve CSV dışa aktarma | PLANNED |
-| B011 | Arama: Türkçe karakter katlama (ı/i, ş/s), eş anlamlılar, son arananlar | PLANNED |
-| B012 | Tarif: porsiyon başı maliyet (kullanıcı fiyatı girer, TL/kg), etiket tarzı özet kart | PLANNED |
+| B011 | Arama: Türkçe karakter katlama (ı/i, ş/s), eş anlamlılar, son arananlar | DONE (UNIT_TESTED) |
+| B012 | Tarif: porsiyon başı maliyet (kullanıcı fiyatı girer, TL/kg), etiket tarzı özet kart | DONE (UNIT_TESTED) |
+| B014 | Tarif/yedek doğrulama, özel besin kimlik çakışması ve eksik malzeme kapsamı | DONE (UNIT_TESTED) |
 | B013 | Erişilebilirlik denetimi (axe/Playwright duman testi), ekran okuyucu etiketleri | PLANNED |
 
 ## Veri

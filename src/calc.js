@@ -64,12 +64,14 @@ export const AA_REF = [
 ];
 
 export function derive(r) {
-  const v = r.v;
+  // Kısmi tarif toplamları oranlara ve skorlara tam ölçüm gibi giremez.
+  const v = Object.fromEntries(Object.entries(r.v).filter(([k]) => !r.cov || r.n <= 1 || r.cov[k] === r.n || k === '_aaProtein'));
+  if (r.cov && r.n > 1 && AA_KEYS.some(k => r.cov[k] !== r.n)) delete v._aaProtein;
   const out = {};
   // Enerji dağılımı (Atwater genel faktörleri, yaklaşık)
-  const p = v.protein, f = v.fat, fib = v.fiber ?? 0;
-  const c = v.carb_avail ?? (v.carb != null ? Math.max(0, v.carb - fib) : null);
-  if (p != null && f != null && c != null) {
+  const p = v.protein, f = v.fat, fib = v.fiber;
+  const c = v.carb_avail ?? (v.carb != null && fib != null ? Math.max(0, v.carb - fib) : null);
+  if (p != null && f != null && c != null && fib != null) {
     const kp = p * 4, kf = f * 9, kc = c * 4, kfi = fib * 2;
     const tot = kp + kf + kc + kfi;
     if (tot > 0) out.energySplit = { p: (kp / tot) * 100, f: (kf / tot) * 100, c: (kc / tot) * 100, fib: (kfi / tot) * 100, total: tot };
