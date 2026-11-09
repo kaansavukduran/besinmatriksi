@@ -3,7 +3,7 @@
 Türkçe, çevrimdışı, özelleştirilebilir bitkisel besin matriksi ve tarif hesaplayıcı.
 Windows · macOS · Linux · Android · iPhone · tarayıcı/PWA · tek HTML.
 
-**[Paketleri indir: Actions / Artifacts](https://github.com/kaansavukduran/besinmatriksi/actions/runs/42596270782)** ·
+**[Paketleri indir: Actions / Artifacts](https://github.com/kaansavukduran/besinmatriksi/actions/runs/42606995870)** ·
 [Kurulum adımları](docs/INSTALL.md) · [Geliştirme PR #2](https://github.com/kaansavukduran/besinmatriksi/pull/2)
 
 ## İndirip dene
@@ -84,7 +84,7 @@ Masaüstü paketleri Tauri, mobil paketler Capacitor ile üretilir.
 macOS, Linux, Android ve iOS paketlerini kendi runner'larında oluşturur.
 `v*` etiketi tüm kapılar başarılıysa GitHub Release yayımlar.
 `workflow_dispatch` yalnız test/paket artifact'leri üretir.
-Her artifact lisans metinleri ve kurulum rehberini içerir. Doğrulanan ZIP özetleri, kaynak SHA ve test/paket/çalışma zamanı ayrımı [kanıt kaydında](docs/evidence/B005b-packages.json).
+Her artifact lisans metinleri ve kurulum rehberini içerir. Doğrulanan ZIP özetleri, kaynak SHA ve test/paket/çalışma zamanı ayrımı [kanıt kaydında](docs/evidence/B003b-packages.json).
 
 EFSA ham JSON/bildirim URL ve özetleri `data/references/EFSA_SOURCE.json` içinde; dönüşüm `scripts/build-efsa.mjs` ile çevrimdışıdır. [Kapsam, izin ve birim ayrımları](docs/DATA_RESEARCH.md).
 

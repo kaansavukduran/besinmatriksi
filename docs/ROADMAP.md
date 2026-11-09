@@ -46,18 +46,18 @@ Durum etiketleri: PLANNED · IN_PROGRESS · DONE (yalnızca test kanıtıyla). S
 2. B021: resmî erişim/lisans teyidi, kayıtlı retry_not_before sonrasında tekrar araştırılır; aynı engel günlükten sık tekrarlanmaz.
 3. UX-TASKS: görev/saat ekranının kapsamı için kullanıcının yanıtı beklenir; bu istek tamamlandı sayılmaz.
 
-B003b **RUNTIME_TESTED locally; PACKAGING_PENDING**: 1–99 yaş çocuk/yetişkin,
+B003b **DONE (PACKAGED)**: 1–99 yaş çocuk/yetişkin,
 23 karşılaştırılabilir bileşende 169 PRI/AI kaydı; kapsam/izin/birim istisnaları
 DATA_RESEARCH.md'de. Kaynak doğrulama + 49 birim testi, üretim PWA/tek HTML
 ve hedefli telefon/masaüstü EFSA tarayıcı kapıları PASS. Son GitHub tam kapısı
-ve native paketler henüz bekleniyor. Kalıcı durum kod/paket SHA'larını ayırır.
+30/30 PASS; run 42606995870 altı artifact grubunda kaynak `baaca2b` ile eşleşti. Kalıcı durum kod/paket SHA'larını ayırır.
 Kapsam dışı bilimsel tabloları ekleyerek bitişi sürekli öteleme.
 
 ## 1.1.1 yayın ve izin düzeltmesi
 
 - B040: **DONE**. IFCT ürün izni asıl NIN metninden kontrol edildi; izin doğrulanmadığı için IFCT CSV/değer/tahmin dağıtımı kaldırıldı. USDA tam bileşen tablosu eklendi, izomer/birim dönüşümleri test edildi. 13 lisans/kaynak metni uygulamaya gömülür.
 - B030-release: **CLOSED_USER_SCOPE**. Son talimat yeni herkese açık Release yayınını yasakladı; etiket çalışması 42591741380 iptal edildi. Yeni yayın veya etiket taşıma yok.
-- B040b: **DONE (PACKAGED)**. 35 crate/sürüm için özgün kaynak lisansları URL/özet ile saklandı; üç masaüstü kapısında 404 paket / 0 eksik dosya. Run 42593575878, kaynak `a93e8a5903183f560adf0a1c8403dead5740c194`; 38 birim ve 24 tarayıcı testi, altı artifact grubu PASS. Kanıt: `docs/evidence/1.1.1-packages.json`. Sonraki tek Forge **B020b**.
+- B040b: **DONE (PACKAGED)**. 35 crate/sürüm için özgün kaynak lisansları URL/özet ile saklandı; üç masaüstü kapısında 404 paket / 0 eksik dosya. Run 42593575878, kaynak `a93e8a5903183f560adf0a1c8403dead5740c194`; 38 birim ve 24 tarayıcı testi, altı artifact grubu PASS. Kanıt: `docs/evidence/1.1.1-packages.json`. B020b daha sonra kapandı.
 - GitHub Pages etkinleştirme: HTTP 403, entegrasyon yetkisi yok. PWA arşivi ve imzasız IPA sağlanır; Safari için yayımlanmış PWA adresi olduğu iddia edilmez.
 - NIN yazılı izin kanıtı olmadan IFCT verileri ve bu veriye dayanan tahminler tekrar eklenmez. Eski Git geçmişi bu turda yeniden yazılmadı.
 
@@ -66,4 +66,6 @@ Kapsam dışı bilimsel tabloları ekleyerek bitişi sürekli öteleme.
 - B005b: **DONE (PACKAGED)**. Ayrıntılı renk seçim penceresi, hazır renkler/HEX ve kart/ikincil yazı/kenarlık renkleri; eski tema dosyaları korunacak.
 - Sürüklenen “görev” ve saat alanının Besin Matriksi bölümleri/tarifleri mi ayrı plan ekranı mı olduğu soruldu; yanıt gelmeden bir görev modeli uydurulmaz.
 
-B020b/B005b son kapıları: workflow_dispatch run 42596270782; kaynak `8e0b3178bc41864338a3fdf91afb6cf49e5497be`, altı artifact grubu ve üç masaüstünde 404 Cargo / 0 eksik metin. Test/paket/runtime ayrımı `docs/evidence/B005b-packages.json`. Sonraki tek Forge **B003b**; UX-TASKS kapsamı açıklama bekliyor ve tamamlandı sayılmaz.
+B020b/B005b son kapıları: workflow_dispatch run 42596270782; kaynak `8e0b3178bc41864338a3fdf91afb6cf49e5497be`, altı artifact grubu ve üç masaüstünde 404 Cargo / 0 eksik metin. Test/paket/runtime ayrımı `docs/evidence/B005b-packages.json`. B003b aşağıdaki yeni kapıyla kapandı; UX-TASKS açıklama bekliyor ve tamamlandı sayılmaz.
+
+B003b son kanıtı: `docs/evidence/B003b-packages.json`; 49 birim / 30 tarayıcı testi ve altı paket grubu PASS. Fiziksel/native çalışma zamanı NOT_RUN. Sonraki tek Forge **B031**.

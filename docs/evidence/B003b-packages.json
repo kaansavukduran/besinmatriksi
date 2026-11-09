@@ -1,0 +1,123 @@
+{
+  "forge": "B003b",
+  "source_sha": "baaca2ba15fbacb208a8fbffc02d012741d27779",
+  "run_url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42606995870",
+  "event": "workflow_dispatch",
+  "test_evidence": {
+    "unit": "PASS 49/49",
+    "browser_ci": "PASS 30/30 desktop/phone including file:// and offline PWA",
+    "browser_local": "EFSA targeted 2/2 PASS on final source; earlier existing regression flows 26 PASS + 2 file:// SKIP. Initial new EFSA assertions corrected for Turkish 1.000 grouping; final full CI PASS.",
+    "build_web": "PASS",
+    "build_single_html": "PASS",
+    "data_reproducibility": "PASS; existing USDA JSON unchanged; EFSA deterministic and source/notice digests checked",
+    "notices": "14 original source/license records; 8 font OFL notices + software MIT retained",
+    "visual_review": "EFSA reference settings screenshots on desktop/phone inspected"
+  },
+  "reference_source": {
+    "source_url": "https://multimedia.efsa.europa.eu/drvs/assets/data/languages/en/data.json",
+    "source_sha256": "f67a4e418e361662aca30fa8cd128832a6eaef14dff59b5fcdda1b722e53525e",
+    "snapshot": "2026-11-09",
+    "license_url": "https://www.efsa.europa.eu/en/legalnotice",
+    "license_notice_sha256": "594a4b26bddda1090c3b549233a056cbca20ddcc211aad5bddce0b2f37d6865b",
+    "nutrients": 23,
+    "pri_ai_records": 169,
+    "types": [
+      "PRI",
+      "AI"
+    ],
+    "excluded": "Infants/pregnancy/lactation, AR/RI/SSI/UL, energy/bodyweight dependent and incompatible nutrient forms/units; iodine has no existing matrix key"
+  },
+  "package_evidence": {
+    "artifacts": [
+      {
+        "id": 13669380609,
+        "name": "desktop-linux",
+        "digest": "sha256:e9029578d022a6f613d60d54b01af34789764c78ca1276d41a8bea109f463176",
+        "size_in_bytes": 86869782,
+        "expires_at": "2027-02-07T11:11:27Z"
+      },
+      {
+        "id": 13668257855,
+        "name": "android",
+        "digest": "sha256:6c7aae3d432139a91b27d2668b4895adfe1742e7f70073718149f02a92a884c7",
+        "size_in_bytes": 5519877,
+        "expires_at": "2027-02-07T11:11:27Z"
+      },
+      {
+        "id": 13667913223,
+        "name": "ios",
+        "digest": "sha256:549c55e89eadd471f49e74d31c5d29ef9c8d9cc1db01f4002e8222d04787e617",
+        "size_in_bytes": 2410430,
+        "expires_at": "2027-02-07T11:11:27Z"
+      },
+      {
+        "id": 13667583608,
+        "name": "web",
+        "digest": "sha256:655e287d70ac42ebc6c9189defc6ae86c3188f7b0382ee4db60f2745addf6d19",
+        "size_in_bytes": 2870667,
+        "expires_at": "2027-02-07T11:11:27Z"
+      },
+      {
+        "id": 13667464839,
+        "name": "desktop-macos",
+        "digest": "sha256:6596150492e180de186a539f77c22433a110f38e5bf7f8384b7e4051c234e2a5",
+        "size_in_bytes": 6555534,
+        "expires_at": "2027-02-07T11:11:27Z"
+      },
+      {
+        "id": 13667299777,
+        "name": "desktop-windows",
+        "digest": "sha256:145f677585f20c0b80686fecee449ac92debc7478a99dab2b870af1bab5ad6af",
+        "size_in_bytes": 12034040,
+        "expires_at": "2027-02-07T11:11:27Z"
+      }
+    ],
+    "all_source_sha_match": true,
+    "download_checks": [
+      {
+        "name": "web",
+        "digest_matches_github": true,
+        "files": [
+          "LICENSE.txt",
+          "THIRD_PARTY_NOTICES.txt",
+          "KURULUM.md",
+          "besin-matriksi-tek-dosya.html",
+          "besin-matriksi-web-pwa.zip"
+        ],
+        "downloaded_artifact_runtime": "NOT_RUN"
+      },
+      {
+        "name": "desktop-windows",
+        "digest_matches_github": true,
+        "files": [
+          "Besin Matriksi_1.1.1_x64-setup.exe",
+          "BesinMatriksi-portable-x64.exe",
+          "Besin Matriksi_1.1.1_x64_en-US.msi",
+          "KURULUM.md",
+          "LICENSE.txt",
+          "THIRD_PARTY_NOTICES-RUST-windows.txt",
+          "THIRD_PARTY_NOTICES.txt"
+        ],
+        "downloaded_artifact_runtime": "NOT_RUN"
+      }
+    ],
+    "native_notices": {
+      "windows": "404 packages / 0 missing license files",
+      "macos": "404 packages / 0 missing license files",
+      "linux": "404 packages / 0 missing license files"
+    }
+  },
+  "runtime_evidence": {
+    "web": "RUNTIME_TESTED",
+    "native_devices": "NOT_RUN; packaging does not prove installation or native execution",
+    "ios": "Unsigned IPA; Apple signing required",
+    "next_forge_environment": "Current local Linux inspection found no Xvfb executable or WebKitGTK 4.1 library; provisioning needed before a native Linux smoke test"
+  },
+  "publication": {
+    "github_release": "SKIPPED; no new public Release authorized",
+    "merge": "NOT_PERFORMED",
+    "store": "NOT_PUBLISHED",
+    "pwa_hosting": "No hosted URL; previous Pages API 403 preserved"
+  },
+  "next_single_forge": "B031"
+}
