@@ -2,10 +2,10 @@
   "schema_version": "1",
   "project": "Besin Matriksi",
   "product_version": "1.1.1",
-  "development_state": "READY_FOR_NEXT_FORGE",
+  "development_state": "RESEARCHING",
   "last_forge_at": "2026-11-09T09:54:27.250573+00:00",
   "last_completed_forge": "B005b",
-  "active_forge": null,
+  "active_forge": "B003b",
   "next_recommended_forge": "B003b",
   "branch": "codex/forge-devam",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
@@ -203,12 +203,11 @@
   ],
   "publication_policy": "No auto merge, force push, new public Release, or store publication. Only workflow_dispatch artifacts; v1.1.1 tag not moved.",
   "work_session": {
-    "state": "COMPLETED",
-    "owner": "interactive-codex-20261109-B005b",
-    "started_at": "2026-11-09T09:37:30.008911+00:00",
-    "lease_expires_at": null,
-    "note": "B020b + B005b completed and artifacts verified; no active editing lease.",
-    "finished_at": "2026-11-09T09:54:27.250617+00:00"
+    "state": "ACTIVE",
+    "owner": "codex-20261109-B003b",
+    "started_at": "2026-11-09T10:55:35.591940+00:00",
+    "lease_expires_at": "2026-11-09T12:25:35.591940+00:00",
+    "note": "EFSA official numeric table and reuse terms verification in progress. Preserve active edits; no concurrent takeover."
   },
   "pending_user_clarification": "User asked drag-reorder tasks and task times. Besin Matriksi has no tasks; async question pending: existing sections/recipes versus separate planning screen.",
   "package_evidence_file": "docs/evidence/B005b-packages.json"
