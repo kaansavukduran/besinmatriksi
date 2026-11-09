@@ -30,7 +30,7 @@ biçimi ve 100 g yenebilir kısım temeli eşleşen kayıtları küratörlü ekl
 
 ## Mevcut katalog
 
-USDA SR28 (2015) ve IFCT 2017 kaynak değerleri değiştirilmedi. Kullanıcı etiket
+1.1.1 dağıtımı USDA SR28 tam bileşen tablosuyla yeniden üretildi. IFCT değerleri ve IFCT tabanlı tahminler NIN ürün izni doğrulanmadığı için çıkarıldı (docs/LICENSE_AUDIT.md). Kullanıcı etiket
 kayıtları ayrı tutulur. Tooltiplerde veri seti/yıl ve mevcut kayıt kimliği gösterilir.
 Tarifte eksik malzeme kaydı ağırlıktan silinmez; besin toplamı kısmi kapsam taşır.
 Eksik girdilerden tam ölçüm izlenimi veren oran veya amino asit skoru üretilmez.

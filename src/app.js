@@ -407,7 +407,7 @@ function renderSettings() {
       ${tog('showMissing', '“Veri yok” satırlarını listele')}
       <div class="kv"><span>Ondalık hassasiyeti</span><span class="presets">${opt('precision', 'low', 'Az')}${opt('precision', 'normal', 'Normal')}${opt('precision', 'high', 'Çok')}</span></div>
       <div class="kv"><span>Varsayılan miktar</span><span class="presets">${[50, 100, 250, 1000].map((g) => opt('defaultAmount', g, g === 1000 ? '1 kg' : g + ' g')).join('')}</span></div>
-      ${tog('showExt', 'Geniş katalog (USDA, ~1900 bitkisel kayıt, İngilizce adlar)')}
+      ${tog('showExt', `Geniş katalog (USDA, ${META.ext} bitkisel kayıt, İngilizce adlar)`)}
     </section>
 
     <section class="card"><h2>Matriks bölümleri</h2>

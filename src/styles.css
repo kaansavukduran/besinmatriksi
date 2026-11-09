@@ -459,6 +459,7 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
   .kv { display: grid; grid-template-columns: minmax(0, 30%) minmax(0, 1fr); gap: 3pt 8pt; padding: 4pt 0; }
   .row { grid-template-columns: minmax(0, 1.65fr) minmax(0, 1.1fr) minmax(0, .85fr) minmax(0, 1.05fr); gap: 3pt 6pt; padding: 4pt 0; line-height: 1.35; }
   .row .pctc, .row .meta { grid-column: auto; margin: 0; }
+  .row .pctc:empty, .row .meta:empty { display: block; }
   .row .val { white-space: normal; overflow-wrap: anywhere; }
   .row .meta { justify-content: flex-end; }
   .bar { min-width: 15pt; }
