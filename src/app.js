@@ -8,7 +8,8 @@ import { FONTS, fontStack, ensureFont } from './fonts.js';
 import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles } from './store.js';
 import { esc, fmtNum, fmtAmount, clamp, download, uid, configureFormatting } from './util.js';
 import { matrixCSV } from './export.js';
-import { contrastRatio, accentText, exportTheme, parseTheme } from './theme.js';
+import { contrastRatio, accentText, exportTheme, parseTheme, COLOR_LABELS, validColor, themeTextContrast } from './theme.js';
+import { renderThemeEditor, themePreview } from './theme-editor.js';
 import { focusSelector, syncModalFocus, trapModalTab } from './accessibility.js';
 import { recentSearches } from './search.js';
 import { recipeCost, normalizeCustom } from './records.js';
@@ -38,6 +39,7 @@ const S = {
   cmpSection: 'all',
   picker: null, // { target, cat, q, sel, amount }
   customEdit: null, // { id?, name, liquid, portion, v: {} }
+  themeEditor: null,
 };
 setCustomFoods(loadCustom());
 S.amount = S.settings.defaultAmount;
@@ -57,7 +59,7 @@ function applySettings() {
   r.dataset.theme = s.theme;
   if (s.theme === 'custom') {
     const c = s.customTheme;
-    for (const [k, v] of Object.entries({ bg: c.bg, fg: c.fg, card: c.card, card2: c.bg, muted: c.fg, line: c.fg, ac0: c.accent, ok: c.fg, warn: c.fg, bad: c.fg, okbg: c.card, warnbg: c.card, badbg: c.card })) r.style.setProperty('--' + k, v);
+    for (const [k, v] of Object.entries({ bg: c.bg, fg: c.fg, card: c.card, card2: c.card2, muted: c.muted, line: c.line, ac0: c.accent, ok: c.fg, warn: c.fg, bad: c.fg, okbg: c.card, warnbg: c.card, badbg: c.card })) r.style.setProperty('--' + k, v);
   }
   r.dataset.density = s.density;
   r.dataset.cursor = s.largeCursor ? 'large' : 'normal';
@@ -439,10 +441,10 @@ function renderSettings() {
       ${Object.entries(s.targets).map(([k, value]) => { const n = NUTRIENTS.find(n => n.key === k); return `<label class="field"><span>${esc(n.label)} hedefi (${esc(n.unit)})</span><input type="number" min="0" step="any" data-target-value="${k}" value="${value}"></label><button class="btn ghost" data-action="target-remove" data-key="${k}">${esc(n.label)} hedefini kaldır</button>`; }).join('')}` : ''}
     </section>
     <section class="card"><h2>Kendi temam</h2>
-      <div class="cu-grid">${Object.entries({ bg: 'Arka plan', fg: 'Yazı', card: 'Kart', accent: 'Vurgu' }).map(([k, label]) => `<label class="field"><span>${label}</span><input type="color" data-theme-color="${k}" value="${s.customTheme[k]}"></label>`).join('')}</div>
-      <div class="theme-preview" style="background:${s.customTheme.bg};color:${s.customTheme.fg}"><span style="background:${s.customTheme.card};padding:.4rem">İı Şş Ğğ 123 · Örnek metin</span></div>
-      <p class="hint" role="status">WCAG metin kontrastı: arka plan ${fmtNum(contrastRatio(s.customTheme.fg, s.customTheme.bg))}:1 · kart ${fmtNum(contrastRatio(s.customTheme.fg, s.customTheme.card))}:1. ${Math.min(contrastRatio(s.customTheme.fg, s.customTheme.bg), contrastRatio(s.customTheme.fg, s.customTheme.card)) < 4.5 ? '⚠ Normal metin için 4,5:1 eşiğinin altında; yazı veya zemin rengini değiştir.' : 'Normal metin için AA eşiğini karşılıyor.'} Vurgu / kart: ${fmtNum(contrastRatio(s.customTheme.accent, s.customTheme.card))}:1.</p>
-      <div class="presets"><button class="btn" data-action="set" data-k="theme" data-v='"custom"'>Kendi temamı uygula</button><button class="btn" data-action="theme-export">Temayı indir</button><button class="btn" data-action="open-file" data-id="theme-file">Tema dosyası aç</button><input type="file" id="theme-file" accept="application/json,.json" hidden></div>
+      <div class="cu-grid">${Object.entries(COLOR_LABELS).map(([k, label]) => `<button class="btn color-field" data-action="theme-color-open" data-key="${k}" aria-label="${label} rengini seç"><span class="color-dot" style="background:${s.customTheme[k]}" aria-hidden="true"></span><span>${label}<small>${s.customTheme[k]}</small></span></button>`).join('')}</div>
+      ${themePreview(s.customTheme)}
+      <p class="hint" role="status">WCAG ana/ikincil metin kontrastı (üç yüzeyde en düşük): ${fmtNum(themeTextContrast(s.customTheme))}:1. ${themeTextContrast(s.customTheme) < 4.5 ? '⚠ Normal metin için 4,5:1 eşiğinin altında; yazı veya zemin rengini değiştir.' : 'Bu metin çiftleri AA eşiğini karşılıyor.'} Vurgu / kart: ${fmtNum(contrastRatio(s.customTheme.accent, s.customTheme.card))}:1.</p>
+      <div class="presets"><button class="btn" data-action="theme-apply">Kendi temamı uygula</button><button class="btn" data-action="theme-export">Temayı indir</button><button class="btn" data-action="open-file" data-id="theme-file">Tema dosyası aç</button><input type="file" id="theme-file" accept="application/json,.json" hidden></div>
     </section>
     <section class="card"><h2>Görünüm profilleri</h2>
       <p class="hint">Okuma, sunum veya gece için en fazla 12 görünüm kaydet. Profiller üst çubuktan uygulanabilir ve tam yedeğe dahildir.</p>
@@ -571,7 +573,7 @@ export function render() {
     </header>
     ${S.profiles.length ? `<div class="profile-bar" role="group" aria-label="Görünüm profilleri"><span class="hint">Görünüm:</span>${S.profiles.map(p => `<button class="pchip" data-action="profile-apply" data-id="${p.id}">${esc(p.name)}</button>`).join('')}</div>` : ''}
     <main class="view view-${S.tab}">${view}</main>
-    ${renderPicker()}${renderCustomEditor()}`;
+    ${renderPicker()}${renderCustomEditor()}${renderThemeEditor(S.themeEditor, S.settings.customTheme)}`;
   document.querySelectorAll('.list, .detail, .pk-list, .cats').forEach((el, i) => (el.dataset.keepScroll = el.className.split(' ')[0] + i));
   document.querySelectorAll('[data-keep-scroll]').forEach((el) => { if (keep[el.dataset.keepScroll] != null) el.scrollTop = keep[el.dataset.keepScroll]; });
   window.scrollTo(0, winY);
@@ -769,6 +771,17 @@ async function onClick(e) {
       render(); break;
     }
     // ayarlar
+    case 'theme-apply': setSetting('accent', 'auto'); setSetting('theme', 'custom'); render(); break;
+    case 'theme-color-open': S.themeEditor = { key: b.dataset.key, color: S.settings.customTheme[b.dataset.key] }; render(); break;
+    case 'theme-color-close': S.themeEditor = null; render(); break;
+    case 'theme-color-preset': S.themeEditor.color = b.dataset.color; render(); break;
+    case 'theme-color-save': {
+      const input = $('#theme-color-hex');
+      if (!validColor(input.value)) { input.setAttribute('aria-invalid', 'true'); input.reportValidity(); input.focus(); break; }
+      if (S.themeEditor.key === 'accent' && S.settings.theme === 'custom') setSetting('accent', 'auto');
+      setSetting('customTheme', { ...S.settings.customTheme, [S.themeEditor.key]: input.value });
+      S.themeEditor = null; render(); break;
+    }
     case 'theme-export': download('besin-matriksi-tema.json', exportTheme(S.settings.customTheme)); break;
     case 'target-add': {
       const key = $('#target-nutrient')?.value, value = Number($('#target-new-value')?.value);
@@ -858,6 +871,19 @@ function exportCSV() {
 
 function onInput(e) {
   const t = e.target;
+  if (S.themeEditor && ['theme-color-picker', 'theme-color-hex'].includes(t.id)) {
+    const valid = validColor(t.value);
+    t.setAttribute('aria-invalid', String(!valid));
+    if (valid) {
+      S.themeEditor.color = t.value;
+      const other = $(t.id === 'theme-color-picker' ? '#theme-color-hex' : '#theme-color-picker');
+      other.value = t.value; other.setAttribute('aria-invalid', 'false');
+      const fresh = document.createElement('div'); fresh.innerHTML = renderThemeEditor(S.themeEditor, S.settings.customTheme);
+      $('#theme-editor-preview').innerHTML = fresh.querySelector('#theme-editor-preview').innerHTML;
+      $('#theme-editor-contrast').textContent = fresh.querySelector('#theme-editor-contrast').textContent;
+    }
+    return;
+  }
   if (t.dataset.targetValue) {
     const targets = { ...S.settings.targets }, value = Number(t.value);
     if (t.value !== '' && Number.isFinite(value) && value > 0) targets[t.dataset.targetValue] = value;
@@ -896,7 +922,7 @@ function onChange(e) {
   }
   if (t.dataset.themeColor) { setSetting('customTheme', { ...S.settings.customTheme, [t.dataset.themeColor]: t.value }); render(); return; }
   if (t.id === 'theme-file' && t.files?.[0]) {
-    t.files[0].text().then(text => { setSetting('customTheme', parseTheme(text)); setSetting('theme', 'custom'); render(); toast('Tema içe aktarıldı'); }).catch(err => uiDialog(err.message)); return;
+    t.files[0].text().then(text => { setSetting('customTheme', parseTheme(text)); setSetting('accent', 'auto'); setSetting('theme', 'custom'); render(); toast('Tema içe aktarıldı'); }).catch(err => uiDialog(err.message)); return;
   }
   if (t.dataset.sectionVisible) { setSetting('hiddenSections', t.checked ? S.settings.hiddenSections.filter(id => id !== t.dataset.sectionVisible) : [...S.settings.hiddenSections, t.dataset.sectionVisible]); render(); return; }
   if (t.id === 'pin-nutrient' && t.value) { setSetting('pinnedNutrients', [...S.settings.pinnedNutrients, t.value]); render(); return; }
@@ -932,7 +958,7 @@ export function start() {
       const target = Object.keys(SHORTCUT_ACTIONS).find(id => S.settings.shortcuts[id] === `Alt+${e.key}`);
       if (target) { e.preventDefault(); S.tab = target; render(); window.scrollTo(0, 0); document.querySelector(`[data-tab="${target}"]`)?.focus(); return; }
     }
-    trapModalTab(e); if (!e.defaultPrevented && e.key === 'Escape' && (S.picker || S.customEdit)) { if (S.customEdit) S.customEdit = null; else S.picker = null; render(); } });
+    trapModalTab(e); if (!e.defaultPrevented && e.key === 'Escape' && (S.picker || S.customEdit || S.themeEditor)) { if (S.themeEditor) S.themeEditor = null; else if (S.customEdit) S.customEdit = null; else S.picker = null; render(); } });
   // Modal arka planına tıklayınca kapat
   document.addEventListener('mousedown', (e) => { if (e.target.classList?.contains('modal') && !e.target.classList.contains('dlg') && !S.customEdit) { S.picker = null; render(); } });
   const ruler = $('#ruler');

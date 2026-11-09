@@ -30,7 +30,7 @@ Durum etiketleri: PLANNED · IN_PROGRESS · DONE (yalnızca test kanıtıyla). S
 | ID | Forge | Durum |
 |---|---|---|
 | B020a | Tek besin kaynak etiketlerinde veri seti/yıl/kayıt no; kapsam özetinde kısmi malzemeyi ayır | DONE (UNIT_TESTED + BUILT) |
-| B020b | Tarif toplamındaki her değerin katkı veren malzeme/kaynak dökümü | DONE (RUNTIME_TESTED locally; CI final kapısı bekleniyor) |
+| B020b | Tarif toplamındaki her değerin katkı veren malzeme/kaynak dökümü | DONE (RUNTIME_TESTED; 26 tarayıcı testi CI PASS, kaynak be114fe) |
 | B021 | Türkiye'ye özgü besinler (TürKomp erişimi ve lisansı araştırılıp kaydedilmeden veri eklenmez) | BLOCKED_SOURCE_VERIFICATION (docs/DATA_RESEARCH.md) |
 
 ## Dağıtım
@@ -59,5 +59,5 @@ B003b henüz PLANNED. Kalıcı durum dosyası, son test ve paket SHA'larını ay
 
 ## Yeni kullanıcı isteği · 9 Kasım 2026
 
-- B005b: **IN_PROGRESS**. Ayrıntılı renk seçim penceresi, hazır renkler/HEX ve kart/ikincil yazı/kenarlık renkleri; eski tema dosyaları korunacak.
+- B005b: **RUNTIME_TESTED; PACKAGING_PENDING**. Ayrıntılı renk seçim penceresi, hazır renkler/HEX ve kart/ikincil yazı/kenarlık renkleri; eski tema dosyaları korunacak.
 - Sürüklenen “görev” ve saat alanının Besin Matriksi bölümleri/tarifleri mi ayrı plan ekranı mı olduğu soruldu; yanıt gelmeden bir görev modeli uydurulmaz.

@@ -2,7 +2,7 @@
   "schema_version": "1",
   "project": "Besin Matriksi",
   "product_version": "1.1.1",
-  "development_state": "IN_PROGRESS",
+  "development_state": "PACKAGING",
   "last_forge_at": "2026-11-09T09:42:14.016917+00:00",
   "last_completed_forge": "B020b",
   "active_forge": "B005b",
@@ -102,7 +102,7 @@
     "stop_when": "All applicable roadmap items and final gates are verified; pause only this own automation.",
     "note": "Hourly schedule enabled with inherited cloud environment; availability and usage limits still apply."
   },
-  "notes": "B020b RUNTIME_TESTED locally: 42 unit, builds PASS, browser 24 PASS + 2 managed file:// SKIP. CI/package evidence for new source pending; historical package SHA remains separate. B005b theme expansion follows new user request.",
+  "notes": "B020b CI PASS at be114fe; B005b final local gates PASS: 43 unit, production builds, 26 browser PASS + 2 file:// policy SKIP. Current code not yet packaged; previous package SHA remains historical until workflow_dispatch completes.",
   "release_target": null,
   "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission.",
   "historical_verified_gates": [
@@ -159,5 +159,6 @@
     "lease_expires_at": "2026-11-09T10:40:00Z",
     "note": "B020b local gates complete; user requested expanded theme editor, B005b active. Preserve live edits."
   },
-  "pending_user_clarification": "User asked drag-reorder tasks and task times. Besin Matriksi has no tasks; async question pending: existing sections/recipes versus separate planning screen."
+  "pending_user_clarification": "User asked drag-reorder tasks and task times. Besin Matriksi has no tasks; async question pending: existing sections/recipes versus separate planning screen.",
+  "package_evidence_file": "docs/evidence/1.1.1-packages.json"
 }

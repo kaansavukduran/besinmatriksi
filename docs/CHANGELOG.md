@@ -1,5 +1,8 @@
 # 1.1.1 · 9 Kasım 2026
 
+- B020b: tarifte seçilen bileşenin malzeme katkısı, veri boşluğu/sıfır ayrımı, USDA kayıt/etiket kaynağı ve hesap girdileri; porsiyon/100 g ile eşzamanlı.
+- B005b: yedi ayrı tema rengi; hazır renkli seçim penceresi, sistem renk alanı, HEX, canlı önizleme, iptal/kaydet ve kontrast denetimi. Eski dört renkli v1 dosyası korunur; yeni v2 dosyası yedi rengi taşır.
+
 - Windows/Linux/macOS/Android/imzasız iOS ve web paketleri Actions / Artifacts üzerinden; kurulum rehberi ve lisans dökümleri. Son talimat uyarınca yeni herkese açık Release yayımlanmadı. ZIP özetleri ve kaynak SHA kanıt kaydında.
 - IFCT paketinin MIT etiketi ile NIN asıl yayın izni ayrıldı. Ürün izni doğrulanmadığı için IFCT CSV, değer ve tahminler dağıtımdan çıkarıldı.
 - USDA tam ASCII tablosundan amino asit, yağ asidi, şeker, vitamin biçimi, sterol ve küçük bileşik değerleri eklendi. Jaggery açık kaynak boşluğuyla korunur.

@@ -1,6 +1,6 @@
 # Besin Matriksi 1.1.1 kurulumu
 
-Paketler: https://github.com/kaansavukduran/besinmatriksi/actions/runs/42593575878
+Paketler: https://github.com/kaansavukduran/besinmatriksi/actions/workflows/release.yml
 
 GitHub hesabınla oturum aç; başarılı çalışmanın Artifacts bölümünde platform arşivini indir. Son talimat yeni herkese açık Release yayımlanmamasını istediği için bu sürüm Actions çıktısı olarak sunulur.
 
@@ -12,9 +12,9 @@ GitHub hesabınla oturum aç; başarılı çalışmanın Artifacts bölümünde 
 - Her platformda tek dosya: `besin-matriksi-tek-dosya.html` dosyasını indirip tarayıcıda aç. Fontlar, lisanslar ve veriler dosyada gömülüdür; ağ gerekmez. Mobil dosya görüntüleyicileri JavaScript'i kapatabiliyorsa PWA sürümünü kullan.
 - Web/PWA: `besin-matriksi-web-pwa.zip` arşivini bir HTTPS sunucusuna aç. İlk çevrimiçi yükleme tamamlandıktan sonra çevrimdışı çalışır.
 
-Manuel Actions arşivleri `SHA256SUMS.txt` içermez; doğrulanan ZIP özetleri
-`docs/evidence/1.1.1-packages.json` içindedir. Paketlenmiş eski rehberdeki
-SHA256SUMS cümlesi bu manuel çıktılar için geçerli değildir. `THIRD_PARTY_NOTICES.txt`,
+Manuel Actions arşivleri `SHA256SUMS.txt` içermez. Güncel kaynak SHA ve ZIP
+özetlerinin kanıt dosyası `project_state/CURRENT_STATE.json` içindeki
+`package_evidence_file` alanında belirtilir. `THIRD_PARTY_NOTICES.txt`,
 platforma ait Rust bildirimleri ve `LICENSE.txt` lisans kayıtlarıdır.
 
 Bu sürümde USDA SR28 açık verileri ve kullanıcı etiket kayıtları kullanılır.

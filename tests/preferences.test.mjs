@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { contrastRatio, accentText, exportTheme, parseTheme } from '../src/theme.js';
+import { contrastRatio, accentText, exportTheme, parseTheme, normalizeColors, themeTextContrast } from '../src/theme.js';
 import { normalizeSettings, referenceFor } from '../src/settings.js';
 import { configureFormatting, fmtNum, fmtAmount } from '../src/util.js';
 import { matrixCSV } from '../src/export.js';
@@ -29,4 +29,17 @@ test('kısayollar çakışma ve bilinmeyen değerleri reddeder; odak sınırlar�
   const cfg = normalizeSettings({ shortcuts: { kesfet: 'Alt+9', tarif: 'Alt+9', ayarlar: 'Ctrl+X', hakkinda: '' }, focusWidth: 100 });
   assert.equal(cfg.shortcuts.kesfet, 'Alt+9'); assert.equal(cfg.shortcuts.tarif, ''); assert.equal(cfg.shortcuts.ayarlar, '');
   assert.equal(cfg.shortcuts.hakkinda, ''); assert.equal(cfg.focusWidth, 6);
+});
+
+test('eski dört renkli tema görünümü korunur; yeni renkler ayar ve v2 tema dosyasında taşınır', () => {
+  const old = { bg: '#101820', fg: '#ffffff', card: '#1d2630', accent: '#8ad1ff' };
+  const migrated = parseTheme(JSON.stringify({ app: 'besin-matriksi-tema', version: 1, colors: old }));
+  assert.equal(migrated.card2, old.bg); assert.equal(migrated.muted, old.fg); assert.equal(migrated.line, old.fg);
+  const edited = { ...migrated, card2: '#222222', muted: '#cccccc', line: '#888888' };
+  assert.deepEqual(normalizeSettings({ customTheme: edited }).customTheme, edited);
+  const payload = exportTheme(edited); assert.equal(JSON.parse(payload).version, 2);
+  assert.deepEqual(parseTheme(payload), edited);
+  assert.throws(() => parseTheme(JSON.stringify({ app: 'besin-matriksi-tema', version: 2, colors: old })));
+  assert.equal(normalizeColors({ ...edited, muted: '#abc;display:none' }).muted, old.fg);
+  assert.equal(themeTextContrast({ ...edited, card: '#cccccc' }), 1, 'ikincil metin kontrastı da denetlenmeli');
 });

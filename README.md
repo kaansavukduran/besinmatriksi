@@ -30,9 +30,9 @@ Windows WebView2 gerektirir. Fiziksel cihaz kabulü henüz tamamlanmamıştır.
 ## Kullanım
 
 - **Keşfet:** kategori → besin → tüketim biçimi → 1–1000 g. Hazır miktarlar, kaydırıcı, ±1/±10 ve kaynakta varsa ev ölçüleri. İsteğe bağlı ons gösterimi.
-- **Tarif oluştur:** malzemeleri ekle, porsiyon veya pişmiş son ağırlık seç. Toplam/1 porsiyon/son ürünün 100 g'ı, TL/kg fiyat ve porsiyon maliyeti. Eksik fiyat veya besin bilgisi kısmi kapsamla gösterilir.
+- **Tarif oluştur:** malzemeleri ekle, porsiyon veya pişmiş son ağırlık seç. Toplam/1 porsiyon/son ürünün 100 g'ı, TL/kg fiyat ve porsiyon maliyeti. Eksik fiyat veya besin bilgisi kısmi kapsamla gösterilir. Malzeme ve kaynak dökümünde her bileşenin malzeme katkısı, USDA kayıt no/etiket kaynağı ve hesap girdileri incelenir.
 - **Karşılaştır:** 2–4 besini aynı miktar ve biçimde yan yana incele. En yüksek değer vurgusu sağlık açısından 'en iyi' anlamına gelmez.
-- **Ayarlar:** 9 tema ve özel tema/kontrast ölçümü; 8 gömülü font ve sistem fontu; OpenDyslexic, Atkinson, Lexend; punto ve aralıklar; okuma cetveli; büyük imleç; atanabilir kısayollar; 12 görünüm profili.
+- **Ayarlar:** 9 tema ve yedi renk alanlı özel tema; renk seçim penceresi, hazır renkler/HEX, canlı önizleme ve metin kontrast ölçümü; 8 gömülü font ve sistem fontu; OpenDyslexic, Atkinson, Lexend; punto ve aralıklar; okuma cetveli; büyük imleç; atanabilir kısayollar; 12 görünüm profili.
 - **Kendi matriksin:** bölümleri gizle/sırala, 24 öğeye kadar sabitle. AB/TGK etiket BRD'si veya elle girilen hedef. kcal/kJ ve sayı/birim tercihleri.
 - **Yedek/çıktı:** tarif/etiket/profil yedeği; ayrı ayar veya tema dosyası; CSV; Türkçe karakterli ve sayfa numaralı A4 yazdırma/PDF. Yazdırmadan sonra bölüm durumları korunur.
 - **Hakkında:** lisans ve telif bildirimleri internet olmadan okunabilir.
