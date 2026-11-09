@@ -2,10 +2,10 @@
   "schema_version": "1",
   "project": "Besin Matriksi",
   "product_version": "1.1.1",
-  "development_state": "READY_FOR_NEXT_FORGE",
+  "development_state": "IN_PROGRESS",
   "last_forge_at": "2026-11-09T09:33:53.916577+00:00",
   "last_completed_forge": "B040b",
-  "active_forge": null,
+  "active_forge": "B020b",
   "next_recommended_forge": "B020b",
   "branch": "codex/forge-devam",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
@@ -151,5 +151,12 @@
       "version": "1.1.0"
     }
   ],
-  "publication_policy": "No auto merge, force push, new public Release, or store publication. Only workflow_dispatch artifacts; v1.1.1 tag not moved."
+  "publication_policy": "No auto merge, force push, new public Release, or store publication. Only workflow_dispatch artifacts; v1.1.1 tag not moved.",
+  "work_session": {
+    "state": "ACTIVE",
+    "owner": "interactive-codex-20261109-B020b",
+    "started_at": "2026-11-09T09:37:30.008911+00:00",
+    "lease_expires_at": "2026-11-09T10:40:00Z",
+    "note": "Interactive Forge in progress in work/besinmatriksi. Preserve active checkout edits; scheduled concurrent turns must not take over while this lease is current."
+  }
 }
