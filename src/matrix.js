@@ -2,7 +2,7 @@
 import { NUTRIENTS, SECTIONS, SOURCES, ALLERGENS } from './nutrients.js';
 import { derive } from './calc.js';
 import { esc, fmtNum, fmtAmount, fmtPct } from './util.js';
-import { normalizeSettings } from './settings.js';
+import { normalizeSettings, referenceFor } from './settings.js';
 
 const SRC_LABEL = { u: 'USDA', i: 'IFCT', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
 const SRC_TITLE = {
@@ -10,9 +10,10 @@ const SRC_TITLE = {
   d: 'Diğer ölçülmüş değerlerden hesaplandı (ör. tuz = sodyum × 2,5)', m: 'Tarifteki malzemeler farklı kaynaklardan', k: 'Kullanıcının ürün etiketinden girdiği değer',
 };
 
-function srcChip(s) {
+function srcChip(s, item) {
   if (!s) return '';
-  return `<span class="src src-${s}" title="${esc(SRC_TITLE[s])}">${SRC_LABEL[s]}</span>`;
+  const record = s === 'u' && item?.usda ? ` · USDA SR28 (2015), NDB ${item.usda.ndb} · ${item.usda.desc}` : s === 'i' && item?.ifct ? ` · IFCT 2017, ${item.ifct.code} · ${item.ifct.name}` : s === 'e' && item?.estFrom ? ` · IFCT 2017 çiğ kaynak kaydı: ${item.estFrom}; protein/yağ oranı ile tahmin` : '';
+  return `<span class="src src-${s}" title="${esc(SRC_TITLE[s] + record)}">${SRC_LABEL[s]}</span>`;
 }
 
 function valueCell(n, x, cfg) {
@@ -25,9 +26,10 @@ function row(n, r, cfg) {
   const s = r.s[n.key];
   if (x == null) return { missing: true, html: '' };
   let pct = '';
-  if (cfg.showNrv && n.nrv) {
-    const p = (x / n.nrv) * 100;
-    pct = `<span class="nrv" title="Beslenme Referans Değerinin (BRD) yüzdesi; BRD = ${fmtNum(n.nrv)} ${esc(n.unit)}">
+  const ref = referenceFor(n, cfg);
+  if (cfg.showNrv && ref.value) {
+    const p = (x / ref.value) * 100;
+    pct = `<span class="nrv" title="${esc(ref.title)}; ${ref.label}: ${fmtNum(ref.value)} ${esc(n.unit)}">
       <span class="bar"><i style="width:${Math.min(100, p).toFixed(1)}%"></i>${p > 100 ? '<b class="over"></b>' : ''}</span>
       <span class="pct">${fmtPct(p)}</span></span>`;
   }
@@ -47,7 +49,7 @@ function row(n, r, cfg) {
       <span class="lbl" role="cell">${esc(n.label)}</span>
       <span class="val" role="cell">${valueCell(n, x, cfg)}</span>
       ${pct ? `<span class="pctc" role="cell">${pct}</span>` : '<span class="pctc" role="cell"></span>'}
-      <span class="meta" role="cell">${cfg.showSource ? srcChip(s) : ''}${extra.join('')}</span>
+      <span class="meta" role="cell">${cfg.showSource ? srcChip(s, cfg.sourceItem) : ''}${extra.join('')}</span>
     </div>`,
   };
 }
@@ -61,12 +63,14 @@ function section(sec, r, cfg, open) {
       if (r.v.energy == null) { missing.push(n.label); continue; }
       have++;
       const kj = r.v.energy_kj;
-      const p = (r.v.energy / 2000) * 100;
+      const ref = referenceFor(n, cfg);
+      const p = ref.value ? (r.v.energy / ref.value) * 100 : null;
+      const amount = cfg.energyUnit === 'kj' ? `${fmtNum(kj, cfg.precision)} <span class="unit">kJ</span>` : `${fmtNum(r.v.energy, cfg.precision)} <span class="unit">kcal</span>`;
       html += `<div class="row" role="row"><span class="lbl" role="cell">Enerji</span>
-        <span class="val" role="cell"><span class="num">${fmtNum(r.v.energy, cfg.precision)}</span> <span class="unit">kcal</span>
-        ${kj != null ? `<span class="kj">· ${fmtNum(kj, cfg.precision)} kJ</span>` : ''}</span>
-        <span class="pctc" role="cell">${cfg.showNrv ? `<span class="nrv" title="BRD 2000 kcal / 8400 kJ"><span class="bar"><i style="width:${Math.min(100, p).toFixed(1)}%"></i></span><span class="pct">${fmtPct(p)}</span></span>` : ''}</span>
-        <span class="meta" role="cell">${cfg.showSource ? srcChip(r.s.energy) : ''}</span></div>`;
+        <span class="val" role="cell"><span class="num">${amount}</span>
+        ${kj != null && cfg.energyUnit === 'both' ? `<span class="kj">· ${fmtNum(kj, cfg.precision)} kJ</span>` : ''}</span>
+        <span class="pctc" role="cell">${cfg.showNrv && p != null ? `<span class="nrv" title="${esc(ref.title)}; ${ref.label} ${fmtNum(ref.value)} kcal"><span class="bar"><i style="width:${Math.min(100, p).toFixed(1)}%"></i></span><span class="pct">${fmtPct(p)}</span></span>` : ''}</span>
+        <span class="meta" role="cell">${cfg.showSource ? srcChip(r.s.energy, cfg.sourceItem) : ''}${r.cov && r.cov.energy < r.n ? `<span class="flag partial">kısmi ${r.cov.energy}/${r.n}</span>` : ''}</span></div>`;
       continue;
     }
     const rr = row(n, r, cfg);
@@ -203,16 +207,18 @@ function coverage(r, cfg) {
   const secs = SECTIONS.map((s) => {
     const list = NUTRIENTS.filter((n) => n.section === s.id && n.key !== 'energy_kj');
     const have = list.filter((n) => r.v[n.key] != null).length;
-    return { s, have, total: list.length };
+    const partial = r.cov && r.n > 1 ? list.filter(n => r.v[n.key] != null && r.cov[n.key] < r.n).length : 0;
+    return { s, have, partial, total: list.length };
   });
-  return `<div class="coverage">${secs.map((x) => `<span class="covchip ${x.have === 0 ? 'none' : x.have / x.total > 0.6 ? 'full' : 'part'}" title="${esc(x.s.title)}: ${x.have}/${x.total}">${cfg.emoji ? x.s.icon + ' ' : ''}${x.have}/${x.total}</span>`).join('')}</div>`;
+  return `<div class="coverage">${secs.map((x) => `<span class="covchip ${x.have === 0 ? 'none' : x.have / x.total > 0.6 && !x.partial ? 'full' : 'part'}" title="${esc(x.s.title)}: ${x.have}/${x.total}; ${x.partial} kısmi malzeme kapsamı">${cfg.emoji ? x.s.icon + ' ' : ''}${x.have}/${x.total}</span>`).join('')}</div>`;
 }
 
 export function renderMatrix(r, cfg, ctx = {}) {
   cfg = normalizeSettings(cfg);
   const item = ctx.item || null;
+  cfg.sourceItem = item;
   const open = (id) => !ctx.closed?.has(id);
-  const d = [identityCard(item, r, cfg, ctx), coverage(r, cfg)];
+  const d = [identityCard(item, r, cfg, ctx), coverage(r, cfg), `<p class="hint reference-label">${cfg.referenceMode === 'custom' ? '%hedef: elle girilen hedefler, öneri değildir. Hedef girilmeyen bileşenlerde yüzde gösterilmez.' : '%BRD: AB 1169/2011 (2011) yetişkin etiket referansı / TGK. Kişisel ihtiyaç değildir.'}</p>`];
   if (cfg.hiddenSections.length) d.push(`<p class="hint">${cfg.hiddenSections.length} bölüm ayarlarda gizlendi. Kapsam özeti ve CSV tüm bileşenleri içerir.</p>`);
   if (cfg.pinnedNutrients.length) {
     const rows = cfg.pinnedNutrients.map(k => NUTRIENTS.find(n => n.key === k)).map(n => {

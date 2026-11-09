@@ -12,9 +12,12 @@ export function norm(s) {
 }
 
 const fmtCache = new Map();
+let formatPreferences = { decimalSeparator: 'comma', autoUnits: true };
+export function configureFormatting(settings = {}) { formatPreferences = { decimalSeparator: settings.decimalSeparator || 'comma', autoUnits: settings.autoUnits !== false }; }
 function nf(min, max) {
-  const k = min + ':' + max;
-  if (!fmtCache.has(k)) fmtCache.set(k, new Intl.NumberFormat('tr-TR', { minimumFractionDigits: min, maximumFractionDigits: max }));
+  const locale = formatPreferences.decimalSeparator === 'dot' ? 'en-US' : 'tr-TR';
+  const k = locale + ':' + min + ':' + max;
+  if (!fmtCache.has(k)) fmtCache.set(k, new Intl.NumberFormat(locale, { minimumFractionDigits: min, maximumFractionDigits: max }));
   return fmtCache.get(k);
 }
 
@@ -37,9 +40,11 @@ export function fmtNum(x, precision = 'normal') {
 export function fmtAmount(x, unit, precision) {
   if (x == null) return { n: '–', u: unit };
   let v = x, u = unit;
-  if (u === 'µg' && Math.abs(v) >= 10000) { v /= 1000; u = 'mg'; }
-  if (u === 'mg' && Math.abs(v) >= 10000) { v /= 1000; u = 'g'; }
-  if (u === 'g' && Math.abs(v) >= 10000) { v /= 1000; u = 'kg'; }
+  if (formatPreferences.autoUnits) {
+    if (u === 'µg' && Math.abs(v) >= 10000) { v /= 1000; u = 'mg'; }
+    if (u === 'mg' && Math.abs(v) >= 10000) { v /= 1000; u = 'g'; }
+    if (u === 'g' && Math.abs(v) >= 10000) { v /= 1000; u = 'kg'; }
+  }
   return { n: fmtNum(v, precision), u };
 }
 

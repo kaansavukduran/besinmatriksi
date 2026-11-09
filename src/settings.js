@@ -1,7 +1,9 @@
 // Sürüm 2: yalnızca tanımlı ve doğrulanmış ayarlar saklanır.
 import { SECTIONS, NUTRIENTS } from './nutrients.js';
+import { DEFAULT_COLORS, normalizeColors } from './theme.js';
 export const MATRIX_SECTIONS = [...SECTIONS, { id: 'hesap', title: 'Hesaplanan göstergeler' }, { id: 'tolerans', title: 'Alerji, intolerans ve uyarılar' }, { id: 'kalinti', title: 'Kalıntılar ve kapsam dışı' }, { id: 'hazirlik', title: 'Hazırlama ve emilim' }];
 export const SETTINGS_VERSION = 2;
+export const SHORTCUT_ACTIONS = { kesfet: 'Keşfet', tarif: 'Tarif oluştur', karsilastir: 'Karşılaştır', ayarlar: 'Ayarlar', hakkinda: 'Hakkında' };
 export const DEFAULT_SETTINGS = {
   theme: 'light', accent: 'auto', font: 'atkinson', fontSize: 17,
   lineHeight: 1.55, letterSpacing: 0, wordSpacing: 0, density: 'comfy',
@@ -10,25 +12,39 @@ export const DEFAULT_SETTINGS = {
   showMissing: false, precision: 'normal', showExt: false, emoji: true,
   defaultAmount: 100,
   sectionOrder: MATRIX_SECTIONS.map(s => s.id), hiddenSections: [], pinnedNutrients: [],
+  customTheme: DEFAULT_COLORS, referenceMode: 'eu', targets: {},
+  energyUnit: 'both', amountUnit: 'g', autoUnits: true, decimalSeparator: 'comma',
+  shortcuts: { kesfet: 'Alt+1', tarif: 'Alt+2', karsilastir: 'Alt+3', ayarlar: 'Alt+4', hakkinda: 'Alt+5' }, focusWidth: 3, largeCursor: false,
 };
 export const SETTING_GROUPS = {
-  appearance: ['theme', 'accent', 'radius'],
+  appearance: ['theme', 'accent', 'radius', 'customTheme'],
   reading: ['font', 'fontSize', 'lineHeight', 'letterSpacing', 'wordSpacing', 'bold'],
-  accessibility: ['density', 'ruler', 'reduceMotion', 'emoji'],
-  matrix: ['showNrv', 'showSource', 'showSd', 'showAlt', 'showMissing', 'precision', 'defaultAmount', 'showExt', 'sectionOrder', 'hiddenSections', 'pinnedNutrients'],
+  accessibility: ['density', 'ruler', 'reduceMotion', 'emoji', 'shortcuts', 'focusWidth', 'largeCursor'],
+  matrix: ['showNrv', 'showSource', 'showSd', 'showAlt', 'showMissing', 'precision', 'defaultAmount', 'showExt', 'sectionOrder', 'hiddenSections', 'pinnedNutrients', 'referenceMode', 'targets', 'energyUnit', 'amountUnit', 'autoUnits', 'decimalSeparator'],
 };
 const enums = {
-  theme: ['light', 'dark', 'oled', 'sepia', 'pastel', 'ocean', 'forest', 'contrast', 'contrast-dark'],
+  theme: ['light', 'dark', 'oled', 'sepia', 'pastel', 'ocean', 'forest', 'contrast', 'contrast-dark', 'custom'],
   font: ['atkinson', 'opendyslexic', 'lexend', 'andika', 'nunito', 'inter', 'literata', 'mono', 'system'],
   density: ['comfy', 'compact', 'large'], precision: ['low', 'normal', 'high'],
+  referenceMode: ['eu', 'custom'], energyUnit: ['both', 'kcal', 'kj'], amountUnit: ['g', 'oz'], decimalSeparator: ['comma', 'dot'],
 };
-const ranges = { fontSize: [13, 28], lineHeight: [1.2, 2.4], letterSpacing: [0, .2], wordSpacing: [0, .5], radius: [0, 24], defaultAmount: [1, 1000] };
+const ranges = { fontSize: [13, 28], lineHeight: [1.2, 2.4], letterSpacing: [0, .2], wordSpacing: [0, .5], radius: [0, 24], defaultAmount: [1, 1000], focusWidth: [2, 6] };
 export function normalizeSettings(input) {
   const out = structuredClone(DEFAULT_SETTINGS);
   if (!input || typeof input !== 'object' || Array.isArray(input)) return out;
   for (const k of Object.keys(out)) {
     const v = input[k];
-    if (['sectionOrder', 'hiddenSections', 'pinnedNutrients'].includes(k)) {
+    if (k === 'shortcuts') {
+      const used = new Set();
+      for (const action of Object.keys(SHORTCUT_ACTIONS)) {
+        const key = v?.[action] ?? DEFAULT_SETTINGS.shortcuts[action];
+        out[k][action] = typeof key === 'string' && /^(Alt\+[1-9])?$/.test(key) && !used.has(key) ? key : '';
+        if (key) used.add(key);
+      }
+    } else if (k === 'customTheme') out[k] = normalizeColors(v);
+    else if (k === 'targets') {
+      for (const n of NUTRIENTS) if (typeof v?.[n.key] === 'number' && Number.isFinite(v[n.key]) && v[n.key] > 0) out[k][n.key] = v[n.key];
+    } else if (['sectionOrder', 'hiddenSections', 'pinnedNutrients'].includes(k)) {
       const allowed = k === 'pinnedNutrients' ? NUTRIENTS.filter(n => !['energy', 'energy_kj'].includes(n.key)).map(n => n.key) : MATRIX_SECTIONS.map(s => s.id);
       const selected = Array.isArray(v) ? [...new Set(v.filter(x => allowed.includes(x)))] : [];
       out[k] = k === 'sectionOrder' ? [...selected, ...allowed.filter(x => !selected.includes(x))] : selected.slice(0, k === 'pinnedNutrients' ? 24 : allowed.length);
@@ -40,6 +56,10 @@ export function normalizeSettings(input) {
     } else if (typeof out[k] === 'boolean' && typeof v === 'boolean') out[k] = v;
   }
   return out;
+}
+export function referenceFor(nutrient, settings) {
+  const custom = settings.referenceMode === 'custom';
+  return { value: custom ? settings.targets?.[nutrient.key] : nutrient.nrv, label: custom ? '%hedef' : '%BRD', title: custom ? 'Elle girilen hedef; kişisel gereksinim veya tıbbi öneri değildir' : 'AB 1169/2011 yetişkin etiket referansı (2011), TGK; kişisel ihtiyaç değildir' };
 }
 export function moveSection(settings, id, direction) {
   const next = normalizeSettings(settings), order = next.sectionOrder;

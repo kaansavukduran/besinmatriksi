@@ -70,7 +70,7 @@ body {
 :root[data-bold="1"] b, :root[data-bold="1"] h2, :root[data-bold="1"] h3 { font-weight: 800; }
 button, input, textarea, select { font: inherit; color: inherit; letter-spacing: inherit; word-spacing: inherit; }
 button { cursor: pointer; }
-:focus-visible { outline: 3px solid var(--acc); outline-offset: 2px; }
+:focus-visible { outline: var(--focus-width, 3px) solid var(--acc); outline-offset: 2px; }
 h2 { font-size: 1.3rem; margin: 0 0 .4em; line-height: 1.25; }
 h3 { font-size: 1.05rem; margin: 1em 0 .4em; }
 i.sci, .dsub i { font-style: italic; }
@@ -441,4 +441,19 @@ html { scroll-padding-top: 100px; scroll-padding-bottom: 110px; }
 @media (max-width: 700px) {
   .tabs { width: 100%; }
   .ropts .stepper > .btn { max-width: 100%; overflow-wrap: anywhere; }
+}
+
+.theme-preview { border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem; }
+input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
+@media print { .profile-bar { display: none !important; } }
+
+.portions .pchip { white-space: normal; text-align: left; max-width: 100%; height: auto; overflow-wrap: anywhere; }
+:root[data-cursor="large"] body, :root[data-cursor="large"] button, :root[data-cursor="large"] a, :root[data-cursor="large"] summary { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='48' viewBox='0 0 40 48'%3E%3Cpath d='M3 2v37l10-9 7 15 7-3-7-15h14Z' fill='black' stroke='white' stroke-width='3'/%3E%3C/svg%3E") 3 2, auto; }
+@page { size: A4; margin: 14mm; @bottom-right { content: counter(page) " / " counter(pages); font-size: 9pt; } }
+@media print {
+  .card, .sec, .idcard { box-shadow: none; }
+  .sec { break-inside: auto; }
+  summary, .row, .kv { break-inside: avoid; }
+  .src, .flag, .chip, .cov, .covchip { color: #000 !important; background: #fff !important; }
+  .reference-label { color: #000; }
 }

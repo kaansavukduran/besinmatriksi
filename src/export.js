@@ -1,18 +1,21 @@
 // Matriksi Türkçe Excel uyumlu CSV'ye çevirir (; ayraç, ondalık virgül, UTF-8 BOM)
 import { NUTRIENTS, SECTIONS } from './nutrients.js';
+import { referenceFor, normalizeSettings } from './settings.js';
 import { derive } from './calc.js';
 
 const SRC = { u: 'USDA SR28', i: 'IFCT 2017', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
 const num = (x) => (x == null ? '' : String(Number(x.toPrecision(6))).replace('.', ','));
 const cell = (s) => (/[;"\n]/.test(s) ? `"${String(s).replace(/"/g, '""')}"` : String(s));
 
-export function matrixCSV(r, title) {
-  const rows = [[title], [], ['Bölüm', 'Bileşen', 'Miktar', 'Birim', '%BRD', 'Kaynak', 'Kapsam']];
+export function matrixCSV(r, title, settings = {}) {
+  settings = normalizeSettings(settings);
+  const rows = [[title], [], ['Bölüm', 'Bileşen', 'Miktar', 'Birim', settings.referenceMode === 'custom' ? '%hedef' : '%BRD', 'Kaynak', 'Kapsam']];
   for (const sec of SECTIONS) {
     for (const n of NUTRIENTS.filter((x) => x.section === sec.id)) {
       const x = r.v[n.key];
       const cov = r.cov && r.n > 1 ? `${r.cov[n.key] || 0}/${r.n}` : '';
-      rows.push([sec.title, n.label, x == null ? 'veri yok' : num(x), n.unit, x != null && n.nrv ? num((x / n.nrv) * 100) : '', x == null ? '' : SRC[r.s[n.key]] || '', cov]);
+      const ref = referenceFor(n, settings);
+      rows.push([sec.title, n.label, x == null ? 'veri yok' : num(x), n.unit, x != null && ref.value ? num((x / ref.value) * 100) : '', x == null ? '' : SRC[r.s[n.key]] || '', cov]);
     }
   }
   const d = derive(r);

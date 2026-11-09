@@ -4,12 +4,13 @@ import { scaleItem, aggregate, scaleAggregate } from './calc.js';
 import { renderMatrix } from './matrix.js';
 import { FONTS, fontStack, ensureFont } from './fonts.js';
 import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles } from './store.js';
-import { esc, fmtNum, fmtAmount, clamp, download, uid } from './util.js';
+import { esc, fmtNum, fmtAmount, clamp, download, uid, configureFormatting } from './util.js';
 import { matrixCSV } from './export.js';
+import { contrastRatio, accentText, exportTheme, parseTheme } from './theme.js';
 import { focusSelector, syncModalFocus, trapModalTab } from './accessibility.js';
 import { recentSearches } from './search.js';
 import { recipeCost, normalizeCustom } from './records.js';
-import { normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection } from './settings.js';
+import { normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS } from './settings.js';
 
 const PRESETS = [1, 5, 10, 25, 50, 100, 150, 200, 250, 500, 750, 1000];
 const MAX_G = 1000;
@@ -45,8 +46,16 @@ let modalOpener = null;
 // ---------------------------------------------------------------- ayarlar
 function applySettings() {
   const s = S.settings, r = document.documentElement;
+  configureFormatting(s);
+  for (const key of ['bg', 'fg', 'card', 'card2', 'muted', 'line', 'ac0', 'ac-fg', 'ok', 'warn', 'bad', 'okbg', 'warnbg', 'badbg']) r.style.removeProperty('--' + key);
   r.dataset.theme = s.theme;
+  if (s.theme === 'custom') {
+    const c = s.customTheme;
+    for (const [k, v] of Object.entries({ bg: c.bg, fg: c.fg, card: c.card, card2: c.bg, muted: c.fg, line: c.fg, ac0: c.accent, ok: c.fg, warn: c.fg, bad: c.fg, okbg: c.card, warnbg: c.card, badbg: c.card })) r.style.setProperty('--' + k, v);
+  }
   r.dataset.density = s.density;
+  r.dataset.cursor = s.largeCursor ? 'large' : 'normal';
+  r.style.setProperty('--focus-width', s.focusWidth + 'px');
   r.dataset.bold = s.bold ? '1' : '0';
   r.dataset.motion = s.reduceMotion ? 'reduce' : 'full';
   r.style.setProperty('--fs', s.fontSize + 'px');
@@ -57,6 +66,8 @@ function applySettings() {
   r.style.setProperty('--font', fontStack(s.font));
   if (s.accent && s.accent !== 'auto') r.style.setProperty('--ac', s.accent);
   else r.style.removeProperty('--ac');
+  const accent = s.accent === 'auto' ? (s.theme === 'custom' ? s.customTheme.accent : THEMES.find(t => t.id === s.theme)?.ac) : s.accent;
+  if (accent) r.style.setProperty('--ac-fg', accentText(accent));
   ensureFont(s.font);
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.content = getComputedStyle(r).getPropertyValue('--bg').trim() || '#ffffff';
@@ -88,13 +99,14 @@ function catName(id) {
 const catIcon = (id) => (S.settings.emoji ? CATEGORIES.find((c) => c.id === id)?.icon || '📦' : '');
 
 function amountControls(target, g, portions = [], { compact = false, liquid = false } = {}) {
-  const unit = liquid ? 'g ≈ mL' : 'g';
+  const oz = S.settings.amountUnit === 'oz';
+  const unit = oz ? `oz (≈ ${fmtNum(g)} g)` : liquid ? 'g ≈ mL' : 'g';
   const presets = compact ? [10, 25, 50, 100, 200, 500, 1000] : PRESETS;
   return `<div class="amount ${compact ? 'compact' : ''}" data-amount="${esc(target)}">
     <div class="amt-main">
       <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="-10" aria-label="10 gram azalt">−10</button>
       <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="-1" aria-label="1 gram azalt">−1</button>
-      <output class="amt-val" data-amtval="${esc(target)}"><b>${fmtNum(g)}</b> ${unit}</output>
+      <output class="amt-val" data-amtval="${esc(target)}"><b>${fmtNum(oz ? g / 28.349523125 : g)}</b> <span class="amount-unit">${unit}</span></output>
       <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="1" aria-label="1 gram artır">+1</button>
       <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="10" aria-label="10 gram artır">+10</button>
     </div>
@@ -323,7 +335,8 @@ function renderCompare() {
     const rows = [];
     let lastSec = null;
     for (const n of NUTRIENTS) {
-      if (n.key === 'energy_kj') continue;
+      if (n.key === 'energy_kj' && S.settings.energyUnit === 'kcal') continue;
+      if (n.key === 'energy' && S.settings.energyUnit === 'kj') continue;
       if (S.cmpSection !== 'all' && n.section !== S.cmpSection) continue;
       const vals = rs.map((r) => r.v[n.key]);
       if (vals.every((x) => x == null)) continue;
@@ -377,6 +390,10 @@ function renderSettings() {
       ${tog('ruler', 'Okuma cetveli', 'İmlecin olduğu satırı vurgulayan yatay şerit; satır takibini kolaylaştırır.')}
       ${tog('reduceMotion', 'Animasyonları azalt')}
       ${tog('emoji', 'Simgeleri / emojileri göster')}
+      ${tog('largeCursor', 'Büyük fare imleci')}
+      ${step('focusWidth', 'Odak halkası kalınlığı', 2, 6, 1, ' px')}
+      <h3>Klavye kısayolları</h3><p class="hint">Metin yazarken ve pencereler açıkken sekme kısayolları devre dışıdır. Tab ile gez, Enter / Boşluk ile seç, Escape ile pencereyi kapat. Kısayolları yeniden ata veya kapat.</p>
+      ${Object.entries(SHORTCUT_ACTIONS).map(([id, name]) => `<label class="field"><span>${name}</span><select data-shortcut="${id}"><option value="" ${!s.shortcuts[id] ? 'selected' : ''}>Kapalı</option>${Array.from({ length: 9 }, (_, i) => `Alt+${i + 1}`).map(key => `<option value="${key}" ${s.shortcuts[id] === key ? 'selected' : ''}>${key}</option>`).join('')}</select></label>`).join('')}
     </section>
 
     <section class="card"><h2>Matriks gösterimi</h2><button class="btn ghost" data-action="reset-group" data-group="matrix">Matriks ayarlarını sıfırla</button>
@@ -399,6 +416,26 @@ function renderSettings() {
       <h3>Sabitlenen besin öğeleri</h3><p class="hint">En fazla 24 öğeyi matriksin en üstünde izle.</p>
       <label class="field"><span>Öğe sabitle</span><select id="pin-nutrient"><option value="">Bir bileşen seç</option>${NUTRIENTS.filter(n => !['energy', 'energy_kj'].includes(n.key) && !s.pinnedNutrients.includes(n.key)).map(n => `<option value="${n.key}">${esc(n.label)} (${esc(n.unit)})</option>`).join('')}</select></label>
       <div class="presets">${s.pinnedNutrients.map(k => `<button class="pchip on" data-action="unpin" data-key="${k}" aria-label="${esc(NUTRIENTS.find(n => n.key === k).label)} sabitlemesini kaldır">${esc(NUTRIENTS.find(n => n.key === k).label)} ×</button>`).join('')}</div>
+    </section>
+    <section class="card"><h2>Birim ve sayı tercihleri</h2>
+      <div class="kv"><span>Enerji (matriks)</span><div class="presets">${opt('energyUnit', 'both', 'kcal + kJ')}${opt('energyUnit', 'kcal', 'kcal')}${opt('energyUnit', 'kj', 'kJ')}</div></div>
+      <div class="kv"><span>Miktar göstergesi</span><div class="presets">${opt('amountUnit', 'g', 'Gram')}${opt('amountUnit', 'oz', 'Ons (oz)')}</div></div>
+      <p class="hint">1 oz = 28,349523125 g. Seçim düğmeleri ve hesap tabanı 1–1000 g aralığında kalır. Sıvılarda yaklaşık mL, yoğunluk 1 varsayımıdır.</p>
+      <div class="kv"><span>Ondalık ayracı</span><div class="presets">${opt('decimalSeparator', 'comma', 'Virgül: 1,5')}${opt('decimalSeparator', 'dot', 'Nokta: 1.5')}</div></div>
+      ${tog('autoUnits', 'Büyük miktarlarda birimi yükselt (µg → mg → g)')}
+      <p class="hint">CSV her zaman Türkçe Excel uyumlu ondalık virgül ve tanımlı besin birimlerini kullanır.</p>
+    </section>
+    <section class="card"><h2>Yüzde referansı</h2>
+      <div class="presets">${opt('referenceMode', 'eu', 'AB / TGK BRD')}${opt('referenceMode', 'custom', 'Kendi hedeflerim')}</div>
+      <p class="hint">AB 1169/2011 (2011) yetişkin etiket referansıdır. Kişisel hedeflerin elle girilir; yaşa veya sağlık durumuna göre otomatik öneri yapılmaz. Eksik hedefe BRD değeri atanmaz.</p>
+      ${s.referenceMode === 'custom' ? `<label class="field"><span>Hedef eklenecek bileşen</span><select id="target-nutrient"><option value="">Bileşen seç</option>${NUTRIENTS.filter(n => n.key !== 'energy_kj' && s.targets[n.key] == null).map(n => `<option value="${n.key}">${esc(n.label)} (${esc(n.unit)})</option>`).join('')}</select></label><label class="field"><span>Yeni hedef miktarı (seçili bileşenin biriminde)</span><input type="number" min="0" step="any" id="target-new-value"></label><button class="btn" data-action="target-add">Hedef ekle</button>
+      ${Object.entries(s.targets).map(([k, value]) => { const n = NUTRIENTS.find(n => n.key === k); return `<label class="field"><span>${esc(n.label)} hedefi (${esc(n.unit)})</span><input type="number" min="0" step="any" data-target-value="${k}" value="${value}"></label><button class="btn ghost" data-action="target-remove" data-key="${k}">${esc(n.label)} hedefini kaldır</button>`; }).join('')}` : ''}
+    </section>
+    <section class="card"><h2>Kendi temam</h2>
+      <div class="cu-grid">${Object.entries({ bg: 'Arka plan', fg: 'Yazı', card: 'Kart', accent: 'Vurgu' }).map(([k, label]) => `<label class="field"><span>${label}</span><input type="color" data-theme-color="${k}" value="${s.customTheme[k]}"></label>`).join('')}</div>
+      <div class="theme-preview" style="background:${s.customTheme.bg};color:${s.customTheme.fg}"><span style="background:${s.customTheme.card};padding:.4rem">İı Şş Ğğ 123 · Örnek metin</span></div>
+      <p class="hint" role="status">WCAG metin kontrastı: arka plan ${fmtNum(contrastRatio(s.customTheme.fg, s.customTheme.bg))}:1 · kart ${fmtNum(contrastRatio(s.customTheme.fg, s.customTheme.card))}:1. ${Math.min(contrastRatio(s.customTheme.fg, s.customTheme.bg), contrastRatio(s.customTheme.fg, s.customTheme.card)) < 4.5 ? '⚠ Normal metin için 4,5:1 eşiğinin altında; yazı veya zemin rengini değiştir.' : 'Normal metin için AA eşiğini karşılıyor.'} Vurgu / kart: ${fmtNum(contrastRatio(s.customTheme.accent, s.customTheme.card))}:1.</p>
+      <div class="presets"><button class="btn" data-action="set" data-k="theme" data-v='"custom"'>Kendi temamı uygula</button><button class="btn" data-action="theme-export">Temayı indir</button><button class="btn" data-action="open-file" data-id="theme-file">Tema dosyası aç</button><input type="file" id="theme-file" accept="application/json,.json" hidden></div>
     </section>
     <section class="card"><h2>Görünüm profilleri</h2>
       <p class="hint">Okuma, sunum veya gece için en fazla 12 görünüm kaydet. Profiller üst çubuktan uygulanabilir ve tam yedeğe dahildir.</p>
@@ -569,7 +606,8 @@ function setAmount(target, g, { fromSlider = false } = {}) {
   const box = document.querySelector(`[data-amount="${CSS.escape(target)}"]`);
   if (box) {
     const out = box.querySelector('.amt-val b');
-    if (out) out.textContent = fmtNum(g);
+    if (out) out.textContent = fmtNum(S.settings.amountUnit === 'oz' ? g / 28.349523125 : g);
+    if (S.settings.amountUnit === 'oz') box.querySelector('.amount-unit').textContent = `oz (≈ ${fmtNum(g)} g)`;
     const sl = box.querySelector('.slider');
     if (sl && !fromSlider) sl.value = String(Math.round(g));
     box.querySelectorAll('.pchip').forEach((b) => b.classList.toggle('on', Math.abs(Number(b.dataset.val) - g) < 0.01));
@@ -588,7 +626,7 @@ function uiDialog(message, { input = null, ok = 'Tamam', cancel = null } = {}) {
     const wrap = document.createElement('div');
     wrap.className = 'modal dlg';
     wrap.innerHTML = `<div class="modal-box small" role="alertdialog" aria-modal="true" aria-label="Onay"><p>${esc(message)}</p>
-      ${input != null ? `<textarea rows="6">${esc(input)}</textarea>` : ''}
+      ${input != null ? `<textarea rows="6" aria-label="Metin">${esc(input)}</textarea>` : ''}
       <div class="presets end">${cancel ? `<button class="btn" data-r="0">${esc(cancel)}</button>` : ''}<button class="btn primary" data-r="1">${esc(ok)}</button></div></div>`;
     const previousFocus = focusSelector(document.activeElement);
     document.body.appendChild(wrap);
@@ -719,6 +757,13 @@ async function onClick(e) {
       render(); break;
     }
     // ayarlar
+    case 'theme-export': download('besin-matriksi-tema.json', exportTheme(S.settings.customTheme)); break;
+    case 'target-add': {
+      const key = $('#target-nutrient')?.value, value = Number($('#target-new-value')?.value);
+      if (!key || !Number.isFinite(value) || value <= 0) { toast('Bir bileşen ve sıfırdan büyük hedef miktarı gir'); break; }
+      setSetting('targets', { ...S.settings.targets, [key]: value }); render(); break;
+    }
+    case 'target-remove': { const targets = { ...S.settings.targets }; delete targets[b.dataset.key]; setSetting('targets', targets); render(); break; }
     case 'open-file': document.getElementById(b.dataset.id)?.click(); break;
     case 'profile-save': {
       const name = $('#profile-name')?.value.trim();
@@ -795,12 +840,18 @@ function exportCSV() {
   else if (S.sel) { const item = resolve(S.sel); r = scaleItem(item, S.amount); title = `${item.name} – ${item.formLabel} – ${fmtNum(S.amount)} g`; }
   else return;
   const safe = title.replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').slice(0, 60);
-  download(`besin-matriksi-${safe}.csv`, matrixCSV(r, title), 'text/csv;charset=utf-8');
+  download(`besin-matriksi-${safe}.csv`, matrixCSV(r, title, S.settings), 'text/csv;charset=utf-8');
   toast('CSV hazırlandı');
 }
 
 function onInput(e) {
   const t = e.target;
+  if (t.dataset.targetValue) {
+    const targets = { ...S.settings.targets }, value = Number(t.value);
+    if (t.value !== '' && Number.isFinite(value) && value > 0) targets[t.dataset.targetValue] = value;
+    else delete targets[t.dataset.targetValue];
+    setSetting('targets', targets); return;
+  }
   if (t.dataset.price) {
     const it = activeRecipe().items.find(i => i.id === t.dataset.price);
     const x = t.value === '' ? null : Number(t.value);
@@ -822,6 +873,14 @@ function onInput(e) {
 }
 function onChange(e) {
   const t = e.target;
+  if (t.dataset.shortcut) {
+    if (t.value && Object.entries(S.settings.shortcuts).some(([id, key]) => id !== t.dataset.shortcut && key === t.value)) { toast('Bu kısayol başka bölüme atanmış; önce onu kapat'); render(); return; }
+    setSetting('shortcuts', { ...S.settings.shortcuts, [t.dataset.shortcut]: t.value }); return;
+  }
+  if (t.dataset.themeColor) { setSetting('customTheme', { ...S.settings.customTheme, [t.dataset.themeColor]: t.value }); render(); return; }
+  if (t.id === 'theme-file' && t.files?.[0]) {
+    t.files[0].text().then(text => { setSetting('customTheme', parseTheme(text)); setSetting('theme', 'custom'); render(); toast('Tema içe aktarıldı'); }).catch(err => uiDialog(err.message)); return;
+  }
   if (t.dataset.sectionVisible) { setSetting('hiddenSections', t.checked ? S.settings.hiddenSections.filter(id => id !== t.dataset.sectionVisible) : [...S.settings.hiddenSections, t.dataset.sectionVisible]); render(); return; }
   if (t.id === 'pin-nutrient' && t.value) { setSetting('pinnedNutrients', [...S.settings.pinnedNutrients, t.value]); render(); return; }
   if (t.dataset.setbool) { setSetting(t.dataset.setbool, t.checked); render(); return; }
@@ -849,7 +908,12 @@ export function start() {
     const d = e.target;
     if (d.matches?.('details.sec')) { if (d.open) S.closed.delete(d.dataset.sec); else S.closed.add(d.dataset.sec); }
   }, true);
-  document.addEventListener('keydown', (e) => { trapModalTab(e); if (!e.defaultPrevented && e.key === 'Escape' && (S.picker || S.customEdit)) { if (S.customEdit) S.customEdit = null; else S.picker = null; render(); } });
+  document.addEventListener('keydown', (e) => {
+    if (!document.querySelector('.modal') && !e.target.closest('input, textarea, select, [contenteditable="true"]') && e.altKey && !e.ctrlKey && !e.metaKey) {
+      const target = Object.keys(SHORTCUT_ACTIONS).find(id => S.settings.shortcuts[id] === `Alt+${e.key}`);
+      if (target) { e.preventDefault(); S.tab = target; render(); window.scrollTo(0, 0); document.querySelector(`[data-tab="${target}"]`)?.focus(); return; }
+    }
+    trapModalTab(e); if (!e.defaultPrevented && e.key === 'Escape' && (S.picker || S.customEdit)) { if (S.customEdit) S.customEdit = null; else S.picker = null; render(); } });
   // Modal arka planına tıklayınca kapat
   document.addEventListener('mousedown', (e) => { if (e.target.classList?.contains('modal') && !e.target.classList.contains('dlg') && !S.customEdit) { S.picker = null; render(); } });
   const ruler = $('#ruler');

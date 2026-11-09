@@ -103,3 +103,31 @@ test('malzeme penceresinde odak tutulur, Escape ile açan düğmeye döner', asy
   await page.keyboard.press('Escape');
   await expect(modal).toHaveCount(0); await expect(page.locator('[data-action="rc-add"]')).toBeFocused();
 });
+
+test('özel hedef, birimler, tema dosyası ve kısayol ataması çalışır', async ({ page }) => {
+  await page.goto('/'); await tab(page, 'ayarlar');
+  await page.locator('[data-k="referenceMode"][data-v=\'"custom"\']').click();
+  await page.locator('#target-nutrient').selectOption('protein'); await page.locator('#target-new-value').fill('80');
+  await page.locator('[data-action="target-add"]').click();
+  await page.locator('[data-k="energyUnit"][data-v=\'"kj"\']').click();
+  await page.locator('[data-k="amountUnit"][data-v=\'"oz"\']').click();
+  await page.locator('[data-k="decimalSeparator"][data-v=\'"dot"\']').click();
+  await page.locator('#theme-file').setInputFiles({ name: 'tema.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify({ app: 'besin-matriksi-tema', version: 1, colors: { bg: '#101820', fg: '#ffffff', card: '#1d2630', accent: '#8ad1ff' } })) });
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'custom');
+  await page.locator('[data-shortcut="ayarlar"]').selectOption('Alt+9');
+  await tab(page, 'kesfet'); await pickBanana(page);
+  await expect(page.locator('[data-amount="ex"] .amt-val')).toContainText('3.53');
+  await expect(page.locator('[data-sec="enerji"] .val').filter({ hasText: 'kJ' })).toBeVisible();
+  await expect(page.locator('.reference-label')).toContainText('%hedef');
+  await page.locator('[data-tab="kesfet"]').focus(); await page.keyboard.press('Alt+9');
+  await expect(page.locator('#target-nutrient')).toBeVisible();
+});
+
+test('tek HTML dosyası internet olmadan yerelden açılır', async ({ page, context }) => {
+  const { fileURLToPath } = await import('node:url');
+  const html = fileURLToPath(new URL('../../dist-single/besin-matriksi.html', import.meta.url));
+  await context.setOffline(true); await page.goto('file://' + html);
+  await pickBanana(page); await expect(page.locator('#matrix')).toContainText('USDA');
+  await page.locator('[data-amount="ex"] [data-val="1000"]').click();
+  await expect(page.locator('[data-sec="enerji"]')).toContainText('890');
+});
