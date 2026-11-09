@@ -4,6 +4,15 @@ Bitkisel (vegan) besinlerin **ayrıntılı besin matriksini** gösteren, **tamam
 
 **Windows · macOS · Linux · Android · iPhone · tarayıcı (PWA) · tek dosya HTML**
 
+## 1.1.0 sürümü
+
+[Değişiklikler](docs/CHANGELOG.md) · [1.1.0 paketlerini indir](https://github.com/kaansavukduran/besinmatriksi/actions/runs/42586943869) · [Geliştirme PR #2](https://github.com/kaansavukduran/besinmatriksi/pull/2)
+
+Yeni: görünüm profilleri, bölüm gizleme/sıralama, öğe sabitleme, özel tema ve kontrast kontrolü,
+ayar/tema dosyaları, elle girilen hedefler, sayı/birim tercihleri, atanabilir klavye kısayolları,
+TL/kg ve porsiyon maliyeti, Türkçe eş anlamlı arama ve son aramalar.
+Çevrimdışı modül önbelleği, telefon taşmaları ve eksik tarif/yedek kapsamı düzeltildi.
+
 ## Neler yapar?
 
 | Sekme | Ne işe yarar |
@@ -46,14 +55,16 @@ Her satırda: miktar, birim, %BRD çubuğu (AB 1169/2011 & TGK), kaynak etiketi 
 
 ## İndirme ve kurulum
 
-Hazır paketler GitHub **Releases** sayfasında (`v*` etiketiyle otomatik derlenir) veya **Actions → “Derle ve yayınla” → Artifacts** altında:
+**1.1.0 için doğrulanmış indirmeler** [bu başarılı Actions çalışmasının Artifacts bölümündedir](https://github.com/kaansavukduran/besinmatriksi/actions/runs/42586943869). GitHub hesabınla oturum aç, platform arşivini indir ve içindeki dosyayı aç. Bu çalışma yeni bir herkese açık Release yayımlamaz; ileride `v*` etiketi yayımlanırsa aynı iş akışı Release de oluşturur.
+
+Paketlerin kaynak commit'i `8864a29a94e91b5f8093929f82d9c5ffb7d8bc42` (1.1.0). Sonraki yalnız belge/devir kayıtları uygulama paketinin kaynağını değiştirmez.
 
 | Platform | Dosya | Not |
 |---|---|---|
 | Windows | `BesinMatriksi-portable-x64.exe` | Kurulumsuz, çift tıkla çalışır (Windows 10/11 yerleşik WebView2) |
-| Windows | `Besin Matriksi_x.y.z_x64-setup.exe` / `.msi` | Kurulum sihirbazı |
-| macOS | `.dmg` (Intel + Apple Silicon) | İmzasız: ilk açılışta sağ tık → **Aç** |
-| Linux | `.AppImage`, `.deb`, `.rpm` | AppImage: `chmod +x` sonra çalıştır |
+| Windows | `Besin Matriksi_1.1.0_x64-setup.exe` / `Besin Matriksi_1.1.0_x64_en-US.msi` | Kurulum sihirbazı |
+| macOS | `Besin Matriksi_1.1.0_universal.dmg` (Intel + Apple Silicon) | İmzasız: ilk açılışta sağ tık → **Aç** |
+| Linux | `Besin Matriksi_1.1.0_amd64.AppImage`, `Besin Matriksi_1.1.0_amd64.deb`, `Besin Matriksi-1.1.0-1.x86_64.rpm` | AppImage: `chmod +x` sonra çalıştır |
 | Android | `BesinMatriksi.apk` | “Bilinmeyen kaynaklardan yükleme” izni gerekir |
 | iPhone | `BesinMatriksi-unsigned.ipa` | AltStore / Sideloadly ile kendi Apple kimliğinle imzalayıp yükle |
 | iPhone / Android (en kolay) | PWA | Pages sürümünü Safari’de aç → Paylaş → **Ana Ekrana Ekle**; ilk açılıştan sonra çevrimdışı çalışır |
@@ -64,7 +75,9 @@ Hazır paketler GitHub **Releases** sayfasında (`v*` etiketiyle otomatik derlen
 ```bash
 npm install
 npm run dev            # http://localhost:5173
-npm test               # veri ve hesaplama testleri
+npm test               # veri, hesaplama, ayar ve yedek testleri
+npx playwright install chromium
+npm run test:browser   # önce build ve build:single; masaüstü + telefon
 npm run build          # dist/ (PWA + service worker)
 npm run build:single   # dist-single/besin-matriksi.html
 npm run data           # data/raw → src/data (ham kaynaktan yeniden üret)
@@ -74,6 +87,14 @@ npx cap add android && node scripts/mobile-icons.mjs android && npx cap sync and
 
 - Besin eklemek: `data/catalog.mjs` içine USDA NDB numarası ve (varsa) IFCT kodu ile bir satır ekle, `npm run data` çalıştır. Kod yoksa derleyici hata verir.
 - Android imzası (isteğe bağlı): repo sırlarına `ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` eklenirse imzalı release APK üretilir; yoksa debug imzalı APK.
+
+## Doğrulama ve devam
+
+- 29 birim/veri testi ve GitHub CI üzerinde 20/20 tarayıcı testi geçti: [CI kanıtı](https://github.com/kaansavukduran/besinmatriksi/actions/runs/42586943816).
+- Tarayıcı testleri PWA çevrimdışı açılışını, geniş kataloğu, dosyadan tek HTML açılışını, ayar/tema/yedek akışlarını, maliyeti, odağı ve seçili ekranlarda axe WCAG 2.1 AA denetimini kapsar. Otomatik erişilebilirlik testi tam bir insan denetiminin yerini almaz.
+- Windows, macOS, Linux, Android ve iOS paketleri kendi GitHub runner'larında üretildi. Fiziksel cihaz/işletim sistemi kabul testleri bu turda yapılmadı. iOS IPA imzasızdır; Android anahtar yoksa debug imzalıdır.
+- EFSA yaş/cinsiyet grup tabloları ve TürKomp kaynak/lisans doğrulaması açık. PDF düzenini sıkıştırma ve tarif değerlerinin malzeme bazında kaynak dökümü sıradadır. [Canlı yol haritası](docs/ROADMAP.md).
+- Devam dalı: `codex/forge-devam`. Claude'un Forge kayıtları aynı dalda korunur. İlk olarak `project_state/CURRENT_STATE.json` okunur. Saatlik devam görevi bu kalıcı kayıtları temel alır; kullanım limitlerini aşmaz ve çalışma ortamı erişimine bağlıdır.
 
 ## Lisans
 

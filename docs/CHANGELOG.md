@@ -1,0 +1,27 @@
+# 1.1.0 · 9 Kasım 2026
+
+- Ayrı dalda kalan Forge çekirdeği güncel uygulamaya birleştirildi.
+- Ayar v2 şeması, eski kayıt göçü, yalnız ayar yedeği ve bölüm sıfırlama.
+- Matriks bölümlerini gizleme/sıralama ve 24 besin öğesine kadar sabitleme.
+- 12 görünüm profili; hızlı geçiş, güncelleme, silme ve tam yedek.
+- Dört renkli tema oluşturucu, WCAG kontrast ölçümü ve tema dosyası.
+- AB/TGK etiket referansı veya elle girilen hedef; eksik hedefe BRD atanmaz.
+- kcal/kJ, gram/ons gösterimi, birim yükseltme ve ondalık ayracı tercihleri.
+- Atanabilir Alt+1…9 sekme kısayolları, odak kalınlığı ve büyük imleç.
+- Türkçe eş anlamlılar, sekiz son arama ve geçmişi temizleme.
+- TL/kg fiyat, toplam/porsiyon maliyeti ve kısmi fiyat/besin kapsamlı özet.
+- Bozuk yedek doğrulama, özel besin kimlik çakışmalarını önleyen eşleme.
+- Eksik malzeme ağırlığı korunur; kısmi besinlerden tam oran/skor üretilmez.
+- Bilinmeyen etiket/geniş katalog alerjenleri 'bilgi yok' olarak gösterilir.
+- Ön yükleme ile modül isteklerinin Vary: Origin farkı çevrimdışı açılışı bozmaz.
+- Telefon taşmaları, düşük kontrastlı etiketler ve modal odak/Escape akışı düzeltildi.
+- CSV regresyonları, sayfa numaralı Türkçe PDF örneği ve CI tarayıcı kapısı.
+
+Kanıt: 29 birim/veri testi, GitHub CI 20/20 tarayıcı testi, altı platform artifact grubu.
+Kod SHA: `8864a29a94e91b5f8093929f82d9c5ffb7d8bc42`.
+CI: https://github.com/kaansavukduran/besinmatriksi/actions/runs/42586943816
+Paketler: https://github.com/kaansavukduran/besinmatriksi/actions/runs/42586943869
+
+Fiziksel cihaz kabulü, kompakt A4 çıktısı, tarif kaynak dökümü, EFSA grup tabloları
+ve TürKomp lisans teyidi açık. Bu sürümün paketlenmesi bütün yol haritasının
+bittiği anlamına gelmez. Ayrıntılar ROADMAP.md ve project_state/ içinde.

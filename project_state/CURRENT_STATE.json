@@ -1,21 +1,81 @@
 {
   "schema_version": "1",
   "project": "Besin Matriksi",
-  "product_version": "1.0.0",
-  "development_state": "IMPLEMENTING",
-  "last_forge_at": "2026-11-09",
-  "last_completed_forge": "B014",
-  "active_forge": "B013",
-  "next_recommended_forge": "B013",
+  "product_version": "1.1.0",
+  "development_state": "CONTINUING",
+  "last_forge_at": "2026-11-09T08:40:00Z",
+  "last_completed_forge": "B030",
+  "active_forge": null,
+  "next_recommended_forge": "B010b",
+  "branch": "codex/forge-devam",
+  "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
+  "validated_code_commit": "8864a29a94e91b5f8093929f82d9c5ffb7d8bc42",
+  "package_source_commit": "8864a29a94e91b5f8093929f82d9c5ffb7d8bc42",
   "verified_gates": [
     {
-      "id": "EV-B001-B014-unit",
+      "id": "unit",
       "command": "npm test",
-      "result": "PASS 23/23",
-      "at": "2026-11-09",
+      "result": "PASS 29/29",
       "level": "UNIT_TESTED"
+    },
+    {
+      "id": "data",
+      "command": "npm run data && git diff --exit-code -- src/data",
+      "result": "PASS, no diff",
+      "level": "BUILT"
+    },
+    {
+      "id": "web",
+      "command": "npm run build && npm run build:single",
+      "result": "PASS",
+      "level": "BUILT"
+    },
+    {
+      "id": "browser-ci",
+      "command": "npm run test:browser",
+      "result": "PASS 20/20 on GitHub CI; desktop + phone",
+      "level": "RUNTIME_TESTED",
+      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42586943816"
+    },
+    {
+      "id": "native-packages",
+      "command": "release.yml workflow_dispatch",
+      "result": "PASS web/windows/macos/linux/android/ios; public release skipped",
+      "level": "PACKAGED",
+      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42586943869"
+    },
+    {
+      "id": "print-sample",
+      "command": "Chromium PDF + pdftotext + first-page render",
+      "result": "Turkish glyphs and page numbers PASS; 24-page layout needs B010b",
+      "level": "RUNTIME_TESTED"
     }
   ],
-  "blockers": [],
-  "notes": "Yol haritası docs/ROADMAP.md. Kaan'ın öncelikleri: kullanıcı dostu, fareyle kullanılabilir, özelleştirilebilir, tam Türkçe, Windows/Android/Linux/Mac indirmeleri güncel. Kullanıcı aynı oturumda Forge döngülerine ara vermeden devam edilmesini istedi. Geliştirme dalı: codex/forge-devam. Sonraki çalışma önce tarayıcı kapılarını tamamlamalı."
+  "blockers": [
+    {
+      "forge": "B021",
+      "state": "BLOCKED_SOURCE_VERIFICATION",
+      "reason": "TürKomp official site timed out; redistribution license unverified; no new data imported."
+    },
+    {
+      "forge": "B031",
+      "state": "NOT_RUN",
+      "reason": "Physical device / native OS acceptance testing requires corresponding devices."
+    }
+  ],
+  "remaining_forges": [
+    "B010b",
+    "B020b",
+    "B003b",
+    "B021",
+    "B031"
+  ],
+  "continuation": {
+    "schedule": "hourly",
+    "timezone": "Europe/Istanbul",
+    "first_scheduled_local": "2026-11-09T12:40:00+03:00",
+    "stop_when": "All applicable roadmap items and final gates are verified; pause only this own automation.",
+    "note": "Scheduling confirmed; inherited environment details were not returned. No guarantee of bypassing usage limits or environment availability."
+  },
+  "notes": "Start from current remote continuation branch, preserve concurrent edits, do not restart completed Forges. Commit 8864a29 contains tested and packaged application code; later handoff commits change documentation only."
 }
