@@ -19,7 +19,7 @@ Durum etiketleri: PLANNED · IN_PROGRESS · DONE (yalnızca test kanıtıyla). S
 | ID | Forge | Durum |
 |---|---|---|
 | B010a | CSV ve Türkçe glifli/sayfa numaralı PDF çıktısı | DONE (RUNTIME_TESTED; 100 g muz PDF 24 sayfa) |
-| B010b | A4 çıktısında mobil tek sütun yerine okunaklı tablo; yazdırmadan sonra açık/kapalı bölümleri geri yükleme | PLANNED |
+| B010b | A4 tablo düzeni ve yazdırma durumunu geri yükleme | DONE (RUNTIME_TESTED; aynı USDA verisiyle 15 → 7 sayfa) |
 | B011 | Arama: Türkçe karakter katlama (ı/i, ş/s), eş anlamlılar, son arananlar | DONE (RUNTIME_TESTED) |
 | B012 | Tarif: porsiyon başı maliyet (kullanıcı fiyatı girer, TL/kg), etiket tarzı özet kart | DONE (RUNTIME_TESTED) |
 | B014 | Tarif/yedek doğrulama, özel besin kimlik çakışması ve eksik malzeme kapsamı | DONE (RUNTIME_TESTED) |
@@ -42,10 +42,16 @@ Durum etiketleri: PLANNED · IN_PROGRESS · DONE (yalnızca test kanıtıyla). S
 
 ## Devam sırası (2026-11-09)
 
-1. **B010b**: 100 g muz çıktısının 24 sayfa olmasının nedenini düzelt; A4 ve telefon yazdırma regresyonu ekle. İçerik satırlarını silerek sayfa azaltma.
-2. B020b: toplamların kaynağını malzeme başına izlenebilir yap.
-3. B003b: EFSA yaş/cinsiyet grup referansları; kaynak/sürüm/AI/PRI ayrımıyla doğrula. B003a'nın elle girilen hedeflerinin üstüne yazma.
-4. B021: resmî erişim ve lisans teyidi sağlanınca ilerle; aynı engeli günlükten sık tekrar etme.
-5. B031: gerçek cihaz/OS ortamı varsa paketleri smoke test et; derlenmiş olmak cihazda test edilmiş olmak değildir.
+1. **B020b**: toplamların kaynağını malzeme başına izlenebilir yap.
+2. B003b: EFSA yaş/cinsiyet grup referansları; kaynak/sürüm/AI/PRI ayrımıyla doğrula. B003a'nın elle girilen hedeflerinin üstüne yazma.
+3. B021: resmî erişim ve lisans teyidi sağlanınca ilerle; aynı engeli günlükten sık tekrar etme.
+4. B031: gerçek cihaz/OS ortamı varsa paketleri smoke test et; derlenmiş olmak cihazda test edilmiş olmak değildir.
 
 B003b henüz PLANNED. Kalıcı durum dosyası, son test ve paket SHA'larını ayırır. Yeni kapsam ekleyerek bitişi sürekli öteleme; bu listedeki uygulanabilir maddeleri doğrulayıp kapanış kaydı bırak.
+
+## 1.1.1 yayın ve izin düzeltmesi
+
+- B040: **DONE**. IFCT ürün izni asıl NIN metninden kontrol edildi; izin doğrulanmadığı için IFCT CSV/değer/tahmin dağıtımı kaldırıldı. USDA tam bileşen tablosu eklendi, izomer/birim dönüşümleri test edildi. 13 lisans/kaynak metni uygulamaya gömülür.
+- B030-release: **IN_PROGRESS**. Kullanıcı Releases üzerinden platform dosyalarını indirmeyi açıkça istedi. `v1.1.1` yayın kapısı tüm web/tarayıcı/platform işleridir. Sürüm yayımlanmadan tamamlandı denmez.
+- GitHub Pages etkinleştirme: HTTP 403, entegrasyon yetkisi yok. PWA arşivi ve imzasız IPA sağlanır; Safari için yayımlanmış PWA adresi olduğu iddia edilmez.
+- NIN yazılı izin kanıtı olmadan IFCT verileri ve bu veriye dayanan tahminler tekrar eklenmez. Eski Git geçmişi bu turda yeniden yazılmadı.

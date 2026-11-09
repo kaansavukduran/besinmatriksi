@@ -1,3 +1,12 @@
+# 1.1.1 · 9 Kasım 2026
+
+- Releases üzerinden doğrudan Windows/Linux/macOS/Android/imzasız iOS ve web paketleri; kurulum rehberi, lisans dökümleri ve SHA-256 dosyası.
+- IFCT paketinin MIT etiketi ile NIN asıl yayın izni ayrıldı. Ürün izni doğrulanmadığı için IFCT CSV, değer ve tahminler dağıtımdan çıkarıldı.
+- USDA tam ASCII tablosundan amino asit, yağ asidi, şeker, vitamin biçimi, sterol ve küçük bileşik değerleri eklendi. Jaggery açık kaynak boşluğuyla korunur.
+- 13 lisans/kaynak metni gömülü ve ayrı dosya olarak sunulur; fontların OFL ve asıl telif metinleri korunur. Native Cargo dökümleri pakete eklenir.
+- A4 çıktısı ekranın mobil kırılımlarını kullanmaz. Aynı USDA içeriği eski düzende 15, yeni düzende 7 sayfa. Yazdırma/iptal sonrası bölüm durumları korunur.
+- Fiziksel cihaz testi, EFSA grup referansları, tarif kaynak dökümü ve TürKomp lisans teyidi açık kalır.
+
 # 1.1.0 · 9 Kasım 2026
 
 - Ayrı dalda kalan Forge çekirdeği güncel uygulamaya birleştirildi.
