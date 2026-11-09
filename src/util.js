@@ -1,3 +1,4 @@
+import { getLanguage } from './i18n.js';
 export const esc = (s) =>
   String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -15,7 +16,7 @@ const fmtCache = new Map();
 let formatPreferences = { decimalSeparator: 'comma', autoUnits: true };
 export function configureFormatting(settings = {}) { formatPreferences = { decimalSeparator: settings.decimalSeparator || 'comma', autoUnits: settings.autoUnits !== false }; }
 function nf(min, max) {
-  const locale = formatPreferences.decimalSeparator === 'dot' ? 'en-US' : 'tr-TR';
+  const locale = formatPreferences.decimalSeparator === 'dot' || (formatPreferences.decimalSeparator === 'auto' && getLanguage() === 'en') ? 'en-US' : 'tr-TR';
   const k = locale + ':' + min + ':' + max;
   if (!fmtCache.has(k)) fmtCache.set(k, new Intl.NumberFormat(locale, { minimumFractionDigits: min, maximumFractionDigits: max }));
   return fmtCache.get(k);

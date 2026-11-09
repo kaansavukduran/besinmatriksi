@@ -1,4 +1,4 @@
-# Besin Matriksi 1.1.1 kurulumu
+# Besin Matriksi 1.1.2 Beta 1 kurulumu
 
 Paketler: https://github.com/kaansavukduran/besinmatriksi/actions/workflows/release.yml
 
@@ -12,8 +12,7 @@ GitHub hesabınla oturum aç; başarılı çalışmanın Artifacts bölümünde 
 - Her platformda tek dosya: `besin-matriksi-tek-dosya.html` dosyasını indirip tarayıcıda aç. Fontlar, lisanslar ve veriler dosyada gömülüdür; ağ gerekmez. Mobil dosya görüntüleyicileri JavaScript'i kapatabiliyorsa PWA sürümünü kullan.
 - Web/PWA: `besin-matriksi-web-pwa.zip` arşivini bir HTTPS sunucusuna aç. İlk çevrimiçi yükleme tamamlandıktan sonra çevrimdışı çalışır.
 
-Manuel Actions arşivleri `SHA256SUMS.txt` içermez. Güncel kaynak SHA ve ZIP
-özetlerinin kanıt dosyası `project_state/CURRENT_STATE.json` içindeki
+Yeni `release-candidate` arşivi tüm platformları açık `BesinMatriksi-1.1.2-beta.1-*` adlarıyla toplar. İçindeki `BUILD_INFO.json` kaynak SHA'yı ve platform sınırlarını, `SHA256SUMS.txt` dosya özetlerini verir. Ayrı platform artifact'lerinde eski kısa dosya adları da bulunur. Windows için `*-Setup.exe`, Android için `*-android.apk`, tek HTML için `*-offline.html` seç. iOS `*-UNSIGNED-NOT-INSTALLABLE.ipa` doğrudan kurulamaz. Güncel kaynak SHA ve ZIP özetlerinin kanıt dosyası `project_state/CURRENT_STATE.json` içindeki
 `package_evidence_file` alanında belirtilir. `THIRD_PARTY_NOTICES.txt`,
 platforma ait Rust bildirimleri ve `LICENSE.txt` lisans kayıtlarıdır.
 

@@ -1,6 +1,6 @@
 # CLAUDE.md: Besin Matriksi
 
-Çevrimdışı, fareyle/dokunarak kullanılan, disleksi dostu, özelleştirilebilir bitkisel (vegan) besin matriksi. Vite + düz JS; masaüstü Tauri, mobil Capacitor, PWA ve tek dosya HTML. Arayüz tamamen Türkçe. Ayrıntılar `README.md`.
+Çevrimdışı, fareyle/dokunarak kullanılan, disleksi dostu, özelleştirilebilir bitkisel (vegan) besin matriksi. Vite + düz JS; masaüstü Tauri, mobil Capacitor, PWA ve tek dosya HTML. Türkçe ana dil; yeni profil/günlük/görünüm ekranları merkezi TR/EN. Eski ekranların İngilizce çevirisi B051 kapsamında açıktır. Ayrıntılar `README.md`.
 
 Önce `project_state/CURRENT_STATE.json` (imleç: `active_forge`, `next_recommended_forge`), sonra `docs/ROADMAP.md` okunur.
 

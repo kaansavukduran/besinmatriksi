@@ -1,11 +1,19 @@
 name: Derle ve yayınla
 
-# v* etiketiyle (ör. v1.0.0) tüm platformlar derlenip bir GitHub Release'e eklenir.
-# Actions sekmesinden elle de çalıştırılabilir; o zaman çıktılar "Artifacts" olarak indirilir.
+# Manuel publish seçilmedikçe yalnız artifact üretilir.
 on:
   push:
     tags: ['v*']
   workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Bu sürümü Releases üzerinde yayımla / Publish this release'
+        type: boolean
+        default: false
+      prerelease:
+        description: 'Beta olarak yayımla / Mark as pre-release'
+        type: boolean
+        default: true
 
 permissions:
   contents: write
@@ -102,6 +110,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npx cap add android
+      - run: node scripts/mobile-version.mjs android
       - run: node scripts/mobile-icons.mjs android
       - run: npx cap sync android
       - name: APK derle
@@ -125,6 +134,8 @@ jobs:
             ./gradlew assembleDebug
             cp app/build/outputs/apk/debug/app-debug.apk ../out/BesinMatriksi.apk
           fi
+          BT=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -1)
+          $BT/apksigner verify --print-certs ../out/BesinMatriksi.apk > ../out/ANDROID-SIGNING.txt
       - run: cp LICENSE out/LICENSE.txt && cp public/THIRD_PARTY_NOTICES.txt out/THIRD_PARTY_NOTICES.txt && cp docs/INSTALL.md out/KURULUM.md
       - uses: actions/upload-artifact@v4
         with: { name: android, path: out/* }
@@ -140,6 +151,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - run: npx cap add ios
+      - run: node scripts/mobile-version.mjs ios
       - run: node scripts/mobile-icons.mjs ios
       - run: npx cap sync ios
       - name: Derle (imzasız)
@@ -154,21 +166,76 @@ jobs:
       - uses: actions/upload-artifact@v4
         with: { name: ios, path: out/* }
 
-  release:
-    name: GitHub Release
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+  prepare_release:
+    name: Release dosyalarını hazırla / Prepare release files
     needs: [web, desktop, android, ios]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
       - uses: actions/download-artifact@v4
         with: { path: artifacts, merge-multiple: true }
       - name: Paketlerin bütünlüğünü kaydet
+        env:
+          GITHUB_SHA: ${{ github.sha }}
         run: |
-          cd artifacts
-          sha256sum * > SHA256SUMS.txt
+          node scripts/release-assets.mjs artifacts publish
+          git archive --format=zip --prefix=besinmatriksi/ -o publish/BesinMatriksi-$(node -p "require('./package.json').version")-source.zip HEAD
+          cp docs/RELEASE_NOTES.md publish/RELEASE_NOTES.md
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          files = sorted(p for p in Path('publish').iterdir() if p.name != 'SHA256SUMS.txt')
+          Path('publish/SHA256SUMS.txt').write_text(''.join(hashlib.sha256(p.read_bytes()).hexdigest() + '  ' + p.name + '\n' for p in files))
+          PY
+      - uses: actions/upload-artifact@v4
+        with: { name: release-candidate, path: 'publish/*' }
+
+  release:
+    name: GitHub Release
+    if: github.event_name == 'workflow_dispatch' && inputs.publish
+    needs: prepare_release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - uses: actions/download-artifact@v4
+        with: { name: release-candidate, path: publish }
+      - id: version
+        run: echo "tag=v$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
       - uses: softprops/action-gh-release@v2
         with:
-          files: artifacts/*
-          generate_release_notes: true
-          body_path: docs/RELEASE_NOTES_1.1.1.md
+          tag_name: ${{ steps.version.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          name: Besin Matriksi ${{ steps.version.outputs.tag }}
+          draft: true
+          prerelease: ${{ inputs.prerelease }}
+          files: publish/*
+          fail_on_unmatched_files: true
+          body_path: docs/RELEASE_NOTES.md
+      - name: Doğrulanmış taslağı yayımla / Publish verified draft
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+          PRERELEASE: ${{ inputs.prerelease }}
+        run: |
+          gh release view "$TAG" --json assets --jq '.assets[].name' > /tmp/release-assets.txt
+          gh release download "$TAG" --dir verified-downloads
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib
+          expected = {p.name for p in Path('publish').iterdir()}
+          actual = set(Path('/tmp/release-assets.txt').read_text().splitlines())
+          if expected != actual: raise SystemExit('Release asset list mismatch')
+          for name in expected:
+              original, downloaded = Path('publish', name), Path('verified-downloads', name)
+              if hashlib.sha256(original.read_bytes()).digest() != hashlib.sha256(downloaded.read_bytes()).digest():
+                  raise SystemExit('Release asset digest mismatch: ' + name)
+          PY
+          if [ "$PRERELEASE" = "true" ]; then
+            gh release edit "$TAG" --draft=false --prerelease --latest=false
+          else
+            gh release edit "$TAG" --draft=false --prerelease=false --latest
+          fi

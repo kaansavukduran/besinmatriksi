@@ -4,7 +4,7 @@ import { DEFAULT_COLORS, normalizeColors } from './theme.js';
 import { efsaReference } from './references.js';
 export const MATRIX_SECTIONS = [...SECTIONS, { id: 'hesap', title: 'Hesaplanan göstergeler' }, { id: 'tolerans', title: 'Alerji, intolerans ve uyarılar' }, { id: 'kalinti', title: 'Kalıntılar ve kapsam dışı' }, { id: 'hazirlik', title: 'Hazırlama ve emilim' }];
 export const SETTINGS_VERSION = 2;
-export const SHORTCUT_ACTIONS = { kesfet: 'Keşfet', tarif: 'Tarif oluştur', karsilastir: 'Karşılaştır', ayarlar: 'Ayarlar', hakkinda: 'Hakkında' };
+export const SHORTCUT_ACTIONS = { kesfet: 'Keşfet', tarif: 'Tarif oluştur', karsilastir: 'Karşılaştır', ayarlar: 'Ayarlar', hakkinda: 'Hakkında', gunluk: 'Günlük ve profil' };
 export const DEFAULT_SETTINGS = {
   theme: 'light', accent: 'auto', font: 'atkinson', fontSize: 17,
   lineHeight: 1.55, letterSpacing: 0, wordSpacing: 0, density: 'comfy',
@@ -12,23 +12,24 @@ export const DEFAULT_SETTINGS = {
   showNrv: true, showSource: true, showSd: false, showAlt: true,
   showMissing: false, precision: 'normal', showExt: false, emoji: true,
   defaultAmount: 100,
+  language: 'auto', uiScale: 100, progressEnabled: false, progressAnimations: true,
   sectionOrder: MATRIX_SECTIONS.map(s => s.id), hiddenSections: [], pinnedNutrients: [],
   customTheme: DEFAULT_COLORS, referenceMode: 'eu', targets: {},
   efsaAge: 25, efsaSex: 'unspecified', efsaPhytate: '', efsaIronGroup: 'unspecified',
-  energyUnit: 'both', amountUnit: 'g', autoUnits: true, decimalSeparator: 'comma',
-  shortcuts: { kesfet: 'Alt+1', tarif: 'Alt+2', karsilastir: 'Alt+3', ayarlar: 'Alt+4', hakkinda: 'Alt+5' }, focusWidth: 3, largeCursor: false,
+  energyUnit: 'both', amountUnit: 'g', autoUnits: true, decimalSeparator: 'auto',
+  shortcuts: { kesfet: 'Alt+1', tarif: 'Alt+2', karsilastir: 'Alt+3', ayarlar: 'Alt+4', hakkinda: 'Alt+5', gunluk: 'Alt+6' }, focusWidth: 3, largeCursor: false,
 };
 export const SETTING_GROUPS = {
-  appearance: ['theme', 'accent', 'radius', 'customTheme'],
+  appearance: ['theme', 'accent', 'radius', 'customTheme', 'uiScale'],
   reading: ['font', 'fontSize', 'lineHeight', 'letterSpacing', 'wordSpacing', 'bold'],
   accessibility: ['density', 'ruler', 'reduceMotion', 'emoji', 'shortcuts', 'focusWidth', 'largeCursor'],
   matrix: ['showNrv', 'showSource', 'showSd', 'showAlt', 'showMissing', 'precision', 'defaultAmount', 'showExt', 'sectionOrder', 'hiddenSections', 'pinnedNutrients', 'referenceMode', 'targets', 'efsaAge', 'efsaSex', 'efsaPhytate', 'efsaIronGroup', 'energyUnit', 'amountUnit', 'autoUnits', 'decimalSeparator'],
 };
 const enums = {
-  theme: ['light', 'dark', 'oled', 'sepia', 'pastel', 'ocean', 'forest', 'contrast', 'contrast-dark', 'custom'],
+  theme: ['light', 'dark', 'oled', 'sepia', 'pastel', 'ocean', 'forest', 'contrast', 'contrast-dark', 'custom', 'system'], language: ['auto', 'tr', 'en'],
   font: ['atkinson', 'opendyslexic', 'lexend', 'andika', 'nunito', 'inter', 'literata', 'mono', 'system'],
   density: ['comfy', 'compact', 'large'], precision: ['low', 'normal', 'high'],
-  referenceMode: ['eu', 'custom', 'efsa'], efsaSex: ['unspecified', 'female', 'male'], efsaPhytate: ['', '300', '600', '900', '1200'], efsaIronGroup: ['unspecified', 'pre', 'post'], energyUnit: ['both', 'kcal', 'kj'], amountUnit: ['g', 'oz'], decimalSeparator: ['comma', 'dot'],
+  referenceMode: ['eu', 'custom', 'efsa'], efsaSex: ['unspecified', 'female', 'male'], efsaPhytate: ['', '300', '600', '900', '1200'], efsaIronGroup: ['unspecified', 'pre', 'post'], energyUnit: ['both', 'kcal', 'kj'], amountUnit: ['g', 'oz'], decimalSeparator: ['auto', 'comma', 'dot'],
 };
 const ranges = { fontSize: [13, 28], lineHeight: [1.2, 2.4], letterSpacing: [0, .2], wordSpacing: [0, .5], radius: [0, 24], defaultAmount: [1, 1000], focusWidth: [2, 6] };
 export function normalizeSettings(input) {
@@ -44,6 +45,7 @@ export function normalizeSettings(input) {
         if (key) used.add(key);
       }
     } else if (k === 'customTheme') out[k] = normalizeColors(v);
+    else if (k === 'uiScale') { if (Number.isInteger(v) && v >= 80 && v <= 200 && v % 5 === 0) out[k] = v; }
     else if (k === 'efsaAge') { if (Number.isInteger(v) && v >= 1 && v <= 99) out[k] = v; }
     else if (k === 'targets') {
       for (const n of NUTRIENTS) if (typeof v?.[n.key] === 'number' && Number.isFinite(v[n.key]) && v[n.key] > 0) out[k][n.key] = v[n.key];
@@ -58,6 +60,7 @@ export function normalizeSettings(input) {
       if (v === 'auto' || (typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v))) out[k] = v;
     } else if (typeof out[k] === 'boolean' && typeof v === 'boolean') out[k] = v;
   }
+  if (input.language == null) out.language = 'tr'; // Preserve the language of existing Turkish installations.
   return out;
 }
 export function referenceFor(nutrient, settings) {

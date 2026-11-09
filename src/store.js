@@ -38,7 +38,7 @@ function write(key, val) {
 export function loadSettings() {
   const saved = read(KEY_SETTINGS, null);
   if (saved?.version === SETTINGS_VERSION) return normalizeSettings(saved.settings);
-  const migrated = normalizeSettings(read('bm.settings.v1', {}));
+  const migrated = normalizeSettings(read('bm.settings.v1', null));
   saveSettings(migrated); // Eski kopya korunur; depolama kapalıysa bellekte çalışır.
   return migrated;
 }

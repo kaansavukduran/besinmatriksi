@@ -1,6 +1,6 @@
 # 🫐 Besin Matriksi
 
-Türkçe, çevrimdışı, özelleştirilebilir bitkisel besin matriksi ve tarif hesaplayıcı.
+Türkçe, çevrimdışı, özelleştirilebilir bitkisel besin matriksi, günlük ve tarif hesaplayıcı. Yeni profil/günlük/görünüm ekranlarında İngilizce seçeneği de vardır; eski ekranların çevirisi henüz tamamlanmadı.
 Windows · macOS · Linux · Android · iPhone · tarayıcı/PWA · tek HTML.
 
 **[Paketleri indir: Actions / Artifacts](https://github.com/kaansavukduran/besinmatriksi/actions/runs/42606995870)** ·
@@ -30,9 +30,10 @@ Windows WebView2 gerektirir. Fiziksel cihaz kabulü henüz tamamlanmamıştır.
 ## Kullanım
 
 - **Keşfet:** kategori → besin → tüketim biçimi → 1–1000 g. Hazır miktarlar, kaydırıcı, ±1/±10 ve kaynakta varsa ev ölçüleri. İsteğe bağlı ons gösterimi.
+- **Günlük ve profil:** yaş, boy, kilo, aktivite ve isteğe bağlı Tanita fişi alanlarını kaydet. Günlük enerji ihtiyacı **tahmini**, planlanan/tüketilen besinler ve 206 bileşenin miktar/kapsam/referans farklarını incele. [Profil ve günlük rehberi](docs/PERSONAL_DAILY.md).
 - **Tarif oluştur:** malzemeleri ekle, porsiyon veya pişmiş son ağırlık seç. Toplam/1 porsiyon/son ürünün 100 g'ı, TL/kg fiyat ve porsiyon maliyeti. Eksik fiyat veya besin bilgisi kısmi kapsamla gösterilir. Malzeme ve kaynak dökümünde her bileşenin malzeme katkısı, USDA kayıt no/etiket kaynağı ve hesap girdileri incelenir.
 - **Karşılaştır:** 2–4 besini aynı miktar ve biçimde yan yana incele. En yüksek değer vurgusu sağlık açısından 'en iyi' anlamına gelmez.
-- **Ayarlar:** 9 tema ve yedi renk alanlı özel tema; renk seçim penceresi, hazır renkler/HEX, canlı önizleme ve metin kontrast ölçümü; 8 gömülü font ve sistem fontu; OpenDyslexic, Atkinson, Lexend; punto ve aralıklar; okuma cetveli; büyük imleç; atanabilir kısayollar; 12 görünüm profili.
+- **Ayarlar:** yeni görünüm kartında TR/EN, sistem/açık/koyu/yüksek kontrast tema, %80–200 bağımsız arayüz ölçeği (elle %135 dahil), yazı boyutu ve aralık kaydırıcıları; isteğe bağlı sakin keşif ilerlemesi. 9 tema ve yedi renk alanlı özel tema; renk seçim penceresi, hazır renkler/HEX, canlı önizleme ve metin kontrast ölçümü; 8 gömülü font ve sistem fontu; OpenDyslexic, Atkinson, Lexend; punto ve aralıklar; okuma cetveli; büyük imleç; atanabilir kısayollar; 12 görünüm profili.
 - **Kendi matriksin:** bölümleri gizle/sırala, 24 öğeye kadar sabitle. AB/TGK etiket BRD'si, elle girilen hedef veya kaynak/tür/yıl gösteren EFSA grup PRI/AI referansı. kcal/kJ ve sayı/birim tercihleri.
 - **Yedek/çıktı:** tarif/etiket/profil yedeği; ayrı ayar veya tema dosyası; CSV; Türkçe karakterli ve sayfa numaralı A4 yazdırma/PDF. Yazdırmadan sonra bölüm durumları korunur.
 - **Hakkında:** lisans ve telif bildirimleri internet olmadan okunabilir.
@@ -82,8 +83,9 @@ npm run dev
 Masaüstü paketleri Tauri, mobil paketler Capacitor ile üretilir.
 `release.yml` önce web/veri/tarayıcı kapılarını çalıştırır; ardından Windows,
 macOS, Linux, Android ve iOS paketlerini kendi runner'larında oluşturur.
-`v*` etiketi tüm kapılar başarılıysa GitHub Release yayımlar.
-`workflow_dispatch` yalnız test/paket artifact'leri üretir.
+Güncel izin yalnız `workflow_dispatch` ile `publish=false` test/paket çıktısı üretmektir.
+Etiket taşınmaz, herkese açık Release veya mağaza yayını yapılmaz.
+`release-candidate` çıktısı platform dosyalarını açık adlarla, kaynak ZIP, kaynak SHA ve SHA256SUMS ile toplar.
 Her artifact lisans metinleri ve kurulum rehberini içerir. Doğrulanan ZIP özetleri, kaynak SHA ve test/paket/çalışma zamanı ayrımı [kanıt kaydında](docs/evidence/B003b-packages.json).
 
 EFSA ham JSON/bildirim URL ve özetleri `data/references/EFSA_SOURCE.json` içinde; dönüşüm `scripts/build-efsa.mjs` ile çevrimdışıdır. [Kapsam, izin ve birim ayrımları](docs/DATA_RESEARCH.md).

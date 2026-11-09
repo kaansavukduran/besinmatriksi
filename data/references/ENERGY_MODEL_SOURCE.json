@@ -1,0 +1,22 @@
+{
+  "name": "Mifflin et al., 1990, A new predictive equation for resting energy expenditure in healthy individuals",
+  "doi": "10.1093/ajcn/51.2.241",
+  "pmid": "2305711",
+  "verified_url": "https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:2305711%20AND%20SRC:MED&format=json&resultType=core",
+  "verified_at": "2026-11-09T11:54:40.787219+00:00",
+  "response_sha256": "83a127fe2e3dce171223b9c93c3e261cc233b36bf994bb9a979998983c67bb45",
+  "equation": {
+    "weight_kg": 9.99,
+    "height_cm": 6.25,
+    "age_years": -4.92,
+    "male_indicator": 166,
+    "constant": -161
+  },
+  "study_age_years": [
+    19,
+    78
+  ],
+  "activity_source": "EFSA DRV Finder energy annotations: PAL 1.4/1.6/1.8/2.0; DOI 10.2903/j.efsa.2013.3005",
+  "scope": "Equation coefficients and bibliographic facts only; no article/abstract reproduced. This model produces estimates, not measured individual requirements. Device BMR is a separate user-entered estimate.",
+  "pubmed_direct_access": "Returned an interstitial without abstract; not retried. Europe PMC API independently supplied the matching DOI/PMID abstract."
+}

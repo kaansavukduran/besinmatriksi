@@ -15,6 +15,10 @@ import { recentSearches } from './search.js';
 import { recipeCost, normalizeCustom } from './records.js';
 import { renderRecipeSources, renderRecipeSourceRows } from './recipe-sources.js';
 import { renderEfsaSettings } from './efsa-ui.js';
+import { t as tr, setLanguage, preferredLanguage } from './i18n.js';
+import { renderAppearance, settingSlider } from './appearance.js';
+import { loadPersonal, savePersonal, emptyProfile, normalizeProfile, mergePersonalFoods, localDay, validDay, dayResult, PERSONAL_KEY } from './personal.js';
+import { renderPersonal, renderEnergy, renderDaySources } from './personal-view.js';
 import { normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS } from './settings.js';
 
 const PRESETS = [1, 5, 10, 25, 50, 100, 150, 200, 250, 500, 750, 1000];
@@ -42,7 +46,10 @@ const S = {
   customEdit: null, // { id?, name, liquid, portion, v: {} }
   themeEditor: null,
   efsaTableOpen: false,
+  personal: null, personalDraft: null, personalReadError: false, personalDay: localDay(), consumedOnly: false, personalSource: 'energy', personalSourceOpen: false, personalUndo: null,
 };
+const personalLoaded = loadPersonal();
+S.personal = personalLoaded.state; S.personalDraft = structuredClone(S.personal.profile); S.personalReadError = personalLoaded.error;
 setCustomFoods(loadCustom());
 S.amount = S.settings.defaultAmount;
 if (!S.recipes.length) S.recipes = [newRecipe('İlk tarifim')];
@@ -56,9 +63,14 @@ let printController;
 // ---------------------------------------------------------------- ayarlar
 function applySettings() {
   const s = S.settings, r = document.documentElement;
+  setLanguage(preferredLanguage(s.language)); r.lang = preferredLanguage(s.language);
+  r.style.zoom = String(s.uiScale / 100); r.style.setProperty('--ui-zoom', s.uiScale / 100);
+  r.dataset.uiScaled = String(s.uiScale !== 100);
+  r.dataset.uiNarrow = String(window.innerWidth / (s.uiScale / 100) < 900);
   configureFormatting(s);
   for (const key of ['bg', 'fg', 'card', 'card2', 'muted', 'line', 'ac0', 'ac-fg', 'ok', 'warn', 'bad', 'okbg', 'warnbg', 'badbg']) r.style.removeProperty('--' + key);
-  r.dataset.theme = s.theme;
+  const effectiveTheme = s.theme === 'system' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : s.theme;
+  r.dataset.theme = effectiveTheme;
   if (s.theme === 'custom') {
     const c = s.customTheme;
     for (const [k, v] of Object.entries({ bg: c.bg, fg: c.fg, card: c.card, card2: c.card2, muted: c.muted, line: c.line, ac0: c.accent, ok: c.fg, warn: c.fg, bad: c.fg, okbg: c.card, warnbg: c.card, badbg: c.card })) r.style.setProperty('--' + k, v);
@@ -76,7 +88,7 @@ function applySettings() {
   r.style.setProperty('--font', fontStack(s.font));
   if (s.accent && s.accent !== 'auto') r.style.setProperty('--ac', s.accent);
   else r.style.removeProperty('--ac');
-  const accent = s.accent === 'auto' ? (s.theme === 'custom' ? s.customTheme.accent : THEMES.find(t => t.id === s.theme)?.ac) : s.accent;
+  const accent = s.accent === 'auto' ? (s.theme === 'custom' ? s.customTheme.accent : THEMES.find(t => t.id === effectiveTheme)?.ac) : s.accent;
   if (accent) r.style.setProperty('--ac-fg', accentText(accent));
   ensureFont(s.font);
   const meta = document.querySelector('meta[name="theme-color"]');
@@ -85,7 +97,7 @@ function applySettings() {
 }
 function setSetting(k, v) {
   S.settings = normalizeSettings({ ...S.settings, [k]: v });
-  if (!saveSettings(S.settings)) toast('Ayarlar bu oturumda uygulandı; cihaz depolamasına yazılamadı');
+  if (!saveSettings(S.settings)) toast(tr('storageError'));
   applySettings();
   if (k === 'showExt' && v) loadExt().then(render);
 }
@@ -205,8 +217,9 @@ function renderExplore() {
         <div class="dtitle"><h2>${S.settings.emoji && item.food ? catIcon(item.food.cat) + ' ' : ''}${esc(item.name)}</h2>
           <div class="dsub">${esc(catName(item.cat))}${item.sci ? ` · <i>${esc(item.sci)}</i>` : ''}</div></div>
         <div class="dact">
-          <button class="btn primary" data-action="ex-add-recipe">＋ Tarife ekle</button>
-          <button class="btn" data-action="ex-add-compare">⇄ Karşılaştır</button>
+          <button class="btn primary" data-action="ex-add-day">＋ ${tr('addDay')}</button>
+          <button class="btn" data-action="ex-add-recipe">＋ ${tr('addRecipe')}</button>
+          <button class="btn" data-action="ex-add-compare">⇄ ${tr('addCompare')}</button>
           ${item.custom ? '<button class="btn" data-action="cu-edit">✎ Düzenle</button>' : ''}
           <button class="btn ghost" data-action="csv" title="Matriksi tablo (CSV) olarak indir">⬇ CSV</button>
           <button class="btn ghost" data-action="print" title="Yazdır veya PDF olarak kaydet">🖨 Yazdır</button>
@@ -373,26 +386,25 @@ function renderSettings() {
   const s = S.settings;
   const opt = (k, v, label) => `<button class="pchip ${s[k] === v ? 'on' : ''}" data-action="set" data-k="${k}" data-v="${esc(JSON.stringify(v))}">${label}</button>`;
   const tog = (k, label, help = '') => `<label class="toggle"><input type="checkbox" data-setbool="${k}" ${s[k] ? 'checked' : ''}><span class="sw"></span><span>${label}${help ? ` <span class="help" title="${esc(help)}">?</span>` : ''}</span></label>`;
-  const step = (k, label, min, max, st, unit, f = (x) => fmtNum(x)) => `<div class="kv"><span>${label}</span><span class="stepper">
-      <button class="nudge" data-action="setstep" data-k="${k}" data-d="${-st}" data-min="${min}" data-max="${max}" aria-label="${label} azalt">−</button><b>${f(s[k])}${unit}</b>
-      <button class="nudge" data-action="setstep" data-k="${k}" data-d="${st}" data-min="${min}" data-max="${max}" aria-label="${label} artır">+</button></span></div>`;
+  const step = (k, label, min, max, st, unit) => settingSlider(k, s[k], min, max, st, unit);
   return `<div class="settings">
-    <section class="card"><h2>Hızlı ön ayarlar</h2><div class="presets">
-      <button class="btn" data-action="preset" data-p="dyslexia">Disleksi dostu</button>
-      <button class="btn" data-action="preset" data-p="lowvision">Az görme / büyük yazı</button>
-      <button class="btn" data-action="preset" data-p="calm">Sakin ve sade</button>
-      <button class="btn" data-action="preset" data-p="cute">Pastel ve sevimli</button>
+    ${renderAppearance(s)}
+    <section class="card"><h2>${tr('quickPresets')}</h2><div class="presets">
+      <button class="btn" data-action="preset" data-p="dyslexia">${tr('dyslexiaPreset')}</button>
+      <button class="btn" data-action="preset" data-p="lowvision">${tr('lowVisionPreset')}</button>
+      <button class="btn" data-action="preset" data-p="calm">${tr('calmPreset')}</button>
+      <button class="btn" data-action="preset" data-p="cute">${tr('pastelPreset')}</button>
       <button class="btn ghost" data-action="preset" data-p="reset">Varsayılana dön</button></div></section>
 
-    <section class="card"><h2>Tema</h2><button class="btn ghost" data-action="reset-group" data-group="appearance">Tema ayarlarını sıfırla</button><div class="themes">${THEMES.map((t) => `<button class="theme ${s.theme === t.id ? 'on' : ''}" data-action="set" data-k="theme" data-v='"${t.id}"' style="--tbg:${t.bg};--tfg:${t.fg};--tac:${t.ac}"><span class="tprev"><i></i><b>Aa</b></span>${esc(t.name)}</button>`).join('')}</div>
-      <h3>Vurgu rengi</h3><div class="swatches">${ACCENTS.map((a) => `<button class="sw-btn ${s.accent === a ? 'on' : ''}" data-action="set" data-k="accent" data-v='"${a}"' style="${a === 'auto' ? '' : `--sw:${a}`}" aria-label="${a === 'auto' ? 'Tema rengi' : a}">${a === 'auto' ? 'Tema' : ''}</button>`).join('')}</div></section>
+    <section class="card"><h2>${tr('themes')}</h2><button class="btn ghost" data-action="reset-group" data-group="appearance">${tr('resetTheme')}</button><div class="themes">${THEMES.map((t) => `<button class="theme ${s.theme === t.id ? 'on' : ''}" data-action="set" data-k="theme" data-v='"${t.id}"' style="--tbg:${t.bg};--tfg:${t.fg};--tac:${t.ac}"><span class="tprev"><i></i><b>Aa</b></span>${tr('theme_' + t.id)}</button>`).join('')}</div>
+      <h3>${tr('color_accent')}</h3><div class="swatches">${ACCENTS.map((a) => `<button class="sw-btn ${s.accent === a ? 'on' : ''}" data-action="set" data-k="accent" data-v='"${a}"' style="${a === 'auto' ? '' : `--sw:${a}`}" aria-label="${a === 'auto' ? tr('themeColor') : a}">${a === 'auto' ? tr('themes') : ''}</button>`).join('')}</div></section>
 
-    <section class="card"><h2>Yazı tipi</h2><button class="btn ghost" data-action="reset-group" data-group="reading">Yazı ayarlarını sıfırla</button><div class="fonts">${FONTS.map((f) => `<button class="fontbtn ${s.font === f.id ? 'on' : ''}" data-action="font" data-v="${f.id}" style="font-family:${esc(fontStack(f.id))}"><b>${esc(f.name)}</b><span>Işık, ağaç, şeftali — İıĞğŞş 0O 1lI</span><small>${esc(f.note)}</small></button>`).join('')}</div>
+    <section class="card"><h2>${tr('fontTitle')}</h2><button class="btn ghost" data-action="reset-group" data-group="reading">${tr('resetReading')}</button><div class="fonts">${FONTS.map((f) => `<button class="fontbtn ${s.font === f.id ? 'on' : ''}" data-action="font" data-v="${f.id}" style="font-family:${esc(fontStack(f.id))}"><b>${f.id === 'system' ? tr('systemFont') : esc(f.name)}</b><span>${tr('fontSample')}</span><small>${tr('font_' + f.id)}</small></button>`).join('')}</div>
       ${step('fontSize', 'Yazı boyutu', 13, 28, 1, ' px')}
       ${step('lineHeight', 'Satır aralığı', 1.2, 2.4, 0.1, '', (x) => fmtNum(x))}
       ${step('letterSpacing', 'Harf aralığı', 0, 0.2, 0.01, ' em', (x) => fmtNum(x))}
       ${step('wordSpacing', 'Sözcük aralığı', 0, 0.5, 0.04, ' em', (x) => fmtNum(x))}
-      ${tog('bold', 'Daha kalın yazı')}
+      ${tog('bold', tr('bold'))}
     </section>
 
     <section class="card"><h2>Düzen ve erişilebilirlik</h2><button class="btn ghost" data-action="reset-group" data-group="accessibility">Erişilebilirlik ayarlarını sıfırla</button>
@@ -432,7 +444,7 @@ function renderSettings() {
       <div class="kv"><span>Enerji (matriks)</span><div class="presets">${opt('energyUnit', 'both', 'kcal + kJ')}${opt('energyUnit', 'kcal', 'kcal')}${opt('energyUnit', 'kj', 'kJ')}</div></div>
       <div class="kv"><span>Miktar göstergesi</span><div class="presets">${opt('amountUnit', 'g', 'Gram')}${opt('amountUnit', 'oz', 'Ons (oz)')}</div></div>
       <p class="hint">1 oz = 28,349523125 g. Seçim düğmeleri ve hesap tabanı 1–1000 g aralığında kalır. Sıvılarda yaklaşık mL, yoğunluk 1 varsayımıdır.</p>
-      <div class="kv"><span>Ondalık ayracı</span><div class="presets">${opt('decimalSeparator', 'comma', 'Virgül: 1,5')}${opt('decimalSeparator', 'dot', 'Nokta: 1.5')}</div></div>
+      <div class="kv"><span>${tr('numberSeparator')}</span><div class="presets">${opt('decimalSeparator', 'auto', tr('followLanguage'))}${opt('decimalSeparator', 'comma', tr('comma') + ': 1,5')}${opt('decimalSeparator', 'dot', tr('dot') + ': 1.5')}</div></div>
       ${tog('autoUnits', 'Büyük miktarlarda birimi yükselt (µg → mg → g)')}
       <p class="hint">CSV her zaman Türkçe Excel uyumlu ondalık virgül ve tanımlı besin birimlerini kullanır.</p>
     </section>
@@ -443,11 +455,11 @@ function renderSettings() {
       ${s.referenceMode === 'custom' ? `<label class="field"><span>Hedef eklenecek bileşen</span><select id="target-nutrient"><option value="">Bileşen seç</option>${NUTRIENTS.filter(n => n.key !== 'energy_kj' && s.targets[n.key] == null).map(n => `<option value="${n.key}">${esc(n.label)} (${esc(n.unit)})</option>`).join('')}</select></label><label class="field"><span>Yeni hedef miktarı (seçili bileşenin biriminde)</span><input type="number" min="0" step="any" id="target-new-value"></label><button class="btn" data-action="target-add">Hedef ekle</button>
       ${Object.entries(s.targets).map(([k, value]) => { const n = NUTRIENTS.find(n => n.key === k); return `<label class="field"><span>${esc(n.label)} hedefi (${esc(n.unit)})</span><input type="number" min="0" step="any" data-target-value="${k}" value="${value}"></label><button class="btn ghost" data-action="target-remove" data-key="${k}">${esc(n.label)} hedefini kaldır</button>`; }).join('')}` : ''}
     </section>
-    <section class="card"><h2>Kendi temam</h2>
-      <div class="cu-grid">${Object.entries(COLOR_LABELS).map(([k, label]) => `<button class="btn color-field" data-action="theme-color-open" data-key="${k}" aria-label="${label} rengini seç"><span class="color-dot" style="background:${s.customTheme[k]}" aria-hidden="true"></span><span>${label}<small>${s.customTheme[k]}</small></span></button>`).join('')}</div>
+    <section class="card"><h2>${tr('customTheme')}</h2>
+      <div class="cu-grid">${Object.entries(COLOR_LABELS).map(([k, label]) => `<button class="btn color-field" data-action="theme-color-open" data-key="${k}" aria-label="${tr('colorOpen', { name: tr('color_' + k) })}"><span class="color-dot" style="background:${s.customTheme[k]}" aria-hidden="true"></span><span>${tr('color_' + k)}<small>${s.customTheme[k]}</small></span></button>`).join('')}</div>
       ${themePreview(s.customTheme)}
-      <p class="hint" role="status">WCAG ana/ikincil metin kontrastı (üç yüzeyde en düşük): ${fmtNum(themeTextContrast(s.customTheme))}:1. ${themeTextContrast(s.customTheme) < 4.5 ? '⚠ Normal metin için 4,5:1 eşiğinin altında; yazı veya zemin rengini değiştir.' : 'Bu metin çiftleri AA eşiğini karşılıyor.'} Vurgu / kart: ${fmtNum(contrastRatio(s.customTheme.accent, s.customTheme.card))}:1.</p>
-      <div class="presets"><button class="btn" data-action="theme-apply">Kendi temamı uygula</button><button class="btn" data-action="theme-export">Temayı indir</button><button class="btn" data-action="open-file" data-id="theme-file">Tema dosyası aç</button><input type="file" id="theme-file" accept="application/json,.json" hidden></div>
+      <p class="hint" role="status">${tr('themeContrast', { ratio: fmtNum(themeTextContrast(s.customTheme)) })} ${tr(themeTextContrast(s.customTheme) < 4.5 ? 'contrastLow' : 'contrastGood')} ${tr('contrastAccent')}: ${fmtNum(contrastRatio(s.customTheme.accent, s.customTheme.card))}:1.</p>
+      <div class="presets"><button class="btn" data-action="theme-apply">${tr('themeApply')}</button><button class="btn" data-action="theme-export">${tr('themeExport')}</button><button class="btn" data-action="open-file" data-id="theme-file">${tr('themeImport')}</button><input type="file" id="theme-file" accept="application/json,.json" hidden></div>
     </section>
     <section class="card"><h2>Görünüm profilleri</h2>
       <p class="hint">Okuma, sunum veya gece için en fazla 12 görünüm kaydet. Profiller üst çubuktan uygulanabilir ve tam yedeğe dahildir.</p>
@@ -554,7 +566,7 @@ function saveCustomEdit() {
 }
 
 // ---------------------------------------------------------------- render
-const TABS = [['kesfet', 'Keşfet', '🔎'], ['tarif', 'Tarif oluştur', '🥣'], ['karsilastir', 'Karşılaştır', '⚖️'], ['ayarlar', 'Ayarlar', '🎨'], ['hakkinda', 'Hakkında', 'ℹ️']];
+const TABS = [['kesfet', '🔎'], ['gunluk', '📒'], ['tarif', '🥣'], ['karsilastir', '⚖️'], ['ayarlar', '🎨'], ['hakkinda', 'ℹ️']];
 
 export function render() {
   const keep = {};
@@ -566,6 +578,7 @@ export function render() {
   const selStart = document.activeElement?.selectionStart;
   let view = '';
   if (S.tab === 'kesfet') view = renderExplore();
+  else if (S.tab === 'gunluk') view = renderPersonal(S.personal, S.personalDraft, S.personalDay, S.consumedOnly, S.settings, resolve, S.personalSource, S.personalSourceOpen, S.personalUndo, S.personalReadError);
   else if (S.tab === 'tarif') view = renderRecipe();
   else if (S.tab === 'karsilastir') view = renderCompare();
   else if (S.tab === 'ayarlar') view = renderSettings();
@@ -573,7 +586,7 @@ export function render() {
   app().innerHTML = `
     <header class="top">
       <div class="brand">${S.settings.emoji ? '<span class="logo" aria-hidden="true">🫐</span>' : ''}<b>Besin Matriksi</b></div>
-      <nav class="tabs" aria-label="Bölümler">${TABS.map(([id, t, ic]) => `<button class="tab ${S.tab === id ? 'on' : ''}" data-action="tab" data-tab="${id}" ${S.tab === id ? 'aria-current="page"' : ''}><span class="ti" aria-hidden="true">${S.settings.emoji ? ic : ''}</span><span class="tt">${t}</span>${id === 'tarif' && activeRecipe()?.items.length ? `<span class="badge">${activeRecipe().items.length}</span>` : ''}${id === 'karsilastir' && S.compare.length ? `<span class="badge">${S.compare.length}</span>` : ''}</button>`).join('')}</nav>
+      <nav class="tabs" aria-label="${tr('navigation')}">${TABS.map(([id, ic]) => `<button class="tab ${S.tab === id ? 'on' : ''}" data-action="tab" data-tab="${id}" ${S.tab === id ? 'aria-current="page"' : ''}><span class="ti" aria-hidden="true">${S.settings.emoji ? ic : ''}</span><span class="tt">${tr(id)}</span>${id === 'tarif' && activeRecipe()?.items.length ? `<span class="badge">${activeRecipe().items.length}</span>` : ''}${id === 'karsilastir' && S.compare.length ? `<span class="badge">${S.compare.length}</span>` : ''}</button>`).join('')}</nav>
     </header>
     ${S.profiles.length ? `<div class="profile-bar" role="group" aria-label="Görünüm profilleri"><span class="hint">Görünüm:</span>${S.profiles.map(p => `<button class="pchip" data-action="profile-apply" data-id="${p.id}">${esc(p.name)}</button>`).join('')}</div>` : ''}
     <main class="view view-${S.tab}">${view}</main>
@@ -698,12 +711,83 @@ const PRESETS_UI = {
   cute: { theme: 'pastel', font: 'nunito', emoji: true, radius: 20, accent: 'auto' },
 };
 
+function persistPersonal() {
+  if (S.personalReadError || !savePersonal(S.personal)) { toast(tr(S.personalReadError ? 'corruptPersonal' : 'storageError')); return false; }
+  return true;
+}
+function updatePersonalDraft(input) {
+  const key = input.dataset.personalField;
+  if (!Object.hasOwn(S.personalDraft, key)) return;
+  S.personalDraft[key] = key === 'specialContext' ? input.checked : ['sex', 'energySource', 'note', 'measuredOn'].includes(key) ? input.value : input.value === '' ? null : Number(input.value);
+  $('#personal-preview').innerHTML = renderEnergy(S.personalDraft, true);
+  $('#personal-save-status').textContent = tr('unsaved');
+}
+function updateNumericSetting(input) {
+  if (!input.value || !input.checkValidity()) { input.setAttribute('aria-invalid', 'true'); return; }
+  input.removeAttribute('aria-invalid');
+  const key = input.dataset.settingRange || input.dataset.settingNumber;
+  if (!['uiScale', 'fontSize', 'lineHeight', 'letterSpacing', 'wordSpacing', 'radius', 'focusWidth'].includes(key)) return;
+  setSetting(key, Number(input.value));
+  document.querySelectorAll(`[data-setting-output="${key}"]`).forEach(el => el.textContent = fmtNum(S.settings[key]) + (key === 'uiScale' ? '%' : ['fontSize', 'radius', 'focusWidth'].includes(key) ? ' px' : ['letterSpacing', 'wordSpacing'].includes(key) ? ' em' : ''));
+  document.querySelectorAll(`[data-setting-range="${key}"], [data-setting-number="${key}"]`).forEach(el => { if (el !== input) el.value = S.settings[key]; });
+}
+async function importPersonalFile(file) {
+  try {
+    const payload = JSON.parse(await file.text());
+    if (payload.app !== 'besin-matriksi-personal' || payload.version !== 1 || !Array.isArray(payload.custom)) throw Error('invalid');
+    const imported = mergePersonalFoods(S.personal, payload.personal, customFoods(), payload.custom), merged = imported.state, list = imported.custom;
+    if (!saveCustom(list)) throw Error('storage');
+    if (S.personalReadError) localStorage.setItem(PERSONAL_KEY + '.recovery', localStorage.getItem(PERSONAL_KEY) || '');
+    setCustomFoods(list); S.personal = merged; S.personalDraft = structuredClone(merged.profile); S.personalReadError = false;
+    if (merged.entries.some(e => e.ref.t === 'x')) await loadExt();
+    const saved = persistPersonal(); render(); if (saved) toast(tr('importDone'));
+  } catch { await uiDialog(tr('personal.importError'), { ok: tr('ok') }); }
+}
 async function onClick(e) {
   const b = e.target.closest('[data-action]');
   if (!b) return;
   const a = b.dataset.action;
   if (!document.querySelector('.modal')) modalOpener = focusSelector(b);
   switch (a) {
+    case 'ex-add-day': {
+      if (!S.sel || !resolve(S.sel)) break;
+      S.personal.entries.push({ id: uid(), day: S.personalDay, ref: { ...S.sel }, g: S.amount, consumed: false });
+      S.personal.milestones.food = true; persistPersonal(); toast(tr('dayAdded')); break;
+    }
+    case 'personal-save': {
+      if ([...document.querySelectorAll('[data-personal-field]')].some(el => !el.checkValidity())) { toast(tr('profile.invalid')); break; }
+      try {
+        S.personal.profile = normalizeProfile(S.personalDraft);
+        if (S.personal.profile.age && S.personal.profile.height && S.personal.profile.weight && S.personal.profile.sex !== 'unspecified') S.personal.milestones.profile = true;
+        const saved = persistPersonal(); render(); if (saved) $('#personal-save-status').textContent = tr('saved');
+      } catch { toast(tr('profile.invalid')); }
+      break;
+    }
+    case 'personal-clear': {
+      if (!await uiDialog(tr('confirmClear'), { ok: tr('clearProfile'), cancel: tr('cancel') })) break;
+      S.personalUndo = { type: 'profile', profile: structuredClone(S.personal.profile) };
+      S.personal.profile = emptyProfile(); S.personalDraft = emptyProfile(); persistPersonal(); render(); break;
+    }
+    case 'personal-mode': S.consumedOnly = b.dataset.mode === 'consumed'; render(); break;
+    case 'personal-consumed': { const entry = S.personal.entries.find(e => e.id === b.dataset.id); if (entry) entry.consumed = !entry.consumed; persistPersonal(); render(); break; }
+    case 'personal-remove': { const entry = S.personal.entries.find(e => e.id === b.dataset.id); if (entry) { S.personalUndo = { type: 'entry', entry: { ...entry } }; S.personal.entries = S.personal.entries.filter(e => e.id !== entry.id); persistPersonal(); render(); } break; }
+    case 'personal-undo': {
+      const undo = S.personalUndo;
+      if (undo?.type === 'entry' && !S.personal.entries.some(e => e.id === undo.entry.id)) S.personal.entries.push(undo.entry);
+      if (undo?.type === 'profile') { S.personal.profile = undo.profile; S.personalDraft = structuredClone(undo.profile); }
+      S.personalUndo = null; persistPersonal(); render(); break;
+    }
+    case 'personal-efsa': {
+      const p = S.personal.profile;
+      if (!(p.age >= 1 && p.age <= 99) || !['male', 'female'].includes(p.sex)) { toast(tr('saveProfileFirst')); break; }
+      setSetting('referenceMode', 'efsa'); setSetting('efsaAge', p.age); setSetting('efsaSex', p.sex); setSetting('efsaPhytate', ''); setSetting('efsaIronGroup', 'unspecified'); render(); break;
+    }
+    case 'personal-export': {
+      const refs = new Set(S.personal.entries.filter(e => e.ref.t === 'u').map(e => e.ref.id));
+      download('besin-matriksi-personal.json', JSON.stringify({ app: 'besin-matriksi-personal', version: 1, personal: S.personal, custom: customFoods().filter(f => refs.has(f.id)).map(normalizeCustom) }, null, 2)); break;
+    }
+    case 'personal-raw': try { download('besin-matriksi-personal-raw.txt', localStorage.getItem(PERSONAL_KEY) || '', 'text/plain'); } catch { await uiDialog(tr('storageError'), { ok: tr('ok') }); } break;
+    case 'setting-reset': if (Object.hasOwn(DEFAULT_SETTINGS, b.dataset.key)) { setSetting(b.dataset.key, DEFAULT_SETTINGS[b.dataset.key]); render(); } break;
     case 'tab': S.tab = b.dataset.tab; render(); window.scrollTo(0, 0); break;
     // keşfet
     case 'ex-cat': S.sel = null; S.cat = b.dataset.cat || null; S.extGroup = null; render(); $('.list') && ($('.list').scrollTop = 0); break;
@@ -875,6 +959,8 @@ function exportCSV() {
 
 function onInput(e) {
   const t = e.target;
+  if (t.dataset.personalField) { updatePersonalDraft(t); return; }
+  if (t.dataset.settingRange || t.dataset.settingNumber) { updateNumericSetting(t); return; }
   if (S.themeEditor && ['theme-color-picker', 'theme-color-hex'].includes(t.id)) {
     const valid = validColor(t.value);
     t.setAttribute('aria-invalid', String(!valid));
@@ -915,6 +1001,15 @@ function onInput(e) {
 }
 function onChange(e) {
   const t = e.target;
+  if (t.dataset.personalField) { updatePersonalDraft(t); return; }
+  if (t.dataset.settingNumber) { if (!t.checkValidity()) toast(tr('settingInvalid')); return; }
+  if (t.id === 'app-language') { setSetting('language', t.value); render(); return; }
+  if (t.id === 'personal-day') { if (validDay(t.value)) { S.personalDay = t.value; render(); } else { toast(tr('dateInvalid')); t.value = S.personalDay; } return; }
+  if (t.id === 'personal-source-key' && NUTRIENTS.some(n => n.key === t.value)) {
+    S.personalSource = t.value; const data = dayResult(S.personal, S.personalDay, resolve, S.consumedOnly);
+    $('#personal-sources-content').innerHTML = renderDaySources(data.entries, resolve, t.value); return;
+  }
+  if (t.id === 'personal-file' && t.files?.[0]) { importPersonalFile(t.files[0]); return; }
   if (['efsaAge', 'efsaSex', 'efsaPhytate', 'efsaIronGroup'].includes(t.dataset.efsa)) {
     setSetting(t.dataset.efsa, t.dataset.efsa === 'efsaAge' ? Number(t.value) : t.value); render(); return;
   }
@@ -929,7 +1024,7 @@ function onChange(e) {
   }
   if (t.dataset.themeColor) { setSetting('customTheme', { ...S.settings.customTheme, [t.dataset.themeColor]: t.value }); render(); return; }
   if (t.id === 'theme-file' && t.files?.[0]) {
-    t.files[0].text().then(text => { setSetting('customTheme', parseTheme(text)); setSetting('accent', 'auto'); setSetting('theme', 'custom'); render(); toast('Tema içe aktarıldı'); }).catch(err => uiDialog(err.message)); return;
+    t.files[0].text().then(text => { setSetting('customTheme', parseTheme(text)); setSetting('accent', 'auto'); setSetting('theme', 'custom'); render(); toast(tr('themeImportDone')); }).catch(() => uiDialog(tr('themeImportError'), { ok: tr('ok') })); return;
   }
   if (t.dataset.sectionVisible) { setSetting('hiddenSections', t.checked ? S.settings.hiddenSections.filter(id => id !== t.dataset.sectionVisible) : [...S.settings.hiddenSections, t.dataset.sectionVisible]); render(); return; }
   if (t.id === 'pin-nutrient' && t.value) { setSetting('pinnedNutrients', [...S.settings.pinnedNutrients, t.value]); render(); return; }
@@ -950,6 +1045,9 @@ export function start() {
   printController = createPrintController(document, window);
   applySettings();
   if (S.settings.showExt || S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) loadExt().then(render);
+  if (S.personal.entries.some(e => e.ref.t === 'x')) loadExt().then(render);
+  window.addEventListener('resize', () => { document.documentElement.dataset.uiNarrow = String(window.innerWidth / (S.settings.uiScale / 100) < 900); });
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (S.settings.theme === 'system') applySettings(); });
   render();
   document.addEventListener('click', onClick);
   document.addEventListener('input', onInput);
@@ -959,6 +1057,14 @@ export function start() {
     const d = e.target;
     if (d.isConnected && d.matches?.('details.recipe-sources')) S.recipeSourcesOpen = d.open;
     if (d.isConnected && d.matches?.('details.efsa-table')) S.efsaTableOpen = d.open;
+    if (d.isConnected && d.matches?.('details.personal-sources')) {
+      S.personalSourceOpen = d.open;
+      if (d.open && !S.personal.milestones.source) {
+        S.personal.milestones.source = true; persistPersonal();
+        const done = Object.values(S.personal.milestones).filter(Boolean).length, progress = $('.exploration-progress progress');
+        if (progress) { progress.value = done; progress.setAttribute('aria-label', tr('progressCount', { done })); $('.exploration-progress p').textContent = tr('progressCount', { done }); }
+      }
+    }
     if (!printController.active && d.matches?.('details.sec')) { if (d.open) S.closed.delete(d.dataset.sec); else S.closed.add(d.dataset.sec); }
   }, true);
   document.addEventListener('keydown', (e) => {

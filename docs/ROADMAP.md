@@ -42,9 +42,11 @@ Durum etiketleri: PLANNED · IN_PROGRESS · DONE (yalnızca test kanıtıyla). S
 
 ## Devam sırası (2026-11-09)
 
-1. **B031**: uygun ortamda native kurulum/çalışma kabulünü dene; mevcut Linux ortamında WebKitGTK 4.1 ve Xvfb yok, yalnız derlenmiş paket test edilmiş sayılmaz. Diğer fiziksel OS/cihaz kabulü hâlâ NOT_RUN.
-2. B021: resmî erişim/lisans teyidi, kayıtlı retry_not_before sonrasında tekrar araştırılır; aynı engel günlükten sık tekrarlanmaz.
-3. UX-TASKS: görev/saat ekranının kapsamı için kullanıcının yanıtı beklenir; bu istek tamamlandı sayılmaz.
+1. **B051**: eski matriks/tarif/EFSA/kaynak ekranlarının merkezi TR/EN çevirisini tamamla; yeni B050 ekranlarını yeniden üretme.
+2. **B052**: imzalı uygulama güncelleme tasarımı/ayarları ve iki gerçek sürümle veri koruyan yükseltme kapısı. İmza anahtarı ve dağıtım yetkisi yokken tamamlandı sayılmaz.
+3. B031: uygun OS/cihazda native kurulum/çalışma kabulü; paket üretimi cihaz kabulü değildir. Apple Developer ID/noter ve iOS TestFlight/App Store imzaları açık.
+4. B021: kayıtlı retry_not_before sonrasında resmî erişim/lisans teyidi; erken aynı engeli tekrarlama.
+5. UX-TASKS: görev/saat ekranının kapsam yanıtı bekleniyor.
 
 B003b **DONE (PACKAGED)**: 1–99 yaş çocuk/yetişkin,
 23 karşılaştırılabilir bileşende 169 PRI/AI kaydı; kapsam/izin/birim istisnaları
@@ -69,3 +71,11 @@ Kapsam dışı bilimsel tabloları ekleyerek bitişi sürekli öteleme.
 B020b/B005b son kapıları: workflow_dispatch run 42596270782; kaynak `8e0b3178bc41864338a3fdf91afb6cf49e5497be`, altı artifact grubu ve üç masaüstünde 404 Cargo / 0 eksik metin. Test/paket/runtime ayrımı `docs/evidence/B005b-packages.json`. B003b aşağıdaki yeni kapıyla kapandı; UX-TASKS açıklama bekliyor ve tamamlandı sayılmaz.
 
 B003b son kanıtı: `docs/evidence/B003b-packages.json`; 49 birim / 30 tarayıcı testi ve altı paket grubu PASS. Fiziksel/native çalışma zamanı NOT_RUN. Sonraki tek Forge **B031**.
+
+## B050 · kişisel profil, günlük ve erişilebilir görünüm
+
+- **IMPLEMENTED / yerel RUNTIME_TESTED; son SHA paket kapısı bekliyor.** Yaş/boy/kilo/aktivite, Tanita fişi alanları; Mifflin 1990 veya cihaz tahmini kaynakları ayrı; planlanan/tüketilen günlük, 206 bileşen kaynak/kapsam/referans farkı ve yerel yedek. [Rehber](PERSONAL_DAILY.md).
+- TR/EN yeni ekranlar, cihaz dili seçimi, %80–200 ölçek (%135 elle), bağımsız font/yazı/aralıklar, sistem teması, isteğe bağlı ve geri alınabilir sakin ilerleme. Sağlık sonucu/kalori/ağırlık ödülü veya seri baskısı yok.
+- Yerel 57 birim testi PASS; son tam tarayıcı 34 PASS + 2 yönetilen file:// SKIP. Son değişiklik sonrası tekrar ve temiz commit CI kanıtı ayrıca kaydedilecek.
+- B030 aday paket hazırlığı: 1.1.2-beta.1; yalnız workflow_dispatch/publish=false. Herkese açık Release yok. B051/B052 henüz tamamlanmadı; tüm uygulanabilir işler bitmediği için otomasyon açık kalır.
+- Kaynak ZIP/Git geçmişi Drive yedeği otomatik onay incelemesince engellendi; ek yetki olmadan başka yoldan yüklenmez. Yerel arşiv kanıtı ile uzak yedek kanıtı ayrıdır.

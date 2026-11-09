@@ -1,12 +1,12 @@
 {
   "schema_version": "1",
   "project": "Besin Matriksi",
-  "product_version": "1.1.1",
-  "development_state": "READY_FOR_NEXT_FORGE",
+  "product_version": "1.1.2-beta.1",
+  "development_state": "IN_PROGRESS",
   "last_forge_at": "2026-11-09T11:17:14.797528+00:00",
   "last_completed_forge": "B003b",
-  "active_forge": null,
-  "next_recommended_forge": "B031",
+  "active_forge": "B050-personal-daily",
+  "next_recommended_forge": "B051",
   "branch": "codex/forge-devam",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
   "validated_code_commit": "baaca2ba15fbacb208a8fbffc02d012741d27779",
@@ -91,6 +91,8 @@
     }
   ],
   "remaining_forges": [
+    "B051",
+    "B052",
     "B031",
     "B021",
     "UX-TASKS"
@@ -102,8 +104,8 @@
     "stop_when": "All applicable roadmap items and final gates are verified; pause only this own automation.",
     "note": "Hourly schedule enabled with inherited cloud environment; availability and usage limits still apply."
   },
-  "notes": "B003b PACKAGED at baaca2b: 23 compatible nutrients / 169 PRI-AI references. 49 unit + 30 GitHub browser tests PASS; 6 artifact groups match SHA. Native runtime NOT_RUN. Next single Forge B031; TürKomp retry and UX-TASKS clarification remain open. No public Release, merge or store publication.",
-  "release_target": null,
+  "notes": "B050 implemented: personal/Tanita profile, energy estimate, planned/consumed daily matrix, local backup, bilingual new UI and appearance controls. Final current-source CI/native packages pending; older package SHA remains historical proof only.",
+  "release_target": "v1.1.2-beta.1",
   "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission. EFSA group reference data are separate from food measurements; only verified compatible PRI/AI records, EFSA attribution required.",
   "historical_verified_gates": [
     {
@@ -252,14 +254,13 @@
       "level": "NOT_RUN"
     }
   ],
-  "publication_policy": "No auto merge, force push, new public Release, or store publication. Only workflow_dispatch artifacts; v1.1.1 tag not moved.",
+  "publication_policy": "No public Release or store publication. Only workflow_dispatch with publish=false; never move v1.1.1 tag. Latest user instruction confirmed this boundary.",
   "work_session": {
-    "state": "COMPLETED",
-    "owner": "codex-20261109-B003b",
-    "started_at": "2026-11-09T10:55:35.591940+00:00",
-    "lease_expires_at": null,
-    "note": "B003b source/legal/tests/packages verified. No active editing lease.",
-    "finished_at": "2026-11-09T11:17:14.797547+00:00"
+    "state": "ACTIVE",
+    "owner": "codex-B050-personal-daily",
+    "started_at": "2026-11-09T11:29:01.330938+00:00",
+    "lease_expires_at": "2026-11-09T13:42:18.320867+00:00",
+    "note": "B050 local 57 unit / 34 browser PASS + 2 managed file:// skips; final changed-import regression and exact-SHA packaging pending. Only publish=false authorized."
   },
   "pending_user_clarification": "User asked drag-reorder tasks and task times. Besin Matriksi has no tasks; async question pending: existing sections/recipes versus separate planning screen.",
   "package_evidence_file": "docs/evidence/B003b-packages.json",
@@ -270,5 +271,16 @@
     "records": 169,
     "nutrients": 23,
     "scope": "Children/adults ages 1–99; compatible numerical PRI/AI only"
-  }
+  },
+  "backup_status": {
+    "state": "BLOCKED_AUTO_REVIEW",
+    "reason": "Code backup upload blocked by automatic approval review; exact payload/destination authorization was not accepted. Local archives will be verified; no further upload or workaround without explicit approval."
+  },
+  "pending_forges": [
+    {
+      "id": "B030-public-beta",
+      "state": "ARTIFACT_ONLY",
+      "reason": "Latest user instruction permits workflow_dispatch artifacts only; no public release."
+    }
+  ]
 }
