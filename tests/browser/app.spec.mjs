@@ -72,7 +72,8 @@ test('üretim PWA çevrimdışı yeniden açılır ve geniş katalog yüklenir',
   await page.evaluate(async () => { await navigator.serviceWorker.ready; if (!navigator.serviceWorker.controller) await new Promise(resolve => navigator.serviceWorker.addEventListener('controllerchange', resolve, { once: true })); });
   await context.setOffline(true); await page.reload(); await pickBanana(page);
   await expect(page.locator('#matrix')).toContainText('Muz');
-  await tab(page, 'ayarlar'); await page.locator('[data-setbool="showExt"]').check();
+  await tab(page, 'ayarlar'); await page.locator('[data-setbool="showExt"]').locator('..').click();
+  await expect(page.locator('[data-setbool="showExt"]')).toBeChecked();
   await tab(page, 'kesfet'); await page.locator('[data-action="ex-cat"][data-cat="ext"]').click();
   await expect(page.locator('#foodlist .food').first()).toBeVisible();
 });
