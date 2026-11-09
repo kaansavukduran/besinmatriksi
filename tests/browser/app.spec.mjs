@@ -74,7 +74,10 @@ test('üretim PWA çevrimdışı yeniden açılır ve geniş katalog yüklenir',
   await expect(page.locator('#matrix')).toContainText('Muz');
   await tab(page, 'ayarlar'); await page.locator('[data-setbool="showExt"]').locator('..').click();
   await expect(page.locator('[data-setbool="showExt"]')).toBeChecked();
-  await tab(page, 'kesfet'); await page.locator('[data-action="ex-cat"][data-cat="ext"]').click();
+  await tab(page, 'kesfet');
+  if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
+  await page.locator('[data-action="ex-cat"][data-cat="ext"]').click();
+  await page.locator('#q').fill('');
   await expect(page.locator('#foodlist .food').first()).toBeVisible();
 });
 test('ana ekranlar WCAG 2.1 AA otomatik denetimi ve yatay taşma kontrolünden geçer', async ({ page }) => {
@@ -124,10 +127,22 @@ test('özel hedef, birimler, tema dosyası ve kısayol ataması çalışır', as
 });
 
 test('tek HTML dosyası internet olmadan yerelden açılır', async ({ page, context }) => {
+  test.skip(process.env.PLAYWRIGHT_FILE_URL_BLOCKED === '1', 'Yönetilen sistem Chromium politikası file:// gezinmesini engelliyor; ağsız HTML testi ayrıca çalışır.');
   const { fileURLToPath } = await import('node:url');
   const html = fileURLToPath(new URL('../../dist-single/besin-matriksi.html', import.meta.url));
   await context.setOffline(true); await page.goto('file://' + html);
   await pickBanana(page); await expect(page.locator('#matrix')).toContainText('USDA');
   await page.locator('[data-amount="ex"] [data-val="1000"]').click();
   await expect(page.locator('[data-sec="enerji"]')).toContainText('890');
+});
+
+
+test('tek HTML içeriği harici istek olmadan çalışır', async ({ page, context }) => {
+  const { readFile } = await import('node:fs/promises');
+  const html = await readFile(new URL('../../dist-single/besin-matriksi.html', import.meta.url), 'utf8');
+  const requests = []; page.on('request', r => requests.push(r.url()));
+  await context.setOffline(true); await page.setContent(html);
+  await pickBanana(page); await page.locator('[data-amount="ex"] [data-val="1000"]').click();
+  await expect(page.locator('[data-sec="enerji"]')).toContainText('890');
+  expect(requests.filter(url => /^https?:/.test(url))).toEqual([]);
 });

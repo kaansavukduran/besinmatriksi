@@ -1,7 +1,7 @@
 {
   "name": "besin-matriksi",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Çevrimdışı, özelleştirilebilir bitkisel besin matriksi ve tarif hesaplayıcı",
   "type": "module",
   "scripts": {

@@ -81,7 +81,7 @@ export function setCustomFoods(list) {
 }
 export const customFoods = () => CUSTOM;
 
-export function search(q, { cat = null, ext = false } = {}) {
+export function search(q, { cat = null, ext = false, extGroup = null } = {}) {
   const k = norm(q);
   const terms = k ? k.split(' ') : [];
   const match = (s) => terms.every((t) => s.includes(t));
@@ -90,7 +90,7 @@ export function search(q, { cat = null, ext = false } = {}) {
     out.sort((a, b) => score(b._k, k) - score(a._k, k) || a.tr.localeCompare(b.tr, 'tr'));
   }
   let extOut = [];
-  if (ext && EXT && terms.length) extOut = EXT.foods.filter((f) => match(f._k)).slice(0, 80);
+  if (ext && EXT && terms.length) extOut = EXT.foods.filter((f) => (!extGroup || f.g === extGroup) && match(f._k)).slice(0, 80);
   const custom = terms.length ? CUSTOM.filter((f) => match(f._k)) : [];
   return { curated: out, ext: extOut, custom };
 }

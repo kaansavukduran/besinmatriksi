@@ -124,7 +124,7 @@ function derivedCard(r, cfg, open) {
   if (d.phyZn != null) rows.push(ratioRow('Fitat : Çinko (molar)', d.phyZn, fmtNum(d.phyZn), d.phyZn > 15 ? ['bad', '> 15 düşük emilim'] : d.phyZn > 5 ? ['warn', '5–15 orta'] : ['ok', '< 5'], 'WHO/FAO (2004) eşikleri: >15 düşük, 5–15 orta, <5 yüksek çinko biyoyararlanımı. Tek besine değil öğüne uygulanır.'));
   if (d.phyFe != null) rows.push(ratioRow('Fitat : Demir (molar)', d.phyFe, fmtNum(d.phyFe), d.phyFe > 1 ? ['bad', '> 1 emilim baskılanır'] : d.phyFe > 0.4 ? ['warn', '0,4–1'] : ['ok', '< 0,4'], 'Hurrell & Egli (2010): >1 demir emilimini belirgin baskılar; ideal <0,4 (C vitamini yoksa). Fermentasyon, ıslatma, filizlendirme fitatı azaltır.'));
   if (d.phyCa != null) rows.push(ratioRow('Fitat : Kalsiyum (molar)', d.phyCa, fmtNum(d.phyCa), d.phyCa > 0.24 ? ['warn', '> 0,24'] : ['ok', '≤ 0,24'], '>0,24 kalsiyum biyoyararlanımının azaldığına işaret eden eşik olarak kullanılır (Umeta ve ark. 2005).'));
-  if (d.oxCa != null) rows.push(ratioRow('Oksalat : Kalsiyum (molar)', d.oxCa, fmtNum(d.oxCa), d.oxCa >= 1 ? ['bad', '≥ 1 Ca bağlanır'] : ['ok', '< 1'], '≥1 ise oksalat, besindeki kalsiyumun tamamını bağlayabilecek miktardadır; besin iyi bir Ca kaynağı sayılmaz (ör. ıspanak).'));
+  if (d.oxCa != null) rows.push(ratioRow('Oksalat : Kalsiyum (molar)', d.oxCa, fmtNum(d.oxCa), d.oxCa >= 1 ? ['warn', '≥ 1 molar oran'] : ['ok', '< 1'], 'Oksalat/kalsiyum molar oranı; bağlanmayı veya kişideki gerçek emilimi doğrudan ölçmez. Hazırlama biçimi ve oksalatın çözünürlüğü önemlidir.'));
   let aas = '';
   if (d.aas) {
     const a = d.aas;
@@ -158,12 +158,13 @@ function preparationNotes(r, item) {
 }
 
 function toleranceCard(r, item, cfg, open) {
+  const unknownAllergens = item?.custom || item?.ext;
   const al = (item?.allergens || []).map((a) => `<span class="chip warn">${esc(ALLERGENS[a] || a)}</span>`).join('');
   const rfo = ['raffinose', 'stachyose', 'verbascose', 'ajugose'].map((k) => r.v[k]).filter((x) => x != null);
   const rfoSum = rfo.reduce((a, b) => a + b, 0);
   const lines = [];
-  lines.push(`<div class="kv"><span>Alerjenler (AB 14 listesi)</span><span>${al || (item ? '<span class="chip ok">Katalogda bildirilen yok</span>' : '<span class="muted">tarif: malzemelere bak</span>')}</span></div>`);
-  lines.push(`<div class="kv"><span>Gluten</span><span>${item?.allergens?.includes('gluten') ? 'İçerir' : item ? 'Tahıl kaynaklı gluten beklenmez (çapraz bulaşma ürüne göre)' : '–'}</span></div>`);
+  lines.push(`<div class="kv"><span>Alerjenler (AB 14 listesi)</span><span>${unknownAllergens ? '<span class="muted">Bilgi girilmedi; ürün etiketini kontrol et</span>' : al || (item ? '<span class="chip ok">Katalogda bildirilen yok</span>' : '<span class="muted">tarif: malzemelere bak</span>')}</span></div>`);
+  lines.push(`<div class="kv"><span>Gluten</span><span>${unknownAllergens ? 'veri yok; ürün etiketi ve çapraz bulaşma bilgisi gerekli' : item?.allergens?.includes('gluten') ? 'İçerir' : item ? 'Tahıl kaynaklı gluten beklenmez (çapraz bulaşma ürüne göre)' : '–'}</span></div>`);
   lines.push(`<div class="kv"><span>FODMAP</span><span>${rfo.length ? `Rafinoz ailesi (GOS) ölçülmüş: ${fmtNum(rfoSum)} g. ` : ''}Porsiyon eşikleri: <b>veri yok</b> (Monash / FODMAP Friendly verileri lisanslı, bu uygulamada yok).</span></div>`);
   if (r.v.lactose != null) lines.push(`<div class="kv"><span>Laktoz</span><span>${fmtNum(r.v.lactose)} g</span></div>`);
   lines.push(`<div class="kv"><span>Histamin / biyojen aminler</span><span><b>veri yok</b></span></div>`);

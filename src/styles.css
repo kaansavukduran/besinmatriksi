@@ -457,3 +457,4 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
   .src, .flag, .chip, .cov, .covchip { color: #000 !important; background: #fff !important; }
   .reference-label { color: #000; }
 }
+:root[data-theme="custom"] .src { color: var(--fg); background: var(--card); }

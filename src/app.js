@@ -156,7 +156,7 @@ function foodList(prefix, cat, q, extGroup) {
     const chips = Object.entries(groups).map(([g, n]) => `<button class="pchip ${extGroup === g ? 'on' : ''}" data-action="${prefix}-extgroup" data-g="${g}">${esc(n)}</button>`).join('');
     let list = extFoods();
     if (extGroup) list = list.filter((f) => f.g === extGroup);
-    if (q) list = search(q, { ext: true }).ext.filter(f => !extGroup || f.g === extGroup);
+    if (q) list = search(q, { ext: true, extGroup }).ext;
     const shown = list.slice(0, 400);
     return `<div class="presets extgroups">${chips}</div>
       <p class="hint">USDA SR28'den bitkisel gruplar; hayvansal içerikli ve marka ürünler otomatik ayıklandı, yine de vegan uygunluğu ürün bazında doğrulanmalıdır.</p>
@@ -688,7 +688,7 @@ async function onClick(e) {
   switch (a) {
     case 'tab': S.tab = b.dataset.tab; render(); window.scrollTo(0, 0); break;
     // keşfet
-    case 'ex-cat': S.cat = b.dataset.cat || null; S.extGroup = null; render(); $('.list') && ($('.list').scrollTop = 0); break;
+    case 'ex-cat': S.sel = null; S.cat = b.dataset.cat || null; S.extGroup = null; render(); $('.list') && ($('.list').scrollTop = 0); break;
     case 'ex-extgroup': S.extGroup = S.extGroup === b.dataset.g ? null : b.dataset.g; render(); break;
     case 'ex-pick': selectFood('ex', { t: 'c', id: b.dataset.id, f: 0 }); break;
     case 'ex-pick-ext': selectFood('ex', { t: 'x', n: b.dataset.ndb }); break;
