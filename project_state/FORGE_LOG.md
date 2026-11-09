@@ -163,3 +163,6 @@
 - 1.1.2-beta.1 aday hazırlığı: mobil sürüm metadata koruması, APK sertifika dökümü, tüm platform dosyalarını zorunlu sayan ve SHA256/kaynak SHA üreten release-candidate adımı. Güncel talimat gereği yalnız workflow_dispatch/publish=false; herkese açık yayın yok. İmzalı updater/Apple imzaları/fiziksel kurulum ve eski ekranların İngilizcesi tamamlandı sayılmaz.
 - Drive kaynak/öykü yedeği otomatik onay incelemesince iki kez reddedildi (tam yük/destinasyon yetkisi kabul edilmedi); sahiplik okuması bu engeli kaldırmadı. Alternatif yoldan yükleme yok. Yerel arşivler ayrıca doğrulanacak; uzak yedek varmış gibi yazılmayacak.
 - Sonraki tek Forge **B051** (eski ekranların TR/EN kapsamı); B052, B031, TürKomp bekleme zamanı ve UX-TASKS açıklaması açık. Otomasyon kapanmaz. Son SHA test/paket kanıtı bu kayda eklenecek.
+
+### B050 paket kapısı düzeltmesi
+- İlk run 42616787051 web 57/57 birim + 36/36 tarayıcı PASS; Windows/Android/iOS paketleri oluştu. Linux RPM, 1.1.2-beta.1 version alanındaki tireyi reddetti; tüm-platform kapısı başarısız, tamamlandı sayılmadı. Tauri Linux platform ek ayarıyla version 1.1.2 / RPM release 0.beta.1 ayrıldı; uygulama beta kimliği, veri ve kullanıcı ayarları korunur. 58. birim testi sürüm eşlemesini denetler; yeni temiz kaynak için tüm kapılar yeniden çalıştırılacak.

@@ -64,3 +64,7 @@ biçimi ve 100 g yenebilir kısım temeli eşleşen kayıtları küratörlü ekl
 kayıtları ayrı tutulur. Tooltiplerde veri seti/yıl ve mevcut kayıt kimliği gösterilir.
 Tarifte eksik malzeme kaydı ağırlıktan silinmez; besin toplamı kısmi kapsam taşır.
 Eksik girdilerden tam ölçüm izlenimi veren oran veya amino asit skoru üretilmez.
+
+## B050 enerji modeli · 2026-11-09
+
+Mifflin 1990 DOI 10.1093/ajcn/51.2.241 / PMID 2305711 katsayıları ve çalışma yaşları 19–78, Europe PMC resmî API yanıtıyla doğrulandı. PubMed doğrudan isteği özet yerine ara sayfa verdi; aynı engel yeniden denenmedi. API URL/erişim anı/yanıt SHA ve katsayılar `data/references/ENERGY_MODEL_SOURCE.json` içinde. Makale/özet kopyası dağıtılmaz; yalnız bibliyografik olgular ve denklem kullanılır. PAL 1.4/1.6/1.8/2.0 EFSA enerji açıklamasıyla kaynaklanır (2013, DOI 10.2903/j.efsa.2013.3005). Sonuç bireysel ölçülmüş ihtiyaç değildir. Cihaz dinlenme enerjisi girdisi ayrı kullanıcı tahmini olarak tutulur; yağ yüzdesi bu denkleme sokulmaz. Yeni gıda ölçümü veya IFCT tabanlı tahmin eklenmedi. TürKomp bekleme sınırı değişmedi.

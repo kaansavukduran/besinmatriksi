@@ -260,7 +260,7 @@
     "owner": "codex-B050-personal-daily",
     "started_at": "2026-11-09T11:29:01.330938+00:00",
     "lease_expires_at": "2026-11-09T13:42:18.320867+00:00",
-    "note": "B050 local 57 unit / 34 browser PASS + 2 managed file:// skips; final changed-import regression and exact-SHA packaging pending. Only publish=false authorized."
+    "note": "Code f3f140c pushed; final local 57 unit / 34 browser PASS + 2 managed file:// skips. Workflow_dispatch 42616787051 publish=false exact-SHA gates/package build in progress. Local code ZIP/Git bundle verified; Drive upload still auto-review blocked."
   },
   "pending_user_clarification": "User asked drag-reorder tasks and task times. Besin Matriksi has no tasks; async question pending: existing sections/recipes versus separate planning screen.",
   "package_evidence_file": "docs/evidence/B003b-packages.json",
@@ -274,13 +274,16 @@
   },
   "backup_status": {
     "state": "BLOCKED_AUTO_REVIEW",
-    "reason": "Code backup upload blocked by automatic approval review; exact payload/destination authorization was not accepted. Local archives will be verified; no further upload or workaround without explicit approval."
+    "reason": "Code backup upload blocked by automatic approval review; exact payload/destination authorization was not accepted. Local archives will be verified; no further upload or workaround without explicit approval.",
+    "local_verified_source_sha": "f3f140ce0ee5a67d2ab326b55f2f648cad326fa9",
+    "local_scan": "340 blobs; no known credential/private-key patterns or sensitive filenames found; not an exhaustive secret guarantee. ZIP CRC and Git full bundle verify PASS. No health runtime data included."
   },
   "pending_forges": [
     {
       "id": "B030-public-beta",
       "state": "ARTIFACT_ONLY",
-      "reason": "Latest user instruction permits workflow_dispatch artifacts only; no public release."
+      "reason": "Latest user instruction permits workflow_dispatch artifacts only; no public release.",
+      "run_url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42616787051"
     }
   ]
 }

@@ -7,6 +7,15 @@ import { createHash } from 'node:crypto';
 import { prepareReleaseAssets } from '../scripts/release-assets.mjs';
 import { mobileVersion, applyMobileVersion } from '../scripts/mobile-version.mjs';
 
+test('Linux RPM beta sürümü geçerli sayısal version ve ayrı release alanı taşır', () => {
+  const version = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url))).version;
+  const linux = JSON.parse(fs.readFileSync(new URL('../src-tauri/tauri.linux.conf.json', import.meta.url)));
+  assert.equal(linux.version, mobileVersion(version).marketing);
+  assert.equal(linux.bundle.linux.rpm.release, '0.' + version.split('-')[1]);
+  assert.match(linux.version, /^\d+\.\d+\.\d+$/);
+  assert.match(linux.bundle.linux.rpm.release, /^[a-zA-Z0-9.]+$/);
+});
+
 test('mobil yerel sürüm alanları uygulamayla eşleşir; kimlik ve mevcut ayarlar değişmez', () => {
   const version = '1.1.2-beta.1';
   assert.deepEqual(mobileVersion(version), { name: version, marketing: '1.1.2', code: 1001002 });

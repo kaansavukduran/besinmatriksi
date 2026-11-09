@@ -21,3 +21,5 @@ SHA256SUMS.txt and BUILD_INFO.json record asset integrity and source SHA. Native
 - Yerel profil/günlük JSON yedeği, tekrar içe aktarmada kayıt çoğalmaması ve özel besin kimlik çakışması koruması. / Local JSON backup with duplicate and custom-food collision handling.
 
 Eski ekranların İngilizce kapsamı, imzalı otomatik güncelleme/iki gerçek paketle yükseltme deneyi, Apple imzaları ve fiziksel cihaz kabulü tamamlanmadı. Android kalıcı üretim anahtarı doğrulanmadı. / Legacy translation, signed updater, Apple signing and native device acceptance remain open.
+
+Native sürüm biçimleri / native package metadata: Linux 1.1.2, RPM release 0.beta.1; MSI ve iOS marketing 1.1.2. Uygulama/aday dosya kimliği 1.1.2-beta.1; BUILD_INFO eşlemeyi kaydeder. Bu henüz imzalı güncelleme/yükseltme kabulü değildir.
