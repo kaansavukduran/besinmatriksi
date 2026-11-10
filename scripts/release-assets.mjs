@@ -3,7 +3,7 @@ import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 
-export function prepareReleaseAssets(input, output, version, sha) {
+export function prepareReleaseAssets(input, output, version, sha, branch = process.env.GITHUB_REF_NAME || 'local') {
   if (!/^\d+\.\d+\.\d+(?:-[a-z0-9.-]+)?$/.test(version) || !/^[a-f0-9]{40}$/.test(sha)) throw Error('Geçersiz sürüm veya kaynak SHA');
   fs.mkdirSync(output, { recursive: true });
   const files = fs.readdirSync(input);
@@ -29,7 +29,7 @@ export function prepareReleaseAssets(input, output, version, sha) {
   for (const name of ['LICENSE.txt', 'THIRD_PARTY_NOTICES.txt', 'THIRD_PARTY_NOTICES-RUST-windows.txt', 'THIRD_PARTY_NOTICES-RUST-macos.txt', 'THIRD_PARTY_NOTICES-RUST-linux.txt', 'KURULUM.md', 'ANDROID-SIGNING.txt']) {
     fs.copyFileSync(path.join(input, name), path.join(output, name));
   }
-  fs.writeFileSync(path.join(output, 'BUILD_INFO.json'), JSON.stringify({ version, tag: 'v' + version, source_sha: sha, source_branch: 'codex/forge-devam', native_version_mapping: { linux: '1.1.2', rpm_release: '0.beta.1', windows_msi: '1.1.2', ios_marketing: '1.1.2', app_display: version }, ios: 'Unsigned development artifact; not directly installable. App Store/TestFlight signing pending.', macos: 'Universal Intel + Apple Silicon; unsigned, not notarized.', android_signing: 'See ANDROID-SIGNING.txt; debug certificate is not a production signing continuity guarantee.', native_device_acceptance: 'NOT_RUN' }, null, 2) + '\n');
+  fs.writeFileSync(path.join(output, 'BUILD_INFO.json'), JSON.stringify({ version, tag: 'v' + version, source_sha: sha, source_branch: branch, native_version_mapping: { linux: version.split('-')[0], rpm_release: version.includes('-') ? '0.' + version.split('-')[1] : '1', windows_msi: version.split('-')[0], ios_marketing: version.split('-')[0], app_display: version }, ios: 'Unsigned development artifact; not directly installable. App Store/TestFlight signing pending.', macos: 'Universal Intel + Apple Silicon; unsigned, not notarized.', android_signing: 'See ANDROID-SIGNING.txt; debug certificate is not a production signing continuity guarantee.', native_device_acceptance: 'NOT_RUN' }, null, 2) + '\n');
   const sums = fs.readdirSync(output).filter(file => file !== 'SHA256SUMS.txt').sort().map(file => createHash('sha256').update(fs.readFileSync(path.join(output, file))).digest('hex') + '  ' + file);
   fs.writeFileSync(path.join(output, 'SHA256SUMS.txt'), sums.join('\n') + '\n');
   return fs.readdirSync(output).sort();

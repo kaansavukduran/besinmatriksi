@@ -1,25 +1,38 @@
-# Besin Matriksi 1.1.2 Beta 1 / Release candidate
+# 🫐 Besin Matriksi 1.1.2 Beta 2 · Aion geldi!
 
-Henüz yayımlanmadı. Güncel talimat yalnız Actions release-candidate çıktısına izin verir.
-Not published. Only a release candidate is prepared under the current artifact-only publication instruction.
+Bitkisel besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama.
+Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
 
-- Windows x64: Setup.exe, MSI ve kurulumsuz EXE / installer and portable app.
-- Linux x86_64: AppImage, DEB, RPM. AppImage için / for AppImage: `chmod +x BesinMatriksi-*-linux-x86_64.AppImage`.
-- macOS universal (Intel + Apple Silicon): unsigned DMG; Developer ID/notarization pending.
-- Android: signed APK; see ANDROID-SIGNING.txt. A debug signature is not a production signing continuity guarantee.
-- iPhone: UNSIGNED-NOT-INSTALLABLE IPA is a development artifact, not an installation link. Apple account/signing and App Store/TestFlight distribution are pending.
-- Her masaüstünde / any desktop browser: offline.html; PWA archive needs your HTTPS hosting.
+## ⬇️ Hangi dosyayı indireyim?
 
-Kurulum/installation: download the correct platform file, open the installer; see KURULUM.md.
-SHA256SUMS.txt and BUILD_INFO.json record asset integrity and source SHA. Native device acceptance remains NOT_RUN.
+Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
-## Yeni / New
+| Cihazın | İndir | Nasıl açılır |
+|---|---|---|
+| **Windows (en kolay)** | `…-windows-x64-portable.exe` | Kurulum yok. Çift tıkla, açılır. SmartScreen uyarısında **Ek bilgi → Yine de çalıştır**. |
+| Windows (kurulumlu) | `…-windows-x64-Setup.exe` | Çift tıkla, **İleri → Yükle**. Başlat menüsünden aç. |
+| **Android** | `…-android.apk` | Telefonda aç, “bilinmeyen kaynaklara izin ver” de, **Yükle**. |
+| macOS (Intel + M çip) | `…-macos-universal-unsigned.dmg` | Aç, uygulamayı **Uygulamalar** klasörüne sürükle. İlk açılışta sağ tık → **Aç**. |
+| Linux | `…-linux-x86_64.AppImage` | `chmod +x` ile çalıştırılabilir yap, çift tıkla. (`.deb` / `.rpm` da var.) |
+| **Her bilgisayar (kurulumsuz)** | `…-offline.html` | Çift tıkla, tarayıcıda açılır. İnternet gerekmez. |
+| iPhone | Şimdilik `offline.html` dosyasını Dosyalar uygulamasından Safari ile aç | Apple imzası olmadan `.ipa` kurulamaz; App Store/TestFlight sürümü bekliyor. |
 
-- Kişisel profil: yaş/boy/kilo, isteğe bağlı yağ/su/kas/kemik ve Tanita notları. Mifflin 1990 veya ayrı etiketli cihaz tahmini × seçilen PAL; kapsam 19–78 yaş, gebelik/emzirme vb. özel durumlar dışarıda. / Personal profile with optional device figures; estimated energy, with explicit scope and source.
-- Günlük: planlanan ve tüketilen kayıtlar ayrı; 1–1000 g; 206 bileşende miktar, kaynak kapsamı, referans ve fark. Eksik ölçüm sıfır değildir; polifenol/amino asit için tanımlanmamış hedef uydurulmaz. / Planned and consumed diary, coverage and reference differences without invented targets.
-- TR/EN yeni ekranlar, %80–200 arayüz ölçeği, bağımsız yazı ayarı, kaydırmalı aralıklar, yedi renkli seçim ekranı ve isteğe bağlı sakin keşif ilerlemesi. / Bilingual new screens, UI scale, independent typography and optional gentle discovery progress.
-- Yerel profil/günlük JSON yedeği, tekrar içe aktarmada kayıt çoğalmaması ve özel besin kimlik çakışması koruması. / Local JSON backup with duplicate and custom-food collision handling.
+`SHA256SUMS.txt` dosya bütünlüğünü, `BUILD_INFO.json` kaynak commit'ini kaydeder.
 
-Eski ekranların İngilizce kapsamı, imzalı otomatik güncelleme/iki gerçek paketle yükseltme deneyi, Apple imzaları ve fiziksel cihaz kabulü tamamlanmadı. Android kalıcı üretim anahtarı doğrulanmadı. / Legacy translation, signed updater, Apple signing and native device acceptance remain open.
+## ✨ Bu sürümde yeni
 
-Native sürüm biçimleri / native package metadata: Linux 1.1.2, RPM release 0.beta.1; MSI ve iOS marketing 1.1.2. Uygulama/aday dosya kimliği 1.1.2-beta.1; BUILD_INFO eşlemeyi kaydeder. Bu henüz imzalı güncelleme/yükseltme kabulü değildir.
+- **Aion maskotu:** Drive'daki pembe-mavi Aion pozlarından kare kare (sprite sheet) animasyon. Ekrana göre el sallar, matriksi okur, veri yoksa üzülür, tarife besin eklenince zıplar. Ayarlar → **Aion** bölümünden gizle, sabit poza al, küçült/büyüt, sola/sağa taşı.
+- Kişisel profil, günlük plan/tüketim matriksi, %80–200 arayüz ölçeği, bağımsız yazı ayarları, yedi renkli tema seçici (önceki beta).
+
+## Bilinen sınırlar
+
+- Bazı eski ekranlarda İngilizce çeviri henüz tamamlanmadı (sıradaki iş).
+- Windows/macOS paketleri imzasız; ilk açılışta sistem uyarı verebilir.
+- Android APK geliştirici imzalı; iPhone `.ipa` imzasız olduğu için doğrudan kurulamaz.
+- Uygulama içi otomatik güncelleme henüz yok; yeni sürümü bu sayfadan indir. Tarif ve ayarların cihazında kalır.
+
+---
+
+# Besin Matriksi 1.1.2 Beta 2 · Meet Aion! (English)
+
+Offline plant-based food composition matrix. Download the file for your device from **Assets**: Windows `portable.exe` (no install) or `Setup.exe`, Android `.apk`, macOS `.dmg`, Linux `.AppImage`/`.deb`/`.rpm`, or `offline.html` for any browser. New: Aion, the pink-and-blue axolotl mascot with frame-by-frame sprite animation and settings (hide, still pose, size, side). Known limits: some legacy screens are not fully translated yet; packages are unsigned; no in-app updater yet.
