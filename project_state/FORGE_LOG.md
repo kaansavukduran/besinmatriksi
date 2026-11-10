@@ -191,3 +191,10 @@
 - Ek düzeltme: Aion'un ilk selam kontrolü depolama yasaklı ortamda (about:blank) açılışı çökertiyordu; try/catch'e alındı ve Aion tarayıcı testi eklendi.
 - Kanıt: `npm test` 61/61 PASS; `npm run build`, `npm run build:single` PASS; yerel tarayıcı kapısı 40/40 PASS (masaüstü + telefon, TR ve EN).
 - Düzey: RUNTIME_TESTED. Sonraki: **B054** kullanıcı tanımlı koleksiyonlar (kategori/alt kategori ekleme-çıkarma) ve sade arayüz turu.
+
+## B054 · 2026-11-11 · kullanıcı koleksiyonları ve sade arayüz
+- `src/collections.js` (saf fonksiyonlar): koleksiyon → alt kategori (en fazla 2 düzey, 60 koleksiyon, koleksiyon başına 300 kayıt), aç-kapa ekleme, çıkarma, yeniden adlandırma, alt kategorileriyle silme, bozuk kayıt normalizasyonu. `bm.collections.v1` deposu; tam yedeğe dahil, içe aktarmada yeni kimlik + alt kategori bağı + kendi besin kimliği eşlemesi.
+- Arayüz: kenar çubuğunda "Koleksiyonlarım" (alt kategoriler girintili), koleksiyon görünümü (yeniden adlandır / alt kategori / sil / ✕ ile besin çıkar, arama koleksiyon içinde), besin ekranında ☆/★ "Koleksiyona ekle" penceresi (aç-kapa, yeni koleksiyon oluştur ve ekle), Escape ve dış tıklama kapatır; eklemede Aion kutlar. Tek satır diyalog girişi (Enter onaylar).
+- Sade akış: besin ekranında önce biçim + miktar, sonra tek sıra eylem çubuğu ("Tarife ekle" birincil). Büyük kaydırıcı (44 px dokunma, 34 px tutamak, dolgu, 1 g–1 kg ölçeği, aria-valuetext). Telefonda ikincil eylemler simge, hazır gram/porsiyon düğmeleri yatay kayar, sekmeler kısa adla sığar; Ayarlar sekmesi en sona (k44 gezinme kuralı).
+- Kanıt: `npm test` 66/66 PASS (5 yeni koleksiyon/yedek testi). Tarayıcı 42/42 PASS: yeni B054 akışı (oluştur, alt kategori, ekle/çıkar, kalıcılık, silme onayı) masaüstü + telefon; axe ilk denemede telefonda adsız sekme düğmelerini yakaladı, düzeltildi.
+- Sürüm 1.1.2-beta.3. Düzey: RUNTIME_TESTED; paketleme release.yml ile. Sonraki: **B055** kategori/alt kategori içi sıralama (sürükle + klavyeyle yukarı/aşağı) ve tarif malzemelerinin sırasını değiştirme.

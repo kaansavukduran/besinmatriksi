@@ -1,6 +1,7 @@
 // Ayarlar ve tarifler cihazda (localStorage) saklanır; hiçbir şey ağa gönderilmez.
 import { uid } from './util.js';
 import { DEFAULT_SETTINGS, SETTINGS_VERSION, normalizeSettings } from './settings.js';
+import { normalizeCollections, remapCustomRefs } from './collections.js';
 import { normalizeRecipe, normalizeCustom } from './records.js';
 import { recentSearches } from './search.js';
 export { DEFAULT_SETTINGS } from './settings.js';
@@ -66,9 +67,12 @@ export function saveRecipes(r) { return write(KEY_RECIPES, r); }
 export function loadCustom() { const c = read(KEY_CUSTOM, []); return Array.isArray(c) ? c.map(normalizeCustom).filter(Boolean) : []; }
 export function saveCustom(c) { return write(KEY_CUSTOM, c); }
 
+export function loadCollections() { return normalizeCollections(read('bm.collections.v1', [])); }
+export function saveCollections(list) { return write('bm.collections.v1', normalizeCollections(list)); }
+
 // Dışa/içe aktarma biçimi
-export function exportPayload(recipes, settings, custom = [], profiles = []) {
-  return JSON.stringify({ app: 'besin-matriksi', version: 1, exported: new Date().toISOString(), recipes, settings, custom, profiles }, null, 2);
+export function exportPayload(recipes, settings, custom = [], profiles = [], collections = []) {
+  return JSON.stringify({ app: 'besin-matriksi', version: 1, exported: new Date().toISOString(), recipes, settings, custom, profiles, collections }, null, 2);
 }
 export function parseImport(text) {
   const o = JSON.parse(text);
@@ -80,5 +84,10 @@ export function parseImport(text) {
   for (const f of custom) { const original = f.id; f.id = uid(); ids.set(original, f.id); }
   for (const r of recipes) for (const it of r.items) if (it.ref.t === 'u' && ids.has(it.ref.id)) it.ref.id = ids.get(it.ref.id);
   const profiles = normalizeProfiles(o.profiles).map(p => ({ ...p, id: uid() }));
-  return { recipes, settings: o.settings && typeof o.settings === 'object' ? normalizeSettings(o.settings) : null, custom, profiles };
+  // Koleksiyonlar yeni kimlik alır; alt kategori bağları ve kendi besin eşlemesi korunur.
+  const colIds = new Map();
+  const rawCols = normalizeCollections(o.collections);
+  for (const c of rawCols) colIds.set(c.id, uid());
+  const collections = remapCustomRefs(rawCols.map(c => ({ ...c, id: colIds.get(c.id), parent: c.parent ? colIds.get(c.parent) : null })), Object.fromEntries(ids));
+  return { recipes, settings: o.settings && typeof o.settings === 'object' ? normalizeSettings(o.settings) : null, custom, profiles, collections };
 }

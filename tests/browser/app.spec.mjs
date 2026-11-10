@@ -339,3 +339,49 @@ test('İngilizce modda eski ekranlarda Türkçe arayüz metni kalmaz (B051)', as
     expect(await leftovers(), id).toEqual([]);
   }
 });
+test('koleksiyon ve alt kategori ekleme/çıkarma; besin ekle-çıkar ve kalıcılık (B054)', async ({ page }) => {
+  const errors = []; page.on('pageerror', e => errors.push(e.message));
+  await page.goto('/');
+  // Yeni koleksiyon
+  await page.locator('[data-action="col-new"]').click();
+  await page.locator('.dlg .dlg-line').fill('Kahvaltılıklar'); await page.keyboard.press('Enter');
+  await expect(page.locator('.col-head h3')).toHaveText('Kahvaltılıklar');
+  await expect(page.locator('#foodlist')).toContainText('boş');
+  // Alt kategori
+  await page.locator('[data-action="col-sub"]').click();
+  await page.locator('.dlg .dlg-line').fill('Smoothie'); await page.locator('.dlg [data-r="1"]').click();
+  await expect(page.locator('.col-head h3')).toHaveText('Kahvaltılıklar › Smoothie');
+  // Besin ekle: muz → Smoothie, yulaf → yeni "Lifli" koleksiyonu (önce Tümü'ne dön)
+  await page.locator('.cat[data-cat=""]').click();
+  await pickBanana(page);
+  await page.locator('[data-action="col-pick"]').click();
+  await page.locator('.col-toggle.sub').click();
+  await expect(page.locator('.col-toggle.sub')).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('[data-action="col-pick-close"]').last().click();
+  await expect(page.locator('[data-action="col-pick"]')).toContainText('★');
+  if (await page.locator('.back').isVisible()) await page.locator('.back').click();
+  await page.locator('#q').fill('yulaf'); await page.locator('#foodlist [data-id="yulaf"]').click();
+  await page.locator('[data-action="col-pick"]').click();
+  await page.locator('#col-new-name').fill('Lifli');
+  await page.locator('[data-action="col-create-add"]').click();
+  await expect(page.locator('.col-toggle').filter({ hasText: 'Lifli' })).toHaveAttribute('aria-pressed', 'true');
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.modal')).toHaveCount(0);
+  // Yeniden aç: üst koleksiyon alt kategorinin besinini de gösterir
+  await page.reload();
+  if (await page.locator('.back').isVisible()) await page.locator('.back').click();
+  await page.locator('#q').fill('');
+  await page.locator('.cat', { hasText: 'Kahvaltılıklar' }).click();
+  await expect(page.locator('#foodlist')).toContainText('Smoothie');
+  await expect(page.locator('#foodlist [data-action="ex-pick-ref"]')).toHaveCount(1);
+  // Besini koleksiyondan çıkar
+  await page.locator('#foodlist [data-action="col-remove-item"]').click();
+  await expect(page.locator('#foodlist [data-action="ex-pick-ref"]')).toHaveCount(0);
+  // Koleksiyonu sil (alt kategoriyle birlikte)
+  await page.locator('[data-action="col-delete"]').click();
+  await expect(page.locator('.dlg')).toContainText('1');
+  await page.locator('.dlg [data-r="1"]').click();
+  await expect(page.locator('.cat', { hasText: 'Kahvaltılıklar' })).toHaveCount(0);
+  await expect(page.locator('.cat', { hasText: 'Lifli' })).toHaveCount(1);
+  expect(errors).toEqual([]);
+});

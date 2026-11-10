@@ -5,8 +5,8 @@ import { renderMatrix } from './matrix.js';
 import NOTICES from './data/notices.json';
 import { createPrintController } from './print.js';
 import { FONTS, fontStack, ensureFont } from './fonts.js';
-import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles } from './store.js';
-import { esc, fmtNum, fmtAmount, clamp, download, uid, configureFormatting } from './util.js';
+import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles, loadCollections, saveCollections } from './store.js';
+import { esc, fmtNum, fmtAmount, clamp, download, uid, configureFormatting, norm } from './util.js';
 import { matrixCSV } from './export.js';
 import { contrastRatio, accentText, exportTheme, parseTheme, COLOR_LABELS, validColor, themeTextContrast } from './theme.js';
 import { renderThemeEditor, themePreview } from './theme-editor.js';
@@ -21,6 +21,7 @@ import { loadPersonal, savePersonal, emptyProfile, normalizeProfile, mergePerson
 import { renderPersonal, renderEnergy, renderDaySources } from './personal-view.js';
 import { nutrientLabel } from './i18n-nutrients.js';
 import { getLanguage } from './i18n.js';
+import { normalizeCollections, createCollection, renameCollection, deleteCollection, toggleRef, removeRef, collectionTree, collectionRefs, hasRef } from './collections.js';
 import { mountAion, configureAion, aionMood, aionPlay, aionSay } from './aion.js';
 import { normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS } from './settings.js';
 
@@ -31,6 +32,7 @@ const S = {
   tab: 'kesfet',
   searches: loadSearches(),
   profiles: loadProfiles(),
+  collections: loadCollections(), colPicker: false,
   cat: null,
   extGroup: null,
   q: '',
@@ -138,7 +140,8 @@ function amountControls(target, g, portions = [], { compact = false, liquid = fa
       <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="1" aria-label="${L("1 gram artır")}">+1</button>
       <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="10" aria-label="${L("10 gram artır")}">+10</button>
     </div>
-    <input type="range" class="slider" min="1" max="${MAX_G}" step="1" value="${g}" data-slider="${esc(target)}" aria-label="${L("Miktar (gram)")}">
+    <input type="range" class="slider" min="1" max="${MAX_G}" step="1" value="${g}" style="--fill:${((g - 1) / (MAX_G - 1)) * 100}%" data-slider="${esc(target)}" aria-valuetext="${fmtNum(g)} g" aria-label="${L("Miktar (gram)")}">
+    ${compact ? '' : `<div class="slider-scale" aria-hidden="true"><span>1 g</span><span>250</span><span>500</span><span>750</span><span>1 kg</span></div>`}
     <div class="presets">${presets.map((p) => `<button class="pchip ${p === g ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p}">${p >= 1000 ? '1 kg' : p + ' g'}</button>`).join('')}</div>
     ${portions.length ? `<div class="portions">${portions.map((p) => `<button class="pchip por ${Math.abs(p.g - g) < 0.01 ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p.g}" title="${esc(p.en)} (USDA)">${esc(getLanguage() === 'en' && p.en ? p.en : p.label)} · ${fmtNum(p.g)} g</button>`).join('')}</div>` : ''}
   </div>`;
@@ -164,7 +167,39 @@ function categoryNav(prefix, current, withExt) {
   }).join('');
   const ext = withExt ? `<button class="cat ${current === 'ext' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="ext">${S.settings.emoji ? '🗂️ ' : ''}${L("Geniş katalog (USDA, İngilizce)")}</button>` : '';
   const cu = `<button class="cat ${current === 'custom' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="custom">${S.settings.emoji ? '🏷️ ' : ''}${L("Kendi besinlerim")} <span class="cnt">${customFoods().length}</span></button>`;
-  return all + cats + cu + ext;
+  const colBtn = (c, sub) => {
+    const n = sub ? c.items.length : collectionRefs(S.collections, c.id).length;
+    return `<button class="cat ${sub ? 'sub' : ''} ${current === 'col:' + c.id ? 'on' : ''}" data-action="${prefix}-cat" data-cat="col:${c.id}">${sub ? '↳ ' : S.settings.emoji ? '📁 ' : ''}${esc(c.name)} <span class="cnt">${n}</span></button>`;
+  };
+  const tree = collectionTree(S.collections);
+  const cols = `<div class="cat-group" role="presentation">${L("Koleksiyonlarım")}</div>${tree.map((c) => colBtn(c, false) + c.children.map((ch) => colBtn(ch, true)).join('')).join('')}${prefix === 'ex' ? `<button class="cat add" data-action="col-new">＋ ${L("Yeni koleksiyon")}</button>` : ''}`;
+  return all + cats + cu + ext + cols;
+}
+
+function refButton(ref, prefix, colId) {
+  const item = resolve(ref);
+  const remove = colId && prefix === 'ex' ? `<button class="btn ghost danger item-remove" data-action="col-remove-item" data-id="${esc(colId)}" data-ref="${esc(JSON.stringify(ref))}" aria-label="${esc(L("{n} koleksiyondan çıkar", { n: item ? item.name : refKey(ref) }))}">✕</button>` : '';
+  if (!item) return `<div class="food missing-ref"><span class="fi">❔</span><span class="fn">${L("Kayıt bulunamadı")}</span><span class="ff">${esc(refKey(ref))}</span>${remove}</div>`;
+  return `<div class="food-wrap"><button class="food" data-action="${prefix}-pick-ref" data-ref="${esc(JSON.stringify(ref))}"><span class="fi" aria-hidden="true">${item.food ? catIcon(item.food.cat) : item.custom ? '🏷️' : '🇺🇸'}</span><span class="fn">${esc(item.name)}</span><span class="ff">${esc(item.formLabel)}</span></button>${remove}</div>`;
+}
+
+function collectionList(prefix, cat, q) {
+  const c = S.collections.find((x) => 'col:' + x.id === cat);
+  if (!c) return `<p class="empty">${L("Koleksiyon bulunamadı.")}</p>`;
+  const parent = c.parent ? S.collections.find((x) => x.id === c.parent) : null;
+  const manage = prefix === 'ex' ? `<div class="col-head"><h3>${parent ? esc(parent.name) + ' › ' : ''}${esc(c.name)}</h3><div class="presets">
+      <button class="btn" data-action="col-rename" data-id="${c.id}">✎ ${L("Yeniden adlandır")}</button>
+      ${c.parent ? '' : `<button class="btn" data-action="col-sub" data-id="${c.id}">＋ ${L("Alt kategori")}</button>`}
+      <button class="btn ghost danger" data-action="col-delete" data-id="${c.id}">${L("Sil")}</button></div></div>` : '';
+  const k = norm(q || '');
+  const sections = [{ col: c, refs: c.items }, ...S.collections.filter((x) => x.parent === c.id).map((ch) => ({ col: ch, refs: ch.items }))];
+  let html = '';
+  for (const { col, refs } of sections) {
+    const shown = refs.filter((r) => { if (!k) return true; const it = resolve(r); return it && norm(it.name).includes(k); });
+    if (col !== c) html += `<h3 class="grp">↳ ${esc(col.name)}</h3>`;
+    html += shown.length ? `<div class="foods">${shown.map((r) => refButton(r, prefix, col.id)).join('')}</div>` : (col === c && sections.length > 1 ? '' : `<p class="empty">${L("Bu koleksiyon boş. Bir besin seç ve “Koleksiyona ekle”ye dokun.")}</p>`);
+  }
+  return manage + html;
 }
 
 function customButton(f, action) {
@@ -172,6 +207,7 @@ function customButton(f, action) {
 }
 
 function foodList(prefix, cat, q, extGroup) {
+  if (cat?.startsWith('col:')) return collectionList(prefix, cat, q);
   if (cat === 'custom') {
     const list = q ? search(q).custom : customFoods();
     return `<button class="btn primary block" data-action="cu-new">＋ ${L("Etiketten yeni besin ekle")}</button>
@@ -222,17 +258,20 @@ function renderExplore() {
         <button class="back" data-action="ex-back" aria-label="${L("Listeye dön")}">← ${L("Liste")}</button>
         <div class="dtitle"><h2>${S.settings.emoji && item.food ? catIcon(item.food.cat) + ' ' : ''}${esc(item.name)}</h2>
           <div class="dsub">${esc(catName(item.cat))}${item.sci ? ` · <i>${esc(item.sci)}</i>` : ''}</div></div>
-        <div class="dact">
-          <button class="btn primary" data-action="ex-add-day">＋ ${tr('addDay')}</button>
-          <button class="btn" data-action="ex-add-recipe">＋ ${tr('addRecipe')}</button>
-          <button class="btn" data-action="ex-add-compare">⇄ ${tr('addCompare')}</button>
-          ${item.custom ? `<button class="btn" data-action="cu-edit">✎ ${L("Düzenle")}</button>` : ''}
-          <button class="btn ghost" data-action="csv" title="${L("Matriksi tablo (CSV) olarak indir")}">⬇ CSV</button>
-          <button class="btn ghost" data-action="print" title="${L("Yazdır veya PDF olarak kaydet")}">🖨 ${L("Yazdır")}</button>
-        </div>
       </div>
       ${formChips('ex', S.sel)}
       ${amountControls('ex', S.amount, item.portions, { liquid: item.liquid })}
+      <div class="dact" role="toolbar" aria-label="${L("Besin eylemleri")}">
+        <button class="btn primary" data-action="ex-add-recipe">＋ ${tr('addRecipe')}</button>
+        <button class="btn" data-action="ex-add-day">＋ ${tr('addDay')}</button>
+        <span class="dact-more">
+          <button class="btn icon" data-action="ex-add-compare" title="${tr('addCompare')}" aria-label="${tr('addCompare')}">⇄<span class="lbl-opt"> ${tr('addCompare')}</span></button>
+          <button class="btn icon ${S.collections.some((c) => hasRef(c, S.sel)) ? 'starred' : ''}" data-action="col-pick" title="${L("Koleksiyona ekle")}" aria-label="${L("Koleksiyona ekle")}">${S.collections.some((c) => hasRef(c, S.sel)) ? '★' : '☆'}<span class="lbl-opt"> ${L("Koleksiyon")}</span></button>
+          ${item.custom ? `<button class="btn icon" data-action="cu-edit" title="${L("Düzenle")}" aria-label="${L("Düzenle")}">✎<span class="lbl-opt"> ${L("Düzenle")}</span></button>` : ''}
+          <button class="btn icon ghost" data-action="csv" title="${L("Matriksi tablo (CSV) olarak indir")}" aria-label="${L("Matriksi tablo (CSV) olarak indir")}">⬇<span class="lbl-opt"> CSV</span></button>
+          <button class="btn icon ghost" data-action="print" title="${L("Yazdır veya PDF olarak kaydet")}" aria-label="${L("Yazdır veya PDF olarak kaydet")}">🖨<span class="lbl-opt"> ${L("Yazdır")}</span></button>
+        </span>
+      </div>
       <div id="matrix" class="matrix">${matrixForExplore(item)}</div>`
     : welcome();
   return `<div class="explore ${item ? 'has-sel' : ''}">
@@ -543,6 +582,25 @@ function renderPicker() {
     </div></div>`;
 }
 
+// ---------------------------------------------------------------- KOLEKSİYONA EKLE (modal)
+function renderColPicker() {
+  if (!S.colPicker || !S.sel) return '';
+  const item = resolve(S.sel);
+  const btn = (c, sub) => {
+    const on = hasRef(c, S.sel);
+    return `<button class="col-toggle ${sub ? 'sub' : ''} ${on ? 'on' : ''}" aria-pressed="${on}" data-action="col-toggle" data-id="${c.id}"><span class="tick" aria-hidden="true">${on ? '✓' : '+'}</span>${sub ? '↳ ' : ''}${esc(c.name)}<span class="cnt">${c.items.length}</span></button>`;
+  };
+  const tree = collectionTree(S.collections);
+  return `<div class="modal" role="dialog" aria-modal="true" aria-label="${L("Koleksiyona ekle")}">
+    <div class="modal-box small"><div class="modal-h"><h2>${esc(item?.name || '')}</h2><button class="btn ghost" data-action="col-pick-close" aria-label="${L("Kapat")}">✕</button></div>
+      <p class="hint">${L("Dokunarak ekle ya da çıkar. Bir besin birden çok koleksiyonda olabilir.")}</p>
+      <div class="col-toggles">${tree.map((c) => btn(c, false) + c.children.map((ch) => btn(ch, true)).join('')).join('') || `<p class="empty">${L("Henüz koleksiyonun yok.")}</p>`}</div>
+      <div class="presets"><input id="col-new-name" maxlength="40" placeholder="${L("Yeni koleksiyon adı (ör. Kahvaltılıklar)")}" aria-label="${L("Yeni koleksiyon adı")}"><button class="btn primary" data-action="col-create-add">＋ ${L("Oluştur ve ekle")}</button></div>
+      <div class="presets end"><button class="btn" data-action="col-pick-close">${L("Bitti")}</button></div>
+    </div></div>`;
+}
+function persistCollections() { if (!saveCollections(S.collections)) toast(L("Kaydedilemedi: cihaz depolaması kullanılamıyor")); }
+
 // ---------------------------------------------------------------- KENDİ BESİNİM (etiket girişi)
 const CUSTOM_FIELDS = [
   ['energy', 'Enerji', 'kcal'], ['fat', 'Yağ', 'g'], ['sfa', '  Doymuş yağ', 'g'], ['mufa', '  Tekli doymamış', 'g'], ['pufa', '  Çoklu doymamış', 'g'], ['trans', '  Trans yağ', 'g'],
@@ -581,7 +639,8 @@ function saveCustomEdit() {
 }
 
 // ---------------------------------------------------------------- render
-const TABS = [['kesfet', '🔎'], ['gunluk', '📒'], ['tarif', '🥣'], ['karsilastir', '⚖️'], ['ayarlar', '🎨'], ['hakkinda', 'ℹ️']];
+const TAB_SHORT = { kesfet: () => L("Keşfet"), tarif: () => L("Tarif"), gunluk: () => L("Günlük"), karsilastir: () => L("Kıyasla"), hakkinda: () => L("Bilgi"), ayarlar: () => L("Ayarlar") };
+const TABS = [['kesfet', '🔎'], ['tarif', '🥣'], ['gunluk', '📒'], ['karsilastir', '⚖️'], ['hakkinda', 'ℹ️'], ['ayarlar', '🎨']];
 
 export function render() {
   const keep = {};
@@ -601,11 +660,11 @@ export function render() {
   app().innerHTML = `
     <header class="top">
       <div class="brand">${S.settings.emoji ? '<span class="logo" aria-hidden="true">🫐</span>' : ''}<b>Besin Matriksi</b></div>
-      <nav class="tabs" aria-label="${tr('navigation')}">${TABS.map(([id, ic]) => `<button class="tab ${S.tab === id ? 'on' : ''}" data-action="tab" data-tab="${id}" ${S.tab === id ? 'aria-current="page"' : ''}><span class="ti" aria-hidden="true">${S.settings.emoji ? ic : ''}</span><span class="tt">${tr(id)}</span>${id === 'tarif' && activeRecipe()?.items.length ? `<span class="badge">${activeRecipe().items.length}</span>` : ''}${id === 'karsilastir' && S.compare.length ? `<span class="badge">${S.compare.length}</span>` : ''}</button>`).join('')}</nav>
+      <nav class="tabs" aria-label="${tr('navigation')}">${TABS.map(([id, ic]) => `<button class="tab ${S.tab === id ? 'on' : ''}" data-action="tab" data-tab="${id}" ${S.tab === id ? 'aria-current="page"' : ''}><span class="ti" aria-hidden="true">${S.settings.emoji ? ic : ''}</span><span class="tt">${tr(id)}</span><span class="tt-short">${TAB_SHORT[id]()}</span>${id === 'tarif' && activeRecipe()?.items.length ? `<span class="badge">${activeRecipe().items.length}</span>` : ''}${id === 'karsilastir' && S.compare.length ? `<span class="badge">${S.compare.length}</span>` : ''}</button>`).join('')}</nav>
     </header>
     ${S.profiles.length ? `<div class="profile-bar" role="group" aria-label="${L("Görünüm profilleri")}"><span class="hint">${L("Görünüm:")}</span>${S.profiles.map(p => `<button class="pchip" data-action="profile-apply" data-id="${p.id}">${esc(p.name)}</button>`).join('')}</div>` : ''}
     <main class="view view-${S.tab}">${view}</main>
-    ${renderPicker()}${renderCustomEditor()}${renderThemeEditor(S.themeEditor, S.settings.customTheme)}`;
+    ${renderPicker()}${renderColPicker()}${renderCustomEditor()}${renderThemeEditor(S.themeEditor, S.settings.customTheme)}`;
   aionMood(aionMoodFor());
   document.querySelectorAll('.list, .detail, .pk-list, .cats').forEach((el, i) => (el.dataset.keepScroll = el.className.split(' ')[0] + i));
   document.querySelectorAll('[data-keep-scroll]').forEach((el) => { if (keep[el.dataset.keepScroll] != null) el.scrollTop = keep[el.dataset.keepScroll]; });
@@ -657,6 +716,7 @@ function setAmount(target, g, { fromSlider = false } = {}) {
     if (S.settings.amountUnit === 'oz') box.querySelector('.amount-unit').textContent = `oz (≈ ${fmtNum(g)} g)`;
     const sl = box.querySelector('.slider');
     if (sl && !fromSlider) sl.value = String(Math.round(g));
+    if (sl) { sl.style.setProperty('--fill', ((g - 1) / (MAX_G - 1)) * 100 + '%'); sl.setAttribute('aria-valuetext', fmtNum(g) + ' g'); }
     box.querySelectorAll('.pchip').forEach((b) => b.classList.toggle('on', Math.abs(Number(b.dataset.val) - g) < 0.01));
   }
   if (target === 'pk') {
@@ -668,24 +728,27 @@ function setAmount(target, g, { fromSlider = false } = {}) {
 }
 
 // Uygulama içi diyalog (masaüstü/mobil web görünümlerinde alert/confirm/prompt güvenilir değil)
-function uiDialog(message, { input = null, ok = 'Tamam', cancel = null } = {}) {
+function uiDialog(message, { input = null, ok = L("Tamam"), cancel = null, line = false } = {}) {
   return new Promise((resolveP) => {
     const wrap = document.createElement('div');
     wrap.className = 'modal dlg';
-    wrap.innerHTML = `<div class="modal-box small" role="alertdialog" aria-modal="true" aria-label="Onay"><p>${esc(message)}</p>
-      ${input != null ? `<textarea rows="6" aria-label="Metin">${esc(input)}</textarea>` : ''}
+    wrap.innerHTML = `<div class="modal-box small" role="alertdialog" aria-modal="true" aria-label="${L("Onay")}"><p>${esc(message)}</p>
+      ${input != null ? (line ? `<input class="dlg-line" type="text" maxlength="40" aria-label="${esc(message)}" value="${esc(input)}">` : `<textarea rows="6" aria-label="${L("Metin")}">${esc(input)}</textarea>`) : ''}
       <div class="presets end">${cancel ? `<button class="btn" data-r="0">${esc(cancel)}</button>` : ''}<button class="btn primary" data-r="1">${esc(ok)}</button></div></div>`;
     const previousFocus = focusSelector(document.activeElement);
     document.body.appendChild(wrap);
     syncModalFocus();
-    const ta = wrap.querySelector('textarea');
+    const ta = wrap.querySelector('textarea, .dlg-line');
     (ta || wrap.querySelector('[data-r="1"]')).focus();
     if (ta && input) ta.select();
     const finish = yes => {
       wrap.remove(); syncModalFocus(previousFocus);
       resolveP(input != null ? (yes ? ta.value : null) : yes);
     };
-    wrap.addEventListener('keydown', e => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); finish(!cancel); } });
+    wrap.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); finish(!cancel); }
+      else if (e.key === 'Enter' && line) { e.preventDefault(); finish(true); }
+    });
     wrap.addEventListener('click', (e) => {
       const r = e.target.closest('[data-r]');
       if (!r) return;
@@ -823,6 +886,52 @@ async function onClick(e) {
     case 'ex-pick': selectFood('ex', { t: 'c', id: b.dataset.id, f: 0 }); break;
     case 'ex-pick-ext': selectFood('ex', { t: 'x', n: b.dataset.ndb }); break;
     case 'ex-pick-custom': selectFood('ex', { t: 'u', id: b.dataset.cid }); break;
+    case 'ex-pick-ref': selectFood('ex', JSON.parse(b.dataset.ref)); break;
+    case 'pk-pick-ref': selectFood('pk', JSON.parse(b.dataset.ref)); break;
+    case 'col-pick': S.colPicker = true; render(); break;
+    case 'col-pick-close': S.colPicker = false; render(); break;
+    case 'col-toggle': {
+      const before = S.collections.find((c) => c.id === b.dataset.id);
+      const added = before && !hasRef(before, S.sel);
+      S.collections = toggleRef(S.collections, b.dataset.id, S.sel); persistCollections(); render();
+      if (added) aionPlay('celebrate');
+      break;
+    }
+    case 'col-create-add': {
+      const name = $('#col-new-name')?.value || '';
+      try { const r = createCollection(S.collections, name); S.collections = toggleRef(r.list, r.created.id, S.sel); persistCollections(); render(); aionPlay('celebrate'); }
+      catch { toast(L("Koleksiyon için bir ad yaz")); }
+      break;
+    }
+    case 'col-new': {
+      const name = await uiDialog(L("Yeni koleksiyonun adı:"), { input: '', line: true, ok: L("Oluştur"), cancel: L("Vazgeç") });
+      if (name == null) break;
+      try { const r = createCollection(S.collections, name); S.collections = r.list; S.cat = 'col:' + r.created.id; persistCollections(); render(); }
+      catch (err) { toast(err.message === 'too-many' ? L("En fazla 60 koleksiyon olabilir") : L("Koleksiyon için bir ad yaz")); }
+      break;
+    }
+    case 'col-sub': {
+      const name = await uiDialog(L("Alt kategorinin adı:"), { input: '', line: true, ok: L("Oluştur"), cancel: L("Vazgeç") });
+      if (name == null) break;
+      try { const r = createCollection(S.collections, name, b.dataset.id); S.collections = r.list; S.cat = 'col:' + r.created.id; persistCollections(); render(); }
+      catch { toast(L("Koleksiyon için bir ad yaz")); }
+      break;
+    }
+    case 'col-rename': {
+      const c = S.collections.find((x) => x.id === b.dataset.id);
+      const name = c && await uiDialog(L("Yeni ad:"), { input: c.name, line: true, ok: L("Kaydet"), cancel: L("Vazgeç") });
+      if (name) { S.collections = renameCollection(S.collections, c.id, name); persistCollections(); render(); }
+      break;
+    }
+    case 'col-delete': {
+      const c = S.collections.find((x) => x.id === b.dataset.id);
+      if (!c) break;
+      const subs = S.collections.filter((x) => x.parent === c.id).length;
+      const msg = subs ? L("“{n}” ve {s} alt kategorisi silinsin mi? Besinlerin kendisi silinmez.", { n: c.name, s: subs }) : L("“{n}” silinsin mi? Besinlerin kendisi silinmez.", { n: c.name });
+      if (!(await uiDialog(msg, { ok: L("Sil"), cancel: L("Vazgeç") }))) break;
+      S.collections = deleteCollection(S.collections, c.id); S.cat = null; persistCollections(); render(); break;
+    }
+    case 'col-remove-item': S.collections = removeRef(S.collections, b.dataset.id, JSON.parse(b.dataset.ref)); persistCollections(); render(); break;
     case 'pk-pick-custom': selectFood('pk', { t: 'u', id: b.dataset.cid }); break;
     case 'cu-new': S.customEdit = { name: '', liquid: false, portion: null, v: {} }; render(); break;
     case 'cu-edit': { const f = customFoods().find((x) => x.id === S.sel?.id); if (f) { S.customEdit = JSON.parse(JSON.stringify(f)); render(); } break; }
@@ -942,10 +1051,10 @@ async function onClick(e) {
       saveSettings(S.settings); applySettings(); render(); toast(L("Ön ayar uygulandı")); break;
     }
     case 'toggle-missing': setSetting('showMissing', true); refreshMatrix(); break;
-    case 'exp-file': download(`besin-matriksi-yedek-${new Date().toISOString().slice(0, 10)}.json`, exportPayload(S.recipes, S.settings, customFoods(), S.profiles)); toast(L("Yedek dosyası hazırlandı")); break;
+    case 'exp-file': download(`besin-matriksi-yedek-${new Date().toISOString().slice(0, 10)}.json`, exportPayload(S.recipes, S.settings, customFoods(), S.profiles, S.collections)); toast(L("Yedek dosyası hazırlandı")); break;
     case 'exp-copy':
-      try { await navigator.clipboard.writeText(exportPayload(S.recipes, S.settings, customFoods(), S.profiles)); toast(L("Panoya kopyalandı")); }
-      catch { await uiDialog(L("Pano kullanılamadı. Metni seçip kopyala:"), { input: exportPayload(S.recipes, S.settings, customFoods(), S.profiles), ok: L("Tamam") }); }
+      try { await navigator.clipboard.writeText(exportPayload(S.recipes, S.settings, customFoods(), S.profiles, S.collections)); toast(L("Panoya kopyalandı")); }
+      catch { await uiDialog(L("Pano kullanılamadı. Metni seçip kopyala:"), { input: exportPayload(S.recipes, S.settings, customFoods(), S.profiles, S.collections), ok: L("Tamam") }); }
       break;
     case 'imp-paste': {
       const t = await uiDialog(L("Yedek metnini yapıştır:"), { input: '', ok: L("İçe aktar"), cancel: L("Vazgeç") });
@@ -957,8 +1066,9 @@ async function onClick(e) {
 
 async function importText(t) {
   try {
-    const { recipes, settings, custom, profiles } = parseImport(t);
+    const { recipes, settings, custom, profiles, collections } = parseImport(t);
     S.recipes.push(...recipes);
+    if (collections.length) { S.collections = normalizeCollections([...S.collections, ...collections]); persistCollections(); }
     if (profiles.length) { S.profiles = [...S.profiles, ...profiles].slice(0, 12); saveProfiles(S.profiles); }
     if (custom.length) {
       const have = new Set(customFoods().map((f) => f.id));
@@ -1106,9 +1216,9 @@ export function start() {
       const target = Object.keys(SHORTCUT_ACTIONS).find(id => S.settings.shortcuts[id] === `Alt+${e.key}`);
       if (target) { e.preventDefault(); S.tab = target; render(); window.scrollTo(0, 0); document.querySelector(`[data-tab="${target}"]`)?.focus(); return; }
     }
-    trapModalTab(e); if (!e.defaultPrevented && e.key === 'Escape' && (S.picker || S.customEdit || S.themeEditor)) { if (S.themeEditor) S.themeEditor = null; else if (S.customEdit) S.customEdit = null; else S.picker = null; render(); } });
+    trapModalTab(e); if (!e.defaultPrevented && e.key === 'Escape' && (S.picker || S.customEdit || S.themeEditor || S.colPicker)) { if (S.themeEditor) S.themeEditor = null; else if (S.customEdit) S.customEdit = null; else if (S.colPicker) S.colPicker = false; else S.picker = null; render(); } });
   // Modal arka planına tıklayınca kapat
-  document.addEventListener('mousedown', (e) => { if (e.target.classList?.contains('modal') && !e.target.classList.contains('dlg') && !S.customEdit) { S.picker = null; render(); } });
+  document.addEventListener('mousedown', (e) => { if (e.target.classList?.contains('modal') && !e.target.classList.contains('dlg') && !S.customEdit) { S.picker = null; S.colPicker = false; render(); } });
   const ruler = $('#ruler');
   document.addEventListener('pointermove', (e) => { if (S.settings.ruler && ruler) ruler.style.transform = `translateY(${e.clientY - 22}px)`; }, { passive: true });
 }

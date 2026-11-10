@@ -1,12 +1,12 @@
 {
  "schema_version": "1",
  "project": "Besin Matriksi",
- "product_version": "1.1.2-beta.2",
+ "product_version": "1.1.2-beta.3",
  "development_state": "IN_PROGRESS",
  "last_forge_at": "2026-11-09T12:39:11.475163+00:00",
- "last_completed_forge": "B051",
+ "last_completed_forge": "B054",
  "active_forge": null,
- "next_recommended_forge": "B054",
+ "next_recommended_forge": "B055",
  "branch": "ccr-1e1934aa-iv8aev",
  "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
  "validated_code_commit": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
@@ -97,7 +97,7 @@
   }
  ],
  "remaining_forges": [
-  "B054",
+  "B055",
   "B052",
   "B031",
   "B021",
@@ -109,7 +109,7 @@
   "trigger": "trig_01Ljjr3Dkp6uBiQcjFaGuzm3",
   "stop_when": "Tüm uygulanabilir yol haritası işleri ve son kapılar doğrulandığında."
  },
- "notes": "Claude devraldı (2026-11-10). B053 Aion maskotu (Drive pembe-mavi pafta, 5x8 sprite) ve B051 merkezi TR/EN çeviri tamamlandı. 61 birim + 40 tarayıcı testi yerelde PASS. v1.1.2-beta.1 herkese açık pre-release olarak yayımlandı; beta.2 Aion sürümü yayımlanıyor. Sonraki: B054 kullanıcı koleksiyonları ve sade arayüz.",
+ "notes": "B053 Aion, B051 TR/EN, B054 koleksiyonlar + sade arayüz tamam. 66 birim + 42 tarayıcı testi yerelde PASS. beta.3 yayımlanıyor.",
  "release_target": "v1.1.2-beta.1",
  "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission. EFSA group reference data are separate from food measurements; only verified compatible PRI/AI records, EFSA attribution required.",
  "historical_verified_gates": [
