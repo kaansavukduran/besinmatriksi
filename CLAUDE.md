@@ -1,6 +1,6 @@
 # CLAUDE.md: Besin Matriksi
 
-Çevrimdışı, fareyle/dokunarak kullanılan, disleksi dostu, özelleştirilebilir bitkisel (vegan) besin matriksi. Vite + düz JS; masaüstü Tauri, mobil Capacitor, PWA ve tek dosya HTML. Türkçe ana dil; yeni profil/günlük/görünüm ekranları merkezi TR/EN. Eski ekranların İngilizce çevirisi B051 kapsamında açıktır. Ayrıntılar `README.md`.
+Çevrimdışı, fareyle/dokunarak kullanılan, disleksi dostu, özelleştirilebilir bitkisel (vegan) besin matriksi. Vite + düz JS; masaüstü Tauri, mobil Capacitor, PWA ve tek dosya HTML. Türkçe ana dil; tüm ekranlar merkezi TR/EN: yeni metinler `L("Türkçe")` ile yazılır ve İngilizcesi `src/i18n-ui.js`e eklenir (`tests/i18n.test.mjs` eksikleri yakalar). Maskot Aion: `src/aion.js`, sprite üretimi `scripts/build-aion.py`. Ayrıntılar `README.md`.
 
 Önce `project_state/CURRENT_STATE.json` (imleç: `active_forge`, `next_recommended_forge`), sonra `docs/ROADMAP.md` okunur.
 

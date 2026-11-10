@@ -1,346 +1,345 @@
 {
-  "schema_version": "1",
-  "project": "Besin Matriksi",
-  "product_version": "1.1.2-beta.1",
-  "development_state": "IN_PROGRESS",
-  "last_forge_at": "2026-11-09T12:39:11.475163+00:00",
-  "last_completed_forge": "B050",
-  "active_forge": null,
-  "next_recommended_forge": "B051",
-  "branch": "codex/forge-devam",
-  "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
-  "validated_code_commit": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
-  "package_source_commit": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
-  "verified_gates": [
-    {
-      "id": "unit",
-      "command": "npm test",
-      "result": "PASS 58/58",
-      "level": "UNIT_TESTED",
-      "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175"
-    },
-    {
-      "id": "data",
-      "command": "npm run data + Test CI clean-diff gate",
-      "result": "PASS; USDA/EFSA unchanged",
-      "level": "BUILT",
-      "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62"
-    },
-    {
-      "id": "notices",
-      "command": "node scripts/build-notices.mjs --check",
-      "result": "PASS 14 original source/license notices",
-      "level": "UNIT_TESTED",
-      "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62"
-    },
-    {
-      "id": "web",
-      "command": "npm run build && npm run build:single",
-      "result": "PASS",
-      "level": "BUILT",
-      "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175"
-    },
-    {
-      "id": "browser",
-      "command": "npm run test:browser",
-      "result": "PASS 36/36 GitHub CI; local 34 PASS + 2 managed file:// SKIP",
-      "level": "RUNTIME_TESTED",
-      "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175"
-    },
-    {
-      "id": "packages",
-      "command": "release.yml workflow_dispatch publish=false",
-      "result": "PASS 7 artifact groups exact SHA; candidate downloaded ZIP CRC and all 21 SHA256 entries verified; public Release SKIPPED",
-      "level": "PACKAGED",
-      "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175"
-    },
-    {
-      "id": "native-runtime",
-      "result": "NOT_RUN; package/file verification is not physical OS/device installation acceptance",
-      "level": "NOT_RUN"
-    }
-  ],
-  "blockers": [
-    {
-      "forge": "B021",
-      "state": "BLOCKED_SOURCE_VERIFICATION",
-      "reason": "TürKomp official site timed out; redistribution license unverified; no new data imported.",
-      "last_attempt_date": "2026-11-09",
-      "retry_not_before": "2026-11-11T00:00:00Z",
-      "next_step": "Verify official access and offline redistribution permission only after retry_not_before; do not repeat unchanged failure early."
-    },
-    {
-      "forge": "B031",
-      "state": "NOT_RUN",
-      "reason": "Native OS/device acceptance NOT_RUN. Local Linux has GTK3 but no WebKitGTK 4.1 or Xvfb; package creation is not runtime proof.",
-      "next_step": "Inspect authorized environment provisioning for a Linux native smoke test; keep other physical platforms separate."
-    },
-    {
-      "forge": "PWA-hosting",
-      "state": "BLOCKED_PERMISSIONS",
-      "reason": "GitHub Pages create API returned HTTP 403 Resource not accessible by integration. No hosted PWA URL claimed."
-    },
-    {
-      "forge": "UX-TASKS",
-      "state": "NEEDS_CLARIFICATION",
-      "reason": "User requests dragging tasks up/down and entering task times. Existing nutrition app has sections/recipes, no task model. Await existing sections/recipes versus separate planning screen choice. Do not silently invent a task module or mark this request complete."
-    },
-    {
-      "forge": "B052-signing",
-      "state": "BLOCKED_SIGNING_AND_IMPLEMENTATION",
-      "reason": "Signed updater not implemented; two real signed-package upgrade acceptance NOT_RUN. Apple Developer ID/notarization/iOS distribution signing unavailable; Android actual APK uses debug certificate, permanent production key/update continuity not verified.",
-      "next_step": "Implement bounded updater settings/design and signing prerequisites without claiming a verified update or publishing to a store."
-    }
-  ],
-  "remaining_forges": [
-    "B051",
-    "B052",
-    "B031",
-    "B021",
-    "UX-TASKS"
-  ],
-  "continuation": {
-    "schedule": "hourly",
-    "timezone": "Europe/Istanbul",
-    "first_scheduled_local": "2026-11-09T12:40:00+03:00",
-    "stop_when": "All applicable roadmap items and final gates are verified; pause only this own automation.",
-    "note": "Hourly schedule enabled with inherited cloud environment; availability and usage limits still apply."
+ "schema_version": "1",
+ "project": "Besin Matriksi",
+ "product_version": "1.1.2-beta.2",
+ "development_state": "IN_PROGRESS",
+ "last_forge_at": "2026-11-09T12:39:11.475163+00:00",
+ "last_completed_forge": "B051",
+ "active_forge": null,
+ "next_recommended_forge": "B054",
+ "branch": "ccr-1e1934aa-iv8aev",
+ "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
+ "validated_code_commit": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
+ "package_source_commit": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
+ "verified_gates": [
+  {
+   "id": "unit",
+   "command": "npm test",
+   "result": "PASS 58/58",
+   "level": "UNIT_TESTED",
+   "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
+   "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175"
   },
-  "notes": "B050 PACKAGED: personal/Tanita profile, sourced energy estimate, planned/consumed diary and 206-component coverage/reference matrix; bilingual new screens, UI scale/typography/theme and optional gentle progress. 58 unit + 36 browser CI PASS; 7 artifact groups match d78b8da; candidate all 21 hashes verified. Drive source/history/manifest readback verified. Native runtime/Apple signing/production Android continuity and signed updater remain open. No public Release/merge/store publication.",
-  "release_target": "v1.1.2-beta.1",
-  "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission. EFSA group reference data are separate from food measurements; only verified compatible PRI/AI records, EFSA attribution required.",
-  "historical_verified_gates": [
-    {
-      "id": "unit",
-      "command": "npm test",
-      "result": "PASS 29/29",
-      "level": "UNIT_TESTED",
-      "version": "1.1.0"
-    },
-    {
-      "id": "data",
-      "command": "npm run data && git diff --exit-code -- src/data",
-      "result": "PASS, no diff",
-      "level": "BUILT",
-      "version": "1.1.0"
-    },
-    {
-      "id": "web",
-      "command": "npm run build && npm run build:single",
-      "result": "PASS",
-      "level": "BUILT",
-      "version": "1.1.0"
-    },
-    {
-      "id": "browser-ci",
-      "command": "npm run test:browser",
-      "result": "PASS 20/20 on GitHub CI; desktop + phone",
-      "level": "RUNTIME_TESTED",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42586943816",
-      "version": "1.1.0"
-    },
-    {
-      "id": "native-packages",
-      "command": "release.yml workflow_dispatch",
-      "result": "PASS web/windows/macos/linux/android/ios; public release skipped",
-      "level": "PACKAGED",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42586943869",
-      "version": "1.1.0"
-    },
-    {
-      "id": "print-sample",
-      "command": "Chromium PDF + pdftotext + first-page render",
-      "result": "Turkish glyphs and page numbers PASS; 24-page layout needs B010b",
-      "level": "RUNTIME_TESTED",
-      "version": "1.1.0"
-    },
-    {
-      "id": "unit",
-      "command": "npm test",
-      "result": "PASS 38/38",
-      "level": "UNIT_TESTED",
-      "source_sha": "a93e8a5903183f560adf0a1c8403dead5740c194",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42593575878"
-    },
-    {
-      "id": "data",
-      "command": "npm run data && git diff --exit-code -- src/data/foods.json src/data/foods-ext.json",
-      "result": "PASS no diff",
-      "level": "BUILT",
-      "source_sha": "a93e8a5903183f560adf0a1c8403dead5740c194"
-    },
-    {
-      "id": "notices",
-      "command": "node scripts/build-notices.mjs --check",
-      "result": "PASS 13 original texts",
-      "level": "UNIT_TESTED",
-      "source_sha": "a93e8a5903183f560adf0a1c8403dead5740c194"
-    },
-    {
-      "id": "web",
-      "command": "npm run build && npm run build:single",
-      "result": "PASS",
-      "level": "BUILT",
-      "source_sha": "a93e8a5903183f560adf0a1c8403dead5740c194"
-    },
-    {
-      "id": "browser-ci",
-      "command": "npm run test:browser",
-      "result": "PASS 24/24; desktop + phone + file:// + offline PWA",
-      "level": "RUNTIME_TESTED",
-      "source_sha": "a93e8a5903183f560adf0a1c8403dead5740c194",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42593575878"
-    },
-    {
-      "id": "native-packages",
-      "command": "release.yml workflow_dispatch",
-      "result": "PASS 6 artifact groups; all SHA matched; desktop Cargo 404 packages / 0 missing license files on each OS; public Release skipped",
-      "level": "PACKAGED",
-      "source_sha": "a93e8a5903183f560adf0a1c8403dead5740c194",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42593575878"
-    },
-    {
-      "id": "native-runtime",
-      "result": "NOT_RUN: physical installation/native runtime acceptance",
-      "level": "NOT_RUN"
-    },
-    {
-      "id": "print-sample",
-      "command": "Chromium PDF / pdftotext / first-page image",
-      "result": "PASS Turkish glyphs + page numbers; same USDA data 15 → 7 A4 pages",
-      "level": "RUNTIME_TESTED"
-    },
-    {
-      "id": "unit",
-      "command": "npm test",
-      "result": "PASS 43/43",
-      "level": "UNIT_TESTED",
-      "source_sha": "8e0b3178bc41864338a3fdf91afb6cf49e5497be",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42596270782"
-    },
-    {
-      "id": "data",
-      "command": "Test CI: npm run data && git diff --exit-code -- src/data",
-      "result": "PASS",
-      "level": "BUILT",
-      "source_sha": "8e0b3178bc41864338a3fdf91afb6cf49e5497be",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42596269733"
-    },
-    {
-      "id": "web",
-      "command": "npm run build && npm run build:single",
-      "result": "PASS",
-      "level": "BUILT",
-      "source_sha": "8e0b3178bc41864338a3fdf91afb6cf49e5497be",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42596270782"
-    },
-    {
-      "id": "browser",
-      "command": "npm run test:browser",
-      "result": "PASS 28/28 CI; local 26 PASS + 2 managed file:// SKIP",
-      "level": "RUNTIME_TESTED",
-      "source_sha": "8e0b3178bc41864338a3fdf91afb6cf49e5497be",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42596270782"
-    },
-    {
-      "id": "packages",
-      "command": "release.yml workflow_dispatch",
-      "result": "PASS 6 artifact groups; SHA matched; Cargo 404/0 on each desktop; GitHub Release SKIPPED",
-      "level": "PACKAGED",
-      "source_sha": "8e0b3178bc41864338a3fdf91afb6cf49e5497be",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42596270782"
-    },
-    {
-      "id": "native-runtime",
-      "result": "NOT_RUN: physical installation/native runtime acceptance",
-      "level": "NOT_RUN"
-    },
-    {
-      "id": "unit",
-      "command": "npm test",
-      "result": "PASS 49/49",
-      "level": "UNIT_TESTED",
-      "source_sha": "baaca2ba15fbacb208a8fbffc02d012741d27779",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42606995870"
-    },
-    {
-      "id": "data",
-      "command": "npm run data + Test CI clean-diff gate",
-      "result": "PASS; USDA unchanged, EFSA exact raw source/units/digests verified",
-      "level": "BUILT",
-      "source_sha": "baaca2ba15fbacb208a8fbffc02d012741d27779"
-    },
-    {
-      "id": "notices",
-      "command": "node scripts/build-notices.mjs --check",
-      "result": "PASS 14 source/license notices",
-      "level": "UNIT_TESTED",
-      "source_sha": "baaca2ba15fbacb208a8fbffc02d012741d27779"
-    },
-    {
-      "id": "web",
-      "command": "npm run build && npm run build:single",
-      "result": "PASS",
-      "level": "BUILT",
-      "source_sha": "baaca2ba15fbacb208a8fbffc02d012741d27779",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42606995870"
-    },
-    {
-      "id": "browser",
-      "command": "npm run test:browser",
-      "result": "PASS 30/30 GitHub CI, desktop/phone/file:// and offline PWA; EFSA final local targeted 2/2 PASS",
-      "level": "RUNTIME_TESTED",
-      "source_sha": "baaca2ba15fbacb208a8fbffc02d012741d27779",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42606995870"
-    },
-    {
-      "id": "packages",
-      "command": "release.yml workflow_dispatch",
-      "result": "PASS 6 artifact groups source SHA match; desktop Cargo 404/0; public Release SKIPPED",
-      "level": "PACKAGED",
-      "source_sha": "baaca2ba15fbacb208a8fbffc02d012741d27779",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42606995870"
-    },
-    {
-      "id": "native-runtime",
-      "result": "NOT_RUN; physical OS/device installation/native runtime still separate",
-      "level": "NOT_RUN"
-    }
-  ],
-  "publication_policy": "No public Release or store publication. Only workflow_dispatch with publish=false; never move v1.1.1 tag. Latest user instruction confirmed this boundary.",
-  "work_session": {
-    "state": "CLOSED",
-    "owner": "codex-B050-personal-daily",
-    "completed_at": "2026-11-09T12:39:11.475163+00:00",
-    "note": "B050 PACKAGED exact d78b8da; final commit only evidence/docs/state. Next single Forge B051; hourly automation remains active because applicable work remains."
+  {
+   "id": "data",
+   "command": "npm run data + Test CI clean-diff gate",
+   "result": "PASS; USDA/EFSA unchanged",
+   "level": "BUILT",
+   "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62"
   },
-  "pending_user_clarification": "User asked drag-reorder tasks and task times. Besin Matriksi has no tasks; async question pending: existing sections/recipes versus separate planning screen.",
-  "package_evidence_file": "docs/evidence/B050-packages.json",
-  "efsa_reference_source": {
-    "snapshot": "2026-11-09",
-    "sha256": "f67a4e418e361662aca30fa8cd128832a6eaef14dff59b5fcdda1b722e53525e",
-    "license": "EFSA source acknowledgement; not MIT/CC0",
-    "records": 169,
-    "nutrients": 23,
-    "scope": "Children/adults ages 1–99; compatible numerical PRI/AI only"
+  {
+   "id": "notices",
+   "command": "node scripts/build-notices.mjs --check",
+   "result": "PASS 14 original source/license notices",
+   "level": "UNIT_TESTED",
+   "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62"
   },
-  "backup_status": {
-    "state": "VERIFIED_REMOTE",
-    "reason": "Explicit user approval received. Source ZIP, full Git bundle and commit/hash manifest uploaded to the approved private project folder. All three files downloaded back and SHA256 matched; parent and sizes verified. Private folder/file IDs intentionally omitted from public repository.",
-    "local_verified_source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
-    "local_scan": "347 blobs; no known credential/private-key patterns or sensitive filenames found; not an exhaustive secret guarantee. ZIP CRC and Git full bundle verify PASS. No health runtime data included.",
-    "remote_verified_source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62"
+  {
+   "id": "web",
+   "command": "npm run build && npm run build:single",
+   "result": "PASS",
+   "level": "BUILT",
+   "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
+   "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175"
   },
-  "pending_forges": [
-    {
-      "id": "B030-public-beta",
-      "state": "ARTIFACT_ONLY_PACKAGED",
-      "reason": "Current instruction permits workflow_dispatch artifacts only. Candidate verified; no public Release.",
-      "run_url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175"
-    }
-  ]
+  {
+   "id": "browser",
+   "command": "npm run test:browser",
+   "result": "PASS 36/36 GitHub CI; local 34 PASS + 2 managed file:// SKIP",
+   "level": "RUNTIME_TESTED",
+   "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
+   "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175"
+  },
+  {
+   "id": "packages",
+   "command": "release.yml workflow_dispatch publish=false",
+   "result": "PASS 7 artifact groups exact SHA; candidate downloaded ZIP CRC and all 21 SHA256 entries verified; public Release SKIPPED",
+   "level": "PACKAGED",
+   "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
+   "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175"
+  },
+  {
+   "id": "native-runtime",
+   "result": "NOT_RUN; package/file verification is not physical OS/device installation acceptance",
+   "level": "NOT_RUN"
+  }
+ ],
+ "blockers": [
+  {
+   "forge": "B021",
+   "state": "BLOCKED_SOURCE_VERIFICATION",
+   "reason": "TürKomp official site timed out; redistribution license unverified; no new data imported.",
+   "last_attempt_date": "2026-11-09",
+   "retry_not_before": "2026-11-11T00:00:00Z",
+   "next_step": "Verify official access and offline redistribution permission only after retry_not_before; do not repeat unchanged failure early."
+  },
+  {
+   "forge": "B031",
+   "state": "NOT_RUN",
+   "reason": "Native OS/device acceptance NOT_RUN. Local Linux has GTK3 but no WebKitGTK 4.1 or Xvfb; package creation is not runtime proof.",
+   "next_step": "Inspect authorized environment provisioning for a Linux native smoke test; keep other physical platforms separate."
+  },
+  {
+   "forge": "PWA-hosting",
+   "state": "BLOCKED_PERMISSIONS",
+   "reason": "GitHub Pages create API returned HTTP 403 Resource not accessible by integration. No hosted PWA URL claimed."
+  },
+  {
+   "forge": "UX-TASKS",
+   "state": "NEEDS_CLARIFICATION",
+   "reason": "User requests dragging tasks up/down and entering task times. Existing nutrition app has sections/recipes, no task model. Await existing sections/recipes versus separate planning screen choice. Do not silently invent a task module or mark this request complete."
+  },
+  {
+   "forge": "B052-signing",
+   "state": "BLOCKED_SIGNING_AND_IMPLEMENTATION",
+   "reason": "Signed updater not implemented; two real signed-package upgrade acceptance NOT_RUN. Apple Developer ID/notarization/iOS distribution signing unavailable; Android actual APK uses debug certificate, permanent production key/update continuity not verified.",
+   "next_step": "Implement bounded updater settings/design and signing prerequisites without claiming a verified update or publishing to a store."
+  }
+ ],
+ "remaining_forges": [
+  "B054",
+  "B052",
+  "B031",
+  "B021",
+  "UX-TASKS"
+ ],
+ "continuation": {
+  "schedule": "hourly (:12)",
+  "timezone": "Europe/Istanbul",
+  "trigger": "trig_01Ljjr3Dkp6uBiQcjFaGuzm3",
+  "stop_when": "Tüm uygulanabilir yol haritası işleri ve son kapılar doğrulandığında."
+ },
+ "notes": "Claude devraldı (2026-11-10). B053 Aion maskotu (Drive pembe-mavi pafta, 5x8 sprite) ve B051 merkezi TR/EN çeviri tamamlandı. 61 birim + 40 tarayıcı testi yerelde PASS. v1.1.2-beta.1 herkese açık pre-release olarak yayımlandı; beta.2 Aion sürümü yayımlanıyor. Sonraki: B054 kullanıcı koleksiyonları ve sade arayüz.",
+ "release_target": "v1.1.2-beta.1",
+ "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission. EFSA group reference data are separate from food measurements; only verified compatible PRI/AI records, EFSA attribution required.",
+ "historical_verified_gates": [
+  {
+   "id": "unit",
+   "command": "npm test",
+   "result": "PASS 29/29",
+   "level": "UNIT_TESTED",
+   "version": "1.1.0"
+  },
+  {
+   "id": "data",
+   "command": "npm run data && git diff --exit-code -- src/data",
+   "result": "PASS, no diff",
+   "level": "BUILT",
+   "version": "1.1.0"
+  },
+  {
+   "id": "web",
+   "command": "npm run build && npm run build:single",
+   "result": "PASS",
+   "level": "BUILT",
+   "version": "1.1.0"
+  },
+  {
+   "id": "browser-ci",
+   "command": "npm run test:browser",
+   "result": "PASS 20/20 on GitHub CI; desktop + phone",
+   "level": "RUNTIME_TESTED",
+   "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42586943816",
+   "version": "1.1.0"
+  },
+  {
+   "id": "native-packages",
+   "command": "release.yml workflow_dispatch",
+   "result": "PASS web/windows/macos/linux/android/ios; public release skipped",
+   "level": "PACKAGED",
+   "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42586943869",
+   "version": "1.1.0"
+  },
+  {
+   "id": "print-sample",
+   "command": "Chromium PDF + pdftotext + first-page render",
+   "result": "Turkish glyphs and page numbers PASS; 24-page layout needs B010b",
+   "level": "RUNTIME_TESTED",
+   "version": "1.1.0"
+  },
+  {
+   "id": "unit",
+   "command": "npm test",
+   "result": "PASS 38/38",
+   "level": "UNIT_TESTED",
+   "source_sha": "a93e8a5903183f560adf0a1c8403dead5740c194",
+   "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42593575878"
+  },
+  {
+   "id": "data",
+   "command": "npm run data && git diff --exit-code -- src/data/foods.json src/data/foods-ext.json",
+   "result": "PASS no diff",
+   "level": "BUILT",
+   "source_sha": "a93e8a5903183f560adf0a1c8403dead5740c194"
+  },
+  {
+   "id": "notices",
+   "command": "node scripts/build-notices.mjs --check",
+   "result": "PASS 13 original texts",
+   "level": "UNIT_TESTED",
+   "source_sha": "a93e8a5903183f560adf0a1c8403dead5740c194"
+  },
+  {
+   "id": "web",
+   "command": "npm run build && npm run build:single",
+   "result": "PASS",
+   "level": "BUILT",
+   "source_sha": "a93e8a5903183f560adf0a1c8403dead5740c194"
+  },
+  {
+   "id": "browser-ci",
+   "command": "npm run test:browser",
+   "result": "PASS 24/24; desktop + phone + file:// + offline PWA",
+   "level": "RUNTIME_TESTED",
+   "source_sha": "a93e8a5903183f560adf0a1c8403dead5740c194",
+   "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42593575878"
+  },
+  {
+   "id": "native-packages",
+   "command": "release.yml workflow_dispatch",
+   "result": "PASS 6 artifact groups; all SHA matched; desktop Cargo 404 packages / 0 missing license files on each OS; public Release skipped",
+   "level": "PACKAGED",
+   "source_sha": "a93e8a5903183f560adf0a1c8403dead5740c194",
+   "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42593575878"
+  },
+  {
+   "id": "native-runtime",
+   "result": "NOT_RUN: physical installation/native runtime acceptance",
+   "level": "NOT_RUN"
+  },
+  {
+   "id": "print-sample",
+   "command": "Chromium PDF / pdftotext / first-page image",
+   "result": "PASS Turkish glyphs + page numbers; same USDA data 15 → 7 A4 pages",
+   "level": "RUNTIME_TESTED"
+  },
+  {
+   "id": "unit",
+   "command": "npm test",
+   "result": "PASS 43/43",
+   "level": "UNIT_TESTED",
+   "source_sha": "8e0b3178bc41864338a3fdf91afb6cf49e5497be",
+   "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42596270782"
+  },
+  {
+   "id": "data",
+   "command": "Test CI: npm run data && git diff --exit-code -- src/data",
+   "result": "PASS",
+   "level": "BUILT",
+   "source_sha": "8e0b3178bc41864338a3fdf91afb6cf49e5497be",
+   "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42596269733"
+  },
+  {
+   "id": "web",
+   "command": "npm run build && npm run build:single",
+   "result": "PASS",
+   "level": "BUILT",
+   "source_sha": "8e0b3178bc41864338a3fdf91afb6cf49e5497be",
+   "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42596270782"
+  },
+  {
+   "id": "browser",
+   "command": "npm run test:browser",
+   "result": "PASS 28/28 CI; local 26 PASS + 2 managed file:// SKIP",
+   "level": "RUNTIME_TESTED",
+   "source_sha": "8e0b3178bc41864338a3fdf91afb6cf49e5497be",
+   "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42596270782"
+  },
+  {
+   "id": "packages",
+   "command": "release.yml workflow_dispatch",
+   "result": "PASS 6 artifact groups; SHA matched; Cargo 404/0 on each desktop; GitHub Release SKIPPED",
+   "level": "PACKAGED",
+   "source_sha": "8e0b3178bc41864338a3fdf91afb6cf49e5497be",
+   "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42596270782"
+  },
+  {
+   "id": "native-runtime",
+   "result": "NOT_RUN: physical installation/native runtime acceptance",
+   "level": "NOT_RUN"
+  },
+  {
+   "id": "unit",
+   "command": "npm test",
+   "result": "PASS 49/49",
+   "level": "UNIT_TESTED",
+   "source_sha": "baaca2ba15fbacb208a8fbffc02d012741d27779",
+   "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42606995870"
+  },
+  {
+   "id": "data",
+   "command": "npm run data + Test CI clean-diff gate",
+   "result": "PASS; USDA unchanged, EFSA exact raw source/units/digests verified",
+   "level": "BUILT",
+   "source_sha": "baaca2ba15fbacb208a8fbffc02d012741d27779"
+  },
+  {
+   "id": "notices",
+   "command": "node scripts/build-notices.mjs --check",
+   "result": "PASS 14 source/license notices",
+   "level": "UNIT_TESTED",
+   "source_sha": "baaca2ba15fbacb208a8fbffc02d012741d27779"
+  },
+  {
+   "id": "web",
+   "command": "npm run build && npm run build:single",
+   "result": "PASS",
+   "level": "BUILT",
+   "source_sha": "baaca2ba15fbacb208a8fbffc02d012741d27779",
+   "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42606995870"
+  },
+  {
+   "id": "browser",
+   "command": "npm run test:browser",
+   "result": "PASS 30/30 GitHub CI, desktop/phone/file:// and offline PWA; EFSA final local targeted 2/2 PASS",
+   "level": "RUNTIME_TESTED",
+   "source_sha": "baaca2ba15fbacb208a8fbffc02d012741d27779",
+   "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42606995870"
+  },
+  {
+   "id": "packages",
+   "command": "release.yml workflow_dispatch",
+   "result": "PASS 6 artifact groups source SHA match; desktop Cargo 404/0; public Release SKIPPED",
+   "level": "PACKAGED",
+   "source_sha": "baaca2ba15fbacb208a8fbffc02d012741d27779",
+   "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42606995870"
+  },
+  {
+   "id": "native-runtime",
+   "result": "NOT_RUN; physical OS/device installation/native runtime still separate",
+   "level": "NOT_RUN"
+  }
+ ],
+ "publication_policy": "No public Release or store publication. Only workflow_dispatch with publish=false; never move v1.1.1 tag. Latest user instruction confirmed this boundary.",
+ "work_session": {
+  "state": "CLOSED",
+  "owner": "codex-B050-personal-daily",
+  "completed_at": "2026-11-09T12:39:11.475163+00:00",
+  "note": "B050 PACKAGED exact d78b8da; final commit only evidence/docs/state. Next single Forge B051; hourly automation remains active because applicable work remains."
+ },
+ "pending_user_clarification": "User asked drag-reorder tasks and task times. Besin Matriksi has no tasks; async question pending: existing sections/recipes versus separate planning screen.",
+ "package_evidence_file": "docs/evidence/B050-packages.json",
+ "efsa_reference_source": {
+  "snapshot": "2026-11-09",
+  "sha256": "f67a4e418e361662aca30fa8cd128832a6eaef14dff59b5fcdda1b722e53525e",
+  "license": "EFSA source acknowledgement; not MIT/CC0",
+  "records": 169,
+  "nutrients": 23,
+  "scope": "Children/adults ages 1–99; compatible numerical PRI/AI only"
+ },
+ "backup_status": {
+  "state": "VERIFIED_REMOTE",
+  "reason": "Explicit user approval received. Source ZIP, full Git bundle and commit/hash manifest uploaded to the approved private project folder. All three files downloaded back and SHA256 matched; parent and sizes verified. Private folder/file IDs intentionally omitted from public repository.",
+  "local_verified_source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
+  "local_scan": "347 blobs; no known credential/private-key patterns or sensitive filenames found; not an exhaustive secret guarantee. ZIP CRC and Git full bundle verify PASS. No health runtime data included.",
+  "remote_verified_source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62"
+ },
+ "pending_forges": [
+  {
+   "id": "B030-public-beta",
+   "state": "ARTIFACT_ONLY_PACKAGED",
+   "reason": "Current instruction permits workflow_dispatch artifacts only. Candidate verified; no public Release.",
+   "run_url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175"
+  }
+ ]
 }

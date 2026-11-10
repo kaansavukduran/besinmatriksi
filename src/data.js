@@ -1,6 +1,13 @@
 import DB from './data/foods.json';
 import { norm } from './util.js';
 import { searchKey } from './search.js';
+import { getLanguage, L } from './i18n.js';
+import { EN_FOODS, EN_CATEGORIES, EN_FORMS } from './i18n-foods.js';
+
+const en = () => getLanguage() === 'en';
+export const foodName = (f) => (en() && EN_FOODS[f.id]) || f.tr;
+export const formName = (label) => (en() && EN_FORMS[label]) || label;
+export const categoryName = (c) => (en() && EN_CATEGORIES[c.id]) || c.name;
 
 export const META = DB.meta;
 export const CATEGORIES = DB.categories.map(([id, name, icon]) => ({ id, name, icon }));
@@ -32,11 +39,11 @@ export function resolve(ref) {
     if (!form) return null;
     return {
       ref, food, form,
-      name: food.tr, formLabel: form.label, cat: food.cat,
+      name: foodName(food), formLabel: formName(form.label), cat: food.cat,
       liquid: ['icecek', 'demleme', 'suyu', 'yag'].includes(form.key),
       v: form.v, s: form.s, alt: form.alt || {}, sd: form.sd || {},
       portions: form.portions || [],
-      allergens: food.allergens, note: [food.note, form.unavailable].filter(Boolean).join(' ') || null, sci: food.sci,
+      allergens: food.allergens, note: [food.note, form.unavailable].filter(Boolean).map((x) => L(x)).join(' ') || null, sci: food.sci,
       usda: form.usda, ifct: form.ifct, estFrom: form.estFrom,
     };
   }
@@ -46,9 +53,9 @@ export function resolve(ref) {
     const s = {};
     for (const k of Object.keys(f.v)) s[k] = 'u';
     return {
-      ref, ext: f, name: f.en, formLabel: 'USDA tanımı', cat: 'ext:' + f.g,
+      ref, ext: f, name: f.en, formLabel: L('USDA tanımı'), cat: 'ext:' + f.g,
       liquid: f.g === '1400', v: f.v, s, alt: {}, sd: {}, portions: f.p || [],
-      allergens: [], note: 'Geniş katalog kaydı: vegan uygunluğu ve içerik ürüne göre doğrulanmalı.', sci: f.sci,
+      allergens: [], note: L('Geniş katalog kaydı: vegan uygunluğu ve içerik ürüne göre doğrulanmalı.'), sci: f.sci,
       usda: { ndb: f.n, desc: f.en, refuse: f.r, refDesc: f.rd, sci: f.sci }, ifct: null, estFrom: null,
     };
   }
@@ -62,9 +69,9 @@ export function resolve(ref) {
     if (v.energy_kj != null) s.energy_kj = 'd';
     if (v.carb != null && f.v.carb == null) s.carb = 'd';
     return {
-      ref, custom: f, name: f.name, formLabel: 'Kendi besinim (etiket)', cat: 'custom',
-      liquid: !!f.liquid, v, s, alt: {}, sd: {}, portions: f.portion ? [{ g: f.portion, label: '1 porsiyon (etiket)', en: 'label serving' }] : [],
-      allergens: [], note: f.note || 'Değerler kullanıcı tarafından ürün etiketinden girildi.', sci: null,
+      ref, custom: f, name: f.name, formLabel: L('Kendi besinim (etiket)'), cat: 'custom',
+      liquid: !!f.liquid, v, s, alt: {}, sd: {}, portions: f.portion ? [{ g: f.portion, label: L('1 porsiyon (etiket)'), en: 'label serving' }] : [],
+      allergens: [], note: f.note || L('Değerler kullanıcı tarafından ürün etiketinden girildi.'), sci: null,
       usda: null, ifct: null, estFrom: null,
     };
   }

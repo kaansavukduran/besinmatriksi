@@ -182,3 +182,12 @@
 - Ayarlar → Aion: göster/gizle, hareket (sisteme uy / hareketli / sabit poz), boyut, konum, ipucu balonu, sıfırla. Azaltılmış hareket tercihinde sabit poz.
 - Kanıt: `npm test` 58/58; `npm run build` PASS; yerel tarayıcı akışı: kare ilerlemesi, kutlama, sabit poz, gizleme + yeniden açılışta kalıcılık, telefon görünümü PASS; konsol hatası yok.
 - Düzey: RUNTIME_TESTED. Sonraki: **B051** (eski ekranların TR/EN çevirisi).
+
+## B051 · 2026-11-10 · eski ekranların merkezi TR/EN çevirisi
+- Yeni `L()` katmanı (`src/i18n.js`): Türkçe kaynak metin anahtardır, İngilizcesi merkezi `src/i18n-ui.js` sözlüğündedir (518 giriş); yer tutucular `{n}` ile doldurulur, eksik çeviride Türkçeye düşer.
+- `src/i18n-foods.js`: 285 küratörlü besinin, 18 kategorinin ve 30 tüketim biçiminin İngilizce adı. Besin uyarı notları, alerjenler, bölüm/alt grup başlıkları, amino asit etiketleri, kaynak açıklamaları, EFSA ayarları ve referans metinleri, tarif kaynak dökümü, CSV başlıkları, bildirim ve diyaloglar çevrildi. Bileşen adları için ortak `nutrientLabel()`.
+- Kullanıcının yazdığı tarif/besin/profil adları çevrilmez. USDA ev ölçüleri İngilizcede özgün USDA metniyle gösterilir.
+- Testler: `tests/i18n.test.mjs` kaynaktaki her `L("…")` metninin, tüm besin/kategori/biçim/bileşen/bölüm/alerjen/not metinlerinin İngilizcesini zorunlu kılar. Tarayıcı: İngilizce modda Keşfet, matriks (veri yok satırları dahil), Tarif, Karşılaştır, Ayarlar, Hakkında ekranlarında Türkçe arayüz metni kalmadığını denetler.
+- Ek düzeltme: Aion'un ilk selam kontrolü depolama yasaklı ortamda (about:blank) açılışı çökertiyordu; try/catch'e alındı ve Aion tarayıcı testi eklendi.
+- Kanıt: `npm test` 61/61 PASS; `npm run build`, `npm run build:single` PASS; yerel tarayıcı kapısı 40/40 PASS (masaüstü + telefon, TR ve EN).
+- Düzey: RUNTIME_TESTED. Sonraki: **B054** kullanıcı tanımlı koleksiyonlar (kategori/alt kategori ekleme-çıkarma) ve sade arayüz turu.

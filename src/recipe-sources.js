@@ -1,6 +1,8 @@
 import { scaleItem } from './calc.js';
 import { NUTRIENTS } from './nutrients.js';
 import { esc, fmtNum, fmtAmount } from './util.js';
+import { L } from './i18n.js';
+import { nutrientLabel } from './i18n-nutrients.js';
 
 const CALCULATIONS = {
   salt: { keys: ['na'], label: 'Tuz (g) = sodyum (mg) × 2,5 / 1000' },
@@ -18,18 +20,18 @@ export function recipeContributions(recipe, resolve, key, factor = 1) {
     const source = scaled?.s[key];
     const calculation = source === 'd' ? CALCULATIONS[key] : null;
     return {
-      index, name: item?.name || 'Bulunamayan kayıt', form: item?.formLabel || '',
+      index, name: item?.name || L('Bulunamayan kayıt'), form: item?.formLabel || '',
       grams: ingredient.g, factor, missingRecord: !item,
       value: scaled?.v[key] == null ? null : scaled.v[key] * factor,
       source, usda: item?.usda || null,
-      formula: calculation?.label || null,
+      formula: calculation ? L(calculation.label) : null,
       inputs: (calculation?.keys || []).map(k => ({ key: k, value: scaled.v[k] == null ? null : scaled.v[k] * factor, source: scaled.s[k] })),
     };
   });
 }
 
 function amount(value, unit, precision) {
-  if (value == null) return 'veri yok';
+  if (value == null) return L("veri yok");
   const a = fmtAmount(value, unit, precision);
   return `${a.n} ${esc(a.u)}`;
 }
@@ -40,28 +42,28 @@ export function renderRecipeSourceRows(recipe, resolve, key, factor, precision) 
   const rows = recipeContributions(recipe, resolve, key, factor);
   const known = rows.filter(row => row.value != null);
   const total = known.length ? known.reduce((sum, row) => sum + row.value, 0) : null;
-  return `<p class="source-total"><b>${esc(nutrient.label)}: ${amount(total, nutrient.unit, precision)}</b> · ${known.length}/${rows.length} malzemede veri${known.length < rows.length ? ' · kısmi toplam' : ''}</p>
-    <p class="hint">Eksik veri sıfır sayılmaz. Katkılar yuvarlanmadan toplanır; gösterimde yuvarlama farkı olabilir. Bu döküm pişirme kayıplarını veya emilimi ölçmez.</p>
+  return `<p class="source-total"><b>${esc(nutrientLabel(nutrient))}: ${amount(total, nutrient.unit, precision)}</b> · ${L("{a}/{b} malzemede veri", { a: known.length, b: rows.length })}${known.length < rows.length ? ' · ' + L("kısmi toplam") : ''}</p>
+    <p class="hint">${L("Eksik veri sıfır sayılmaz. Katkılar yuvarlanmadan toplanır; gösterimde yuvarlama farkı olabilir. Bu döküm pişirme kayıplarını veya emilimi ölçmez.")}</p>
     <ul class="source-ingredients">${rows.map(row => {
-      const source = LABELS[row.source] || 'Kaynak belirtilmemiş';
+      const source = L(LABELS[row.source] || 'Kaynak belirtilmemiş');
       const record = row.usda && (row.source === 'u' || row.inputs.some(input => input.source === 'u'))
         ? ` · NDB ${esc(row.usda.ndb)} · ${esc(row.usda.desc)}` : '';
       return `<li><div class="source-contribution"><b>${esc(row.name)}</b><strong>${amount(row.value, nutrient.unit, precision)}</strong></div>
-        <p>${esc(row.form)} · ${fmtNum(row.grams)} g malzeme${factor !== 1 ? ` × ${fmtNum(factor, 'high')} hesap payı` : ''}</p>
-        <p>${row.value == null ? row.missingRecord ? 'Kayıt bulunamadı; katkı bilinmiyor.' : 'Bu malzemede bu bileşen için veri yok.' : `${esc(source)}${record}${row.value === 0 ? ' · kaynak/hesap sonucu 0' : ''}`}</p>
+        <p>${esc(row.form)} · ${fmtNum(row.grams)} g ${L('malzeme')}${factor !== 1 ? ` × ${fmtNum(factor, 'high')} ${L('hesap payı')}` : ''}</p>
+        <p>${row.value == null ? row.missingRecord ? L("Kayıt bulunamadı; katkı bilinmiyor.") : L("Bu malzemede bu bileşen için veri yok.") : `${esc(source)}${record}${row.value === 0 ? ' · ' + L("kaynak/hesap sonucu 0") : ''}`}</p>
         ${row.formula ? `<p>${esc(row.formula)}</p><ul>${row.inputs.map(input => {
           const n = NUTRIENTS.find(n => n.key === input.key);
-          return `<li>${esc(n?.label || input.key)}: ${amount(input.value, n?.unit || '', precision)} · ${esc(LABELS[input.source] || 'Kaynak belirtilmemiş')}</li>`;
+          return `<li>${esc(n ? nutrientLabel(n) : input.key)}: ${amount(input.value, n?.unit || '', precision)} · ${esc(L(LABELS[input.source] || 'Kaynak belirtilmemiş'))}</li>`;
         }).join('')}</ul>` : ''}</li>`;
     }).join('')}</ul>`;
 }
 
 export function renderRecipeSources(recipe, resolve, { key = 'energy', factor = 1, basisLabel, open = false, precision } = {}) {
   return `<details class="card recipe-sources" ${open ? 'open' : ''}>
-    <summary>Malzeme ve kaynak dökümü</summary>
+    <summary>${L("Malzeme ve kaynak dökümü")}</summary>
     <p>${esc(basisLabel)}</p>
-    <label class="field" for="recipe-source-nutrient">Katkısını inceleyeceğin bileşen
-      <select id="recipe-source-nutrient">${NUTRIENTS.map(n => `<option value="${n.key}" ${n.key === key ? 'selected' : ''}>${esc(n.label)} (${esc(n.unit)})</option>`).join('')}</select>
+    <label class="field" for="recipe-source-nutrient">${L("Katkısını inceleyeceğin bileşen")}
+      <select id="recipe-source-nutrient">${NUTRIENTS.map(n => `<option value="${n.key}" ${n.key === key ? 'selected' : ''}>${esc(nutrientLabel(n))} (${esc(n.unit)})</option>`).join('')}</select>
     </label>
     <div id="recipe-source-rows" aria-live="polite">${renderRecipeSourceRows(recipe, resolve, key, factor, precision)}</div>
   </details>`;

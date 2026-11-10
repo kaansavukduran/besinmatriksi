@@ -1,3 +1,4 @@
+import { UI_EN } from './i18n-ui.js';
 let language = 'tr';
 export function preferredLanguage(preference = 'auto', languages = globalThis.navigator?.languages || []) {
   if (['tr', 'en'].includes(preference)) return preference;
@@ -44,3 +45,9 @@ const TEXT = {
 };
 export function t(key, params = {}) { let text = TEXT[key]?.[language === 'en' ? 1 : 0] ?? key; return text.replace(/\{(\w+)\}/g, (_, name) => String(params[name] ?? '')); }
 export const translations = TEXT;
+
+// Türkçe kaynak metni seçili dile çevirir; {ad} yer tutucularını doldurur.
+export function L(text, params = {}) {
+  const out = language === 'en' ? (UI_EN[text] ?? text) : text;
+  return out.replace(/\{(\w+)\}/g, (_, name) => String(params[name] ?? ''));
+}

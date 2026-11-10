@@ -1,4 +1,4 @@
-import { CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, extGroups, extFoods, setCustomFoods, customFoods } from './data.js';
+import { foodName, categoryName, formName, CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, extGroups, extFoods, setCustomFoods, customFoods } from './data.js';
 import { NUTRIENTS, SECTIONS, SOURCES } from './nutrients.js';
 import { scaleItem, aggregate, scaleAggregate } from './calc.js';
 import { renderMatrix } from './matrix.js';
@@ -15,10 +15,12 @@ import { recentSearches } from './search.js';
 import { recipeCost, normalizeCustom } from './records.js';
 import { renderRecipeSources, renderRecipeSourceRows } from './recipe-sources.js';
 import { renderEfsaSettings } from './efsa-ui.js';
-import { t as tr, setLanguage, preferredLanguage } from './i18n.js';
+import { t as tr, setLanguage, preferredLanguage, L } from './i18n.js';
 import { renderAppearance, settingSlider } from './appearance.js';
 import { loadPersonal, savePersonal, emptyProfile, normalizeProfile, mergePersonalFoods, localDay, validDay, dayResult, PERSONAL_KEY } from './personal.js';
 import { renderPersonal, renderEnergy, renderDaySources } from './personal-view.js';
+import { nutrientLabel } from './i18n-nutrients.js';
+import { getLanguage } from './i18n.js';
 import { mountAion, configureAion, aionMood, aionPlay, aionSay } from './aion.js';
 import { normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS } from './settings.js';
 
@@ -53,7 +55,8 @@ const personalLoaded = loadPersonal();
 S.personal = personalLoaded.state; S.personalDraft = structuredClone(S.personal.profile); S.personalReadError = personalLoaded.error;
 setCustomFoods(loadCustom());
 S.amount = S.settings.defaultAmount;
-if (!S.recipes.length) S.recipes = [newRecipe('İlk tarifim')];
+setLanguage(preferredLanguage(S.settings.language)); // varsayılan metinler doğru dilde oluşsun
+if (!S.recipes.length) S.recipes = [newRecipe(L("İlk tarifim"))];
 S.activeRecipe = S.recipes[0].id;
 
 const $ = (sel, el = document) => el.querySelector(sel);
@@ -118,7 +121,8 @@ function toast(msg) {
 
 function catName(id) {
   if (id?.startsWith('ext:')) return 'USDA: ' + (extGroups()[id.slice(4)] || '');
-  return CATEGORIES.find((c) => c.id === id)?.name || '';
+  const c = CATEGORIES.find((c) => c.id === id);
+  return c ? categoryName(c) : id === 'custom' ? L("Kendi besinlerim") : '';
 }
 const catIcon = (id) => (S.settings.emoji ? CATEGORIES.find((c) => c.id === id)?.icon || '📦' : '');
 
@@ -128,23 +132,23 @@ function amountControls(target, g, portions = [], { compact = false, liquid = fa
   const presets = compact ? [10, 25, 50, 100, 200, 500, 1000] : PRESETS;
   return `<div class="amount ${compact ? 'compact' : ''}" data-amount="${esc(target)}">
     <div class="amt-main">
-      <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="-10" aria-label="10 gram azalt">−10</button>
-      <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="-1" aria-label="1 gram azalt">−1</button>
+      <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="-10" aria-label="${L("10 gram azalt")}">−10</button>
+      <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="-1" aria-label="${L("1 gram azalt")}">−1</button>
       <output class="amt-val" data-amtval="${esc(target)}"><b>${fmtNum(oz ? g / 28.349523125 : g)}</b> <span class="amount-unit">${unit}</span></output>
-      <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="1" aria-label="1 gram artır">+1</button>
-      <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="10" aria-label="10 gram artır">+10</button>
+      <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="1" aria-label="${L("1 gram artır")}">+1</button>
+      <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="10" aria-label="${L("10 gram artır")}">+10</button>
     </div>
-    <input type="range" class="slider" min="1" max="${MAX_G}" step="1" value="${g}" data-slider="${esc(target)}" aria-label="Miktar (gram)">
+    <input type="range" class="slider" min="1" max="${MAX_G}" step="1" value="${g}" data-slider="${esc(target)}" aria-label="${L("Miktar (gram)")}">
     <div class="presets">${presets.map((p) => `<button class="pchip ${p === g ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p}">${p >= 1000 ? '1 kg' : p + ' g'}</button>`).join('')}</div>
-    ${portions.length ? `<div class="portions">${portions.map((p) => `<button class="pchip por ${Math.abs(p.g - g) < 0.01 ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p.g}" title="${esc(p.en)} (USDA)">${esc(p.label)} · ${fmtNum(p.g)} g</button>`).join('')}</div>` : ''}
+    ${portions.length ? `<div class="portions">${portions.map((p) => `<button class="pchip por ${Math.abs(p.g - g) < 0.01 ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p.g}" title="${esc(p.en)} (USDA)">${esc(getLanguage() === 'en' && p.en ? p.en : p.label)} · ${fmtNum(p.g)} g</button>`).join('')}</div>` : ''}
   </div>`;
 }
 
 function foodButton(f, action, extra = '') {
   return `<button class="food" data-action="${action}" data-id="${esc(f.id)}" ${extra}>
     <span class="fi" aria-hidden="true">${catIcon(f.cat)}</span>
-    <span class="fn">${esc(f.tr)}</span>
-    <span class="ff">${f.forms.length > 1 ? f.forms.length + ' form' : esc(f.forms[0].label)}</span>
+    <span class="fn">${esc(foodName(f))}</span>
+    <span class="ff">${f.forms.length > 1 ? L("{n} biçim", { n: f.forms.length }) : esc(formName(f.forms[0].label))}</span>
   </button>`;
 }
 function extButton(f, action) {
@@ -153,29 +157,29 @@ function extButton(f, action) {
 
 // ---------------------------------------------------------------- KEŞFET
 function categoryNav(prefix, current, withExt) {
-  const all = `<button class="cat ${!current ? 'on' : ''}" data-action="${prefix}-cat" data-cat="">${S.settings.emoji ? '✨ ' : ''}Tümü <span class="cnt">${FOODS.length}</span></button>`;
+  const all = `<button class="cat ${!current ? 'on' : ''}" data-action="${prefix}-cat" data-cat="">${S.settings.emoji ? '✨ ' : ''}${L("Tümü")} <span class="cnt">${FOODS.length}</span></button>`;
   const cats = CATEGORIES.map((c) => {
     const n = FOODS.filter((f) => f.cat === c.id).length;
-    return `<button class="cat ${current === c.id ? 'on' : ''}" data-action="${prefix}-cat" data-cat="${c.id}">${S.settings.emoji ? c.icon + ' ' : ''}${esc(c.name)} <span class="cnt">${n}</span></button>`;
+    return `<button class="cat ${current === c.id ? 'on' : ''}" data-action="${prefix}-cat" data-cat="${c.id}">${S.settings.emoji ? c.icon + ' ' : ''}${esc(categoryName(c))} <span class="cnt">${n}</span></button>`;
   }).join('');
-  const ext = withExt ? `<button class="cat ${current === 'ext' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="ext">${S.settings.emoji ? '🗂️ ' : ''}Geniş katalog (USDA, İngilizce)</button>` : '';
-  const cu = `<button class="cat ${current === 'custom' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="custom">${S.settings.emoji ? '🏷️ ' : ''}Kendi besinlerim <span class="cnt">${customFoods().length}</span></button>`;
+  const ext = withExt ? `<button class="cat ${current === 'ext' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="ext">${S.settings.emoji ? '🗂️ ' : ''}${L("Geniş katalog (USDA, İngilizce)")}</button>` : '';
+  const cu = `<button class="cat ${current === 'custom' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="custom">${S.settings.emoji ? '🏷️ ' : ''}${L("Kendi besinlerim")} <span class="cnt">${customFoods().length}</span></button>`;
   return all + cats + cu + ext;
 }
 
 function customButton(f, action) {
-  return `<button class="food" data-action="${action}" data-cid="${esc(f.id)}"><span class="fi">${S.settings.emoji ? '🏷️' : ''}</span><span class="fn">${esc(f.name)}</span><span class="ff">Etiketten · ${f.v.energy != null ? fmtNum(f.v.energy) + ' kcal/100 g' : 'enerji yok'}</span></button>`;
+  return `<button class="food" data-action="${action}" data-cid="${esc(f.id)}"><span class="fi">${S.settings.emoji ? '🏷️' : ''}</span><span class="fn">${esc(f.name)}</span><span class="ff">${L("Etiketten")} · ${f.v.energy != null ? fmtNum(f.v.energy) + ' kcal/100 g' : L("enerji yok")}</span></button>`;
 }
 
 function foodList(prefix, cat, q, extGroup) {
   if (cat === 'custom') {
     const list = q ? search(q).custom : customFoods();
-    return `<button class="btn primary block" data-action="cu-new">＋ Etiketten yeni besin ekle</button>
-      <p class="hint">Markalı ürünler (bitkisel süt, protein tozu, hazır gıda…) için etiketteki 100 g değerlerini gir. Cihazda saklanır, yedeğe dahil edilir.</p>
-      <div class="foods">${list.map((f) => customButton(f, prefix + '-pick-custom')).join('') || '<p class="empty">Henüz kendi besinin yok.</p>'}</div>`;
+    return `<button class="btn primary block" data-action="cu-new">＋ ${L("Etiketten yeni besin ekle")}</button>
+      <p class="hint">${L("Markalı ürünler (bitkisel süt, protein tozu, hazır gıda…) için etiketteki 100 g değerlerini gir. Cihazda saklanır, yedeğe dahil edilir.")}</p>
+      <div class="foods">${list.map((f) => customButton(f, prefix + '-pick-custom')).join('') || `<p class="empty">${L("Henüz kendi besinin yok.")}</p>`}</div>`;
   }
   if (cat === 'ext') {
-    if (!extLoaded()) { loadExt().then(render); return '<p class="empty">Geniş katalog yükleniyor…</p>'; }
+    if (!extLoaded()) { loadExt().then(render); return `<p class="empty">${L("Geniş katalog yükleniyor…")}</p>`; }
     const groups = extGroups();
     const chips = Object.entries(groups).map(([g, n]) => `<button class="pchip ${extGroup === g ? 'on' : ''}" data-action="${prefix}-extgroup" data-g="${g}">${esc(n)}</button>`).join('');
     let list = extFoods();
@@ -183,48 +187,48 @@ function foodList(prefix, cat, q, extGroup) {
     if (q) list = search(q, { ext: true, extGroup }).ext;
     const shown = list.slice(0, 400);
     return `<div class="presets extgroups">${chips}</div>
-      <p class="hint">USDA SR28'den bitkisel gruplar; hayvansal içerikli ve marka ürünler otomatik ayıklandı, yine de vegan uygunluğu ürün bazında doğrulanmalıdır.</p>
+      <p class="hint">${L("USDA SR28'den bitkisel gruplar; hayvansal içerikli ve marka ürünler otomatik ayıklandı, yine de vegan uygunluğu ürün bazında doğrulanmalıdır.")}</p>
       <div class="foods">${shown.map((f) => extButton(f, prefix + '-pick-ext')).join('')}</div>
-      ${list.length > shown.length ? `<p class="hint">${list.length - shown.length} kayıt daha var; aramayla daralt.</p>` : ''}`;
+      ${list.length > shown.length ? `<p class="hint">${L("{n} kayıt daha var; aramayla daralt.", { n: list.length - shown.length })}</p>` : ''}`;
   }
   const res = search(q, { cat, ext: S.settings.showExt && extLoaded() && !!q });
-  if (!res.curated.length && !res.ext.length && !res.custom.length) return '<p class="empty">Eşleşen besin yok. Aramayı kısalt veya “Tümü”ne dön.</p>';
+  if (!res.curated.length && !res.ext.length && !res.custom.length) return `<p class="empty">${L("Eşleşen besin yok. Aramayı kısalt veya “Tümü”ne dön.")}</p>`;
   let html = '';
   if (!q && !cat) {
     for (const c of CATEGORIES) {
       const fs = res.curated.filter((f) => f.cat === c.id);
       if (!fs.length) continue;
-      html += `<h3 class="grp">${S.settings.emoji ? c.icon + ' ' : ''}${esc(c.name)}</h3><div class="foods">${fs.map((f) => foodButton(f, prefix + '-pick')).join('')}</div>`;
+      html += `<h3 class="grp">${S.settings.emoji ? c.icon + ' ' : ''}${esc(categoryName(c))}</h3><div class="foods">${fs.map((f) => foodButton(f, prefix + '-pick')).join('')}</div>`;
     }
   } else {
     html = `<div class="foods">${res.curated.map((f) => foodButton(f, prefix + '-pick')).join('')}</div>`;
   }
-  if (res.custom.length) html += `<h3 class="grp">Kendi besinlerim</h3><div class="foods">${res.custom.map((f) => customButton(f, prefix + '-pick-custom')).join('')}</div>`;
-  if (res.ext.length) html += `<h3 class="grp">Geniş katalog (USDA)</h3><div class="foods">${res.ext.map((f) => extButton(f, prefix + '-pick-ext')).join('')}</div>`;
+  if (res.custom.length) html += `<h3 class="grp">${L("Kendi besinlerim")}</h3><div class="foods">${res.custom.map((f) => customButton(f, prefix + '-pick-custom')).join('')}</div>`;
+  if (res.ext.length) html += `<h3 class="grp">${L("Geniş katalog (USDA)")}</h3><div class="foods">${res.ext.map((f) => extButton(f, prefix + '-pick-ext')).join('')}</div>`;
   return html;
 }
 
 function formChips(prefix, ref) {
   if (ref.t !== 'c') return '';
   const food = FOODS.find((f) => f.id === ref.id);
-  if (food.forms.length < 2) return `<div class="forms"><span class="pchip on static">${esc(food.forms[0].label)}</span></div>`;
-  return `<div class="forms" role="group" aria-label="Tüketim biçimi">${food.forms.map((fm, i) => `<button aria-pressed="${i === ref.f}" class="pchip ${i === ref.f ? 'on' : ''}" data-action="${prefix}-form" data-f="${i}">${esc(fm.label)}</button>`).join('')}</div>`;
+  if (food.forms.length < 2) return `<div class="forms"><span class="pchip on static">${esc(formName(food.forms[0].label))}</span></div>`;
+  return `<div class="forms" role="group" aria-label="${L("Tüketim biçimi")}">${food.forms.map((fm, i) => `<button aria-pressed="${i === ref.f}" class="pchip ${i === ref.f ? 'on' : ''}" data-action="${prefix}-form" data-f="${i}">${esc(formName(fm.label))}</button>`).join('')}</div>`;
 }
 
 function renderExplore() {
   const item = S.sel ? resolve(S.sel) : null;
   const detail = item
     ? `<div class="dhead">
-        <button class="back" data-action="ex-back" aria-label="Listeye dön">← Liste</button>
+        <button class="back" data-action="ex-back" aria-label="${L("Listeye dön")}">← ${L("Liste")}</button>
         <div class="dtitle"><h2>${S.settings.emoji && item.food ? catIcon(item.food.cat) + ' ' : ''}${esc(item.name)}</h2>
           <div class="dsub">${esc(catName(item.cat))}${item.sci ? ` · <i>${esc(item.sci)}</i>` : ''}</div></div>
         <div class="dact">
           <button class="btn primary" data-action="ex-add-day">＋ ${tr('addDay')}</button>
           <button class="btn" data-action="ex-add-recipe">＋ ${tr('addRecipe')}</button>
           <button class="btn" data-action="ex-add-compare">⇄ ${tr('addCompare')}</button>
-          ${item.custom ? '<button class="btn" data-action="cu-edit">✎ Düzenle</button>' : ''}
-          <button class="btn ghost" data-action="csv" title="Matriksi tablo (CSV) olarak indir">⬇ CSV</button>
-          <button class="btn ghost" data-action="print" title="Yazdır veya PDF olarak kaydet">🖨 Yazdır</button>
+          ${item.custom ? `<button class="btn" data-action="cu-edit">✎ ${L("Düzenle")}</button>` : ''}
+          <button class="btn ghost" data-action="csv" title="${L("Matriksi tablo (CSV) olarak indir")}">⬇ CSV</button>
+          <button class="btn ghost" data-action="print" title="${L("Yazdır veya PDF olarak kaydet")}">🖨 ${L("Yazdır")}</button>
         </div>
       </div>
       ${formChips('ex', S.sel)}
@@ -232,27 +236,27 @@ function renderExplore() {
       <div id="matrix" class="matrix">${matrixForExplore(item)}</div>`
     : welcome();
   return `<div class="explore ${item ? 'has-sel' : ''}">
-    <nav class="cats" aria-label="Kategoriler">${categoryNav('ex', S.cat, S.settings.showExt)}</nav>
-    <section class="list" aria-label="Besinler">
-      <div class="searchbar"><input type="search" id="q" placeholder="Ara (isteğe bağlı): muz, mercimek, lentil…" value="${esc(S.q)}" autocomplete="off" aria-label="Besin ara">
-      ${S.q ? '<button class="btn ghost" data-action="ex-clear">Temizle</button>' : ''}</div>
-      ${S.searches.length ? `<div class="recent-searches" aria-label="Son aramalar"><span class="hint">Son aramalar</span><div class="presets">${S.searches.map(q => `<button class="pchip" data-action="search-recent" data-q="${esc(q)}">${esc(q)}</button>`).join('')}<button class="btn ghost" data-action="search-clear">Geçmişi temizle</button></div></div>` : ''}
+    <nav class="cats" aria-label="${L("Kategoriler")}">${categoryNav('ex', S.cat, S.settings.showExt)}</nav>
+    <section class="list" aria-label="${L("Besinler")}">
+      <div class="searchbar"><input type="search" id="q" placeholder="${L("Ara (isteğe bağlı): muz, mercimek, lentil…")}" value="${esc(S.q)}" autocomplete="off" aria-label="${L("Besin ara")}">
+      ${S.q ? `<button class="btn ghost" data-action="ex-clear">${L("Temizle")}</button>` : ''}</div>
+      ${S.searches.length ? `<div class="recent-searches" aria-label="${L("Son aramalar")}"><span class="hint">${L("Son aramalar")}</span><div class="presets">${S.searches.map(q => `<button class="pchip" data-action="search-recent" data-q="${esc(q)}">${esc(q)}</button>`).join('')}<button class="btn ghost" data-action="search-clear">${L("Geçmişi temizle")}</button></div></div>` : ''}
       <div id="foodlist">${foodList('ex', S.cat, S.q, S.extGroup)}</div>
     </section>
-    <section class="detail" aria-label="Besin matriksi">${detail}</section>
+    <section class="detail" aria-label="${L("Besin matriksi")}">${detail}</section>
   </div>`;
 }
 
 function welcome() {
   return `<div class="welcome">
-    <h2>${S.settings.emoji ? '🌱 ' : ''}Besin matriksine hoş geldin</h2>
+    <h2>${S.settings.emoji ? '🌱 ' : ''}${L("Besin matriksine hoş geldin")}</h2>
     <ol>
-      <li>Soldan bir <b>kategori</b> seç (ör. Baklagiller).</li>
-      <li>Bir <b>besine</b> tıkla (ör. Yeşil mercimek).</li>
-      <li><b>Biçimi</b> (çiğ / haşlanmış…) ve <b>miktarı</b> (1 g – 1 kg) tıklayarak seç.</li>
-      <li><b>Tarife ekle</b> ile birden çok besinin toplam matriksini gör.</li>
+      <li>${L("Soldan bir kategori seç (ör. Baklagiller).")}</li>
+      <li>${L("Bir besine tıkla (ör. Yeşil mercimek).")}</li>
+      <li>${L("Biçimi (çiğ / haşlanmış…) seç, kaydırıcıyı sağa sola çekerek miktarı (1 g – 1 kg) ayarla.")}</li>
+      <li>${L("“Tarife ekle” ile birden çok besinin toplam matriksini gör.")}</li>
     </ol>
-    <p class="hint">${META.curated} besin, ${META.forms} form, USDA tam bileşim tablosu · tamamen çevrimdışı · klavye gerekmez.</p>
+    <p class="hint">${L("{foods} besin, {forms} biçim, USDA tam bileşim tablosu · tamamen çevrimdışı · klavye gerekmez.", { foods: META.curated, forms: META.forms })}</p>
     <div class="quick">${['muz', 'yesil_mercimek', 'nohut', 'ispanak', 'yulaf', 'ceviz', 'tofu_sert', 'yabanmersini'].map((id) => { const f = FOODS.find((x) => x.id === id); return f ? foodButton(f, 'ex-pick') : ''; }).join('')}</div>
   </div>`;
 }
@@ -267,17 +271,17 @@ const activeRecipe = () => S.recipes.find((r) => r.id === S.activeRecipe) || S.r
 function persistRecipes() {
   const rc = activeRecipe();
   if (rc) rc.updated = Date.now();
-  if (!saveRecipes(S.recipes)) toast('Kaydedilemedi: cihaz depolaması kullanılamıyor');
+  if (!saveRecipes(S.recipes)) toast(L("Kaydedilemedi: cihaz depolaması kullanılamıyor"));
 }
 
 function recipeResult(rc) {
   const scaled = rc.items.map((it) => { const item = resolve(it.ref); return item ? scaleItem(item, it.g) : { v: {}, s: {}, grams: it.g }; });
   const agg = aggregate(scaled);
-  let factor = 1, r = agg, basisLabel = `Toplam tarif (${fmtNum(agg.grams)} g malzeme)`;
-  if (S.basis === 'serving') { factor = 1 / rc.servings; r = scaleAggregate(agg, factor); basisLabel = `1 porsiyon (${rc.servings} porsiyondan biri, ≈ ${fmtNum(agg.grams / rc.servings)} g malzeme)`; }
+  let factor = 1, r = agg, basisLabel = L("Toplam tarif ({g} g malzeme)", { g: fmtNum(agg.grams) });
+  if (S.basis === 'serving') { factor = 1 / rc.servings; r = scaleAggregate(agg, factor); basisLabel = L("1 porsiyon ({n} porsiyondan biri, ≈ {g} g malzeme)", { n: rc.servings, g: fmtNum(agg.grams / rc.servings) }); }
   if (S.basis === 'per100') {
     const finalW = rc.cookedWeight || agg.grams;
-    if (finalW > 0) { factor = 100 / finalW; r = scaleAggregate(agg, factor); basisLabel = `Son ürünün 100 g'ı (${rc.cookedWeight ? 'pişmiş ağırlık ' + fmtNum(rc.cookedWeight) + ' g' : 'pişmiş ağırlık girilmedi; çiğ toplam kullanıldı'})`; }
+    if (finalW > 0) { factor = 100 / finalW; r = scaleAggregate(agg, factor); basisLabel = rc.cookedWeight ? L("Son ürünün 100 g'ı (pişmiş ağırlık {g} g)", { g: fmtNum(rc.cookedWeight) }) : L("Son ürünün 100 g'ı (pişmiş ağırlık girilmedi; çiğ toplam kullanıldı)"); }
   }
   return { r, basisLabel, agg, factor };
 }
@@ -289,39 +293,39 @@ function renderRecipe() {
     </div>`).join('');
   const items = rc.items.map((it) => {
     const item = resolve(it.ref);
-    if (!item) return `<div class="ing missing"><span>Bulunamayan kayıt (${esc(refKey(it.ref))}) ${it.ref.t === 'x' ? '— geniş katalog açık olmalı' : ''}</span><button class="btn ghost" data-action="rc-del-item" data-id="${it.id}">Kaldır</button></div>`;
+    if (!item) return `<div class="ing missing"><span>${L("Bulunamayan kayıt ({key})", { key: esc(refKey(it.ref)) })} ${it.ref.t === 'x' ? '— ' + L("geniş katalog açık olmalı") : ''}</span><button class="btn ghost" data-action="rc-del-item" data-id="${it.id}">${L("Kaldır")}</button></div>`;
     return `<div class="ing">
       <div class="ing-h"><span class="fi">${item.food ? catIcon(item.food.cat) : ''}</span><b>${esc(item.name)}</b> <span class="muted">${esc(item.formLabel)}</span>
       <span class="ing-kcal">${item.v.energy != null ? fmtNum((item.v.energy * it.g) / 100) + ' kcal' : ''}</span>
-      <button class="btn ghost danger" data-action="rc-del-item" data-id="${it.id}" aria-label="Malzemeyi kaldır">✕</button></div>
+      <button class="btn ghost danger" data-action="rc-del-item" data-id="${it.id}" aria-label="${L("Malzemeyi kaldır")}">✕</button></div>
       ${amountControls('rc:' + it.id, it.g, item.portions, { compact: true, liquid: item.liquid })}
-      <label class="price-field">Kilogram fiyatı (TL/kg, isteğe bağlı)<input type="number" min="0" step="any" inputmode="decimal" data-price="${it.id}" value="${it.pricePerKg ?? ''}" aria-label="${esc(item.name)} kilogram fiyatı"></label>
+      <label class="price-field">${L("Kilogram fiyatı (TL/kg, isteğe bağlı)")}<input type="number" min="0" step="any" inputmode="decimal" data-price="${it.id}" value="${it.pricePerKg ?? ''}" aria-label="${L("{name} kilogram fiyatı", { name: esc(item.name) })}"></label>
     </div>`;
   }).join('');
   const { r, basisLabel, agg, factor } = recipeResult(rc);
   const basisBtn = (id, label) => `<button class="pchip ${S.basis === id ? 'on' : ''}" data-action="rc-basis" data-b="${id}">${label}</button>`;
   return `<div class="recipe">
-    <aside class="rlist" aria-label="Tarifler">
-      <button class="btn primary block" data-action="rc-new">＋ Yeni tarif</button>
+    <aside class="rlist" aria-label="${L("Tarifler")}">
+      <button class="btn primary block" data-action="rc-new">＋ ${L("Yeni tarif")}</button>
       ${list}
       <div class="rtools">
-        <button class="btn" data-action="rc-dup">Kopyala</button>
-        <button class="btn danger" data-action="rc-delete">Sil</button>
+        <button class="btn" data-action="rc-dup">${L("Kopyala")}</button>
+        <button class="btn danger" data-action="rc-delete">${L("Sil")}</button>
       </div>
     </aside>
     <section class="rmain">
-      <div class="rhead"><label class="rtitle"><span class="sr">Tarif adı</span><input id="rc-name" value="${esc(rc.name)}" aria-label="Tarif adı"></label>
-        <button class="btn primary" data-action="rc-add">＋ Malzeme ekle</button>
-        ${rc.items.length ? '<button class="btn ghost" data-action="csv">⬇ CSV</button><button class="btn ghost" data-action="print">🖨 Yazdır</button>' : ''}</div>
-      <div class="ings">${items || `<p class="empty">Henüz malzeme yok. “Malzeme ekle”ye tıkla veya Keşfet'te bir besinde “Tarife ekle”yi kullan. Ör: muz + yaban mersini.</p>`}</div>
+      <div class="rhead"><label class="rtitle"><span class="sr">${L("Tarif adı")}</span><input id="rc-name" value="${esc(rc.name)}" aria-label="${L("Tarif adı")}"></label>
+        <button class="btn primary" data-action="rc-add">＋ ${L("Malzeme ekle")}</button>
+        ${rc.items.length ? `<button class="btn ghost" data-action="csv">⬇ CSV</button><button class="btn ghost" data-action="print">🖨 ${L("Yazdır")}</button>` : ''}</div>
+      <div class="ings">${items || `<p class="empty">${L("Henüz malzeme yok. “Malzeme ekle”ye tıkla veya Keşfet'te bir besinde “Tarife ekle”yi kullan. Ör: muz + yaban mersini.")}</p>`}</div>
       ${rc.items.length ? `<div class="ropts">
-        <div class="kv"><span>Porsiyon sayısı</span><span class="stepper"><button class="nudge" data-action="rc-serv" data-d="-1" aria-label="Porsiyon sayısını azalt">−</button><b>${rc.servings}</b><button class="nudge" data-action="rc-serv" data-d="1" aria-label="Porsiyon sayısını artır">+</button></span></div>
-        <div class="kv"><span>Pişmiş son ağırlık <span class="help" title="Pişirmede su kaybı/kazancı olur. Son ürünü tartıp girersen 100 g son ürün değeri doğru hesaplanır. Pişirme kayıpları (vitamin vb.) hesaba katılmaz.">?</span></span>
+        <div class="kv"><span>${L("Porsiyon sayısı")}</span><span class="stepper"><button class="nudge" data-action="rc-serv" data-d="-1" aria-label="${L("Porsiyon sayısını azalt")}">−</button><b>${rc.servings}</b><button class="nudge" data-action="rc-serv" data-d="1" aria-label="${L("Porsiyon sayısını artır")}">+</button></span></div>
+        <div class="kv"><span>${L("Pişmiş son ağırlık")} <span class="help" title="${L("Pişirmede su kaybı/kazancı olur. Son ürünü tartıp girersen 100 g son ürün değeri doğru hesaplanır. Pişirme kayıpları (vitamin vb.) hesaba katılmaz.")}">?</span></span>
           <span class="stepper"><button class="nudge" data-action="rc-cw" data-d="-50">−50</button><button class="nudge" data-action="rc-cw" data-d="-10">−10</button>
-          <b>${rc.cookedWeight ? fmtNum(rc.cookedWeight) + ' g' : 'girilmedi'}</b>
+          <b>${rc.cookedWeight ? fmtNum(rc.cookedWeight) + ' g' : L("girilmedi")}</b>
           <button class="nudge" data-action="rc-cw" data-d="10">+10</button><button class="nudge" data-action="rc-cw" data-d="50">+50</button>
-          ${rc.cookedWeight ? '<button class="btn ghost" data-action="rc-cw-clear">Sıfırla</button>' : `<button class="btn ghost" data-action="rc-cw-set">= çiğ toplam (${fmtNum(agg.grams)} g)</button>`}</span></div>
-        <div class="presets">${basisBtn('total', 'Toplam')}${basisBtn('serving', '1 porsiyon')}${basisBtn('per100', 'Son ürün 100 g')}</div>
+          ${rc.cookedWeight ? `<button class="btn ghost" data-action="rc-cw-clear">${L("Sıfırla")}</button>` : `<button class="btn ghost" data-action="rc-cw-set">${L("= çiğ toplam ({g} g)", { g: fmtNum(agg.grams) })}</button>`}</span></div>
+        <div class="presets">${basisBtn('total', L("Toplam"))}${basisBtn('serving', L("1 porsiyon"))}${basisBtn('per100', L("Son ürün 100 g"))}</div>
       </div>
       <div id="recipe-summary">${renderRecipeSummary(rc, r)}</div>
       <div id="recipe-sources">${renderRecipeSources(rc, resolve, { key: S.recipeSource, factor, basisLabel, open: S.recipeSourcesOpen, precision: S.settings.precision })}</div>
@@ -335,13 +339,13 @@ function renderRecipeSummary(rc, r) {
   const missing = rc.items.filter(it => !resolve(it.ref)).length;
   const nutrient = (key, label, unit) => {
     const x = r.v[key], partial = x != null && (r.cov[key] || 0) < r.n;
-    return `<div><span>${label}</span><b>${x == null ? 'veri yok' : fmtNum(x) + ' ' + unit}</b>${partial ? `<small>kısmi ${r.cov[key]}/${r.n}</small>` : ''}</div>`;
+    return `<div><span>${label}</span><b>${x == null ? L("veri yok") : fmtNum(x) + ' ' + unit}</b>${partial ? `<small>${L("kısmi {a}/{b}", { a: r.cov[key], b: r.n })}</small>` : ''}</div>`;
   };
-  return `<section class="card recipe-summary" aria-label="Tarif özeti">
-    <h3>${S.basis === 'serving' ? '1 porsiyon' : S.basis === 'per100' ? 'Son ürün 100 g' : 'Toplam tarif'}</h3>
-    <div class="nutrition-label">${nutrient('energy', 'Enerji', 'kcal')}${nutrient('protein', 'Protein', 'g')}${nutrient('carb_avail', 'Karbonhidrat (lif hariç)', 'g')}${nutrient('fat', 'Yağ', 'g')}${nutrient('fiber', 'Lif', 'g')}${nutrient('salt', 'Tuz', 'g')}</div>
-    <p><b>Maliyet:</b> ${cost.known ? `${fmtNum(cost.total)} TL toplam · ${fmtNum(cost.perServing)} TL / porsiyon` : 'fiyat girilmedi'}${cost.complete ? '' : ` · kısmi ${cost.known}/${cost.count} malzeme`}</p>
-    ${missing ? `<p class="note" role="status">${missing} malzemenin kaydı bulunamadı. Bu malzemelerin ağırlığı toplamda, besin değerleri eksik kapsamda tutuldu.</p>` : ''}
+  return `<section class="card recipe-summary" aria-label="${L("Tarif özeti")}">
+    <h3>${S.basis === 'serving' ? L("1 porsiyon") : S.basis === 'per100' ? L("Son ürün 100 g") : L("Toplam tarif")}</h3>
+    <div class="nutrition-label">${nutrient('energy', L("Enerji"), 'kcal')}${nutrient('protein', L("Protein"), 'g')}${nutrient('carb_avail', L("Karbonhidrat (lif hariç)"), 'g')}${nutrient('fat', L("Yağ"), 'g')}${nutrient('fiber', L("Lif"), 'g')}${nutrient('salt', L("Tuz"), 'g')}</div>
+    <p><b>${L("Maliyet:")}</b> ${cost.known ? L("{t} TL toplam · {s} TL / porsiyon", { t: fmtNum(cost.total), s: fmtNum(cost.perServing) }) : L("fiyat girilmedi")}${cost.complete ? '' : ' · ' + L("kısmi {a}/{b} malzeme", { a: cost.known, b: cost.count })}</p>
+    ${missing ? `<p class="note" role="status">${L("{n} malzemenin kaydı bulunamadı. Bu malzemelerin ağırlığı toplamda, besin değerleri eksik kapsamda tutuldu.", { n: missing })}</p>` : ''}
   </section>`;
 }
 
@@ -350,14 +354,14 @@ function renderCompare() {
   const items = S.compare.map((c) => ({ c, item: resolve(c.ref) })).filter((x) => x.item);
   const cols = items.map(({ c, item }, i) => `<div class="cmp-col">
       <div class="cmp-h"><b>${esc(item.name)}</b><span class="muted">${esc(item.formLabel)}</span>
-      <button class="btn ghost danger" data-action="cmp-del" data-i="${i}" aria-label="Çıkar">✕</button></div>
+      <button class="btn ghost danger" data-action="cmp-del" data-i="${i}" aria-label="${L("Çıkar")}">✕</button></div>
       ${amountControls('cmp:' + i, c.g, [], { compact: true, liquid: item.liquid })}
     </div>`).join('');
-  const addBtn = S.compare.length < 4 ? `<button class="cmp-add" data-action="cmp-add">＋ Besin ekle<br><span class="muted">${S.compare.length}/4</span></button>` : '';
+  const addBtn = S.compare.length < 4 ? `<button class="cmp-add" data-action="cmp-add">＋ ${L("Besin ekle")}<br><span class="muted">${S.compare.length}/4</span></button>` : '';
   let table = '';
   if (items.length) {
     const rs = items.map(({ c, item }) => scaleItem(item, c.g));
-    const secChips = [['all', 'Tümü'], ...SECTIONS.map((s) => [s.id, s.title])].map(([id, t]) => `<button class="pchip ${S.cmpSection === id ? 'on' : ''}" data-action="cmp-sec" data-s="${id}">${esc(t)}</button>`).join('');
+    const secChips = [['all', L("Tümü")], ...SECTIONS.map((s) => [s.id, L(s.title)])].map(([id, t]) => `<button class="pchip ${S.cmpSection === id ? 'on' : ''}" data-action="cmp-sec" data-s="${id}">${esc(t)}</button>`).join('');
     const rows = [];
     let lastSec = null;
     for (const n of NUTRIENTS) {
@@ -366,19 +370,19 @@ function renderCompare() {
       if (S.cmpSection !== 'all' && n.section !== S.cmpSection) continue;
       const vals = rs.map((r) => r.v[n.key]);
       if (vals.every((x) => x == null)) continue;
-      if (n.section !== lastSec) { lastSec = n.section; rows.push(`<tr class="secrow"><th colspan="${items.length + 1}">${esc(SECTIONS.find((s) => s.id === n.section).title)}</th></tr>`); }
+      if (n.section !== lastSec) { lastSec = n.section; rows.push(`<tr class="secrow"><th colspan="${items.length + 1}">${esc(L(SECTIONS.find((s) => s.id === n.section).title))}</th></tr>`); }
       const max = Math.max(...vals.filter((x) => x != null));
-      rows.push(`<tr><th scope="row">${esc(n.label)} <span class="unit">${esc(n.unit)}</span></th>${vals.map((x) => {
-        if (x == null) return '<td class="miss">veri yok</td>';
+      rows.push(`<tr><th scope="row">${esc(nutrientLabel(n))} <span class="unit">${esc(n.unit)}</span></th>${vals.map((x) => {
+        if (x == null) return `<td class="miss">${L("veri yok")}</td>`;
         const w = max > 0 ? (x / max) * 100 : 0;
         return `<td class="${x === max && items.length > 1 && max > 0 ? 'best' : ''}"><span class="cbar"><i style="width:${w.toFixed(1)}%"></i></span>${fmtAmount(x, n.unit, S.settings.precision).n}${fmtAmount(x, n.unit).u !== n.unit ? ' ' + fmtAmount(x, n.unit).u : ''}</td>`;
       }).join('')}</tr>`);
     }
     table = `<div class="presets">${secChips}</div>
-      <div class="tablewrap"><table class="cmp"><thead><tr><th>Bileşen</th>${items.map(({ c, item }) => `<th>${esc(item.name)}<br><span class="muted">${esc(item.formLabel)} · ${fmtNum(c.g)} g</span></th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>
-      <p class="hint">Aynı miktar ve biçimde karşılaştırmak için miktarları eşitle: <button class="btn ghost" data-action="cmp-same" data-g="100">Hepsi 100 g</button> <button class="btn ghost" data-action="cmp-same" data-g="50">Hepsi 50 g</button>. Satırdaki en yüksek değer vurgulanır; “yüksek = iyi” anlamına gelmez (sodyum, toksik mineraller, antinutrientler).</p>`;
+      <div class="tablewrap"><table class="cmp"><thead><tr><th>${L("Bileşen")}</th>${items.map(({ c, item }) => `<th>${esc(item.name)}<br><span class="muted">${esc(item.formLabel)} · ${fmtNum(c.g)} g</span></th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>
+      <p class="hint">${L("Aynı miktar ve biçimde karşılaştırmak için miktarları eşitle:")} <button class="btn ghost" data-action="cmp-same" data-g="100">${L("Hepsi 100 g")}</button> <button class="btn ghost" data-action="cmp-same" data-g="50">${L("Hepsi 50 g")}</button>. ${L("Satırdaki en yüksek değer vurgulanır; “yüksek = iyi” anlamına gelmez (sodyum, toksik mineraller, antinutrientler).")}</p>`;
   } else {
-    table = '<p class="empty">İki ile dört besini yan yana koy. Keşfet\'te “Karşılaştır”a tıklayarak da ekleyebilirsin.</p>';
+    table = `<p class="empty">${L("İki ile dört besini yan yana koy. Keşfet'te “Karşılaştır”a tıklayarak da ekleyebilirsin.")}</p>`;
   }
   return `<div class="compare"><div class="cmp-cols">${cols}${addBtn}</div>${table}</div>`;
 }
@@ -405,7 +409,7 @@ function renderSettings() {
       <button class="btn" data-action="preset" data-p="lowvision">${tr('lowVisionPreset')}</button>
       <button class="btn" data-action="preset" data-p="calm">${tr('calmPreset')}</button>
       <button class="btn" data-action="preset" data-p="cute">${tr('pastelPreset')}</button>
-      <button class="btn ghost" data-action="preset" data-p="reset">Varsayılana dön</button></div></section>
+      <button class="btn ghost" data-action="preset" data-p="reset">${L("Varsayılana dön")}</button></div></section>
 
     <section class="card"><h2>${tr('themes')}</h2><button class="btn ghost" data-action="reset-group" data-group="appearance">${tr('resetTheme')}</button><div class="themes">${THEMES.map((t) => `<button class="theme ${s.theme === t.id ? 'on' : ''}" data-action="set" data-k="theme" data-v='"${t.id}"' style="--tbg:${t.bg};--tfg:${t.fg};--tac:${t.ac}"><span class="tprev"><i></i><b>Aa</b></span>${tr('theme_' + t.id)}</button>`).join('')}</div>
       <h3>${tr('color_accent')}</h3><div class="swatches">${ACCENTS.map((a) => `<button class="sw-btn ${s.accent === a ? 'on' : ''}" data-action="set" data-k="accent" data-v='"${a}"' style="${a === 'auto' ? '' : `--sw:${a}`}" aria-label="${a === 'auto' ? tr('themeColor') : a}">${a === 'auto' ? tr('themes') : ''}</button>`).join('')}</div></section>
@@ -418,53 +422,53 @@ function renderSettings() {
       ${tog('bold', tr('bold'))}
     </section>
 
-    <section class="card"><h2>Düzen ve erişilebilirlik</h2><button class="btn ghost" data-action="reset-group" data-group="accessibility">Erişilebilirlik ayarlarını sıfırla</button>
-      <div class="kv"><span>Yoğunluk</span><span class="presets">${opt('density', 'comfy', 'Rahat')}${opt('density', 'compact', 'Sıkı')}${opt('density', 'large', 'Büyük dokunma')}</span></div>
+    <section class="card"><h2>${L("Düzen ve erişilebilirlik")}</h2><button class="btn ghost" data-action="reset-group" data-group="accessibility">${L("Erişilebilirlik ayarlarını sıfırla")}</button>
+      <div class="kv"><span>${L("Yoğunluk")}</span><span class="presets">${opt('density', 'comfy', L("Rahat"))}${opt('density', 'compact', L("Sıkı"))}${opt('density', 'large', L("Büyük dokunma"))}</span></div>
       ${step('radius', 'Köşe yuvarlaklığı', 0, 24, 2, ' px')}
-      ${tog('ruler', 'Okuma cetveli', 'İmlecin olduğu satırı vurgulayan yatay şerit; satır takibini kolaylaştırır.')}
-      ${tog('reduceMotion', 'Animasyonları azalt')}
-      ${tog('emoji', 'Simgeleri / emojileri göster')}
-      ${tog('largeCursor', 'Büyük fare imleci')}
+      ${tog('ruler', L("Okuma cetveli"), L("İmlecin olduğu satırı vurgulayan yatay şerit; satır takibini kolaylaştırır."))}
+      ${tog('reduceMotion', L("Animasyonları azalt"))}
+      ${tog('emoji', L("Simgeleri / emojileri göster"))}
+      ${tog('largeCursor', L("Büyük fare imleci"))}
       ${step('focusWidth', 'Odak halkası kalınlığı', 2, 6, 1, ' px')}
-      <h3>Klavye kısayolları</h3><p class="hint">Metin yazarken ve pencereler açıkken sekme kısayolları devre dışıdır. Tab ile gez, Enter / Boşluk ile seç, Escape ile pencereyi kapat. Kısayolları yeniden ata veya kapat.</p>
-      ${Object.entries(SHORTCUT_ACTIONS).map(([id, name]) => `<label class="field"><span>${name}</span><select data-shortcut="${id}"><option value="" ${!s.shortcuts[id] ? 'selected' : ''}>Kapalı</option>${Array.from({ length: 9 }, (_, i) => `Alt+${i + 1}`).map(key => `<option value="${key}" ${s.shortcuts[id] === key ? 'selected' : ''}>${key}</option>`).join('')}</select></label>`).join('')}
+      <h3>${L("Klavye kısayolları")}</h3><p class="hint">${L("Metin yazarken ve pencereler açıkken sekme kısayolları devre dışıdır. Tab ile gez, Enter / Boşluk ile seç, Escape ile pencereyi kapat. Kısayolları yeniden ata veya kapat.")}</p>
+      ${Object.entries(SHORTCUT_ACTIONS).map(([id, name]) => `<label class="field"><span>${tr(id)}</span><select data-shortcut="${id}"><option value="" ${!s.shortcuts[id] ? 'selected' : ''}>${L("Kapalı")}</option>${Array.from({ length: 9 }, (_, i) => `Alt+${i + 1}`).map(key => `<option value="${key}" ${s.shortcuts[id] === key ? 'selected' : ''}>${key}</option>`).join('')}</select></label>`).join('')}
     </section>
 
-    <section class="card"><h2>Matriks gösterimi</h2><button class="btn ghost" data-action="reset-group" data-group="matrix">Matriks ayarlarını sıfırla</button>
-      ${tog('showNrv', 'Yüzde referansı çubukları', 'Seçili BRD, elle girilen hedef veya EFSA PRI/AI referansıyla karşılaştırma; kişisel ihtiyaç veya emilim ölçümü değildir.')}
-      ${tog('showSource', 'Kaynak etiketleri (USDA / Hesap / Etiket)')}
-      ${tog('showAlt', 'Varsa ikinci kaynağı göster (bu sürümde ikinci veri seti yok)')}
-      ${tog('showSd', 'Varsa kaynak standart sapmasını göster')}
-      ${tog('showMissing', '“Veri yok” satırlarını listele')}
-      <div class="kv"><span>Ondalık hassasiyeti</span><span class="presets">${opt('precision', 'low', 'Az')}${opt('precision', 'normal', 'Normal')}${opt('precision', 'high', 'Çok')}</span></div>
-      <div class="kv"><span>Varsayılan miktar</span><span class="presets">${[50, 100, 250, 1000].map((g) => opt('defaultAmount', g, g === 1000 ? '1 kg' : g + ' g')).join('')}</span></div>
-      ${tog('showExt', `Geniş katalog (USDA, ${META.ext} bitkisel kayıt, İngilizce adlar)`)}
+    <section class="card"><h2>${L("Matriks gösterimi")}</h2><button class="btn ghost" data-action="reset-group" data-group="matrix">${L("Matriks ayarlarını sıfırla")}</button>
+      ${tog('showNrv', L("Yüzde referansı çubukları"), L("Seçili BRD, elle girilen hedef veya EFSA PRI/AI referansıyla karşılaştırma; kişisel ihtiyaç veya emilim ölçümü değildir."))}
+      ${tog('showSource', L("Kaynak etiketleri (USDA / Hesap / Etiket)"))}
+      ${tog('showAlt', L("Varsa ikinci kaynağı göster (bu sürümde ikinci veri seti yok)"))}
+      ${tog('showSd', L("Varsa kaynak standart sapmasını göster"))}
+      ${tog('showMissing', L("“Veri yok” satırlarını listele"))}
+      <div class="kv"><span>${L("Ondalık hassasiyeti")}</span><span class="presets">${opt('precision', 'low', L("Az"))}${opt('precision', 'normal', L("Normal"))}${opt('precision', 'high', L("Çok"))}</span></div>
+      <div class="kv"><span>${L("Varsayılan miktar")}</span><span class="presets">${[50, 100, 250, 1000].map((g) => opt('defaultAmount', g, g === 1000 ? '1 kg' : g + ' g')).join('')}</span></div>
+      ${tog('showExt', L("Geniş katalog (USDA, {n} bitkisel kayıt, İngilizce adlar)", { n: META.ext }))}
     </section>
 
-    <section class="card"><h2>Matriks bölümleri</h2>
-      <p class="hint">Görünür bölümleri seç, oklarla sırala. Kimlik ve kapsam özeti her zaman görünür.</p>
+    <section class="card"><h2>${L("Matriks bölümleri")}</h2>
+      <p class="hint">${L("Görünür bölümleri seç, oklarla sırala. Kimlik ve kapsam özeti her zaman görünür.")}</p>
       <div class="section-settings">${s.sectionOrder.map((id, i) => `<div class="section-option">
-        <label><input type="checkbox" data-section-visible="${id}" ${s.hiddenSections.includes(id) ? '' : 'checked'}> ${esc(MATRIX_SECTIONS.find(x => x.id === id).title)}</label>
-        <span class="presets"><button class="btn ghost" data-action="section-move" data-id="${id}" data-d="-1" ${i === 0 ? 'disabled' : ''} aria-label="${esc(MATRIX_SECTIONS.find(x => x.id === id).title)} yukarı">↑</button><button class="btn ghost" data-action="section-move" data-id="${id}" data-d="1" ${i === s.sectionOrder.length - 1 ? 'disabled' : ''} aria-label="${esc(MATRIX_SECTIONS.find(x => x.id === id).title)} aşağı">↓</button></span>
+        <label><input type="checkbox" data-section-visible="${id}" ${s.hiddenSections.includes(id) ? '' : 'checked'}> ${esc(L(MATRIX_SECTIONS.find(x => x.id === id).title))}</label>
+        <span class="presets"><button class="btn ghost" data-action="section-move" data-id="${id}" data-d="-1" ${i === 0 ? 'disabled' : ''} aria-label="${L("{s} yukarı", { s: esc(L(MATRIX_SECTIONS.find(x => x.id === id).title)) })}">↑</button><button class="btn ghost" data-action="section-move" data-id="${id}" data-d="1" ${i === s.sectionOrder.length - 1 ? 'disabled' : ''} aria-label="${L("{s} aşağı", { s: esc(L(MATRIX_SECTIONS.find(x => x.id === id).title)) })}">↓</button></span>
       </div>`).join('')}</div>
-      <h3>Sabitlenen besin öğeleri</h3><p class="hint">En fazla 24 öğeyi matriksin en üstünde izle.</p>
-      <label class="field"><span>Öğe sabitle</span><select id="pin-nutrient"><option value="">Bir bileşen seç</option>${NUTRIENTS.filter(n => !['energy', 'energy_kj'].includes(n.key) && !s.pinnedNutrients.includes(n.key)).map(n => `<option value="${n.key}">${esc(n.label)} (${esc(n.unit)})</option>`).join('')}</select></label>
-      <div class="presets">${s.pinnedNutrients.map(k => `<button class="pchip on" data-action="unpin" data-key="${k}" aria-label="${esc(NUTRIENTS.find(n => n.key === k).label)} sabitlemesini kaldır">${esc(NUTRIENTS.find(n => n.key === k).label)} ×</button>`).join('')}</div>
+      <h3>${L("Sabitlenen besin öğeleri")}</h3><p class="hint">${L("En fazla 24 öğeyi matriksin en üstünde izle.")}</p>
+      <label class="field"><span>${L("Öğe sabitle")}</span><select id="pin-nutrient"><option value="">${L("Bir bileşen seç")}</option>${NUTRIENTS.filter(n => !['energy', 'energy_kj'].includes(n.key) && !s.pinnedNutrients.includes(n.key)).map(n => `<option value="${n.key}">${esc(nutrientLabel(n))} (${esc(n.unit)})</option>`).join('')}</select></label>
+      <div class="presets">${s.pinnedNutrients.map(k => `<button class="pchip on" data-action="unpin" data-key="${k}" aria-label="${L("{n} sabitlemesini kaldır", { n: esc(nutrientLabel(NUTRIENTS.find(n => n.key === k))) })}">${esc(nutrientLabel(NUTRIENTS.find(n => n.key === k)))} ×</button>`).join('')}</div>
     </section>
-    <section class="card"><h2>Birim ve sayı tercihleri</h2>
-      <div class="kv"><span>Enerji (matriks)</span><div class="presets">${opt('energyUnit', 'both', 'kcal + kJ')}${opt('energyUnit', 'kcal', 'kcal')}${opt('energyUnit', 'kj', 'kJ')}</div></div>
-      <div class="kv"><span>Miktar göstergesi</span><div class="presets">${opt('amountUnit', 'g', 'Gram')}${opt('amountUnit', 'oz', 'Ons (oz)')}</div></div>
-      <p class="hint">1 oz = 28,349523125 g. Seçim düğmeleri ve hesap tabanı 1–1000 g aralığında kalır. Sıvılarda yaklaşık mL, yoğunluk 1 varsayımıdır.</p>
+    <section class="card"><h2>${L("Birim ve sayı tercihleri")}</h2>
+      <div class="kv"><span>${L("Enerji (matriks)")}</span><div class="presets">${opt('energyUnit', 'both', 'kcal + kJ')}${opt('energyUnit', 'kcal', 'kcal')}${opt('energyUnit', 'kj', 'kJ')}</div></div>
+      <div class="kv"><span>${L("Miktar göstergesi")}</span><div class="presets">${opt('amountUnit', 'g', L("Gram"))}${opt('amountUnit', 'oz', L("Ons (oz)"))}</div></div>
+      <p class="hint">${L("1 oz = 28,349523125 g. Seçim düğmeleri ve hesap tabanı 1–1000 g aralığında kalır. Sıvılarda yaklaşık mL, yoğunluk 1 varsayımıdır.")}</p>
       <div class="kv"><span>${tr('numberSeparator')}</span><div class="presets">${opt('decimalSeparator', 'auto', tr('followLanguage'))}${opt('decimalSeparator', 'comma', tr('comma') + ': 1,5')}${opt('decimalSeparator', 'dot', tr('dot') + ': 1.5')}</div></div>
-      ${tog('autoUnits', 'Büyük miktarlarda birimi yükselt (µg → mg → g)')}
-      <p class="hint">CSV her zaman Türkçe Excel uyumlu ondalık virgül ve tanımlı besin birimlerini kullanır.</p>
+      ${tog('autoUnits', L("Büyük miktarlarda birimi yükselt (µg → mg → g)"))}
+      <p class="hint">${L("CSV her zaman Türkçe Excel uyumlu ondalık virgül ve tanımlı besin birimlerini kullanır.")}</p>
     </section>
-    <section class="card"><h2>Yüzde referansı</h2>
-      <div class="presets">${opt('referenceMode', 'eu', 'AB / TGK BRD')}${opt('referenceMode', 'custom', 'Kendi hedeflerim')}${opt('referenceMode', 'efsa', 'EFSA grup referansı')}</div>
-      <p class="hint">AB 1169/2011 (2011) yetişkin etiket referansıdır. Kişisel hedeflerin elle girilir; yaşa veya sağlık durumuna göre otomatik öneri yapılmaz. Eksik hedefe BRD değeri atanmaz.</p>
+    <section class="card"><h2>${L("Yüzde referansı")}</h2>
+      <div class="presets">${opt('referenceMode', 'eu', L("AB / TGK BRD"))}${opt('referenceMode', 'custom', L("Kendi hedeflerim"))}${opt('referenceMode', 'efsa', L("EFSA grup referansı"))}</div>
+      <p class="hint">${L("AB 1169/2011 (2011) yetişkin etiket referansıdır. Kişisel hedeflerin elle girilir; yaşa veya sağlık durumuna göre otomatik öneri yapılmaz. Eksik hedefe BRD değeri atanmaz.")}</p>
       ${s.referenceMode === 'efsa' ? renderEfsaSettings(s, S.efsaTableOpen) : ''}
-      ${s.referenceMode === 'custom' ? `<label class="field"><span>Hedef eklenecek bileşen</span><select id="target-nutrient"><option value="">Bileşen seç</option>${NUTRIENTS.filter(n => n.key !== 'energy_kj' && s.targets[n.key] == null).map(n => `<option value="${n.key}">${esc(n.label)} (${esc(n.unit)})</option>`).join('')}</select></label><label class="field"><span>Yeni hedef miktarı (seçili bileşenin biriminde)</span><input type="number" min="0" step="any" id="target-new-value"></label><button class="btn" data-action="target-add">Hedef ekle</button>
-      ${Object.entries(s.targets).map(([k, value]) => { const n = NUTRIENTS.find(n => n.key === k); return `<label class="field"><span>${esc(n.label)} hedefi (${esc(n.unit)})</span><input type="number" min="0" step="any" data-target-value="${k}" value="${value}"></label><button class="btn ghost" data-action="target-remove" data-key="${k}">${esc(n.label)} hedefini kaldır</button>`; }).join('')}` : ''}
+      ${s.referenceMode === 'custom' ? `<label class="field"><span>${L("Hedef eklenecek bileşen")}</span><select id="target-nutrient"><option value="">${L("Bileşen seç")}</option>${NUTRIENTS.filter(n => n.key !== 'energy_kj' && s.targets[n.key] == null).map(n => `<option value="${n.key}">${esc(nutrientLabel(n))} (${esc(n.unit)})</option>`).join('')}</select></label><label class="field"><span>${L("Yeni hedef miktarı (seçili bileşenin biriminde)")}</span><input type="number" min="0" step="any" id="target-new-value"></label><button class="btn" data-action="target-add">${L("Hedef ekle")}</button>
+      ${Object.entries(s.targets).map(([k, value]) => { const n = NUTRIENTS.find(n => n.key === k); return `<label class="field"><span>${L("{n} hedefi ({u})", { n: esc(nutrientLabel(n)), u: esc(n.unit) })}</span><input type="number" min="0" step="any" data-target-value="${k}" value="${value}"></label><button class="btn ghost" data-action="target-remove" data-key="${k}">${L("{n} hedefini kaldır", { n: esc(nutrientLabel(n)) })}</button>`; }).join('')}` : ''}
     </section>
     <section class="card"><h2>${tr('customTheme')}</h2>
       <div class="cu-grid">${Object.entries(COLOR_LABELS).map(([k, label]) => `<button class="btn color-field" data-action="theme-color-open" data-key="${k}" aria-label="${tr('colorOpen', { name: tr('color_' + k) })}"><span class="color-dot" style="background:${s.customTheme[k]}" aria-hidden="true"></span><span>${tr('color_' + k)}<small>${s.customTheme[k]}</small></span></button>`).join('')}</div>
@@ -472,22 +476,22 @@ function renderSettings() {
       <p class="hint" role="status">${tr('themeContrast', { ratio: fmtNum(themeTextContrast(s.customTheme)) })} ${tr(themeTextContrast(s.customTheme) < 4.5 ? 'contrastLow' : 'contrastGood')} ${tr('contrastAccent')}: ${fmtNum(contrastRatio(s.customTheme.accent, s.customTheme.card))}:1.</p>
       <div class="presets"><button class="btn" data-action="theme-apply">${tr('themeApply')}</button><button class="btn" data-action="theme-export">${tr('themeExport')}</button><button class="btn" data-action="open-file" data-id="theme-file">${tr('themeImport')}</button><input type="file" id="theme-file" accept="application/json,.json" hidden></div>
     </section>
-    <section class="card"><h2>Görünüm profilleri</h2>
-      <p class="hint">Okuma, sunum veya gece için en fazla 12 görünüm kaydet. Profiller üst çubuktan uygulanabilir ve tam yedeğe dahildir.</p>
-      <div class="presets"><input id="profile-name" aria-label="Yeni profil adı" placeholder="Ör. Gece okuması" maxlength="40"><button class="btn" data-action="profile-save">Görünümü kaydet</button></div>
-      ${S.profiles.map(p => `<div class="section-option"><b>${esc(p.name)}</b><span class="presets"><button class="btn" data-action="profile-apply" data-id="${p.id}">Uygula</button><button class="btn" data-action="profile-update" data-id="${p.id}" aria-label="${esc(p.name)} profilini güncelle">Güncelle</button><button class="btn danger" data-action="profile-delete" data-id="${p.id}" aria-label="${esc(p.name)} profilini sil">Sil</button></span></div>`).join('')}
+    <section class="card"><h2>${L("Görünüm profilleri")}</h2>
+      <p class="hint">${L("Okuma, sunum veya gece için en fazla 12 görünüm kaydet. Profiller üst çubuktan uygulanabilir ve tam yedeğe dahildir.")}</p>
+      <div class="presets"><input id="profile-name" aria-label="${L("Yeni profil adı")}" placeholder="${L("Ör. Gece okuması")}" maxlength="40"><button class="btn" data-action="profile-save">${L("Görünümü kaydet")}</button></div>
+      ${S.profiles.map(p => `<div class="section-option"><b>${esc(p.name)}</b><span class="presets"><button class="btn" data-action="profile-apply" data-id="${p.id}">${L("Uygula")}</button><button class="btn" data-action="profile-update" data-id="${p.id}" aria-label="${L("{p} profilini güncelle", { p: esc(p.name) })}">${L("Güncelle")}</button><button class="btn danger" data-action="profile-delete" data-id="${p.id}" aria-label="${L("{p} profilini sil", { p: esc(p.name) })}">${L("Sil")}</button></span></div>`).join('')}
     </section>
-    <section class="card"><h2>Yalnızca ayarları taşı</h2>
-      <p class="hint">Görünümünü başka cihaza taşı. Tarifler ve kendi besinlerin bu işlemden etkilenmez.</p>
-      <div class="presets"><button class="btn" data-action="settings-export">Ayarları indir</button>
-      <button class="btn" data-action="open-file" data-id="settings-file">Ayar dosyası aç</button><input type="file" accept="application/json,.json" id="settings-file" hidden></div>
+    <section class="card"><h2>${L("Yalnızca ayarları taşı")}</h2>
+      <p class="hint">${L("Görünümünü başka cihaza taşı. Tarifler ve kendi besinlerin bu işlemden etkilenmez.")}</p>
+      <div class="presets"><button class="btn" data-action="settings-export">${L("Ayarları indir")}</button>
+      <button class="btn" data-action="open-file" data-id="settings-file">${L("Ayar dosyası aç")}</button><input type="file" accept="application/json,.json" id="settings-file" hidden></div>
     </section>
-    <section class="card"><h2>Yedekleme</h2>
-      <p class="hint">Tarifler ve ayarlar yalnızca bu cihazda saklanır. Başka cihaza taşımak veya yedeklemek için dışa aktar.</p>
-      <div class="presets"><button class="btn" data-action="exp-file">Dosyaya kaydet (.json)</button>
-      <button class="btn" data-action="exp-copy">Panoya kopyala</button>
-      <button class="btn" data-action="open-file" data-id="imp-file">Dosyadan içe aktar</button><input type="file" accept="application/json,.json" id="imp-file" hidden>
-      <button class="btn" data-action="imp-paste">Yapıştırarak içe aktar</button></div>
+    <section class="card"><h2>${L("Yedekleme")}</h2>
+      <p class="hint">${L("Tarifler ve ayarlar yalnızca bu cihazda saklanır. Başka cihaza taşımak veya yedeklemek için dışa aktar.")}</p>
+      <div class="presets"><button class="btn" data-action="exp-file">${L("Dosyaya kaydet (.json)")}</button>
+      <button class="btn" data-action="exp-copy">${L("Panoya kopyala")}</button>
+      <button class="btn" data-action="open-file" data-id="imp-file">${L("Dosyadan içe aktar")}</button><input type="file" accept="application/json,.json" id="imp-file" hidden>
+      <button class="btn" data-action="imp-paste">${L("Yapıştırarak içe aktar")}</button></div>
     </section>
   </div>`;
 }
@@ -495,26 +499,26 @@ function renderSettings() {
 function renderAbout() {
   return `<div class="about card">
     <h2>Besin Matriksi</h2>
-    <p>Çevrimdışı çalışan, bitkisel (vegan) besinler için ayrıntılı bileşim gezgini ve tarif hesaplayıcı. İnternet bağlantısı gerekmez; hiçbir veri cihazdan çıkmaz.</p>
-    <h3>Veri kaynakları</h3>
+    <p>${L("Çevrimdışı çalışan, bitkisel (vegan) besinler için ayrıntılı bileşim gezgini ve tarif hesaplayıcı. İnternet bağlantısı gerekmez; hiçbir veri cihazdan çıkmaz.")}</p>
+    <h3>${L("Veri kaynakları")}</h3>
     <ul>
-      <li><b>${esc(SOURCES.u.short)}</b>: ${esc(SOURCES.u.long)}. Su, enerji, makrolar, lif, şeker, vitaminler, mineraller, yağ sınıfları; pişmiş formlar dahil.</li>
-      <li><b>USDA tam bileşim tablosu:</b> Ölçümü bulunan amino asitler, şeker türleri, yağ asitleri, D2/D3, tokoferoller, fitosteroller, kafein ve betain. Eksik değerler sıfıra çevrilmez.</li>
-      <li><b>IFCT 2017:</b> NIN ürün kullanım izni doğrulanmadığı için veri ve bu veriye dayanan tahminler bu sürümde dağıtılmıyor.</li>
+      <li><b>${esc(SOURCES.u.short)}</b>: ${esc(L(SOURCES.u.long))}. ${L("Su, enerji, makrolar, lif, şeker, vitaminler, mineraller, yağ sınıfları; pişmiş formlar dahil.")}</li>
+      <li><b>${L("USDA tam bileşim tablosu:")}</b> ${L("Ölçümü bulunan amino asitler, şeker türleri, yağ asitleri, D2/D3, tokoferoller, fitosteroller, kafein ve betain. Eksik değerler sıfıra çevrilmez.")}</li>
+      <li><b>IFCT 2017:</b> ${L("NIN ürün kullanım izni doğrulanmadığı için veri ve bu veriye dayanan tahminler bu sürümde dağıtılmıyor.")}</li>
     </ul>
-    <h3>Veri dürüstlüğü</h3>
+    <h3>${L("Veri dürüstlüğü")}</h3>
     <ul>
-      <li>Ölçülmemiş bileşen <b>“veri yok”</b> olarak gösterilir, asla 0 yazılmaz. 0 yalnızca kaynak 0 bildirdiğinde görünür.</li>
-      <li>Veriler kaynakta tanımlanan besin ve hazırlama biçimine aittir; çeşit, toprak, olgunluk ve yöntem değerleri değiştirebilir. Bu sürümde ikinci veri seti yoktur.</li>
-      <li>Varlık ≠ ölçülen miktar ≠ emilen miktar ≠ sağlık etkisi. Göstergeler eğitim amaçlıdır, tıbbi tavsiye değildir.</li>
-      <li>%BRD, AB/TGK etiket referansıdır; kişisel ihtiyacın yaşa, cinsiyete, sağlık durumuna göre değişir.</li>
-      <li>EFSA seçeneği, çocuk/yetişkin grup referanslarındaki PRI ve AI türlerini ayırır; üst sınır veya kişisel hedef önermez. Kaynak koşulları ve görüş yılı Ayarlar'daki referans tablosunda okunur.</li>
+      <li>${L("Ölçülmemiş bileşen <b>“veri yok”</b> olarak gösterilir, asla 0 yazılmaz. 0 yalnızca kaynak 0 bildirdiğinde görünür.")}</li>
+      <li>${L("Veriler kaynakta tanımlanan besin ve hazırlama biçimine aittir; çeşit, toprak, olgunluk ve yöntem değerleri değiştirebilir. Bu sürümde ikinci veri seti yoktur.")}</li>
+      <li>${L("Varlık ≠ ölçülen miktar ≠ emilen miktar ≠ sağlık etkisi. Göstergeler eğitim amaçlıdır, tıbbi tavsiye değildir.")}</li>
+      <li>${L("%BRD, AB/TGK etiket referansıdır; kişisel ihtiyacın yaşa, cinsiyete, sağlık durumuna göre değişir.")}</li>
+      <li>${L("EFSA seçeneği, çocuk/yetişkin grup referanslarındaki PRI ve AI türlerini ayırır; üst sınır veya kişisel hedef önermez. Kaynak koşulları ve görüş yılı Ayarlar'daki referans tablosunda okunur.")}</li>
     </ul>
-    <section class="license-notices" aria-label="Lisanslar ve telif bildirimleri"><h3>Lisanslar ve telif bildirimleri</h3>
-      <p>Kod MIT lisanslıdır. Veriler, yazı tipleri ve diğer yazılımlar kendi koşullarına tabidir. Aşağıdaki özgün bildirimler internetsiz okunabilir.</p>
+    <section class="license-notices" aria-label="${L("Lisanslar ve telif bildirimleri")}"><h3>${L("Lisanslar ve telif bildirimleri")}</h3>
+      <p>${L("Kod MIT lisanslıdır. Veriler, yazı tipleri ve diğer yazılımlar kendi koşullarına tabidir. Aşağıdaki özgün bildirimler internetsiz okunabilir.")}</p>
       ${NOTICES.map(n => `<details class="notice"><summary>${esc(n.name)} · ${esc(n.license)} · ${esc(n.version)}</summary><pre>${esc(n.text)}</pre></details>`).join('')}
     </section>
-    <p class="hint">Sürüm ${esc(window.__APP_VERSION__ || '')} · veri: ${esc(META.sources)} · ${META.curated} küratörlü besin / ${META.forms} form.</p>
+    <p class="hint">${L("Sürüm {v} · veri: {src} · {n} küratörlü besin / {f} biçim.", { v: esc(window.__APP_VERSION__ || ''), src: esc(L(META.sources)), n: META.curated, f: META.forms })}</p>
   </div>`;
 }
 
@@ -523,18 +527,18 @@ function renderPicker() {
   const P = S.picker;
   if (!P) return '';
   const item = P.sel ? resolve(P.sel) : null;
-  return `<div class="modal" role="dialog" aria-modal="true" aria-label="Besin seç">
+  return `<div class="modal" role="dialog" aria-modal="true" aria-label="${L("Besin seç")}">
     <div class="modal-box">
-      <div class="modal-h"><h2>${P.target === 'recipe' ? 'Tarife malzeme ekle' : 'Karşılaştırmaya besin ekle'}</h2>
-        <button class="btn ghost" data-action="pk-close" aria-label="Kapat">✕ Kapat</button></div>
-      ${item ? `<div class="pk-sel"><button class="back show" data-action="pk-back">← Geri</button><h3>${esc(item.name)}</h3>
+      <div class="modal-h"><h2>${P.target === 'recipe' ? L("Tarife malzeme ekle") : L("Karşılaştırmaya besin ekle")}</h2>
+        <button class="btn ghost" data-action="pk-close" aria-label="${L("Kapat")}">✕ ${L("Kapat")}</button></div>
+      ${item ? `<div class="pk-sel"><button class="back show" data-action="pk-back">← ${L("Geri")}</button><h3>${esc(item.name)}</h3>
           ${formChips('pk', P.sel)}
           ${amountControls('pk', P.amount, item.portions, { liquid: item.liquid })}
-          <div class="pk-prev">${item.v.energy != null ? `${fmtNum((item.v.energy * P.amount) / 100)} kcal · ` : ''}${item.v.protein != null ? `${fmtNum((item.v.protein * P.amount) / 100)} g protein · ` : ''}${item.v.fiber != null ? `${fmtNum((item.v.fiber * P.amount) / 100)} g lif` : ''}</div>
-          <button class="btn primary big" data-action="pk-confirm">${P.target === 'recipe' ? '＋ Tarife ekle' : '＋ Karşılaştırmaya ekle'}</button>
-          ${P.target === 'recipe' ? '<button class="btn" data-action="pk-confirm-more">＋ Ekle ve başka seç</button>' : ''}</div>`
+          <div class="pk-prev">${item.v.energy != null ? `${fmtNum((item.v.energy * P.amount) / 100)} kcal · ` : ''}${item.v.protein != null ? `${fmtNum((item.v.protein * P.amount) / 100)} g protein · ` : ''}${item.v.fiber != null ? `${fmtNum((item.v.fiber * P.amount) / 100)} g ${L("lif")}` : ''}</div>
+          <button class="btn primary big" data-action="pk-confirm">${P.target === 'recipe' ? '＋ ' + L("Tarife ekle") : '＋ ' + L("Karşılaştırmaya ekle")}</button>
+          ${P.target === 'recipe' ? `<button class="btn" data-action="pk-confirm-more">＋ ${L("Ekle ve başka seç")}</button>` : ''}</div>`
       : `<nav class="cats row">${categoryNav('pk', P.cat, S.settings.showExt)}</nav>
-        <div class="searchbar"><input type="search" id="pq" placeholder="Ara (isteğe bağlı)" value="${esc(P.q)}" autocomplete="off" aria-label="Besin ara"></div>
+        <div class="searchbar"><input type="search" id="pq" placeholder="${L("Ara (isteğe bağlı)")}" value="${esc(P.q)}" autocomplete="off" aria-label="${L("Besin ara")}"></div>
         <div class="pk-list">${foodList('pk', P.cat, P.q, P.extGroup)}</div>`}
     </div></div>`;
 }
@@ -550,26 +554,26 @@ function renderCustomEditor() {
   const E = S.customEdit;
   if (!E) return '';
   const val = (k) => (k === 'salt' ? (E.v.na != null ? Math.round((E.v.na * 2.5) / 10) / 100 : '') : E.v[k] ?? '');
-  return `<div class="modal" role="dialog" aria-modal="true" aria-label="Kendi besinim">
-    <div class="modal-box"><div class="modal-h"><h2>${E.id ? 'Besini düzenle' : 'Etiketten yeni besin'}</h2><button class="btn ghost" data-action="cu-close">✕ Kapat</button></div>
-      <label class="field"><span>Ad</span><input id="cu-name" value="${esc(E.name)}" placeholder="ör. Alpro soya içeceği (şekersiz)"></label>
-      <div class="kv"><span>Değerler</span><span class="presets">${['100 g', '100 mL'].map((t, i) => `<button class="pchip ${!!E.liquid === !!i ? 'on' : ''}" data-action="cu-liquid" data-v="${i}">${t} başına</button>`).join('')}</span></div>
-      <label class="field"><span>Etiketteki porsiyon (g, isteğe bağlı)</span><input id="cu-portion" type="number" inputmode="decimal" min="1" max="1000" value="${E.portion ?? ''}"></label>
-      <p class="hint">Boş bıraktığın bileşenler “veri yok” sayılır (0 değil). Etikette “&lt;0,5 g” yazıyorsa boş bırakmak daha dürüsttür.</p>
-      <div class="cu-grid">${CUSTOM_FIELDS.map(([k, l, u]) => `<label class="field ${l.startsWith('  ') ? 'indent' : ''}"><span>${esc(l.trim())} <em>${u}</em></span><input type="number" inputmode="decimal" min="0" step="any" data-cu="${k}" value="${val(k)}"></label>`).join('')}</div>
-      <div class="presets end">${E.id ? '<button class="btn danger" data-action="cu-delete">Sil</button>' : ''}<button class="btn" data-action="cu-close">Vazgeç</button><button class="btn primary" data-action="cu-save">Kaydet</button></div>
+  return `<div class="modal" role="dialog" aria-modal="true" aria-label="${L("Kendi besinim")}">
+    <div class="modal-box"><div class="modal-h"><h2>${E.id ? L("Besini düzenle") : L("Etiketten yeni besin")}</h2><button class="btn ghost" data-action="cu-close">✕ ${L("Kapat")}</button></div>
+      <label class="field"><span>${L("Ad")}</span><input id="cu-name" value="${esc(E.name)}" placeholder="${L("ör. Alpro soya içeceği (şekersiz)")}"></label>
+      <div class="kv"><span>${L("Değerler")}</span><span class="presets">${['100 g', '100 mL'].map((t, i) => `<button class="pchip ${!!E.liquid === !!i ? 'on' : ''}" data-action="cu-liquid" data-v="${i}">${L("{t} başına", { t })}</button>`).join('')}</span></div>
+      <label class="field"><span>${L("Etiketteki porsiyon (g, isteğe bağlı)")}</span><input id="cu-portion" type="number" inputmode="decimal" min="1" max="1000" value="${E.portion ?? ''}"></label>
+      <p class="hint">${L("Boş bıraktığın bileşenler “veri yok” sayılır (0 değil). Etikette “&lt;0,5 g” yazıyorsa boş bırakmak daha dürüsttür.")}</p>
+      <div class="cu-grid">${CUSTOM_FIELDS.map(([k, l, u]) => `<label class="field ${l.startsWith('  ') ? 'indent' : ''}"><span>${esc(L(l.trim()))} <em>${u}</em></span><input type="number" inputmode="decimal" min="0" step="any" data-cu="${k}" value="${val(k)}"></label>`).join('')}</div>
+      <div class="presets end">${E.id ? `<button class="btn danger" data-action="cu-delete">${L("Sil")}</button>` : ''}<button class="btn" data-action="cu-close">${L("Vazgeç")}</button><button class="btn primary" data-action="cu-save">${L("Kaydet")}</button></div>
     </div></div>`;
 }
 function saveCustomEdit() {
   const E = S.customEdit;
-  if (!E.name.trim()) { toast('Bir ad gir'); return false; }
+  if (!E.name.trim()) { toast(L("Bir ad gir")); return false; }
   const list = customFoods().slice();
-  if (Object.values(E.v).some(v => !Number.isFinite(v) || v < 0)) { toast('Besin değerleri sıfır veya pozitif sonlu sayılar olmalı'); return false; }
+  if (Object.values(E.v).some(v => !Number.isFinite(v) || v < 0)) { toast(L("Besin değerleri sıfır veya pozitif sonlu sayılar olmalı")); return false; }
   const rec = normalizeCustom({ ...E, id: E.id || uid() });
   const i = list.findIndex((x) => x.id === rec.id);
   if (i >= 0) list[i] = rec; else list.push(rec);
   setCustomFoods(list);
-  if (!saveCustom(list)) toast('Kaydedilemedi: cihaz depolaması kullanılamıyor');
+  if (!saveCustom(list)) toast(L("Kaydedilemedi: cihaz depolaması kullanılamıyor"));
   S.customEdit = null;
   S.cat = 'custom';
   S.sel = { t: 'u', id: rec.id };
@@ -599,7 +603,7 @@ export function render() {
       <div class="brand">${S.settings.emoji ? '<span class="logo" aria-hidden="true">🫐</span>' : ''}<b>Besin Matriksi</b></div>
       <nav class="tabs" aria-label="${tr('navigation')}">${TABS.map(([id, ic]) => `<button class="tab ${S.tab === id ? 'on' : ''}" data-action="tab" data-tab="${id}" ${S.tab === id ? 'aria-current="page"' : ''}><span class="ti" aria-hidden="true">${S.settings.emoji ? ic : ''}</span><span class="tt">${tr(id)}</span>${id === 'tarif' && activeRecipe()?.items.length ? `<span class="badge">${activeRecipe().items.length}</span>` : ''}${id === 'karsilastir' && S.compare.length ? `<span class="badge">${S.compare.length}</span>` : ''}</button>`).join('')}</nav>
     </header>
-    ${S.profiles.length ? `<div class="profile-bar" role="group" aria-label="Görünüm profilleri"><span class="hint">Görünüm:</span>${S.profiles.map(p => `<button class="pchip" data-action="profile-apply" data-id="${p.id}">${esc(p.name)}</button>`).join('')}</div>` : ''}
+    ${S.profiles.length ? `<div class="profile-bar" role="group" aria-label="${L("Görünüm profilleri")}"><span class="hint">${L("Görünüm:")}</span>${S.profiles.map(p => `<button class="pchip" data-action="profile-apply" data-id="${p.id}">${esc(p.name)}</button>`).join('')}</div>` : ''}
     <main class="view view-${S.tab}">${view}</main>
     ${renderPicker()}${renderCustomEditor()}${renderThemeEditor(S.themeEditor, S.settings.customTheme)}`;
   aionMood(aionMoodFor());
@@ -721,9 +725,9 @@ function addToRecipe(ref, g) {
   aionPlay('celebrate');
 }
 function addToCompare(ref, g) {
-  if (S.compare.length >= 4) { toast('En fazla 4 besin karşılaştırılabilir'); return false; }
+  if (S.compare.length >= 4) { toast(L("En fazla 4 besin karşılaştırılabilir")); return false; }
   S.compare.push({ ref: { ...ref }, g });
-  toast(`Karşılaştırmaya eklendi: ${resolve(ref).name}`);
+  toast(L("Karşılaştırmaya eklendi: {n}", { n: resolve(ref).name }));
   return true;
 }
 
@@ -824,15 +828,15 @@ async function onClick(e) {
     case 'cu-edit': { const f = customFoods().find((x) => x.id === S.sel?.id); if (f) { S.customEdit = JSON.parse(JSON.stringify(f)); render(); } break; }
     case 'cu-close': S.customEdit = null; render(); break;
     case 'cu-liquid': S.customEdit.liquid = b.dataset.v === '1'; render(); break;
-    case 'cu-save': if (saveCustomEdit()) { S.tab = 'kesfet'; render(); toast('Kaydedildi'); } break;
+    case 'cu-save': if (saveCustomEdit()) { S.tab = 'kesfet'; render(); toast(L("Kaydedildi")); } break;
     case 'cu-delete': {
       const E = S.customEdit;
-      if (!(await uiDialog(`“${E.name}” silinsin mi? Tariflerdeki kullanımları “bulunamadı” olarak kalır.`, { ok: 'Sil', cancel: 'Vazgeç' }))) break;
+      if (!(await uiDialog(L("“{n}” silinsin mi? Tariflerdeki kullanımları “bulunamadı” olarak kalır.", { n: E.name }), { ok: L("Sil"), cancel: L("Vazgeç") }))) break;
       const list = customFoods().filter((x) => x.id !== E.id);
       setCustomFoods(list); saveCustom(list); S.customEdit = null; if (S.sel?.t === 'u') S.sel = null; render(); break;
     }
     case 'csv': exportCSV(); break;
-    case 'print': try { printController.print(); } catch { toast('Yazdırma bu ortamda kullanılamıyor; CSV olarak indirebilirsin'); } break;
+    case 'print': try { printController.print(); } catch { toast(L("Yazdırma bu ortamda kullanılamıyor; CSV olarak indirebilirsin")); } break;
     case 'ex-form': S.sel = { ...S.sel, f: +b.dataset.f }; render(); break;
     case 'ex-back': S.sel = null; render(); break;
     case 'search-recent': S.q = b.dataset.q; S.cat = null; render(); break;
@@ -849,7 +853,7 @@ async function onClick(e) {
     case 'rc-dup': { const src = activeRecipe(); const r = { ...JSON.parse(JSON.stringify(src)), id: Math.random().toString(36).slice(2, 10), name: src.name + ' (kopya)' }; S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); render(); break; }
     case 'rc-delete': {
       const rc = activeRecipe();
-      if (!(await uiDialog(`“${rc.name}” silinsin mi?`, { ok: 'Sil', cancel: 'Vazgeç' }))) break;
+      if (!(await uiDialog(L("“{n}” silinsin mi?", { n: rc.name }), { ok: L("Sil"), cancel: L("Vazgeç") }))) break;
       S.recipes = S.recipes.filter((r) => r.id !== rc.id);
       if (!S.recipes.length) S.recipes.push(newRecipe('Yeni tarif'));
       S.activeRecipe = S.recipes[0].id; persistRecipes(); render(); break;
@@ -897,33 +901,33 @@ async function onClick(e) {
     case 'theme-export': download('besin-matriksi-tema.json', exportTheme(S.settings.customTheme)); break;
     case 'target-add': {
       const key = $('#target-nutrient')?.value, value = Number($('#target-new-value')?.value);
-      if (!key || !Number.isFinite(value) || value <= 0) { toast('Bir bileşen ve sıfırdan büyük hedef miktarı gir'); break; }
+      if (!key || !Number.isFinite(value) || value <= 0) { toast(L("Bir bileşen ve sıfırdan büyük hedef miktarı gir")); break; }
       setSetting('targets', { ...S.settings.targets, [key]: value }); render(); break;
     }
     case 'target-remove': { const targets = { ...S.settings.targets }; delete targets[b.dataset.key]; setSetting('targets', targets); render(); break; }
     case 'open-file': document.getElementById(b.dataset.id)?.click(); break;
     case 'profile-save': {
       const name = $('#profile-name')?.value.trim();
-      if (!name) { toast('Bir profil adı gir'); break; }
+      if (!name) { toast(L("Bir profil adı gir")); break; }
       if (S.profiles.length >= 12) { toast('En fazla 12 profil kaydedilebilir'); break; }
       S.profiles.push({ id: uid(), name: name.slice(0, 40), settings: normalizeSettings(S.settings) });
-      if (!saveProfiles(S.profiles)) toast('Profil cihaz depolamasına yazılamadı'); else toast('Görünüm kaydedildi'); render(); break;
+      if (!saveProfiles(S.profiles)) toast(L("Profil cihaz depolamasına yazılamadı")); else toast(L("Görünüm kaydedildi")); render(); break;
     }
     case 'profile-apply': {
       const p = S.profiles.find(p => p.id === b.dataset.id);
-      if (p) { S.settings = normalizeSettings(p.settings); saveSettings(S.settings); applySettings(); if (S.settings.showExt) loadExt().then(render); render(); toast(`Görünüm: ${p.name}`); } break;
+      if (p) { S.settings = normalizeSettings(p.settings); saveSettings(S.settings); applySettings(); if (S.settings.showExt) loadExt().then(render); render(); toast(L("Görünüm: {n}", { n: p.name })); } break;
     }
     case 'profile-update': {
       const p = S.profiles.find(p => p.id === b.dataset.id);
-      if (p && await uiDialog(`“${p.name}” geçerli görünümle güncellensin mi?`, { ok: 'Güncelle', cancel: 'Vazgeç' })) { p.settings = normalizeSettings(S.settings); saveProfiles(S.profiles); toast('Profil güncellendi'); } break;
+      if (p && await uiDialog(L("“{n}” geçerli görünümle güncellensin mi?", { n: p.name }), { ok: L("Güncelle"), cancel: L("Vazgeç") })) { p.settings = normalizeSettings(S.settings); saveProfiles(S.profiles); toast(L("Profil güncellendi")); } break;
     }
     case 'profile-delete': {
       const p = S.profiles.find(p => p.id === b.dataset.id);
-      if (p && await uiDialog(`“${p.name}” görünüm profili silinsin mi?`, { ok: 'Sil', cancel: 'Vazgeç' })) { S.profiles = S.profiles.filter(x => x.id !== p.id); saveProfiles(S.profiles); render(); } break;
+      if (p && await uiDialog(L("“{n}” görünüm profili silinsin mi?", { n: p.name }), { ok: L("Sil"), cancel: L("Vazgeç") })) { S.profiles = S.profiles.filter(x => x.id !== p.id); saveProfiles(S.profiles); render(); } break;
     }
     case 'section-move': S.settings = moveSection(S.settings, b.dataset.id, Number(b.dataset.d)); saveSettings(S.settings); render(); break;
     case 'unpin': setSetting('pinnedNutrients', S.settings.pinnedNutrients.filter(k => k !== b.dataset.key)); render(); break;
-    case 'reset-group': S.settings = resetSettingGroup(S.settings, b.dataset.group); saveSettings(S.settings); applySettings(); render(); toast('Bölüm ayarları sıfırlandı'); break;
+    case 'reset-group': S.settings = resetSettingGroup(S.settings, b.dataset.group); saveSettings(S.settings); applySettings(); render(); toast(L("Bölüm ayarları sıfırlandı")); break;
     case 'settings-export': download('besin-matriksi-ayarlar.json', exportSettings(S.settings)); break;
     case 'set': setSetting(b.dataset.k, JSON.parse(b.dataset.v)); render(); break;
     case 'font': setSetting('font', b.dataset.v); render(); break;
@@ -935,16 +939,16 @@ async function onClick(e) {
     case 'preset': {
       if (b.dataset.p === 'reset') S.settings = { ...DEFAULT_SETTINGS };
       else Object.assign(S.settings, PRESETS_UI[b.dataset.p]);
-      saveSettings(S.settings); applySettings(); render(); toast('Ön ayar uygulandı'); break;
+      saveSettings(S.settings); applySettings(); render(); toast(L("Ön ayar uygulandı")); break;
     }
     case 'toggle-missing': setSetting('showMissing', true); refreshMatrix(); break;
-    case 'exp-file': download(`besin-matriksi-yedek-${new Date().toISOString().slice(0, 10)}.json`, exportPayload(S.recipes, S.settings, customFoods(), S.profiles)); toast('Yedek dosyası hazırlandı'); break;
+    case 'exp-file': download(`besin-matriksi-yedek-${new Date().toISOString().slice(0, 10)}.json`, exportPayload(S.recipes, S.settings, customFoods(), S.profiles)); toast(L("Yedek dosyası hazırlandı")); break;
     case 'exp-copy':
-      try { await navigator.clipboard.writeText(exportPayload(S.recipes, S.settings, customFoods(), S.profiles)); toast('Panoya kopyalandı'); }
-      catch { await uiDialog('Pano kullanılamadı. Metni seçip kopyala:', { input: exportPayload(S.recipes, S.settings, customFoods(), S.profiles), ok: 'Tamam' }); }
+      try { await navigator.clipboard.writeText(exportPayload(S.recipes, S.settings, customFoods(), S.profiles)); toast(L("Panoya kopyalandı")); }
+      catch { await uiDialog(L("Pano kullanılamadı. Metni seçip kopyala:"), { input: exportPayload(S.recipes, S.settings, customFoods(), S.profiles), ok: L("Tamam") }); }
       break;
     case 'imp-paste': {
-      const t = await uiDialog('Yedek metnini yapıştır:', { input: '', ok: 'İçe aktar', cancel: 'Vazgeç' });
+      const t = await uiDialog(L("Yedek metnini yapıştır:"), { input: '', ok: L("İçe aktar"), cancel: L("Vazgeç") });
       if (t) importText(t);
       break;
     }
@@ -962,12 +966,12 @@ async function importText(t) {
       setCustomFoods(merged); saveCustom(merged);
     }
     if (S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) await loadExt();
-    if (settings && (await uiDialog('Yedekteki ayarlar da uygulansın mı?', { ok: 'Evet', cancel: 'Hayır' }))) { S.settings = normalizeSettings(settings); saveSettings(S.settings); applySettings(); }
+    if (settings && (await uiDialog(L("Yedekteki ayarlar da uygulansın mı?"), { ok: L("Evet"), cancel: L("Hayır") }))) { S.settings = normalizeSettings(settings); saveSettings(S.settings); applySettings(); }
     persistRecipes();
-    toast(`${recipes.length} tarif içe aktarıldı`);
+    toast(L("{n} tarif içe aktarıldı", { n: recipes.length }));
     render();
   } catch (err) {
-    uiDialog('İçe aktarılamadı: ' + err.message, { ok: 'Tamam' });
+    uiDialog(L("İçe aktarılamadı:") + ' ' + err.message, { ok: L("Tamam") });
   }
 }
 
@@ -978,7 +982,7 @@ function exportCSV() {
   else return;
   const safe = title.replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').slice(0, 60);
   download(`besin-matriksi-${safe}.csv`, matrixCSV(r, title, S.settings), 'text/csv;charset=utf-8');
-  toast('CSV hazırlandı');
+  toast(L("CSV hazırlandı"));
 }
 
 function onInput(e) {
@@ -1021,7 +1025,7 @@ function onInput(e) {
   if (t.dataset.slider) { setAmount(t.dataset.slider, Number(t.value), { fromSlider: true }); return; }
   if (t.id === 'q') { S.q = t.value; $('#foodlist').innerHTML = foodList('ex', S.cat, S.q, S.extGroup); return; }
   if (t.id === 'pq') { S.picker.q = t.value; $('.pk-list').innerHTML = foodList('pk', S.picker.cat, S.picker.q, S.picker.extGroup); return; }
-  if (t.id === 'rc-name') { activeRecipe().name = t.value.slice(0, 80) || 'Adsız tarif'; persistRecipes(); return; }
+  if (t.id === 'rc-name') { activeRecipe().name = t.value.slice(0, 80) || L("Adsız tarif"); persistRecipes(); return; }
 }
 function onChange(e) {
   const t = e.target;
@@ -1043,7 +1047,7 @@ function onChange(e) {
     return;
   }
   if (t.dataset.shortcut) {
-    if (t.value && Object.entries(S.settings.shortcuts).some(([id, key]) => id !== t.dataset.shortcut && key === t.value)) { toast('Bu kısayol başka bölüme atanmış; önce onu kapat'); render(); return; }
+    if (t.value && Object.entries(S.settings.shortcuts).some(([id, key]) => id !== t.dataset.shortcut && key === t.value)) { toast(L("Bu kısayol başka bölüme atanmış; önce onu kapat")); render(); return; }
     setSetting('shortcuts', { ...S.settings.shortcuts, [t.dataset.shortcut]: t.value }); return;
   }
   if (t.dataset.themeColor) { setSetting('customTheme', { ...S.settings.customTheme, [t.dataset.themeColor]: t.value }); render(); return; }
@@ -1057,8 +1061,8 @@ function onChange(e) {
     t.files[0].text().then((text) => {
       S.settings = parseSettings(text); saveSettings(S.settings); applySettings();
       if (S.settings.showExt || S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) loadExt().then(render);
-      render(); toast('Ayarlar içe aktarıldı');
-    }).catch((err) => uiDialog('Ayarlar içe aktarılamadı: ' + err.message));
+      render(); toast(L("Ayarlar içe aktarıldı"));
+    }).catch((err) => uiDialog(L("Ayarlar içe aktarılamadı:") + ' ' + err.message));
     return;
   }
   if (t.id === 'imp-file' && t.files?.[0]) { t.files[0].text().then(importText); return; }

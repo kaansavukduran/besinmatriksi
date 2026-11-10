@@ -318,3 +318,24 @@ test('Aion kare kare oynar, eklemede kutlar; sabit poz ve gizleme kalıcıdır',
   await expect(page.locator('#aion')).toBeHidden();
   expect(errors).toEqual([]);
 });
+test('İngilizce modda eski ekranlarda Türkçe arayüz metni kalmaz (B051)', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('bm.settings.v2', JSON.stringify({ version: 2, settings: { language: 'en', showMissing: true } })));
+  await page.goto('/');
+  const leftovers = () => page.evaluate(() => {
+    const re = /[çğışöüÇĞİŞÖÜ]/, out = [];
+    const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    while (w.nextNode()) { const t = w.currentNode.textContent.trim(); if (t && re.test(t) && !w.currentNode.parentElement.closest('pre,.notice,option,.fontbtn,.theme-preview,.rname,#rc-name,.profile-bar')) out.push(t); }
+    for (const el of document.querySelectorAll('[aria-label],[title],[placeholder]')) for (const a of ['aria-label', 'title', 'placeholder']) { const v = el.getAttribute(a); if (v && re.test(v) && !el.closest('.notice,.rname')) out.push(a + ': ' + v); }
+    return out;
+  });
+  await expect(page.locator('[data-action="tab"][data-tab="kesfet"]')).toContainText('Explore');
+  expect(await leftovers()).toEqual([]);
+  await page.locator('#q').fill('lentil'); await page.locator('#foodlist [data-id="yesil_mercimek"]').click();
+  await expect(page.locator('.dtitle h2')).toContainText('Green / brown lentils');
+  expect(await leftovers()).toEqual([]);
+  await page.locator('[data-action="ex-add-recipe"]').click(); await page.locator('[data-action="ex-add-compare"]').click();
+  for (const id of ['tarif', 'karsilastir', 'ayarlar', 'hakkinda']) {
+    await tab(page, id);
+    expect(await leftovers(), id).toEqual([]);
+  }
+});
