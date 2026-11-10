@@ -1,0 +1,36 @@
+{
+ "frame": 200,
+ "columns": 8,
+ "animations": {
+  "idle": {
+   "row": 0,
+   "frames": 8,
+   "ms": 170,
+   "loop": true
+  },
+  "wave": {
+   "row": 1,
+   "frames": 8,
+   "ms": 120,
+   "loop": true
+  },
+  "read": {
+   "row": 2,
+   "frames": 8,
+   "ms": 240,
+   "loop": true
+  },
+  "sad": {
+   "row": 3,
+   "frames": 8,
+   "ms": 200,
+   "loop": true
+  },
+  "celebrate": {
+   "row": 4,
+   "frames": 8,
+   "ms": 90,
+   "loop": false
+  }
+ }
+}

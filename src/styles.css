@@ -523,3 +523,25 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 .notice { margin: .5rem 0; border: 1px solid var(--line); border-radius: var(--radius); padding: .6rem; }
 .notice summary { cursor: pointer; min-height: var(--tap); overflow-wrap: anywhere; }
 .notice pre { white-space: pre-wrap; overflow-wrap: anywhere; font: inherit; font-size: .85rem; max-height: 28rem; overflow: auto; }
+
+/* ============ Aion maskotu ============ */
+.aion { position: fixed; z-index: 40; bottom: calc(14px + env(safe-area-inset-bottom)); right: 14px; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; pointer-events: none; }
+.aion[data-side="left"] { right: auto; left: 14px; align-items: flex-start; }
+.aion[hidden] { display: none; }
+.aion-body { pointer-events: auto; border: 0; padding: 0; background: transparent; border-radius: 50%; cursor: pointer; filter: drop-shadow(0 4px 10px rgb(80 40 120 / .18)); }
+.aion-sprite { display: block; width: 88px; height: 88px; background-repeat: no-repeat; image-rendering: auto; }
+.aion[data-size="s"] .aion-sprite { width: 64px; height: 64px; }
+.aion[data-size="l"] .aion-sprite { width: 120px; height: 120px; }
+.aion-body:hover .aion-sprite { transform: translateY(-2px); transition: transform .15s; }
+.aion-bubble { pointer-events: auto; position: relative; max-width: min(300px, calc(100vw - 40px)); background: var(--card); color: var(--fg); border: 2px solid color-mix(in srgb, #5bc8ef 55%, var(--line)); border-radius: 16px; padding: .6rem 2rem .6rem .8rem; box-shadow: var(--shadow); font-size: .92rem; line-height: 1.4; }
+.aion-bubble::after { content: ''; position: absolute; bottom: -8px; right: 34px; width: 14px; height: 14px; background: var(--card); border-right: 2px solid color-mix(in srgb, #5bc8ef 55%, var(--line)); border-bottom: 2px solid color-mix(in srgb, #5bc8ef 55%, var(--line)); transform: rotate(45deg); }
+.aion[data-side="left"] .aion-bubble::after { right: auto; left: 34px; }
+.aion-bubble[hidden] { display: none; }
+.aion-close { position: absolute; top: 4px; right: 6px; border: 0; background: transparent; font-size: 1.2rem; line-height: 1; color: var(--muted); cursor: pointer; min-width: 28px; min-height: 28px; }
+@media (max-width: 700px) {
+  .aion { bottom: calc(84px + env(safe-area-inset-bottom)); }
+  .aion-sprite { width: 64px; height: 64px; }
+  .aion[data-size="l"] .aion-sprite { width: 88px; height: 88px; }
+  .aion[data-size="s"] .aion-sprite { width: 52px; height: 52px; }
+}
+@media print { .aion { display: none !important; } }

@@ -19,6 +19,7 @@ import { t as tr, setLanguage, preferredLanguage } from './i18n.js';
 import { renderAppearance, settingSlider } from './appearance.js';
 import { loadPersonal, savePersonal, emptyProfile, normalizeProfile, mergePersonalFoods, localDay, validDay, dayResult, PERSONAL_KEY } from './personal.js';
 import { renderPersonal, renderEnergy, renderDaySources } from './personal-view.js';
+import { mountAion, configureAion, aionMood, aionPlay, aionSay } from './aion.js';
 import { normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS } from './settings.js';
 
 const PRESETS = [1, 5, 10, 25, 50, 100, 150, 200, 250, 500, 750, 1000];
@@ -94,6 +95,7 @@ function applySettings() {
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.content = getComputedStyle(r).getPropertyValue('--bg').trim() || '#ffffff';
   $('#ruler')?.classList.toggle('on', !!s.ruler);
+  configureAion(s);
 }
 function setSetting(k, v) {
   S.settings = normalizeSettings({ ...S.settings, [k]: v });
@@ -389,6 +391,15 @@ function renderSettings() {
   const step = (k, label, min, max, st, unit) => settingSlider(k, s[k], min, max, st, unit);
   return `<div class="settings">
     ${renderAppearance(s)}
+    <section class="card aion-settings"><h2>${tr('aionTitle')}</h2>
+      <p class="hint">${tr('aionHint')}</p>
+      ${tog('aionEnabled', tr('aionShow'))}
+      <div class="kv"><span>${tr('aionMotionLabel')}</span><span class="presets">${opt('aionMotion', 'auto', tr('aionMotionAuto'))}${opt('aionMotion', 'animate', tr('aionMotionAnimate'))}${opt('aionMotion', 'still', tr('aionMotionStill'))}</span></div>
+      <div class="kv"><span>${tr('aionSizeLabel')}</span><span class="presets">${opt('aionSize', 's', tr('sizeS'))}${opt('aionSize', 'm', tr('sizeM'))}${opt('aionSize', 'l', tr('sizeL'))}</span></div>
+      <div class="kv"><span>${tr('aionSideLabel')}</span><span class="presets">${opt('aionSide', 'left', tr('sideLeft'))}${opt('aionSide', 'right', tr('sideRight'))}</span></div>
+      ${tog('aionTips', tr('aionTipsLabel'))}
+      <div class="presets"><button class="btn" data-action="aion-demo" data-anim="celebrate">${tr('aionTry')}</button><button class="btn ghost" data-action="reset-group" data-group="aion">${tr('aionReset')}</button></div>
+    </section>
     <section class="card"><h2>${tr('quickPresets')}</h2><div class="presets">
       <button class="btn" data-action="preset" data-p="dyslexia">${tr('dyslexiaPreset')}</button>
       <button class="btn" data-action="preset" data-p="lowvision">${tr('lowVisionPreset')}</button>
@@ -591,6 +602,7 @@ export function render() {
     ${S.profiles.length ? `<div class="profile-bar" role="group" aria-label="Görünüm profilleri"><span class="hint">Görünüm:</span>${S.profiles.map(p => `<button class="pchip" data-action="profile-apply" data-id="${p.id}">${esc(p.name)}</button>`).join('')}</div>` : ''}
     <main class="view view-${S.tab}">${view}</main>
     ${renderPicker()}${renderCustomEditor()}${renderThemeEditor(S.themeEditor, S.settings.customTheme)}`;
+  aionMood(aionMoodFor());
   document.querySelectorAll('.list, .detail, .pk-list, .cats').forEach((el, i) => (el.dataset.keepScroll = el.className.split(' ')[0] + i));
   document.querySelectorAll('[data-keep-scroll]').forEach((el) => { if (keep[el.dataset.keepScroll] != null) el.scrollTop = keep[el.dataset.keepScroll]; });
   window.scrollTo(0, winY);
@@ -689,6 +701,16 @@ function selectFood(prefix, ref) {
   else { S.picker.sel = ref; S.picker.amount = S.settings.defaultAmount; render(); }
 }
 
+// Aion'un ekrana göre ruh hali: karşılama, inceleme, çalışma
+function aionMoodFor() {
+  if (S.tab === 'kesfet') {
+    if (!S.sel) return S.q && !document.querySelector('.foods .food') ? 'sad' : 'wave';
+    return 'read';
+  }
+  if (S.tab === 'karsilastir' || S.tab === 'hakkinda') return 'read';
+  return 'idle';
+}
+
 function addToRecipe(ref, g) {
   const rc = activeRecipe();
   const existing = rc.items.find((i) => refKey(i.ref) === refKey(ref));
@@ -696,6 +718,7 @@ function addToRecipe(ref, g) {
   else rc.items.push({ id: Math.random().toString(36).slice(2, 9), ref: { ...ref }, g });
   persistRecipes();
   toast(`“${resolve(ref).name}” → ${rc.name} (${fmtNum(g)} g)`);
+  aionPlay('celebrate');
 }
 function addToCompare(ref, g) {
   if (S.compare.length >= 4) { toast('En fazla 4 besin karşılaştırılabilir'); return false; }
@@ -749,10 +772,11 @@ async function onClick(e) {
   const a = b.dataset.action;
   if (!document.querySelector('.modal')) modalOpener = focusSelector(b);
   switch (a) {
+    case 'aion-demo': aionPlay(b.dataset.anim || 'celebrate'); aionSay(tr('aionHello'), 4000); break;
     case 'ex-add-day': {
       if (!S.sel || !resolve(S.sel)) break;
       S.personal.entries.push({ id: uid(), day: S.personalDay, ref: { ...S.sel }, g: S.amount, consumed: false });
-      S.personal.milestones.food = true; persistPersonal(); toast(tr('dayAdded')); break;
+      S.personal.milestones.food = true; persistPersonal(); toast(tr('dayAdded')); aionPlay('celebrate'); break;
     }
     case 'personal-save': {
       if ([...document.querySelectorAll('[data-personal-field]')].some(el => !el.checkValidity())) { toast(tr('profile.invalid')); break; }
@@ -1048,7 +1072,13 @@ export function start() {
   if (S.personal.entries.some(e => e.ref.t === 'x')) loadExt().then(render);
   window.addEventListener('resize', () => { document.documentElement.dataset.uiNarrow = String(window.innerWidth / (S.settings.uiScale / 100) < 900); });
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (S.settings.theme === 'system') applySettings(); });
+  mountAion();
+  configureAion(S.settings);
   render();
+  if (S.settings.aionTips && !localStorage.getItem?.('bm.aion.greeted')) {
+    setTimeout(() => aionSay(tr('aionHello'), 7000), 600);
+    try { localStorage.setItem('bm.aion.greeted', '1'); } catch {}
+  }
   document.addEventListener('click', onClick);
   document.addEventListener('input', onInput);
   document.addEventListener('change', onChange);

@@ -173,3 +173,12 @@
 - Android gerçek sertifikası Android Debug; kalıcı üretim anahtarı sürekliliği iddia edilmez. iOS imzasız/doğrudan kurulamaz; macOS imzasız/notersiz. Fiziksel/native kabul NOT_RUN. Güncel talimatla GitHub Release SKIPPED, yeni tag/merge/force-push/mağaza yayını yok; Pages için URL uydurulmadı.
 - Kullanıcı kaynak ZIP + Git bundle + manifestin özel proje Drive klasörüne yüklenmesini açıkça onayladı. Önceki otomatik onay engeli çözüldü; üç dosya yüklendi, geri indirildi ve SHA256 eşleşti. 347 geçmiş blobda bilinen anahtar kalıpları tarandı, 0 bulgu (eksiksiz sır taraması garantisi değildir); ZIP CRC ve git bundle verify PASS. Sağlık verisi yok; özel Drive dosya/klasör kimlikleri açık repoya yazılmadı.
 - B050 **PACKAGED**; son commit yalnız belge/durum/kanıt. Sonraki tek Forge **B051**. B052 imzalı updater/iki sürüm yükseltme, B031 fiziksel kabul, B021 kayıtlı kaynak bekleme sınırı ve UX-TASKS açıklaması açık; otomasyon duraklatılmaz. Eski paket/test kanıtları tarihsel olarak korundu.
+
+## B053 · 2026-11-10 · Aionlaştırma (Claude devraldı)
+- Devir: Claude, Codex'in `codex/forge-devam` dalını (711c084) `ccr-1e1934aa-iv8aev` dalına ileri sardı; Codex kararları ve kanıtları korunur.
+- Kaynak: Drive "Aion-Trans-Akici-Dort-Hareket.png" (pembe-mavi solungaçlı Aion, kullanıcının seçtiği varyant; pembe yüzlü pafta kullanılmadı). Dört poz arka planı saydamlaştırılarak `assets-src/aion/` altına alındı.
+- `scripts/build-aion.py`: 5 hareket × 8 kare sprite sheet (idle/çalışma, el sallama, okuma, üzgün, kutlama); ayak hizası sabit, ortak ölçek. Çıktı `src/assets/aion/` (WebP 341 KB), paket içinde; çalışma anında Drive'a bağımlılık yok.
+- `src/aion.js`: ekrana göre ruh hali (Keşfet karşılama → el sallama, matriks → okuma, boş arama → üzgün), tarife/güne eklemede tek seferlik kutlama, dokununca TR/EN ipucu balonu. Görünmeyen sekmede durur.
+- Ayarlar → Aion: göster/gizle, hareket (sisteme uy / hareketli / sabit poz), boyut, konum, ipucu balonu, sıfırla. Azaltılmış hareket tercihinde sabit poz.
+- Kanıt: `npm test` 58/58; `npm run build` PASS; yerel tarayıcı akışı: kare ilerlemesi, kutlama, sabit poz, gizleme + yeniden açılışta kalıcılık, telefon görünümü PASS; konsol hatası yok.
+- Düzey: RUNTIME_TESTED. Sonraki: **B051** (eski ekranların TR/EN çevirisi).

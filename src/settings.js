@@ -18,10 +18,12 @@ export const DEFAULT_SETTINGS = {
   efsaAge: 25, efsaSex: 'unspecified', efsaPhytate: '', efsaIronGroup: 'unspecified',
   energyUnit: 'both', amountUnit: 'g', autoUnits: true, decimalSeparator: 'auto',
   shortcuts: { kesfet: 'Alt+1', tarif: 'Alt+2', karsilastir: 'Alt+3', ayarlar: 'Alt+4', hakkinda: 'Alt+5', gunluk: 'Alt+6' }, focusWidth: 3, largeCursor: false,
+  aionEnabled: true, aionMotion: 'auto', aionSize: 'm', aionSide: 'right', aionTips: true,
 };
 export const SETTING_GROUPS = {
   appearance: ['theme', 'accent', 'radius', 'customTheme', 'uiScale'],
   reading: ['font', 'fontSize', 'lineHeight', 'letterSpacing', 'wordSpacing', 'bold'],
+  aion: ['aionEnabled', 'aionMotion', 'aionSize', 'aionSide', 'aionTips'],
   accessibility: ['density', 'ruler', 'reduceMotion', 'emoji', 'shortcuts', 'focusWidth', 'largeCursor'],
   matrix: ['showNrv', 'showSource', 'showSd', 'showAlt', 'showMissing', 'precision', 'defaultAmount', 'showExt', 'sectionOrder', 'hiddenSections', 'pinnedNutrients', 'referenceMode', 'targets', 'efsaAge', 'efsaSex', 'efsaPhytate', 'efsaIronGroup', 'energyUnit', 'amountUnit', 'autoUnits', 'decimalSeparator'],
 };
@@ -30,6 +32,7 @@ const enums = {
   font: ['atkinson', 'opendyslexic', 'lexend', 'andika', 'nunito', 'inter', 'literata', 'mono', 'system'],
   density: ['comfy', 'compact', 'large'], precision: ['low', 'normal', 'high'],
   referenceMode: ['eu', 'custom', 'efsa'], efsaSex: ['unspecified', 'female', 'male'], efsaPhytate: ['', '300', '600', '900', '1200'], efsaIronGroup: ['unspecified', 'pre', 'post'], energyUnit: ['both', 'kcal', 'kj'], amountUnit: ['g', 'oz'], decimalSeparator: ['auto', 'comma', 'dot'],
+  aionMotion: ['auto', 'animate', 'still'], aionSize: ['s', 'm', 'l'], aionSide: ['right', 'left'],
 };
 const ranges = { fontSize: [13, 28], lineHeight: [1.2, 2.4], letterSpacing: [0, .2], wordSpacing: [0, .5], radius: [0, 24], defaultAmount: [1, 1000], focusWidth: [2, 6] };
 export function normalizeSettings(input) {
