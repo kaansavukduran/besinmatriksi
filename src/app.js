@@ -1075,10 +1075,10 @@ export function start() {
   mountAion();
   configureAion(S.settings);
   render();
-  if (S.settings.aionTips && !localStorage.getItem?.('bm.aion.greeted')) {
-    setTimeout(() => aionSay(tr('aionHello'), 7000), 600);
-    try { localStorage.setItem('bm.aion.greeted', '1'); } catch {}
-  }
+  // İlk açılış selamı; depolama yoksa (gizli pencere, about:blank) sessizce atla
+  let greeted = true;
+  try { greeted = !!localStorage.getItem('bm.aion.greeted'); if (!greeted) localStorage.setItem('bm.aion.greeted', '1'); } catch {}
+  if (S.settings.aionTips && !greeted) setTimeout(() => aionSay(tr('aionHello'), 7000), 600);
   document.addEventListener('click', onClick);
   document.addEventListener('input', onInput);
   document.addEventListener('change', onChange);

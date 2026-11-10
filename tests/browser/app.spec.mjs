@@ -295,3 +295,26 @@ test('EFSA grup referansı yaş/koşul/türü korur; kişisel hedefi değiştirm
   expect(csv).toContain('%EFSA (PRI/AI)'); expect(csv).toContain(';PRI;950;mg/gün;2015;');
   expect(csv).toContain('45 yaş · kadın grubu');
 });
+test('Aion kare kare oynar, eklemede kutlar; sabit poz ve gizleme kalıcıdır', async ({ page }) => {
+  const errors = []; page.on('pageerror', e => errors.push(e.message));
+  await page.goto('/');
+  const sprite = page.locator('#aion .aion-sprite');
+  await expect(sprite).toBeVisible();
+  const first = await sprite.evaluate(el => el.style.backgroundPosition);
+  await expect.poll(() => sprite.evaluate(el => el.style.backgroundPosition), { timeout: 3000 }).not.toBe(first);
+  await pickBanana(page);
+  await expect(page.locator('#aion')).toHaveAttribute('data-anim', 'read');
+  await page.locator('[data-action="ex-add-recipe"]').click();
+  await expect(page.locator('#aion')).toHaveAttribute('data-anim', 'celebrate');
+  await tab(page, 'ayarlar');
+  await page.locator('[data-action="set"][data-k="aionMotion"][data-v=\'"still"\']').click();
+  await expect(page.locator('#aion')).toHaveAttribute('data-still', 'true');
+  const still = await sprite.evaluate(el => el.style.backgroundPosition);
+  await page.waitForTimeout(600);
+  expect(await sprite.evaluate(el => el.style.backgroundPosition)).toBe(still);
+  await page.locator('label.toggle:has(input[data-setbool="aionEnabled"])').click();
+  await expect(page.locator('#aion')).toBeHidden();
+  await page.reload();
+  await expect(page.locator('#aion')).toBeHidden();
+  expect(errors).toEqual([]);
+});
