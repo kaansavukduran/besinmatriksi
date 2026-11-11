@@ -461,3 +461,17 @@ test('tarif en düşük kalan besinleri gösterir ve öneriden besine gider (B05
   await expect(page.locator('[data-action="ex-add-recipe"]')).toBeVisible();
   expect(id).toBeTruthy();
 });
+
+test('çoklu seçimle birden çok besin tek dokunuşla tarife eklenir (B059)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('[data-action="multi-toggle"]').first().click();
+  await expect(page.locator('[data-action="multi-add"]')).toBeDisabled();
+  await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  await expect(page.locator('#foodlist [data-id="muz"]')).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('#q').fill('yulaf'); await page.locator('#foodlist [data-id="yulaf"]').click();
+  await expect(page.locator('.multibar')).toContainText('2');
+  await page.locator('[data-action="multi-add"]').click();
+  await expect(page.locator('.multibar')).toHaveCount(0);
+  await tab(page, 'tarif');
+  await expect(page.locator('.ing .ing-h b')).toHaveText(['Muz', 'Yulaf ezmesi']);
+});

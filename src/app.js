@@ -33,7 +33,7 @@ const S = {
   tab: 'kesfet',
   searches: loadSearches(),
   profiles: loadProfiles(),
-  collections: loadCollections(), colPicker: false, sort: 'default',
+  collections: loadCollections(), colPicker: false, sort: 'default', multi: false, picked: [],
   cat: null,
   extGroup: null,
   q: '',
@@ -149,8 +149,10 @@ function amountControls(target, g, portions = [], { compact = false, liquid = fa
 }
 
 function foodButton(f, action, extra = '') {
-  return `<button class="food" data-action="${action}" data-id="${esc(f.id)}" ${extra}>
-    <span class="fi" aria-hidden="true">${catIcon(f.cat)}</span>
+  const multi = S.multi && action === 'ex-pick', on = multi && S.picked.includes(f.id);
+  if (multi) { action = 'multi-pick'; extra += ` aria-pressed="${on}"`; }
+  return `<button class="food ${on ? 'picked' : ''}" data-action="${action}" data-id="${esc(f.id)}" ${extra}>
+    <span class="fi" aria-hidden="true">${on ? '✓' : catIcon(f.cat)}</span>
     <span class="fn">${esc(foodName(f))}</span>
     <span class="ff">${f.forms.length > 1 ? L("{n} biçim", { n: f.forms.length }) : esc(formName(f.forms[0].label))}${quickFacts(f.forms[0].v)}</span>
   </button>`;
@@ -170,7 +172,10 @@ const sortFoods = (list) => (S.sort === 'default' ? list : list.slice().sort(SOR
 function sortBar(prefix) {
   if (prefix !== 'ex') return '';
   const opts = [['default', L("Önerilen")], ['name', L("A–Z")], ['energy', L("Enerji")], ['protein', L("Protein")], ['fiber', L("Lif")]];
-  return `<div class="sortbar" role="group" aria-label="${L("Sırala")}"><span class="hint">${L("Sırala:")}</span>${opts.map(([id, label]) => `<button class="pchip ${S.sort === id ? 'on' : ''}" aria-pressed="${S.sort === id}" data-action="sort" data-s="${id}">${label}</button>`).join('')}</div>${S.sort === 'energy' || S.sort === 'protein' || S.sort === 'fiber' ? `<p class="hint">${L("100 g ve ilk biçime göre, en yüksekten. Veri olmayanlar sonda.")}</p>` : ''}`;
+  const multiBtn = `<button class="pchip ${S.multi ? 'on' : ''}" aria-pressed="${S.multi}" data-action="multi-toggle">☑ ${L("Çoklu seç")}</button>`;
+  const multiBar = S.multi ? `<div class="multibar" role="status"><span>${S.picked.length ? L("{n} besin seçildi", { n: S.picked.length }) : L("Tarife eklemek istediğin besinlere dokun.")}</span>
+    <button class="btn primary" data-action="multi-add" ${S.picked.length ? '' : 'disabled'}>＋ ${L("Tarife ekle (her biri 100 g)")}</button><button class="btn ghost" data-action="multi-toggle">${L("Vazgeç")}</button></div>` : '';
+  return multiBar + `<div class="sortbar" role="group" aria-label="${L("Sırala")}"><span class="hint">${L("Sırala:")}</span>${opts.map(([id, label]) => `<button class="pchip ${S.sort === id ? 'on' : ''}" aria-pressed="${S.sort === id}" data-action="sort" data-s="${id}">${label}</button>`).join('')}${multiBtn}</div>${S.sort === 'energy' || S.sort === 'protein' || S.sort === 'fiber' ? `<p class="hint">${L("100 g ve ilk biçime göre, en yüksekten. Veri olmayanlar sonda.")}</p>` : ''}`;
 }
 function extButton(f, action) {
   return `<button class="food ext" data-action="${action}" data-ndb="${esc(f.n)}"><span class="fi">${S.settings.emoji ? '🇺🇸' : ''}</span><span class="fn">${esc(f.en)}</span><span class="ff">USDA ${esc(f.n)}</span></button>`;
@@ -826,12 +831,13 @@ function aionMoodFor() {
   return 'idle';
 }
 
-function addToRecipe(ref, g) {
+function addToRecipe(ref, g, quiet = false) {
   const rc = activeRecipe();
   const existing = rc.items.find((i) => refKey(i.ref) === refKey(ref));
   if (existing) existing.g = clamp(existing.g + g, 1, MAX_G);
   else rc.items.push({ id: Math.random().toString(36).slice(2, 9), ref: { ...ref }, g });
   persistRecipes();
+  if (quiet) return;
   toast(`“${resolve(ref).name}” → ${rc.name} (${fmtNum(g)} g)`);
   aionPlay('celebrate');
 }
@@ -938,6 +944,14 @@ async function onClick(e) {
     case 'ex-pick-ref': selectFood('ex', JSON.parse(b.dataset.ref)); break;
     case 'pk-pick-ref': selectFood('pk', JSON.parse(b.dataset.ref)); break;
     case 'sort': S.sort = b.dataset.s; render(); break;
+    case 'multi-toggle': S.multi = !S.multi; S.picked = []; render(); break;
+    case 'multi-pick': { const id = b.dataset.id; S.picked = S.picked.includes(id) ? S.picked.filter((x) => x !== id) : [...S.picked, id]; render(); break; }
+    case 'multi-add': {
+      const n = S.picked.length; if (!n) break;
+      for (const id of S.picked) addToRecipe({ t: 'c', id, f: 0 }, 100, true);
+      toast(L("{n} besin → {r} (her biri 100 g)", { n, r: activeRecipe().name })); aionPlay('celebrate');
+      S.multi = false; S.picked = []; render(); break;
+    }
     case 'col-pick': S.colPicker = true; render(); break;
     case 'col-pick-close': S.colPicker = false; render(); break;
     case 'col-toggle': {

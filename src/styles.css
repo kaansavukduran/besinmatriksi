@@ -615,3 +615,7 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 @media (max-width: 700px) { .sortbar { flex-wrap: nowrap; overflow-x: auto; } .sortbar .pchip { flex-shrink: 0; } }
 .recipe-gaps .gaps { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
 .recipe-gaps .gap-h { margin-bottom: 4px; }
+.multibar { position: sticky; top: 0; z-index: 3; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 12px; margin: 0 0 8px; border-radius: 14px; background: var(--card); border: 2px solid var(--acc); }
+.multibar span { flex: 1 1 12em; }
+.food.picked { outline: 3px solid var(--acc); outline-offset: -3px; }
+.food.picked .fi { color: var(--acc); font-weight: 700; }

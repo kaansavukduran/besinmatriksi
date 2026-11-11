@@ -573,5 +573,10 @@ export const UI_EN = {
  "En düşük kalan besinler": "Lowest nutrients",
  "kısmi veri, gerçek değer daha yüksek olabilir": "partial data, the real value may be higher",
  "Bitkisel besinlerde güvenilir doğal kaynağı yok; zenginleştirilmiş ürün veya takviye gerekir.": "No reliable natural plant source; fortified foods or a supplement are needed.",
- "Referansa göre en düşük yüzdeler ve bunları 100 g'da en çok veren besinler. Kişisel ihtiyaç veya emilim değildir; veri olmayan bileşenler burada sayılmaz.": "Lowest percentages against the reference and the foods richest in them per 100 g. Not personal needs or absorption; components without data are not counted here."
+ "Referansa göre en düşük yüzdeler ve bunları 100 g'da en çok veren besinler. Kişisel ihtiyaç veya emilim değildir; veri olmayan bileşenler burada sayılmaz.": "Lowest percentages against the reference and the foods richest in them per 100 g. Not personal needs or absorption; components without data are not counted here.",
+ "Çoklu seç": "Select several",
+ "{n} besin seçildi": "{n} foods selected",
+ "Tarife eklemek istediğin besinlere dokun.": "Tap the foods you want to add to the recipe.",
+ "Tarife ekle (her biri 100 g)": "Add to recipe (100 g each)",
+ "{n} besin → {r} (her biri 100 g)": "{n} foods → {r} (100 g each)"
 };

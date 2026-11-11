@@ -232,3 +232,9 @@
 - Sonraki: **B059** Keşfet'te birden çok besini seçip tek dokunuşla tarife ekleme (çoklu seçim) ve beta.5 sürümü.
 - Sürüm notu (beta.4): release run 42959645122 masaüstü işlerinde `native-notices` kapısında düştü: opener'ın derleme bağımlılığı `tauri-plugin` 2.7.2 crate arşivinde lisans dosyası yok. tauri-apps/tauri `59b63ab` (crate'in `.cargo_vcs_info.json` commit'i) LICENSE-APACHE-2.0 ve LICENSE-MIT metinleri SHA-256 ile `data/licenses/native/` altına sabitlendi. Yerel `node scripts/native-notices.mjs`: 446 paket, eksik 0.
 - Yayın: release run 42961307488 SUCCESS (commit 8bf239f). v1.1.2-beta.4 pre-release 2026-11-11T04:53Z yayımlandı; 22 varlık: Windows portable.exe / Setup.exe / .msi, macOS universal .dmg (imzasız), Linux AppImage / .deb / .rpm, Android .apk (geliştirici imzalı), iOS .ipa (imzasız, kurulamaz), offline.html, web-pwa.zip, source.zip, SHA256SUMS, BUILD_INFO, lisans dosyaları. Cihaz kurulumu NOT_RUN.
+
+## B059 · 2026-11-11 · çoklu seçimle tarife ekleme
+- Keşfet sıralama satırında "☑ Çoklu seç": açıkken katalog besin kartları seçilir/bırakılır (aria-pressed, ✓ ve vurgulu kenar); üstte yapışkan çubuk "N besin seçildi · Tarife ekle (her biri 100 g) · Vazgeç". Hiç seçim yokken ekleme düğmesi devre dışı. Ekleme tek bildirim ve tek Aion kutlamasıyla biter, mod kapanır. Aynı besin tarifte varsa miktarı artar (mevcut addToRecipe kuralı).
+- İlk hata: yeni stiller tanımsız `--ac` değişkenini kullandı (çerçeve görünmedi); temanın `--acc` değişkenine düzeltildi, telefon ekran görüntüsüyle doğrulandı.
+- Kanıt: `npm test` 69/69; Playwright 52/52 PASS (yeni B059 testi: devre dışı durum, aria-pressed, iki besin, tarif sırası).
+- Sonraki: **B060** tarif ekranında malzeme gramını kaydırıcıya ek olarak hızlı ± düğmeleriyle ve porsiyon başı gram göstergesiyle sadeleştirme; uygun birikimde beta.5.
