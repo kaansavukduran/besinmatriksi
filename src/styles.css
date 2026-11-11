@@ -609,3 +609,4 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 .move .btn:disabled { opacity: .35; cursor: default; }
 .ing-h .move { margin-left: auto; }
 .ing-h .ing-kcal { margin-left: 0; }
+.mono-url { font-family: monospace; word-break: break-all; }

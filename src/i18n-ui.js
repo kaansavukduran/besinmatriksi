@@ -552,5 +552,13 @@ export const UI_EN = {
  "Bilgi": "About",
  "Ayarlar": "Settings",
  "{n} yukarı taşı": "Move {n} up",
- "{n} aşağı taşı": "Move {n} down"
+ "{n} aşağı taşı": "Move {n} down",
+ "Güncellemeler": "Updates",
+ "Yüklü sürüm": "Installed version",
+ "Uygulama kendiliğinden internete bağlanmaz. Yeni sürümü indirmek için sürüm sayfasını aç: GitHub hesabınla giriş yapmışken cihazına uygun dosyayı indir ve eskisinin üzerine kur. Tarifler, koleksiyonlar, ayarlar ve kendi besinlerin cihazda kalır; emin olmak için önce yedek al.": "The app never connects to the internet on its own. To get a new version, open the releases page, sign in to GitHub, download the file for your device and install it over the old one. Recipes, collections, settings and your foods stay on the device; make a backup first to be safe.",
+ "Sürüm sayfasını aç": "Open releases page",
+ "Bağlantıyı kopyala": "Copy link",
+ "Önce yedek al (.json)": "Back up first (.json)",
+ "Bağlantı kopyalandı": "Link copied",
+ "Pano kullanılamadı. Bağlantıyı seçip kopyala:": "Clipboard unavailable. Select and copy the link:"
 };

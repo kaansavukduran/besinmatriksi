@@ -4,9 +4,9 @@
  "product_version": "1.1.2-beta.3",
  "development_state": "IN_PROGRESS",
  "last_forge_at": "2026-11-09T12:39:11.475163+00:00",
- "last_completed_forge": "B055",
+ "last_completed_forge": "B052a",
  "active_forge": null,
- "next_recommended_forge": "B052",
+ "next_recommended_forge": "B056",
  "branch": "ccr-1e1934aa-iv8aev",
  "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
  "validated_code_commit": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
@@ -97,7 +97,8 @@
   }
  ],
  "remaining_forges": [
-  "B052",
+  "B056",
+  "B052b-signing",
   "B031",
   "B021",
   "UX-TASKS"

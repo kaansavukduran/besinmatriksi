@@ -418,3 +418,11 @@ test('tarif malzemeleri ve koleksiyon besinleri ↑/↓ ile sıralanır, sıra k
   await page.locator('#foodlist [data-action="col-move"][data-i="0"][data-d="1"]').click();
   expect(await colNames()).toEqual(['Yulaf ezmesi', 'Muz']);
 });
+test('Ayarlar → Güncellemeler yüklü sürümü ve sürüm sayfası bağlantısını gösterir, ağa kendiliğinden çıkmaz (B052)', async ({ page }) => {
+  const requests = []; page.on('request', r => requests.push(r.url()));
+  await page.goto('/'); await tab(page, 'ayarlar');
+  const card = page.locator('section.updates');
+  await expect(card).toContainText(/\d+\.\d+\.\d+/);
+  await expect(card.locator('a[href$="/releases"]')).toHaveAttribute('target', '_blank');
+  expect(requests.filter(u => !u.startsWith('http://127.0.0.1') && !u.startsWith('data:'))).toEqual([]);
+});

@@ -528,6 +528,14 @@ function renderSettings() {
       <div class="presets"><button class="btn" data-action="settings-export">${L("Ayarları indir")}</button>
       <button class="btn" data-action="open-file" data-id="settings-file">${L("Ayar dosyası aç")}</button><input type="file" accept="application/json,.json" id="settings-file" hidden></div>
     </section>
+    <section class="card updates"><h2>${L("Güncellemeler")}</h2>
+      <div class="kv"><span>${L("Yüklü sürüm")}</span><span><b>${esc(window.__APP_VERSION__ || '')}</b></span></div>
+      <p class="hint">${L("Uygulama kendiliğinden internete bağlanmaz. Yeni sürümü indirmek için sürüm sayfasını aç: GitHub hesabınla giriş yapmışken cihazına uygun dosyayı indir ve eskisinin üzerine kur. Tarifler, koleksiyonlar, ayarlar ve kendi besinlerin cihazda kalır; emin olmak için önce yedek al.")}</p>
+      <div class="presets"><a class="btn primary" href="${RELEASES_URL}" target="_blank" rel="noopener noreferrer">⬇ ${L("Sürüm sayfasını aç")}</a>
+      <button class="btn" data-action="copy-releases">${L("Bağlantıyı kopyala")}</button>
+      <button class="btn ghost" data-action="exp-file">${L("Önce yedek al (.json)")}</button></div>
+      <p class="hint mono-url">${RELEASES_URL}</p>
+    </section>
     <section class="card"><h2>${L("Yedekleme")}</h2>
       <p class="hint">${L("Tarifler ve ayarlar yalnızca bu cihazda saklanır. Başka cihaza taşımak veya yedeklemek için dışa aktar.")}</p>
       <div class="presets"><button class="btn" data-action="exp-file">${L("Dosyaya kaydet (.json)")}</button>
@@ -642,6 +650,7 @@ function saveCustomEdit() {
 }
 
 // ---------------------------------------------------------------- render
+const RELEASES_URL = 'https://github.com/kaansavukduran/besinmatriksi/releases';
 const TAB_SHORT = { kesfet: () => L("Keşfet"), tarif: () => L("Tarif"), gunluk: () => L("Günlük"), karsilastir: () => L("Kıyasla"), hakkinda: () => L("Bilgi"), ayarlar: () => L("Ayarlar") };
 const TABS = [['kesfet', '🔎'], ['tarif', '🥣'], ['gunluk', '📒'], ['karsilastir', '⚖️'], ['hakkinda', 'ℹ️'], ['ayarlar', '🎨']];
 
@@ -1057,6 +1066,10 @@ async function onClick(e) {
     }
     case 'toggle-missing': setSetting('showMissing', true); refreshMatrix(); break;
     case 'exp-file': download(`besin-matriksi-yedek-${new Date().toISOString().slice(0, 10)}.json`, exportPayload(S.recipes, S.settings, customFoods(), S.profiles, S.collections)); toast(L("Yedek dosyası hazırlandı")); break;
+    case 'copy-releases':
+      try { await navigator.clipboard.writeText(RELEASES_URL); toast(L("Bağlantı kopyalandı")); }
+      catch { await uiDialog(L("Pano kullanılamadı. Bağlantıyı seçip kopyala:"), { input: RELEASES_URL, line: true, ok: L("Tamam") }); }
+      break;
     case 'exp-copy':
       try { await navigator.clipboard.writeText(exportPayload(S.recipes, S.settings, customFoods(), S.profiles, S.collections)); toast(L("Panoya kopyalandı")); }
       catch { await uiDialog(L("Pano kullanılamadı. Metni seçip kopyala:"), { input: exportPayload(S.recipes, S.settings, customFoods(), S.profiles, S.collections), ok: L("Tamam") }); }

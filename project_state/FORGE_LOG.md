@@ -204,3 +204,10 @@
 - k44 §4: sürüklemenin klavye/dokunma ile kullanılabilir yukarı/aşağı karşılığı. Gerçek sürükle-bırak bu artışta yok.
 - Kanıt: `npm test` 67/67 PASS; tarayıcı 44/44 PASS (yeni B055 akışı masaüstü + telefon; ilk telefon denemesi testin kendisindeki adım sırasından düştü, düzeltildi).
 - Düzey: RUNTIME_TESTED. Sonraki: **B052** uygulama içi güncelleme kontrolü (Ayarlar → Güncellemeler: yüklü sürüm, GitHub Releases'tan yeni sürüm bilgisi, indirme bağlantısı; çevrimdışıyken ana işi engellemez).
+
+## B052a · 2026-11-11 · Ayarlar → Güncellemeler (manuel, gizlilik korumalı)
+- Ayarlar'da "Güncellemeler" kartı: yüklü sürüm, GitHub Releases sayfasını açan bağlantı, "Bağlantıyı kopyala" (pano yoksa tek satır diyalog), "Önce yedek al". Uygulama kendiliğinden ağa çıkmaz (CLAUDE.md kuralı); repo gizli olduğu için kimliksiz API sorgusu zaten çalışmaz.
+- Masaüstü (Tauri) web görünümünde target=_blank bağlantısı opener eklentisi olmadan dış tarayıcıyı açmayabilir; kopyalama yolu her ortamda çalışır. İmzalı otomatik güncelleyici ve iki gerçek paketle yükseltme testi (B052b) imza anahtarı olmadan tamamlanamaz: BLOCKED_SIGNING.
+- Kanıt: `npm test` 67/67; tarayıcı 46/46 PASS (yeni B052 testi kendiliğinden dış istek olmadığını da denetler).
+- CI notu: beta.3 run 42927583880 yalnız personal.spec EN/telefonda düştü; test 23:59:57–00:00 UTC arasında koştu, günlük kaydı gün dönümünde önceki güne kaldı (zamanlama, kod hatası değil). Yeniden çalıştırıldı.
+- Sonraki: **B056** günlük testini sabit saatle (gün dönümüne dayanıklı) çalıştırmak ve Tauri'de sürüm sayfasını dış tarayıcıda açmak için resmî opener eklentisini değerlendirmek.
