@@ -238,3 +238,9 @@
 - İlk hata: yeni stiller tanımsız `--ac` değişkenini kullandı (çerçeve görünmedi); temanın `--acc` değişkenine düzeltildi, telefon ekran görüntüsüyle doğrulandı.
 - Kanıt: `npm test` 69/69; Playwright 52/52 PASS (yeni B059 testi: devre dışı durum, aria-pressed, iki besin, tarif sırası).
 - Sonraki: **B060** tarif ekranında malzeme gramını kaydırıcıya ek olarak hızlı ± düğmeleriyle ve porsiyon başı gram göstergesiyle sadeleştirme; uygun birikimde beta.5.
+
+## B060 · 2026-11-11 · sade tarif malzemeleri
+- Tarif malzemeleri varsayılan olarak tek satır: −10 · gram · +10 · (porsiyon > 1 ise) "porsiyon başı X g" · "⚙ Ayarla". Ayarla (aria-expanded) kaydırıcıyı, hazır gramları, ölçü birimlerini ve kg fiyatını açar; "Kapat" ile döner. Porsiyon başı gram ± ile yerinde güncellenir. Açık/kapalı durum oturumluk (kalıcı veri değişmedi, eski tarifler aynen açılır).
+- Eski testler yeni davranışa göre güncellendi (fiyat ve hazır gram öncesi "Ayarla"). Mini satırın çift çerçevesi kaldırıldı (telefon ekran görüntüsüyle doğrulandı).
+- Kanıt: `npm test` 69/69; Playwright 54/54 PASS (yeni B060 testi), CSS düzeltmesinden sonra ilgili 6 test yeniden PASS.
+- Sonraki: **B061** beta.5 sürümü (B059 + B060) ve ardından Keşfet'te son kullanılan besinler satırı.

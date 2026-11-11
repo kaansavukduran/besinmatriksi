@@ -578,5 +578,9 @@ export const UI_EN = {
  "{n} besin seçildi": "{n} foods selected",
  "Tarife eklemek istediğin besinlere dokun.": "Tap the foods you want to add to the recipe.",
  "Tarife ekle (her biri 100 g)": "Add to recipe (100 g each)",
- "{n} besin → {r} (her biri 100 g)": "{n} foods → {r} (100 g each)"
+ "{n} besin → {r} (her biri 100 g)": "{n} foods → {r} (100 g each)",
+ "porsiyon başı {g} g": "{g} g per serving",
+ "{n}: 10 gram azalt": "{n}: decrease by 10 g",
+ "{n}: 10 gram artır": "{n}: increase by 10 g",
+ "Ayarla": "Adjust"
 };

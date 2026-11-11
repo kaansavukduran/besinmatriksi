@@ -619,3 +619,7 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 .multibar span { flex: 1 1 12em; }
 .food.picked { outline: 3px solid var(--acc); outline-offset: -3px; }
 .food.picked .fi { color: var(--acc); font-weight: 700; }
+.amount.mini { border: 0; padding: 0; background: none; box-shadow: none; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 6px; }
+.amount.mini .amt-val { min-width: 4.5em; text-align: center; }
+.amount.mini .ing-adjust { margin-left: auto; }
+.per-serv { color: var(--muted); font-size: .92em; }

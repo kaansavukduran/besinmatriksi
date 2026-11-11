@@ -13,6 +13,8 @@ test('besin, miktar, tarif maliyeti ve karşılaştırma uçtan uca çalışır'
   await page.locator('[data-action="ex-add-recipe"]').click();
   await page.locator('[data-action="ex-add-compare"]').click();
   await tab(page, 'tarif');
+  await expect(page.locator('[data-price]')).toHaveCount(0);
+  await page.locator('[data-action="ing-open"]').first().click();
   await page.locator('[data-price]').fill('80');
   await expect(page.locator('#recipe-summary')).toContainText('20 TL toplam');
   await page.locator('[data-action="rc-serv"][data-d="1"]').click();
@@ -20,6 +22,7 @@ test('besin, miktar, tarif maliyeti ve karşılaştırma uçtan uca çalışır'
   await page.locator('[data-action="rc-basis"][data-b="serving"]').click();
   await expect(page.locator('#recipe-summary')).toContainText('111');
   await page.reload(); await tab(page, 'tarif');
+  await page.locator('[data-action="ing-open"]').first().click();
   await expect(page.locator('[data-price]')).toHaveValue('80');
   // Karşılaştırma geçici; bu test için yeniden seç.
   await tab(page, 'kesfet'); await pickBanana(page);
@@ -192,6 +195,7 @@ test('tarif kaynak dökümü eksik/sıfır veriyi ve porsiyon/100 g katkıların
   await expect(panel).toHaveAttribute('open', ''); await expect(firstValue).toHaveText('111 kcal');
   await page.locator('[data-action="rc-basis"][data-b="per100"]').click();
   await expect(panel).toContainText('pişmiş ağırlık 200 g'); await expect(firstValue).toHaveText('111 kcal');
+  await page.locator('[data-action="ing-open"][data-id="banana"]').click();
   await page.locator('[data-amount="rc:banana"] [data-val="500"]').click();
   await expect(firstValue).toHaveText('223 kcal');
   await panel.locator('select').selectOption('protein');
@@ -474,4 +478,25 @@ test('çoklu seçimle birden çok besin tek dokunuşla tarife eklenir (B059)', a
   await expect(page.locator('.multibar')).toHaveCount(0);
   await tab(page, 'tarif');
   await expect(page.locator('.ing .ing-h b')).toHaveText(['Muz', 'Yulaf ezmesi']);
+});
+
+test('tarif malzemesi tek satırda kalır; ±10, porsiyon başı gram ve Ayarla ile açılan ayrıntı (B060)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  await page.locator('[data-action="ex-add-recipe"]').click();
+  await tab(page, 'tarif');
+  const mini = page.locator('.ing .amount.mini');
+  await expect(mini.locator('.amt-val b')).toHaveText('100');
+  await expect(page.locator('.ing .slider')).toHaveCount(0);
+  await mini.locator('[data-delta="10"]').click();
+  await expect(mini.locator('.amt-val b')).toHaveText('110');
+  await page.locator('[data-action="rc-serv"][data-d="1"]').click();
+  await expect(page.locator('.ing .per-serv')).toHaveText('porsiyon başı 55 g');
+  await page.locator('.ing [data-action="nudge"][data-delta="-10"]').click();
+  await expect(page.locator('.ing .per-serv')).toHaveText('porsiyon başı 50 g');
+  await page.locator('[data-action="ing-open"]').click();
+  await expect(page.locator('.ing .slider')).toBeVisible();
+  await expect(page.locator('[data-action="ing-open"]')).toHaveAttribute('aria-expanded', 'true');
+  await page.locator('[data-action="ing-open"]').click();
+  await expect(page.locator('.ing .slider')).toHaveCount(0);
 });

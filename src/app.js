@@ -33,7 +33,7 @@ const S = {
   tab: 'kesfet',
   searches: loadSearches(),
   profiles: loadProfiles(),
-  collections: loadCollections(), colPicker: false, sort: 'default', multi: false, picked: [],
+  collections: loadCollections(), colPicker: false, sort: 'default', multi: false, picked: [], ingOpen: new Set(),
   cat: null,
   extGroup: null,
   q: '',
@@ -145,6 +145,20 @@ function amountControls(target, g, portions = [], { compact = false, liquid = fa
     ${compact ? '' : `<div class="slider-scale" aria-hidden="true"><span>1 g</span><span>250</span><span>500</span><span>750</span><span>1 kg</span></div>`}
     <div class="presets">${presets.map((p) => `<button class="pchip ${p === g ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p}">${p >= 1000 ? '1 kg' : p + ' g'}</button>`).join('')}</div>
     ${portions.length ? `<div class="portions">${portions.map((p) => `<button class="pchip por ${Math.abs(p.g - g) < 0.01 ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p.g}" title="${esc(p.en)} (USDA)">${esc(getLanguage() === 'en' && p.en ? p.en : p.label)} · ${fmtNum(p.g)} g</button>`).join('')}</div>` : ''}
+  </div>`;
+}
+
+// Tarif malzemesi kapalıyken tek satır: −10 · gram · +10 · porsiyon başı · Ayarla
+function perServing(g, servings) {
+  return servings > 1 ? `<span class="per-serv" data-perserv="${servings}">${L("porsiyon başı {g} g", { g: fmtNum(g / servings) })}</span>` : '';
+}
+function miniAmount(target, g, servings, id, name) {
+  return `<div class="amount mini" data-amount="${esc(target)}">
+    <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="-10" aria-label="${esc(L("{n}: 10 gram azalt", { n: name }))}">−10</button>
+    <output class="amt-val"><b>${fmtNum(g)}</b> <span class="amount-unit">g</span></output>
+    <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="10" aria-label="${esc(L("{n}: 10 gram artır", { n: name }))}">+10</button>
+    ${perServing(g, servings)}
+    <button class="btn ghost ing-adjust" data-action="ing-open" data-id="${esc(id)}" aria-expanded="false">⚙ ${L("Ayarla")}</button>
   </div>`;
 }
 
@@ -363,8 +377,10 @@ function renderRecipe() {
       <span class="ing-kcal">${item.v.energy != null ? fmtNum((item.v.energy * it.g) / 100) + ' kcal' : ''}</span>
       <span class="move"><button class="btn ghost" data-action="rc-move" data-id="${it.id}" data-d="-1" ${idx === 0 ? 'disabled' : ''} aria-label="${esc(L("{n} yukarı taşı", { n: item.name }))}">↑</button><button class="btn ghost" data-action="rc-move" data-id="${it.id}" data-d="1" ${idx === rc.items.length - 1 ? 'disabled' : ''} aria-label="${esc(L("{n} aşağı taşı", { n: item.name }))}">↓</button></span>
       <button class="btn ghost danger" data-action="rc-del-item" data-id="${it.id}" aria-label="${L("Malzemeyi kaldır")}">✕</button></div>
-      ${amountControls('rc:' + it.id, it.g, item.portions, { compact: true, liquid: item.liquid })}
+      ${S.ingOpen.has(it.id) ? `${amountControls('rc:' + it.id, it.g, item.portions, { compact: true, liquid: item.liquid })}${perServing(it.g, rc.servings)}
       <label class="price-field">${L("Kilogram fiyatı (TL/kg, isteğe bağlı)")}<input type="number" min="0" step="any" inputmode="decimal" data-price="${it.id}" value="${it.pricePerKg ?? ''}" aria-label="${L("{name} kilogram fiyatı", { name: esc(item.name) })}"></label>
+      <button class="btn ghost" data-action="ing-open" data-id="${it.id}" aria-expanded="true">${L("Kapat")}</button>`
+      : miniAmount('rc:' + it.id, it.g, rc.servings, it.id, item.name)}
     </div>`;
   }).join('');
   const { r, basisLabel, agg, factor } = recipeResult(rc);
@@ -771,6 +787,8 @@ function setAmount(target, g, { fromSlider = false } = {}) {
     if (sl && !fromSlider) sl.value = String(Math.round(g));
     if (sl) { sl.style.setProperty('--fill', ((g - 1) / (MAX_G - 1)) * 100 + '%'); sl.setAttribute('aria-valuetext', fmtNum(g) + ' g'); }
     box.querySelectorAll('.pchip').forEach((b) => b.classList.toggle('on', Math.abs(Number(b.dataset.val) - g) < 0.01));
+    const ps = box.querySelector('.per-serv') || box.parentElement?.querySelector('.per-serv');
+    if (ps) ps.textContent = L("porsiyon başı {g} g", { g: fmtNum(g / Number(ps.dataset.perserv)) });
   }
   if (target === 'pk') {
     const item = resolve(S.picker.sel);
@@ -944,6 +962,7 @@ async function onClick(e) {
     case 'ex-pick-ref': selectFood('ex', JSON.parse(b.dataset.ref)); break;
     case 'pk-pick-ref': selectFood('pk', JSON.parse(b.dataset.ref)); break;
     case 'sort': S.sort = b.dataset.s; render(); break;
+    case 'ing-open': { const id = b.dataset.id; if (S.ingOpen.has(id)) S.ingOpen.delete(id); else S.ingOpen.add(id); render(); document.querySelector(`[data-action="ing-open"][data-id="${CSS.escape(id)}"]`)?.focus(); break; }
     case 'multi-toggle': S.multi = !S.multi; S.picked = []; render(); break;
     case 'multi-pick': { const id = b.dataset.id; S.picked = S.picked.includes(id) ? S.picked.filter((x) => x !== id) : [...S.picked, id]; render(); break; }
     case 'multi-add': {
