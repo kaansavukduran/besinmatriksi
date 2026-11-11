@@ -223,3 +223,10 @@
 - Keşfet listesinin üstünde sıralama: Önerilen (kategori grupları) · A–Z (dile göre) · Enerji · Protein · Lif (en yüksekten; veri olmayanlar sonda). Aramada arama sırası korunur. Telefonda düğmeler yana kayar.
 - Kanıt: `npm run build` PASS; `npm test` 67/67; Playwright 48/48 PASS (yeni B057 testi protein sırasının azalan olduğunu ve veri yokların sonda kaldığını denetler, masaüstü + telefon).
 - Sonraki: **B058** tarif ekranında hedefe göre en düşük kalan besinler için katalogdan "bunu en çok veren besinler" önerisi (veri yok ≠ 0).
+
+## B058 · 2026-11-11 · tarifte en düşük kalan besinler ve kaynakları
+- Yeni saf modül `src/gaps.js`: seçili referansa (BRD / EFSA / hedef) göre tarifin en düşük 3 yüzdesi; her biri için katalogda 100 g'da en yüksek değerli 3 besin (ilk biçim). Veri yok açık sayılmaz; enerji, karbonhidrat, şeker, yağ, doymuş yağ ve tuz hedeflenmez; kısmi kapsamda "gerçek değer daha yüksek olabilir" uyarısı. B12 ve D vitamini için besin önerilmez, "zenginleştirilmiş ürün veya takviye" notu. Baharat ve taze otlar (100 g'da yenmez) öneriye girmez.
+- Öneriye dokununca Keşfet'te o besin açılır. "Son ürün 100 g" görünümünde gizlenir. Ayarlar → Matriks'ten kapatılır (`recipeGaps`, varsayılan açık).
+- İlk hata: telefonda yana kayan öneri satırı tarif sütununu genişletip dokunmaları engelledi (5 telefon testi). Satır sarmalı yapıldı; yeniden test temiz.
+- Kanıt: `npm test` 69/69 (yeni gaps testleri); Playwright 50/50 PASS; telefon ekran görüntüsü incelendi.
+- Sonraki: **B059** Keşfet'te birden çok besini seçip tek dokunuşla tarife ekleme (çoklu seçim) ve beta.5 sürümü.

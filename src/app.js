@@ -23,7 +23,8 @@ import { nutrientLabel } from './i18n-nutrients.js';
 import { getLanguage } from './i18n.js';
 import { normalizeCollections, createCollection, renameCollection, deleteCollection, toggleRef, removeRef, collectionTree, collectionRefs, hasRef, moveRef, moveIndex } from './collections.js';
 import { mountAion, configureAion, aionMood, aionPlay, aionSay } from './aion.js';
-import { normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS } from './settings.js';
+import { recipeGaps } from './gaps.js';
+import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS } from './settings.js';
 
 const PRESETS = [1, 5, 10, 25, 50, 100, 150, 200, 250, 500, 750, 1000];
 const MAX_G = 1000;
@@ -387,6 +388,7 @@ function renderRecipe() {
         <div class="presets">${basisBtn('total', L("Toplam"))}${basisBtn('serving', L("1 porsiyon"))}${basisBtn('per100', L("Son ürün 100 g"))}</div>
       </div>
       <div id="recipe-summary">${renderRecipeSummary(rc, r)}</div>
+      <div id="recipe-gaps">${renderRecipeGaps(r)}</div>
       <div id="recipe-sources">${renderRecipeSources(rc, resolve, { key: S.recipeSource, factor, basisLabel, open: S.recipeSourcesOpen, precision: S.settings.precision })}</div>
       <div id="matrix" class="matrix">${renderMatrix(r, S.settings, { recipe: rc, basisLabel, closed: S.closed })}</div>` : ''}
     </section>
@@ -406,6 +408,20 @@ function renderRecipeSummary(rc, r) {
     <p><b>${L("Maliyet:")}</b> ${cost.known ? L("{t} TL toplam · {s} TL / porsiyon", { t: fmtNum(cost.total), s: fmtNum(cost.perServing) }) : L("fiyat girilmedi")}${cost.complete ? '' : ' · ' + L("kısmi {a}/{b} malzeme", { a: cost.known, b: cost.count })}</p>
     ${missing ? `<p class="note" role="status">${L("{n} malzemenin kaydı bulunamadı. Bu malzemelerin ağırlığı toplamda, besin değerleri eksik kapsamda tutuldu.", { n: missing })}</p>` : ''}
   </section>`;
+}
+
+// Hedefe en uzak 3 bileşen ve onları 100 g'da en çok veren katalog besinleri (öneri değil, yön gösterir)
+function renderRecipeGaps(r) {
+  if (!S.settings.recipeGaps || S.basis === 'per100') return '';
+  const gaps = recipeGaps(r, NUTRIENTS, FOODS, (n) => referenceFor(n, S.settings));
+  if (!gaps.length) return '';
+  const rows = gaps.map((g) => `<li><div class="gap-h"><b>${esc(nutrientLabel(g.n))}</b> <span class="muted">${fmtNum(g.pct, 'low')}%${g.partial ? ' · ' + L("kısmi veri, gerçek değer daha yüksek olabilir") : ''}</span></div>
+    ${g.noPlant ? `<p class="hint">${L("Bitkisel besinlerde güvenilir doğal kaynağı yok; zenginleştirilmiş ürün veya takviye gerekir.")}</p>`
+      : `<div class="presets">${g.foods.map((x) => `<button class="pchip" data-action="gap-open" data-id="${esc(x.f.id)}">${esc(foodName(x.f))} <span class="muted">${fmtNum(x.v, 'low')} ${esc(g.n.unit)}/100 g</span></button>`).join('')}</div>`}</li>`).join('');
+  return `<section class="card recipe-gaps" aria-label="${L("En düşük kalan besinler")}">
+    <h3>${L("En düşük kalan besinler")}</h3>
+    <p class="hint">${L("Referansa göre en düşük yüzdeler ve bunları 100 g'da en çok veren besinler. Kişisel ihtiyaç veya emilim değildir; veri olmayan bileşenler burada sayılmaz.")}</p>
+    <ul class="gaps">${rows}</ul></section>`;
 }
 
 // ---------------------------------------------------------------- KARŞILAŞTIR
@@ -498,6 +514,7 @@ function renderSettings() {
       ${tog('showSource', L("Kaynak etiketleri (USDA / Hesap / Etiket)"))}
       ${tog('showAlt', L("Varsa ikinci kaynağı göster (bu sürümde ikinci veri seti yok)"))}
       ${tog('showSd', L("Varsa kaynak standart sapmasını göster"))}
+      ${tog('recipeGaps', L("Tarifte en düşük kalan besinleri ve kaynaklarını göster"))}
       ${tog('cardFacts', L("Besin kartlarında kısa özet (kcal, protein, lif)"))}
       ${tog('showMissing', L("“Veri yok” satırlarını listele"))}
       <div class="kv"><span>${L("Ondalık hassasiyeti")}</span><span class="presets">${opt('precision', 'low', L("Az"))}${opt('precision', 'normal', L("Normal"))}${opt('precision', 'high', L("Çok"))}</span></div>
@@ -715,6 +732,7 @@ function refreshMatrix() {
     const { r, basisLabel, factor } = recipeResult(rc);
     m.innerHTML = renderMatrix(r, S.settings, { recipe: rc, basisLabel, closed: S.closed });
     const summary = $('#recipe-summary'); if (summary) summary.innerHTML = renderRecipeSummary(rc, r);
+    const gapsEl = $('#recipe-gaps'); if (gapsEl) gapsEl.innerHTML = renderRecipeGaps(r);
     const sources = $('#recipe-sources'); if (sources) sources.innerHTML = renderRecipeSources(rc, resolve, { key: S.recipeSource, factor, basisLabel, open: S.recipeSourcesOpen, precision: S.settings.precision });
     rc.items.forEach((it) => {
       const item = resolve(it.ref);
@@ -914,6 +932,7 @@ async function onClick(e) {
     case 'ex-cat': S.sel = null; S.cat = b.dataset.cat || null; S.extGroup = null; render(); $('.list') && ($('.list').scrollTop = 0); break;
     case 'ex-extgroup': S.extGroup = S.extGroup === b.dataset.g ? null : b.dataset.g; render(); break;
     case 'ex-pick': selectFood('ex', { t: 'c', id: b.dataset.id, f: 0 }); break;
+    case 'gap-open': S.tab = 'kesfet'; selectFood('ex', { t: 'c', id: b.dataset.id, f: 0 }); break;
     case 'ex-pick-ext': selectFood('ex', { t: 'x', n: b.dataset.ndb }); break;
     case 'ex-pick-custom': selectFood('ex', { t: 'u', id: b.dataset.cid }); break;
     case 'ex-pick-ref': selectFood('ex', JSON.parse(b.dataset.ref)); break;

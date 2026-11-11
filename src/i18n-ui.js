@@ -568,5 +568,10 @@ export const UI_EN = {
  "Sırala:": "Sort:",
  "100 g ve ilk biçime göre, en yüksekten. Veri olmayanlar sonda.": "Per 100 g of the first form, highest first. Foods without data last.",
  "prot.": "prot.",
- "Besin kartlarında kısa özet (kcal, protein, lif)": "Short facts on food cards (kcal, protein, fibre)"
+ "Besin kartlarında kısa özet (kcal, protein, lif)": "Short facts on food cards (kcal, protein, fibre)",
+ "Tarifte en düşük kalan besinleri ve kaynaklarını göster": "Show lowest nutrients and their sources in recipes",
+ "En düşük kalan besinler": "Lowest nutrients",
+ "kısmi veri, gerçek değer daha yüksek olabilir": "partial data, the real value may be higher",
+ "Bitkisel besinlerde güvenilir doğal kaynağı yok; zenginleştirilmiş ürün veya takviye gerekir.": "No reliable natural plant source; fortified foods or a supplement are needed.",
+ "Referansa göre en düşük yüzdeler ve bunları 100 g'da en çok veren besinler. Kişisel ihtiyaç veya emilim değildir; veri olmayan bileşenler burada sayılmaz.": "Lowest percentages against the reference and the foods richest in them per 100 g. Not personal needs or absorption; components without data are not counted here."
 };

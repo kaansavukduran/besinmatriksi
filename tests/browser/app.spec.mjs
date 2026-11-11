@@ -445,3 +445,19 @@ test('besin kartları kısa özet gösterir ve liste enerji/proteine göre sıra
   await page.locator('[data-action="sort"][data-s="default"]').click();
   await expect(page.locator('#foodlist h3.grp').first()).toBeVisible();
 });
+
+test('tarif en düşük kalan besinleri gösterir ve öneriden besine gider (B058)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  await page.locator('[data-action="ex-add-recipe"]').click();
+  await tab(page, 'tarif');
+  const card = page.locator('.recipe-gaps');
+  await expect(card.locator('li')).toHaveCount(3);
+  await expect(card).toContainText('B12');
+  const chip = card.locator('[data-action="gap-open"]').first();
+  const id = await chip.getAttribute('data-id');
+  await chip.click();
+  await expect(page.locator(`.dhead, .detail`).first()).toBeVisible();
+  await expect(page.locator('[data-action="ex-add-recipe"]')).toBeVisible();
+  expect(id).toBeTruthy();
+});
