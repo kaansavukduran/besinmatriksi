@@ -33,7 +33,7 @@ const S = {
   tab: 'kesfet',
   searches: loadSearches(),
   profiles: loadProfiles(),
-  collections: loadCollections(), colPicker: false, sort: 'default', multi: false, picked: [], ingOpen: new Set(), settingsQ: '', recent: loadRecent((r) => !!FOODS.find((f) => f.id === r.id)?.forms[r.f]),
+  collections: loadCollections(), colPicker: false, sort: 'default', multi: false, picked: [], ingOpen: new Set(), settingsQ: '', rcQ: '', rcSort: 'manual', recent: loadRecent((r) => !!FOODS.find((f) => f.id === r.id)?.forms[r.f]),
   cat: null,
   extGroup: null,
   q: '',
@@ -376,9 +376,15 @@ function recipeResult(rc) {
 
 function renderRecipe() {
   const rc = activeRecipe();
-  const list = S.recipes.map((r) => `<div class="rlist-item ${r.id === rc.id ? 'on' : ''}">
-      <button class="rname" data-action="rc-open" data-id="${r.id}">${S.settings.emoji ? '📒 ' : ''}${esc(r.name)} <span class="cnt">${r.items.length}</span></button>
-    </div>`).join('');
+  const kcalOf = new Map(S.recipes.map((r) => [r.id, servingKcal(r)]));
+  const ordered = S.rcSort === 'name' ? S.recipes.slice().sort((x, y) => x.name.localeCompare(y.name, getLanguage() === 'en' ? 'en' : 'tr'))
+    : S.rcSort === 'kcal' ? S.recipes.slice().sort((x, y) => (kcalOf.get(x.id)?.v ?? Infinity) - (kcalOf.get(y.id)?.v ?? Infinity)) : S.recipes;
+  const sortChip = (id, label) => `<button class="pchip ${S.rcSort === id ? 'on' : ''}" aria-pressed="${S.rcSort === id}" data-action="rc-sort" data-s="${id}">${label}</button>`;
+  const tools = S.recipes.length > 3 ? `<label class="field"><span class="sr">${L("Tariflerde ara")}</span><input id="rc-q" type="search" value="${esc(S.rcQ)}" placeholder="🔎 ${L("Tariflerde ara")}" autocomplete="off"></label>
+      <div class="presets" role="group" aria-label="${L("Sırala")}">${sortChip('manual', L("Eklenme"))}${sortChip('name', L("A–Z"))}${sortChip('kcal', L("kcal/porsiyon"))}</div>` : '';
+  const list = tools + ordered.map((r) => { const k = kcalOf.get(r.id); return `<div class="rlist-item ${r.id === rc.id ? 'on' : ''}" data-rname="${esc(norm(r.name))}">
+      <button class="rname" data-action="rc-open" data-id="${r.id}">${S.settings.emoji ? '📒 ' : ''}${esc(r.name)} <span class="cnt">${r.items.length}</span>${k ? `<small class="rkcal">${k.partial ? '≥ ' : ''}${fmtNum(k.v)} kcal/${L("porsiyon")}</small>` : ''}</button>
+    </div>`; }).join('') + `<p class="hint" id="rc-none" hidden>${L("Bu aramaya uyan tarif yok.")}</p>`;
   const items = rc.items.map((it, idx) => {
     const item = resolve(it.ref);
     if (!item) return `<div class="ing missing"><span>${L("Bulunamayan kayıt ({key})", { key: esc(refKey(it.ref)) })} ${it.ref.t === 'x' ? '— ' + L("geniş katalog açık olmalı") : ''}</span><button class="btn ghost" data-action="rc-del-item" data-id="${it.id}">${L("Kaldır")}</button></div>`;
@@ -748,6 +754,7 @@ export function render() {
     ${renderPicker()}${renderColPicker()}${renderCustomEditor()}${renderThemeEditor(S.themeEditor, S.settings.customTheme)}`;
   aionMood(aionMoodFor());
   if (S.tab === 'ayarlar') applySettingsFilter();
+  if (S.tab === 'tarif') applyRecipeFilter();
   document.querySelectorAll('.list, .detail, .pk-list, .cats').forEach((el, i) => (el.dataset.keepScroll = el.className.split(' ')[0] + i));
   document.querySelectorAll('[data-keep-scroll]').forEach((el) => { if (keep[el.dataset.keepScroll] != null) el.scrollTop = keep[el.dataset.keepScroll]; });
   window.scrollTo(0, winY);
@@ -998,6 +1005,7 @@ async function onClick(e) {
     case 'ex-pick-ref': selectFood('ex', JSON.parse(b.dataset.ref)); break;
     case 'pk-pick-ref': selectFood('pk', JSON.parse(b.dataset.ref)); break;
     case 'sort': S.sort = b.dataset.s; render(); break;
+    case 'rc-sort': S.rcSort = b.dataset.s; render(); break;
     case 'recent-clear': S.recent = []; saveRecent([]); render(); break;
     case 'ing-open': { const id = b.dataset.id; if (S.ingOpen.has(id)) S.ingOpen.delete(id); else S.ingOpen.add(id); render(); document.querySelector(`[data-action="ing-open"][data-id="${CSS.escape(id)}"]`)?.focus(); break; }
     case 'multi-toggle': S.multi = !S.multi; S.picked = []; render(); break;
@@ -1227,6 +1235,19 @@ function exportCSV() {
   toast(L("CSV hazırlandı"));
 }
 
+// Porsiyon başı enerji: bilinen malzemelerden; eksik varsa alt sınır (≥), hiç yoksa gösterilmez (0 yazılmaz)
+function servingKcal(r) {
+  let sum = 0, known = 0;
+  for (const it of r.items) { const item = resolve(it.ref); if (item?.v?.energy != null) { sum += (item.v.energy * it.g) / 100; known++; } }
+  if (!known) return null;
+  return { v: sum / (r.servings || 1), partial: known < r.items.length };
+}
+function applyRecipeFilter() {
+  const q = norm(S.rcQ || '').trim(); let shown = 0;
+  document.querySelectorAll('.rlist-item').forEach((el) => { const hit = !q || el.dataset.rname.includes(q); el.hidden = !hit; if (hit) shown++; });
+  const none = document.getElementById('rc-none'); if (none) none.hidden = shown > 0 || !q;
+}
+
 // Ayarlar araması: kartları başlık ve içerik metnine göre süzer (yeniden çizmeden, odak kaybolmaz)
 function applySettingsFilter() {
   const root = document.querySelector('.settings'); if (!root) return;
@@ -1242,6 +1263,7 @@ function applySettingsFilter() {
 
 function onInput(e) {
   const t = e.target;
+  if (t.id === 'rc-q') { S.rcQ = t.value; applyRecipeFilter(); return; }
   if (t.id === 'settings-q') { S.settingsQ = t.value; applySettingsFilter(); return; }
   if (t.dataset.personalField) { updatePersonalDraft(t); return; }
   if (t.dataset.settingRange || t.dataset.settingNumber) { updateNumericSetting(t); return; }

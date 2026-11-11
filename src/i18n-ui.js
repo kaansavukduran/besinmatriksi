@@ -598,5 +598,10 @@ export const UI_EN = {
  "{n} besin 1 kg sınırında kesildi": "{n} foods capped at 1 kg",
  "Ayarlarda ara": "Search settings",
  "ör. yazı, tema, Aion, yedek": "e.g. text, theme, Aion, backup",
- "Bu aramaya uyan ayar yok.": "No settings match this search."
+ "Bu aramaya uyan ayar yok.": "No settings match this search.",
+ "Tariflerde ara": "Search recipes",
+ "Eklenme": "Added",
+ "kcal/porsiyon": "kcal/serving",
+ "porsiyon": "serving",
+ "Bu aramaya uyan tarif yok.": "No recipes match this search."
 };

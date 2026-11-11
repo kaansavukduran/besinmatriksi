@@ -571,3 +571,26 @@ test('Ayarlarda arama kartları süzer, odak korunur (B064)', async ({ page }) =
   expect(await cards.evaluateAll((els) => els.filter((e) => !e.hidden).length)).toBe(total);
   await expect(page.locator('#settings-none')).toBeHidden();
 });
+
+test('tarif listesi: arama, sıralama ve porsiyon başı kcal (B065)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  await page.locator('[data-action="ex-add-recipe"]').click();
+  await tab(page, 'tarif');
+  await expect(page.locator('#rc-q')).toHaveCount(0);
+  for (let i = 0; i < 3; i++) await page.locator('[data-action="rc-new"]').click();
+  const items = page.locator('.rlist-item');
+  await expect(items).toHaveCount(4);
+  await expect(items.first().locator('.rkcal')).toHaveText('89 kcal/porsiyon');
+  await expect(items.nth(1).locator('.rkcal')).toHaveCount(0);
+  await page.locator('#rc-q').fill('İLK');
+  await expect(page.locator('.rlist-item:visible')).toHaveCount(1);
+  await expect(page.locator('#rc-q')).toBeFocused();
+  await page.locator('#rc-q').fill('yokboyle');
+  await expect(page.locator('#rc-none')).toBeVisible();
+  await page.locator('#rc-q').fill('');
+  await page.locator('[data-action="rc-sort"][data-s="name"]').click();
+  const names = await page.locator('.rlist-item .rname').evaluateAll((els) => els.map((e) => e.firstChild.textContent.replace('📒', '').trim()));
+  expect(names[0]).toMatch(/^İlk/);
+  expect(names.slice(1)).toEqual(['Tarif 2', 'Tarif 3', 'Tarif 4']);
+});

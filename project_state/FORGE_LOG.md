@@ -268,3 +268,10 @@
 - Ayarlar'ın en üstünde "🔎 Ayarlarda ara": kartlar başlık ve içerik metnine göre büyük/küçük harf ve Türkçe karakter duyarsız (`norm`) süzülür; yeniden çizim yok, odak korunur; eşleşme yoksa "Bu aramaya uyan ayar yok." (role=status). Arama metni oturum boyunca korunur, ayar değişince yeniden uygulanır.
 - Kanıt: `npm test` 73/73; Playwright 62/62 PASS (yeni B064 testi: "AİON" → Aion kartı, odak, eşleşmesiz durum, temizleyince tümü); hesaplanan stil ile gizli kartların `display: none` olduğu doğrulandı. Beta.6 yayını yukarıda (run 42993729629).
 - Sonraki: **B065** tarif listesinde tarif arama/sıralama ve tarif başına kcal/porsiyon özeti.
+
+## B065 · 2026-11-11 · tarif listesinde arama, sıralama, porsiyon başı kcal
+- Tarif listesindeki her tarifte porsiyon başı enerji: bilinen malzemelerden; eksik malzeme varsa "≥" alt sınır, hiç enerji verisi yoksa gösterilmez (0 yazılmaz).
+- 4 ve üzeri tarifte liste başında "🔎 Tariflerde ara" (Türkçe karakter duyarsız, yeniden çizimsiz, odak korunur, eşleşme yoksa uyarı) ve sıralama: Eklenme · A–Z · kcal/porsiyon (verisi olmayanlar sonda).
+- İlk hata: axe, seçili tarifin vurgulu zemininde soluk kcal satırına kontrast ihlali verdi (2 test); renk düğme metninden alınacak şekilde düzeltildi.
+- Kanıt: `npm test` 73/73; Playwright 64/64 PASS (yeni B065 testi: kcal, arama, odak, eşleşmesiz, A–Z).
+- Sonraki: **B066** beta.7 yayını (B064 + B065) ve sonrasında Kıyasla ekranında farkları vurgulama (en yüksek değer işareti).
