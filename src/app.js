@@ -32,7 +32,7 @@ const S = {
   tab: 'kesfet',
   searches: loadSearches(),
   profiles: loadProfiles(),
-  collections: loadCollections(), colPicker: false,
+  collections: loadCollections(), colPicker: false, sort: 'default',
   cat: null,
   extGroup: null,
   q: '',
@@ -151,8 +151,25 @@ function foodButton(f, action, extra = '') {
   return `<button class="food" data-action="${action}" data-id="${esc(f.id)}" ${extra}>
     <span class="fi" aria-hidden="true">${catIcon(f.cat)}</span>
     <span class="fn">${esc(foodName(f))}</span>
-    <span class="ff">${f.forms.length > 1 ? L("{n} biçim", { n: f.forms.length }) : esc(formName(f.forms[0].label))}</span>
+    <span class="ff">${f.forms.length > 1 ? L("{n} biçim", { n: f.forms.length }) : esc(formName(f.forms[0].label))}${quickFacts(f.forms[0].v)}</span>
   </button>`;
+}
+// Kartta tek bakışta: 100 g ilk biçim için enerji, protein, lif (veri yoksa yazılmaz)
+function quickFacts(v) {
+  if (!S.settings.cardFacts) return '';
+  const parts = [];
+  if (v.energy != null) parts.push(`${fmtNum(v.energy, 'low')} kcal`);
+  if (v.protein != null) parts.push(`${fmtNum(v.protein, 'low')} g ${L("prot.")}`);
+  if (v.fiber != null) parts.push(`${fmtNum(v.fiber, 'low')} g ${L("lif")}`);
+  return parts.length ? `<span class="facts"> · ${parts.join(' · ')}</span>` : '';
+}
+const SORTS = { default: () => 0, name: (a, b) => foodName(a).localeCompare(foodName(b), getLanguage() === 'en' ? 'en' : 'tr'),
+  energy: (a, b) => (b.forms[0].v.energy ?? -1) - (a.forms[0].v.energy ?? -1), protein: (a, b) => (b.forms[0].v.protein ?? -1) - (a.forms[0].v.protein ?? -1), fiber: (a, b) => (b.forms[0].v.fiber ?? -1) - (a.forms[0].v.fiber ?? -1) };
+const sortFoods = (list) => (S.sort === 'default' ? list : list.slice().sort(SORTS[S.sort] || SORTS.default));
+function sortBar(prefix) {
+  if (prefix !== 'ex') return '';
+  const opts = [['default', L("Önerilen")], ['name', L("A–Z")], ['energy', L("Enerji")], ['protein', L("Protein")], ['fiber', L("Lif")]];
+  return `<div class="sortbar" role="group" aria-label="${L("Sırala")}"><span class="hint">${L("Sırala:")}</span>${opts.map(([id, label]) => `<button class="pchip ${S.sort === id ? 'on' : ''}" aria-pressed="${S.sort === id}" data-action="sort" data-s="${id}">${label}</button>`).join('')}</div>${S.sort === 'energy' || S.sort === 'protein' || S.sort === 'fiber' ? `<p class="hint">${L("100 g ve ilk biçime göre, en yüksekten. Veri olmayanlar sonda.")}</p>` : ''}`;
 }
 function extButton(f, action) {
   return `<button class="food ext" data-action="${action}" data-ndb="${esc(f.n)}"><span class="fi">${S.settings.emoji ? '🇺🇸' : ''}</span><span class="fn">${esc(f.en)}</span><span class="ff">USDA ${esc(f.n)}</span></button>`;
@@ -231,15 +248,15 @@ function foodList(prefix, cat, q, extGroup) {
   }
   const res = search(q, { cat, ext: S.settings.showExt && extLoaded() && !!q });
   if (!res.curated.length && !res.ext.length && !res.custom.length) return `<p class="empty">${L("Eşleşen besin yok. Aramayı kısalt veya “Tümü”ne dön.")}</p>`;
-  let html = '';
-  if (!q && !cat) {
+  let html = sortBar(prefix);
+  if (!q && !cat && S.sort === 'default') {
     for (const c of CATEGORIES) {
       const fs = res.curated.filter((f) => f.cat === c.id);
       if (!fs.length) continue;
       html += `<h3 class="grp">${S.settings.emoji ? c.icon + ' ' : ''}${esc(categoryName(c))}</h3><div class="foods">${fs.map((f) => foodButton(f, prefix + '-pick')).join('')}</div>`;
     }
   } else {
-    html = `<div class="foods">${res.curated.map((f) => foodButton(f, prefix + '-pick')).join('')}</div>`;
+    html += `<div class="foods">${(q ? res.curated : sortFoods(res.curated)).map((f) => foodButton(f, prefix + '-pick')).join('')}</div>`;
   }
   if (res.custom.length) html += `<h3 class="grp">${L("Kendi besinlerim")}</h3><div class="foods">${res.custom.map((f) => customButton(f, prefix + '-pick-custom')).join('')}</div>`;
   if (res.ext.length) html += `<h3 class="grp">${L("Geniş katalog (USDA)")}</h3><div class="foods">${res.ext.map((f) => extButton(f, prefix + '-pick-ext')).join('')}</div>`;
@@ -481,6 +498,7 @@ function renderSettings() {
       ${tog('showSource', L("Kaynak etiketleri (USDA / Hesap / Etiket)"))}
       ${tog('showAlt', L("Varsa ikinci kaynağı göster (bu sürümde ikinci veri seti yok)"))}
       ${tog('showSd', L("Varsa kaynak standart sapmasını göster"))}
+      ${tog('cardFacts', L("Besin kartlarında kısa özet (kcal, protein, lif)"))}
       ${tog('showMissing', L("“Veri yok” satırlarını listele"))}
       <div class="kv"><span>${L("Ondalık hassasiyeti")}</span><span class="presets">${opt('precision', 'low', L("Az"))}${opt('precision', 'normal', L("Normal"))}${opt('precision', 'high', L("Çok"))}</span></div>
       <div class="kv"><span>${L("Varsayılan miktar")}</span><span class="presets">${[50, 100, 250, 1000].map((g) => opt('defaultAmount', g, g === 1000 ? '1 kg' : g + ' g')).join('')}</span></div>
@@ -900,6 +918,7 @@ async function onClick(e) {
     case 'ex-pick-custom': selectFood('ex', { t: 'u', id: b.dataset.cid }); break;
     case 'ex-pick-ref': selectFood('ex', JSON.parse(b.dataset.ref)); break;
     case 'pk-pick-ref': selectFood('pk', JSON.parse(b.dataset.ref)); break;
+    case 'sort': S.sort = b.dataset.s; render(); break;
     case 'col-pick': S.colPicker = true; render(); break;
     case 'col-pick-close': S.colPicker = false; render(); break;
     case 'col-toggle': {

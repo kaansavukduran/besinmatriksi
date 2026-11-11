@@ -561,5 +561,12 @@ export const UI_EN = {
  "Önce yedek al (.json)": "Back up first (.json)",
  "Bağlantı kopyalandı": "Link copied",
  "Pano kullanılamadı. Bağlantıyı seçip kopyala:": "Clipboard unavailable. Select and copy the link:",
- "Bağlantı açılamadı; kopyalayıp tarayıcına yapıştır.": "Could not open the link; copy it and paste it into your browser."
+ "Bağlantı açılamadı; kopyalayıp tarayıcına yapıştır.": "Could not open the link; copy it and paste it into your browser.",
+ "Önerilen": "Suggested",
+ "A–Z": "A–Z",
+ "Sırala": "Sort",
+ "Sırala:": "Sort:",
+ "100 g ve ilk biçime göre, en yüksekten. Veri olmayanlar sonda.": "Per 100 g of the first form, highest first. Foods without data last.",
+ "prot.": "prot.",
+ "Besin kartlarında kısa özet (kcal, protein, lif)": "Short facts on food cards (kcal, protein, fibre)"
 };

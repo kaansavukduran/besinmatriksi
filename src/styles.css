@@ -610,3 +610,6 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 .ing-h .move { margin-left: auto; }
 .ing-h .ing-kcal { margin-left: 0; }
 .mono-url { font-family: monospace; word-break: break-all; }
+.food .facts { color: var(--muted); font-variant-numeric: tabular-nums; }
+.sortbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 8px; }
+@media (max-width: 700px) { .sortbar { flex-wrap: nowrap; overflow-x: auto; } .sortbar .pchip { flex-shrink: 0; } }

@@ -426,3 +426,22 @@ test('Ayarlar → Güncellemeler yüklü sürümü ve sürüm sayfası bağlant�
   await expect(card.locator('a[href$="/releases"]')).toHaveAttribute('target', '_blank');
   expect(requests.filter(u => !u.startsWith('http://127.0.0.1') && !u.startsWith('data:'))).toEqual([]);
 });
+
+test('besin kartları kısa özet gösterir ve liste enerji/proteine göre sıralanır (B057)', async ({ page }) => {
+  await page.goto('/');
+  const muz = page.locator('#foodlist [data-id="muz"] .facts');
+  await expect(muz).toContainText('kcal');
+  await page.locator('[data-action="sort"][data-s="protein"]').click();
+  await expect(page.locator('[data-action="sort"][data-s="protein"]')).toHaveAttribute('aria-pressed', 'true');
+  const vals = await page.locator('#foodlist .food .facts').evaluateAll((els) => els.map((e) => {
+    const m = e.textContent.match(/([\d.,]+) g prot/); return m ? Number(m[1].replace(/\./g, '').replace(',', '.')) : null;
+  }));
+  const known = vals.filter((v) => v != null);
+  expect(known.length).toBeGreaterThan(20);
+  for (let i = 1; i < known.length; i++) expect(known[i]).toBeLessThanOrEqual(known[i - 1]);
+  // Veri olmayanlar sonda: ilk bilinmeyenden sonra bilinen yok
+  const firstNull = vals.indexOf(null);
+  if (firstNull >= 0) expect(vals.slice(firstNull).every((v) => v == null)).toBe(true);
+  await page.locator('[data-action="sort"][data-s="default"]').click();
+  await expect(page.locator('#foodlist h3.grp').first()).toBeVisible();
+});
