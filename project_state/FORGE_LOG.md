@@ -230,3 +230,4 @@
 - İlk hata: telefonda yana kayan öneri satırı tarif sütununu genişletip dokunmaları engelledi (5 telefon testi). Satır sarmalı yapıldı; yeniden test temiz.
 - Kanıt: `npm test` 69/69 (yeni gaps testleri); Playwright 50/50 PASS; telefon ekran görüntüsü incelendi.
 - Sonraki: **B059** Keşfet'te birden çok besini seçip tek dokunuşla tarife ekleme (çoklu seçim) ve beta.5 sürümü.
+- Sürüm notu (beta.4): release run 42959645122 masaüstü işlerinde `native-notices` kapısında düştü: opener'ın derleme bağımlılığı `tauri-plugin` 2.7.2 crate arşivinde lisans dosyası yok. tauri-apps/tauri `59b63ab` (crate'in `.cargo_vcs_info.json` commit'i) LICENSE-APACHE-2.0 ve LICENSE-MIT metinleri SHA-256 ile `data/licenses/native/` altına sabitlendi. Yerel `node scripts/native-notices.mjs`: 446 paket, eksik 0.

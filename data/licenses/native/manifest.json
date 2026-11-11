@@ -458,5 +458,22 @@
         "sha256": "ce7bc3499fee93d5022ef430d5e4201e79a6d9154f3974e42f41349f0569e09b"
       }
     ]
+  },
+  "tauri-plugin@2.7.2": {
+    "repository": "tauri-apps/tauri",
+    "commit": "59b63ab500da9859f12d8888c3298bc29bba0b92",
+    "crate_vcs_verified": true,
+    "records": [
+      {
+        "file": "27576528bf37df58.txt",
+        "url": "https://raw.githubusercontent.com/tauri-apps/tauri/59b63ab500da9859f12d8888c3298bc29bba0b92/LICENSE-APACHE-2.0",
+        "sha256": "0d542e0c8804e39aa7f37eb00da5a762149dc682d7829451287e11b938e94594"
+      },
+      {
+        "file": "7525841454cc8a90.txt",
+        "url": "https://raw.githubusercontent.com/tauri-apps/tauri/59b63ab500da9859f12d8888c3298bc29bba0b92/LICENSE-MIT",
+        "sha256": "9dd42ea92cff2ede5cd477cbfcce051b2d0115c0ac7f368ee88cb545055dff1d"
+      }
+    ]
   }
 }
