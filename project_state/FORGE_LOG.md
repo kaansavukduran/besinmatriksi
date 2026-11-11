@@ -251,3 +251,8 @@
 - Keşfet'te aramasız/kategorisiz görünümde "🕘 Son bakılanlar": son açılan 8 katalog besini (biçimiyle), dokununca açılır, "Temizle" ile silinir. Yalnız cihazda `bm.recent.v1`; bozuk veya katalogda artık olmayan kayıtlar atlanır. Çoklu seçim modunda gizli. Ayarlar → Matriks'ten kapatılır (`showRecent`, varsayılan açık). Telefonda tek satır yana kayar; sayfa genişliği 412 = görünüm 412 (taşma yok).
 - Kanıt: `npm test` 70/70 (yeni recent testi: tekrarsızlık, sıra, sınır, bozuk veri); Playwright 56/56 PASS (yeni B061 testi: kalıcılık, sıra, açma, temizleme); erişilebilir ad düzeltmesinden sonra B051/B061 yeniden PASS.
 - Sonraki: **B062** Tarif ekranında tarifi tek dokunuşla Günlük'e (bugün) ekleme ve günlükte porsiyon seçimi.
+
+## B062 · 2026-11-11 · tarifi porsiyonla Günlük'e ekleme
+- Tarif başlığında "📒 Günlüğe ekle": "kaç porsiyon?" (virgül/nokta kabul, 0 < p ≤ 50). Her malzeme gram × porsiyon ÷ tarif porsiyonu olarak bugünün (yerel gün) günlüğüne ayrı kayıt olur; günlük kayıt sınırı 1000 g olduğundan büyük miktar bölünür; bulunamayan ve 1 g altı malzemeler atlanır ve bildirimde sayılır (sessiz yuvarlama yok). Saf fonksiyon `recipeToEntries` (`src/personal.js`); günlük şeması değişmedi.
+- Kanıt: `npm test` 72/72 (yeni recipe-day testleri: ölçekleme, bölme, atlama, geçersiz girdi); Playwright 58/58 PASS (yeni B062 testi: geçersiz girdi reddi, 2 porsiyonluk tarifte 1,5 porsiyon → 75 g, Günlük'te görünür); telefonda taşma yok (412 = 412), başlık ekran görüntüsü incelendi.
+- Sonraki: **B063** Günlük'te bir günün kayıtlarını tek dokunuşla tarife dönüştürme (tersi) ya da beta.6 yayını.

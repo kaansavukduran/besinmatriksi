@@ -521,3 +521,20 @@ test('Keşfet son bakılan besinleri gösterir, kalıcıdır ve temizlenir (B061
   await page.reload();
   await expect(page.locator('.presets.recent')).toHaveCount(0);
 });
+
+test('tarif porsiyonla bugünün günlüğüne malzeme malzeme eklenir (B062)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  await page.locator('[data-action="ex-add-recipe"]').click();
+  await tab(page, 'tarif');
+  await page.locator('[data-action="rc-serv"][data-d="1"]').click();
+  await page.locator('[data-action="rc-to-day"]').click();
+  await page.locator('.dlg .dlg-line').fill('abc'); await page.keyboard.press('Enter');
+  await expect(page.locator('.dlg')).toHaveCount(0);
+  await page.locator('[data-action="rc-to-day"]').click();
+  await page.locator('.dlg .dlg-line').fill('1,5'); await page.keyboard.press('Enter');
+  const entries = await page.evaluate(() => JSON.parse(localStorage.getItem('bm.personal.v1')).entries);
+  expect(entries.map((e) => [e.ref.id, e.g])).toEqual([['muz', 75]]);
+  await tab(page, 'gunluk');
+  await expect(page.locator('main')).toContainText('Muz');
+});

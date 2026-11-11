@@ -17,7 +17,7 @@ import { renderRecipeSources, renderRecipeSourceRows } from './recipe-sources.js
 import { renderEfsaSettings } from './efsa-ui.js';
 import { t as tr, setLanguage, preferredLanguage, L } from './i18n.js';
 import { renderAppearance, settingSlider } from './appearance.js';
-import { loadPersonal, savePersonal, emptyProfile, normalizeProfile, mergePersonalFoods, localDay, validDay, dayResult, PERSONAL_KEY } from './personal.js';
+import { recipeToEntries, loadPersonal, savePersonal, emptyProfile, normalizeProfile, mergePersonalFoods, localDay, validDay, dayResult, PERSONAL_KEY } from './personal.js';
 import { renderPersonal, renderEnergy, renderDaySources } from './personal-view.js';
 import { nutrientLabel } from './i18n-nutrients.js';
 import { getLanguage } from './i18n.js';
@@ -407,7 +407,7 @@ function renderRecipe() {
     <section class="rmain">
       <div class="rhead"><label class="rtitle"><span class="sr">${L("Tarif adı")}</span><input id="rc-name" value="${esc(rc.name)}" aria-label="${L("Tarif adı")}"></label>
         <button class="btn primary" data-action="rc-add">＋ ${L("Malzeme ekle")}</button>
-        ${rc.items.length ? `<button class="btn ghost" data-action="csv">⬇ CSV</button><button class="btn ghost" data-action="print">🖨 ${L("Yazdır")}</button>` : ''}</div>
+        ${rc.items.length ? `<button class="btn" data-action="rc-to-day">📒 ${L("Günlüğe ekle")}</button><button class="btn ghost" data-action="csv">⬇ CSV</button><button class="btn ghost" data-action="print">🖨 ${L("Yazdır")}</button>` : ''}</div>
       <div class="ings">${items || `<p class="empty">${L("Henüz malzeme yok. “Malzeme ekle”ye tıkla veya Keşfet'te bir besinde “Tarife ekle”yi kullan. Ör: muz + yaban mersini.")}</p>`}</div>
       ${rc.items.length ? `<div class="ropts">
         <div class="kv"><span>${L("Porsiyon sayısı")}</span><span class="stepper"><button class="nudge" data-action="rc-serv" data-d="-1" aria-label="${L("Porsiyon sayısını azalt")}">−</button><b>${rc.servings}</b><button class="nudge" data-action="rc-serv" data-d="1" aria-label="${L("Porsiyon sayısını artır")}">+</button></span></div>
@@ -924,6 +924,19 @@ async function onClick(e) {
   if (!document.querySelector('.modal')) modalOpener = focusSelector(b);
   switch (a) {
     case 'aion-demo': aionPlay(b.dataset.anim || 'celebrate'); aionSay(tr('aionHello'), 4000); break;
+    case 'rc-to-day': {
+      const rc = activeRecipe(); if (!rc.items.length) break;
+      const ans = await uiDialog(L("“{r}” tarifinden kaç porsiyon? (Tarif {s} porsiyon; ölçü bugünün günlüğüne malzeme malzeme eklenir.)", { r: rc.name, s: rc.servings }), { input: '1', line: true, ok: L("Günlüğe ekle"), cancel: L("Vazgeç") });
+      if (ans == null) break;
+      const portions = Number(String(ans).replace(',', '.'));
+      if (!(portions > 0 && portions <= 50)) { toast(L("Porsiyon 0'dan büyük ve en fazla 50 olmalı.")); break; }
+      const day = localDay();
+      const { entries, skipped } = recipeToEntries(rc.items, portions, rc.servings, day, (ref) => !!resolve(ref));
+      if (!entries.length) { toast(L("Eklenecek malzeme yok.")); break; }
+      S.personal.entries.push(...entries); S.personal.milestones.food = true; persistPersonal();
+      toast(L("{n} kayıt bugünün günlüğüne eklendi", { n: entries.length }) + (skipped ? ' · ' + L("{n} malzeme atlandı (bulunamadı veya 1 g altı)", { n: skipped }) : ''));
+      aionPlay('celebrate'); break;
+    }
     case 'ex-add-day': {
       if (!S.sel || !resolve(S.sel)) break;
       S.personal.entries.push({ id: uid(), day: S.personalDay, ref: { ...S.sel }, g: S.amount, consumed: false });

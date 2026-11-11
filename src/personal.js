@@ -97,3 +97,23 @@ export function nutrientComparison(nutrient, result, settings, energyTarget = nu
   const complete = result.n > 0 && result.cov[nutrient.key] === result.n;
   return { value, reference, complete, difference: value != null && reference.value > 0 && complete ? value - reference.value : null };
 }
+
+// Tarifi günlüğe ekler: her malzeme (gram × yenen porsiyon ÷ tarif porsiyonu) ayrı kayıt olur.
+// Kayıt sınırı 1000 g olduğundan büyük miktarlar parçalara bölünür; 1 g altı ve bulunamayan kayıtlar atlanıp sayılır.
+export function recipeToEntries(items, portions, servings, day, exists, newId = uid) {
+  const entries = [];
+  let skipped = 0;
+  const factor = portions / (servings > 0 ? servings : 1);
+  if (!(factor > 0) || !validDay(day)) return { entries, skipped: items.length };
+  for (const it of items) {
+    let g = Math.round(it.g * factor * 100) / 100;
+    if (!exists(it.ref) || g < 1) { skipped++; continue; }
+    while (g > 0) {
+      const part = g > 1000 ? 1000 : g;
+      if (part < 1) break;
+      entries.push({ id: newId(), day, ref: { ...it.ref }, g: part, consumed: false });
+      g = Math.round((g - part) * 100) / 100;
+    }
+  }
+  return { entries, skipped };
+}

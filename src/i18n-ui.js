@@ -585,5 +585,11 @@ export const UI_EN = {
  "Ayarla": "Adjust",
  "Keşfet'te son bakılan besinleri göster": "Show recently viewed foods in Explore",
  "Son bakılanlar": "Recently viewed",
-  "Son bakılanları temizle": "Clear recently viewed"
+ "Son bakılanları temizle": "Clear recently viewed",
+ "Günlüğe ekle": "Add to log",
+ "“{r}” tarifinden kaç porsiyon? (Tarif {s} porsiyon; ölçü bugünün günlüğüne malzeme malzeme eklenir.)": "How many servings of “{r}”? (The recipe makes {s}; each ingredient is added to today's log.)",
+ "Porsiyon 0'dan büyük ve en fazla 50 olmalı.": "Servings must be above 0 and at most 50.",
+ "Eklenecek malzeme yok.": "No ingredients to add.",
+ "{n} kayıt bugünün günlüğüne eklendi": "{n} entries added to today's log",
+ "{n} malzeme atlandı (bulunamadı veya 1 g altı)": "{n} ingredients skipped (not found or under 1 g)"
 };
