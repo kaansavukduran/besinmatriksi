@@ -24,6 +24,7 @@ import { getLanguage } from './i18n.js';
 import { normalizeCollections, createCollection, renameCollection, deleteCollection, toggleRef, removeRef, collectionTree, collectionRefs, hasRef, moveRef, moveIndex } from './collections.js';
 import { mountAion, configureAion, aionMood, aionPlay, aionSay } from './aion.js';
 import { recipeGaps } from './gaps.js';
+import { similarFoods } from './similar.js';
 import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS } from './settings.js';
 
 const PRESETS = [1, 5, 10, 25, 50, 100, 150, 200, 250, 500, 750, 1000];
@@ -300,6 +301,15 @@ function formChips(prefix, ref) {
   return `<div class="forms" role="group" aria-label="${L("Tüketim biçimi")}">${food.forms.map((fm, i) => `<button aria-pressed="${i === ref.f}" class="pchip ${i === ref.f ? 'on' : ''}" data-action="${prefix}-form" data-f="${i}">${esc(formName(fm.label))}</button>`).join('')}</div>`;
 }
 
+// Aynı kategoride makro profili en yakın besinler (alternatif bulmak için; "eşdeğer" iddiası değil)
+function similarRow(item) {
+  if (!S.settings.showSimilar || !item.food) return '';
+  const list = similarFoods(item.food, FOODS, { formIndex: S.sel.f });
+  if (!list.length) return '';
+  return `<div class="similar"><span class="hint" title="${esc(L("Aynı kategoride 100 g'daki enerji, protein, karbonhidrat, yağ ve lif profili en yakın besinler. Vitamin ve mineraller farklı olabilir."))}">${L("Benzer besinler:")}</span>
+    <div class="presets">${list.map((f) => `<button class="pchip" data-action="ex-pick" data-id="${esc(f.id)}">${esc(foodName(f))}</button>`).join('')}</div></div>`;
+}
+
 function renderExplore() {
   const item = S.sel ? resolve(S.sel) : null;
   const detail = item
@@ -321,6 +331,7 @@ function renderExplore() {
           <button class="btn icon ghost" data-action="print" title="${L("Yazdır veya PDF olarak kaydet")}" aria-label="${L("Yazdır veya PDF olarak kaydet")}">🖨<span class="lbl-opt"> ${L("Yazdır")}</span></button>
         </span>
       </div>
+      ${similarRow(item)}
       <div id="matrix" class="matrix">${matrixForExplore(item)}</div>`
     : welcome();
   return `<div class="explore ${item ? 'has-sel' : ''}">
@@ -553,6 +564,7 @@ function renderSettings() {
       ${tog('showSource', L("Kaynak etiketleri (USDA / Hesap / Etiket)"))}
       ${tog('showAlt', L("Varsa ikinci kaynağı göster (bu sürümde ikinci veri seti yok)"))}
       ${tog('showSd', L("Varsa kaynak standart sapmasını göster"))}
+      ${tog('showSimilar', L("Besin ayrıntısında benzer besinleri göster"))}
       ${tog('showRecent', L("Keşfet'te son bakılan besinleri göster"))}
       ${tog('recipeGaps', L("Tarifte en düşük kalan besinleri ve kaynaklarını göster"))}
       ${tog('cardFacts', L("Besin kartlarında kısa özet (kcal, protein, lif)"))}

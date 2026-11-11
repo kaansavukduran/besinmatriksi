@@ -4,13 +4,13 @@
   "product_version": "1.1.2-beta.7",
   "development_state": "IN_PROGRESS",
   "last_forge_at": "2026-11-11T04:30:00.945341+00:00",
-  "last_completed_forge": "B065",
+  "last_completed_forge": "B067",
   "active_forge": null,
-  "next_recommended_forge": "B066",
+  "next_recommended_forge": "B068",
   "branch": "ccr-1e1934aa-iv8aev",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
-  "validated_code_commit": "1fc970a",
-  "package_source_commit": "1fc970a",
+  "validated_code_commit": "cb78920",
+  "package_source_commit": "cb78920",
   "verified_gates": [
     {
       "id": "unit",
@@ -343,7 +343,7 @@
     }
   ],
   "remaining": [
-    "B066"
+    "B068"
   ],
-  "latest_release": "https://github.com/kaansavukduran/besinmatriksi/releases/tag/v1.1.2-beta.6"
+  "latest_release": "https://github.com/kaansavukduran/besinmatriksi/releases/tag/v1.1.2-beta.7"
 }

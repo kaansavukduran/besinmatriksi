@@ -278,3 +278,10 @@
 - Sürüm: 1.1.2-beta.7 (B064 ayarlarda arama, B065 tarif listesi).
 - Beta.7 ilk koşu (run 43057431907) FAIL: web işinde `playwright install --with-deps` apt adımı "Temporary failure resolving 'security.ubuntu.com'" (runner DNS, kod dışı). Düşen işler yeniden çalıştırıldı. B066'nın ikinci kısmı (Kıyasla'da satırdaki en yüksek değer vurgusu) zaten mevcut (`td.best`, "yüksek = iyi değildir" notuyla); yeni iş açılmadı.
 - Beta.7 yeniden deneme (attempt 2) yine FAIL: aynı runner DNS hatası ('archive.ubuntu.com', 'security.ubuntu.com' çözülemedi; imaj ubuntu-26.04, beta.6 aynı imajla geçmişti). Düzeltme: release.yml ve ci.yml'de `playwright install --with-deps chromium` başarısız olursa uyarı verip `playwright install chromium` ile devam; tarayıcı testleri yine koşar, yani kapı gevşemez. Yeni koşu başlatıldı.
+- Yayın: release run 43062206618 SUCCESS (commit cb78920). v1.1.2-beta.7 pre-release 2026-11-11T17:06Z; 22 varlık. Web işinde apt yine çözülemedi ve yedek yol kullanıldı (log'da "apt bağımlılıkları kurulamadı" uyarısı); tarayıcı testleri yine koştu ve geçti. Cihaz kurulumu NOT_RUN.
+
+## B067 · 2026-11-11 · besin ayrıntısında "Benzer besinler"
+- Yeni saf modül `src/similar.js`: aynı kategoride, 100 g ilk biçim enerji/protein/karbonhidrat/yağ/lif profili en yakın 6 besin (göreli fark ortalaması; en az 3 ortak ölçülmüş bileşen gerekir, veri yok 0 sayılmaz). Ayrıntıda eylem çubuğunun altında tek satır; dokununca o besin açılır. Açıklama: vitamin/mineraller farklı olabilir, "eşdeğer" iddiası yok. Ayarlar → Matriks'ten kapatılır (`showSimilar`).
+- İlk hata: yeni tarayıcı testi "mercimek" aramasında ilk sonucun baklagil olduğunu varsaydı (gerçekte "mercimek filizi", Sebzeler). Test açılan besinin kategorisine göre düzeltildi; kod değişmedi.
+- Kanıt: `npm test` 74/74 (yeni similar testi); Playwright 64/66 → düzeltme sonrası B067 2/2 PASS; diğer 64 test aynı koşuda PASS; telefonda yatay taşma yok.
+- Sonraki: **B068** beta.8 yayını (B067) veya B021 TürKomp kaynak doğrulaması (2026-11-11 sonrası açılır).

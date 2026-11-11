@@ -594,3 +594,16 @@ test('tarif listesi: arama, sıralama ve porsiyon başı kcal (B065)', async ({ 
   expect(names[0]).toMatch(/^İlk/);
   expect(names.slice(1)).toEqual(['Tarif 2', 'Tarif 3', 'Tarif 4']);
 });
+
+test('besin ayrıntısında benzer besinler aynı kategoriden gelir ve açılır (B067)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('mercimek'); await page.locator('#foodlist .food').first().click();
+  const cat = (await page.locator('.dsub').textContent()).split('·')[0].trim();
+  const chips = page.locator('.similar .pchip');
+  expect(await chips.count()).toBeGreaterThan(2);
+  const first = await chips.first().textContent();
+  await chips.first().click();
+  await expect(page.locator('.dtitle h2')).toContainText(first.trim());
+  await expect(page.locator('.dsub')).toContainText(cat);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+});

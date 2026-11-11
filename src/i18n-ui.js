@@ -603,5 +603,8 @@ export const UI_EN = {
  "Eklenme": "Added",
  "kcal/porsiyon": "kcal/serving",
  "porsiyon": "serving",
- "Bu aramaya uyan tarif yok.": "No recipes match this search."
+ "Bu aramaya uyan tarif yok.": "No recipes match this search.",
+ "Besin ayrıntısında benzer besinleri göster": "Show similar foods in food details",
+ "Aynı kategoride 100 g'daki enerji, protein, karbonhidrat, yağ ve lif profili en yakın besinler. Vitamin ve mineraller farklı olabilir.": "Foods in the same category with the closest per-100 g energy, protein, carbohydrate, fat and fibre profile. Vitamins and minerals may differ.",
+ "Benzer besinler:": "Similar foods:"
 };

@@ -628,3 +628,6 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 @media (max-width: 700px) { .presets.recent { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; } .presets.recent .pchip { flex-shrink: 0; } }
 .rname .rkcal { display: block; color: inherit; font-weight: 400; font-size: .85em; font-variant-numeric: tabular-nums; }
 .rlist > .field { margin-bottom: 6px; }
+.similar { margin: 4px 0 10px; }
+.similar .presets { margin-top: 4px; }
+@media (max-width: 700px) { .similar .presets { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; } .similar .pchip { flex-shrink: 0; } }
