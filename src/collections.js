@@ -88,3 +88,15 @@ export function collectionRefs(list, id) {
 export function remapCustomRefs(list, idMap) {
   return list.map((c) => ({ ...c, items: c.items.map((r) => (r.t === 'u' && idMap[r.id] ? { ...r, id: idMap[r.id] } : r)) }));
 }
+
+// Bir dizide öğeyi bir adım yukarı/aşağı taşır (sınırda değişiklik yapmaz).
+export function moveIndex(arr, index, dir) {
+  const j = index + dir;
+  if (index < 0 || index >= arr.length || j < 0 || j >= arr.length) return arr;
+  const out = arr.slice();
+  [out[index], out[j]] = [out[j], out[index]];
+  return out;
+}
+export function moveRef(list, id, index, dir) {
+  return list.map((c) => (c.id === id ? { ...c, items: moveIndex(c.items, index, dir) } : c));
+}

@@ -385,3 +385,36 @@ test('koleksiyon ve alt kategori ekleme/çıkarma; besin ekle-çıkar ve kalıc�
   await expect(page.locator('.cat', { hasText: 'Lifli' })).toHaveCount(1);
   expect(errors).toEqual([]);
 });
+test('tarif malzemeleri ve koleksiyon besinleri ↑/↓ ile sıralanır, sıra kalıcıdır (B055)', async ({ page }) => {
+  await page.goto('/');
+  for (const id of ['muz', 'yulaf']) {
+    if (await page.locator('.back').isVisible()) await page.locator('.back').click();
+    await page.locator('#q').fill(id === 'muz' ? 'muz' : 'yulaf'); await page.locator(`#foodlist [data-id="${id}"]`).click();
+    await page.locator('[data-action="ex-add-recipe"]').click();
+  }
+  await tab(page, 'tarif');
+  const names = () => page.locator('.ing .ing-h b').allTextContents();
+  expect(await names()).toEqual(['Muz', 'Yulaf ezmesi']);
+  await expect(page.locator('.ing').first().locator('[data-action="rc-move"][data-d="-1"]')).toBeDisabled();
+  await page.locator('.ing').nth(1).locator('[data-action="rc-move"][data-d="-1"]').click();
+  expect(await names()).toEqual(['Yulaf ezmesi', 'Muz']);
+  await page.reload(); await tab(page, 'tarif');
+  expect(await names()).toEqual(['Yulaf ezmesi', 'Muz']);
+  // Koleksiyon sırası
+  await tab(page, 'kesfet');
+  await page.locator('[data-action="col-new"]').click();
+  await page.locator('.dlg .dlg-line').fill('Sıra'); await page.keyboard.press('Enter');
+  for (const id of ['muz', 'yulaf']) {
+    if (await page.locator('.back').isVisible()) await page.locator('.back').click();
+    await page.locator('.cat[data-cat=""]').click();
+    await page.locator('#q').fill(id); await page.locator(`#foodlist [data-id="${id}"]`).click();
+    await page.locator('[data-action="col-pick"]').click(); await page.locator('.col-toggle').first().click(); await page.keyboard.press('Escape');
+  }
+  if (await page.locator('.back').isVisible()) await page.locator('.back').click();
+  await page.locator('#q').fill('');
+  await page.locator('.cat', { hasText: 'Sıra' }).click();
+  const colNames = () => page.locator('#foodlist .food-wrap .fn').allTextContents();
+  expect(await colNames()).toEqual(['Muz', 'Yulaf ezmesi']);
+  await page.locator('#foodlist [data-action="col-move"][data-i="0"][data-d="1"]').click();
+  expect(await colNames()).toEqual(['Yulaf ezmesi', 'Muz']);
+});

@@ -21,7 +21,7 @@ import { loadPersonal, savePersonal, emptyProfile, normalizeProfile, mergePerson
 import { renderPersonal, renderEnergy, renderDaySources } from './personal-view.js';
 import { nutrientLabel } from './i18n-nutrients.js';
 import { getLanguage } from './i18n.js';
-import { normalizeCollections, createCollection, renameCollection, deleteCollection, toggleRef, removeRef, collectionTree, collectionRefs, hasRef } from './collections.js';
+import { normalizeCollections, createCollection, renameCollection, deleteCollection, toggleRef, removeRef, collectionTree, collectionRefs, hasRef, moveRef, moveIndex } from './collections.js';
 import { mountAion, configureAion, aionMood, aionPlay, aionSay } from './aion.js';
 import { normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS } from './settings.js';
 
@@ -176,9 +176,11 @@ function categoryNav(prefix, current, withExt) {
   return all + cats + cu + ext + cols;
 }
 
-function refButton(ref, prefix, colId) {
+function refButton(ref, prefix, colId, index = -1, count = 0) {
   const item = resolve(ref);
-  const remove = colId && prefix === 'ex' ? `<button class="btn ghost danger item-remove" data-action="col-remove-item" data-id="${esc(colId)}" data-ref="${esc(JSON.stringify(ref))}" aria-label="${esc(L("{n} koleksiyondan çıkar", { n: item ? item.name : refKey(ref) }))}">✕</button>` : '';
+  const nm = item ? item.name : refKey(ref);
+  const moves = colId && prefix === 'ex' && index >= 0 ? `<span class="move"><button class="btn ghost" data-action="col-move" data-id="${esc(colId)}" data-i="${index}" data-d="-1" ${index === 0 ? 'disabled' : ''} aria-label="${esc(L("{n} yukarı taşı", { n: nm }))}">↑</button><button class="btn ghost" data-action="col-move" data-id="${esc(colId)}" data-i="${index}" data-d="1" ${index === count - 1 ? 'disabled' : ''} aria-label="${esc(L("{n} aşağı taşı", { n: nm }))}">↓</button></span>` : '';
+  const remove = moves + (colId && prefix === 'ex' ? `<button class="btn ghost danger item-remove" data-action="col-remove-item" data-id="${esc(colId)}" data-ref="${esc(JSON.stringify(ref))}" aria-label="${esc(L("{n} koleksiyondan çıkar", { n: nm }))}">✕</button>` : '');
   if (!item) return `<div class="food missing-ref"><span class="fi">❔</span><span class="fn">${L("Kayıt bulunamadı")}</span><span class="ff">${esc(refKey(ref))}</span>${remove}</div>`;
   return `<div class="food-wrap"><button class="food" data-action="${prefix}-pick-ref" data-ref="${esc(JSON.stringify(ref))}"><span class="fi" aria-hidden="true">${item.food ? catIcon(item.food.cat) : item.custom ? '🏷️' : '🇺🇸'}</span><span class="fn">${esc(item.name)}</span><span class="ff">${esc(item.formLabel)}</span></button>${remove}</div>`;
 }
@@ -197,7 +199,7 @@ function collectionList(prefix, cat, q) {
   for (const { col, refs } of sections) {
     const shown = refs.filter((r) => { if (!k) return true; const it = resolve(r); return it && norm(it.name).includes(k); });
     if (col !== c) html += `<h3 class="grp">↳ ${esc(col.name)}</h3>`;
-    html += shown.length ? `<div class="foods">${shown.map((r) => refButton(r, prefix, col.id)).join('')}</div>` : (col === c && sections.length > 1 ? '' : `<p class="empty">${L("Bu koleksiyon boş. Bir besin seç ve “Koleksiyona ekle”ye dokun.")}</p>`);
+    html += shown.length ? `<div class="foods">${shown.map((r) => refButton(r, prefix, col.id, k ? -1 : refs.indexOf(r), refs.length)).join('')}</div>` : (col === c && sections.length > 1 ? '' : `<p class="empty">${L("Bu koleksiyon boş. Bir besin seç ve “Koleksiyona ekle”ye dokun.")}</p>`);
   }
   return manage + html;
 }
@@ -330,12 +332,13 @@ function renderRecipe() {
   const list = S.recipes.map((r) => `<div class="rlist-item ${r.id === rc.id ? 'on' : ''}">
       <button class="rname" data-action="rc-open" data-id="${r.id}">${S.settings.emoji ? '📒 ' : ''}${esc(r.name)} <span class="cnt">${r.items.length}</span></button>
     </div>`).join('');
-  const items = rc.items.map((it) => {
+  const items = rc.items.map((it, idx) => {
     const item = resolve(it.ref);
     if (!item) return `<div class="ing missing"><span>${L("Bulunamayan kayıt ({key})", { key: esc(refKey(it.ref)) })} ${it.ref.t === 'x' ? '— ' + L("geniş katalog açık olmalı") : ''}</span><button class="btn ghost" data-action="rc-del-item" data-id="${it.id}">${L("Kaldır")}</button></div>`;
     return `<div class="ing">
       <div class="ing-h"><span class="fi">${item.food ? catIcon(item.food.cat) : ''}</span><b>${esc(item.name)}</b> <span class="muted">${esc(item.formLabel)}</span>
       <span class="ing-kcal">${item.v.energy != null ? fmtNum((item.v.energy * it.g) / 100) + ' kcal' : ''}</span>
+      <span class="move"><button class="btn ghost" data-action="rc-move" data-id="${it.id}" data-d="-1" ${idx === 0 ? 'disabled' : ''} aria-label="${esc(L("{n} yukarı taşı", { n: item.name }))}">↑</button><button class="btn ghost" data-action="rc-move" data-id="${it.id}" data-d="1" ${idx === rc.items.length - 1 ? 'disabled' : ''} aria-label="${esc(L("{n} aşağı taşı", { n: item.name }))}">↓</button></span>
       <button class="btn ghost danger" data-action="rc-del-item" data-id="${it.id}" aria-label="${L("Malzemeyi kaldır")}">✕</button></div>
       ${amountControls('rc:' + it.id, it.g, item.portions, { compact: true, liquid: item.liquid })}
       <label class="price-field">${L("Kilogram fiyatı (TL/kg, isteğe bağlı)")}<input type="number" min="0" step="any" inputmode="decimal" data-price="${it.id}" value="${it.pricePerKg ?? ''}" aria-label="${L("{name} kilogram fiyatı", { name: esc(item.name) })}"></label>
@@ -931,6 +934,8 @@ async function onClick(e) {
       if (!(await uiDialog(msg, { ok: L("Sil"), cancel: L("Vazgeç") }))) break;
       S.collections = deleteCollection(S.collections, c.id); S.cat = null; persistCollections(); render(); break;
     }
+    case 'col-move': S.collections = moveRef(S.collections, b.dataset.id, +b.dataset.i, +b.dataset.d); persistCollections(); render(); break;
+    case 'rc-move': { const rc = activeRecipe(); const i = rc.items.findIndex((x) => x.id === b.dataset.id); rc.items = moveIndex(rc.items, i, +b.dataset.d); persistRecipes(); render(); break; }
     case 'col-remove-item': S.collections = removeRef(S.collections, b.dataset.id, JSON.parse(b.dataset.ref)); persistCollections(); render(); break;
     case 'pk-pick-custom': selectFood('pk', { t: 'u', id: b.dataset.cid }); break;
     case 'cu-new': S.customEdit = { name: '', liquid: false, portion: null, v: {} }; render(); break;

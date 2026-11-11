@@ -604,3 +604,8 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
   .amount:not(.compact) .portions { flex-wrap: nowrap; overflow-x: auto; }
   .amount .pchip { flex-shrink: 0; }
 }
+.move { display: inline-flex; gap: 2px; }
+.move .btn { min-width: calc(var(--tap) - 6px); padding: 0 .4rem; }
+.move .btn:disabled { opacity: .35; cursor: default; }
+.ing-h .move { margin-left: auto; }
+.ing-h .ing-kcal { margin-left: 0; }

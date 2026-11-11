@@ -69,3 +69,13 @@ test('yedek: koleksiyonlar yeni kimlikle döner, alt kategori bağı ve kendi be
   // Eski yedekler (koleksiyonsuz) sorunsuz açılır
   assert.deepEqual(parseImport(exportPayload([], {}, [], [])).collections, []);
 });
+
+test('sıralama: öğe yukarı/aşağı taşınır, sınırda değişmez', async () => {
+  const { moveIndex, moveRef } = await import('../src/collections.js');
+  assert.deepEqual(moveIndex(['a', 'b', 'c'], 2, -1), ['a', 'c', 'b']);
+  assert.deepEqual(moveIndex(['a', 'b', 'c'], 0, -1), ['a', 'b', 'c']);
+  assert.deepEqual(moveIndex(['a', 'b', 'c'], 2, 1), ['a', 'b', 'c']);
+  const list = [{ id: 'k', name: 'K', parent: null, items: [muz, yulaf] }];
+  assert.deepEqual(moveRef(list, 'k', 1, -1)[0].items, [yulaf, muz]);
+  assert.deepEqual(list[0].items, [muz, yulaf]);
+});

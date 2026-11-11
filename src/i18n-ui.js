@@ -550,5 +550,7 @@ export const UI_EN = {
  "Günlük": "Daily",
  "Kıyasla": "Compare",
  "Bilgi": "About",
- "Ayarlar": "Settings"
+ "Ayarlar": "Settings",
+ "{n} yukarı taşı": "Move {n} up",
+ "{n} aşağı taşı": "Move {n} down"
 };
