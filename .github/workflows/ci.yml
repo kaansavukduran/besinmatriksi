@@ -21,7 +21,7 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run build:single
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps chromium || (echo "::warning::apt bağımlılıkları kurulamadı; yalnız Chromium kuruluyor" && npx playwright install chromium)
       - run: npm run test:browser
       - uses: actions/upload-artifact@v4
         if: failure()

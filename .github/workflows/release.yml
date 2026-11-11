@@ -30,7 +30,8 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run build:single
-      - run: npx playwright install --with-deps chromium
+      # apt aynası geçici olarak çözülemezse (runner DNS) sistem paketleri olmadan tarayıcıyı kur; testler yine koşar.
+      - run: npx playwright install --with-deps chromium || (echo "::warning::apt bağımlılıkları kurulamadı; yalnız Chromium kuruluyor" && npx playwright install chromium)
       - run: npm run test:browser
       - name: Paketle
         run: |

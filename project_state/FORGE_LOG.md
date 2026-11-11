@@ -277,3 +277,4 @@
 - Sonraki: **B066** beta.7 yayını (B064 + B065) ve sonrasında Kıyasla ekranında farkları vurgulama (en yüksek değer işareti).
 - Sürüm: 1.1.2-beta.7 (B064 ayarlarda arama, B065 tarif listesi).
 - Beta.7 ilk koşu (run 43057431907) FAIL: web işinde `playwright install --with-deps` apt adımı "Temporary failure resolving 'security.ubuntu.com'" (runner DNS, kod dışı). Düşen işler yeniden çalıştırıldı. B066'nın ikinci kısmı (Kıyasla'da satırdaki en yüksek değer vurgusu) zaten mevcut (`td.best`, "yüksek = iyi değildir" notuyla); yeni iş açılmadı.
+- Beta.7 yeniden deneme (attempt 2) yine FAIL: aynı runner DNS hatası ('archive.ubuntu.com', 'security.ubuntu.com' çözülemedi; imaj ubuntu-26.04, beta.6 aynı imajla geçmişti). Düzeltme: release.yml ve ci.yml'de `playwright install --with-deps chromium` başarısız olursa uyarı verip `playwright install chromium` ile devam; tarayıcı testleri yine koşar, yani kapı gevşemez. Yeni koşu başlatıldı.
