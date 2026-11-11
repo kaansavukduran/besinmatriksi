@@ -9,8 +9,8 @@
   "next_recommended_forge": "B059",
   "branch": "ccr-1e1934aa-iv8aev",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
-  "validated_code_commit": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
-  "package_source_commit": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
+  "validated_code_commit": "8bf239fb5f9d9281b6c8c623bf3662d436c3ddbc",
+  "package_source_commit": "8bf239fb5f9d9281b6c8c623bf3662d436c3ddbc",
   "verified_gates": [
     {
       "id": "unit",
@@ -344,5 +344,6 @@
   ],
   "remaining": [
     "B059"
-  ]
+  ],
+  "latest_release": "https://github.com/kaansavukduran/besinmatriksi/releases/tag/v1.1.2-beta.4"
 }
