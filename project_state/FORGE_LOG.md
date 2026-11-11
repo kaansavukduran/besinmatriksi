@@ -244,3 +244,10 @@
 - Eski testler yeni davranışa göre güncellendi (fiyat ve hazır gram öncesi "Ayarla"). Mini satırın çift çerçevesi kaldırıldı (telefon ekran görüntüsüyle doğrulandı).
 - Kanıt: `npm test` 69/69; Playwright 54/54 PASS (yeni B060 testi), CSS düzeltmesinden sonra ilgili 6 test yeniden PASS.
 - Sonraki: **B061** beta.5 sürümü (B059 + B060) ve ardından Keşfet'te son kullanılan besinler satırı.
+- Yayın: release run 42972032019 SUCCESS (commit a2a0e39). v1.1.2-beta.5 pre-release 2026-11-11T06:29Z; 22 varlık (Windows portable/Setup/msi, macOS dmg, Linux AppImage/deb/rpm, Android apk, iOS ipa imzasız, offline.html, web-pwa, source, SHA256SUMS, BUILD_INFO, lisanslar). Cihaz kurulumu NOT_RUN.
+
+## B061 · 2026-11-11 · beta.5 yayını ve "Son bakılanlar"
+- Beta.5 yukarıda (run 42972032019, 22 varlık).
+- Keşfet'te aramasız/kategorisiz görünümde "🕘 Son bakılanlar": son açılan 8 katalog besini (biçimiyle), dokununca açılır, "Temizle" ile silinir. Yalnız cihazda `bm.recent.v1`; bozuk veya katalogda artık olmayan kayıtlar atlanır. Çoklu seçim modunda gizli. Ayarlar → Matriks'ten kapatılır (`showRecent`, varsayılan açık). Telefonda tek satır yana kayar; sayfa genişliği 412 = görünüm 412 (taşma yok).
+- Kanıt: `npm test` 70/70 (yeni recent testi: tekrarsızlık, sıra, sınır, bozuk veri); Playwright 56/56 PASS (yeni B061 testi: kalıcılık, sıra, açma, temizleme); erişilebilir ad düzeltmesinden sonra B051/B061 yeniden PASS.
+- Sonraki: **B062** Tarif ekranında tarifi tek dokunuşla Günlük'e (bugün) ekleme ve günlükte porsiyon seçimi.

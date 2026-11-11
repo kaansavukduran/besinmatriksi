@@ -623,3 +623,6 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 .amount.mini .amt-val { min-width: 4.5em; text-align: center; }
 .amount.mini .ing-adjust { margin-left: auto; }
 .per-serv { color: var(--muted); font-size: .92em; }
+.recent-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.presets.recent { margin-bottom: 12px; }
+@media (max-width: 700px) { .presets.recent { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; } .presets.recent .pchip { flex-shrink: 0; } }

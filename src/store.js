@@ -91,3 +91,18 @@ export function parseImport(text) {
   const collections = remapCustomRefs(rawCols.map(c => ({ ...c, id: colIds.get(c.id), parent: c.parent ? colIds.get(c.parent) : null })), Object.fromEntries(ids));
   return { recipes, settings: o.settings && typeof o.settings === 'object' ? normalizeSettings(o.settings) : null, custom, profiles, collections };
 }
+
+// Son bakılan katalog besinleri (yalnız cihazda, en fazla 8)
+export const MAX_RECENT = 8;
+export function normalizeRecent(list, known = () => true) {
+  const out = [], seen = new Set();
+  for (const r of Array.isArray(list) ? list : []) {
+    if (!r || r.t !== 'c' || typeof r.id !== 'string' || !Number.isInteger(r.f) || r.f < 0 || !known(r)) continue;
+    const k = `${r.id}:${r.f}`; if (seen.has(k)) continue; seen.add(k);
+    out.push({ t: 'c', id: r.id, f: r.f }); if (out.length >= MAX_RECENT) break;
+  }
+  return out;
+}
+export const pushRecent = (list, ref, known) => normalizeRecent([ref, ...list], known);
+export function loadRecent(known) { return normalizeRecent(read('bm.recent.v1', []), known); }
+export function saveRecent(list) { return write('bm.recent.v1', normalizeRecent(list)); }

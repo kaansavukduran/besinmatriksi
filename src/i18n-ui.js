@@ -582,5 +582,8 @@ export const UI_EN = {
  "porsiyon başı {g} g": "{g} g per serving",
  "{n}: 10 gram azalt": "{n}: decrease by 10 g",
  "{n}: 10 gram artır": "{n}: increase by 10 g",
- "Ayarla": "Adjust"
+ "Ayarla": "Adjust",
+ "Keşfet'te son bakılan besinleri göster": "Show recently viewed foods in Explore",
+ "Son bakılanlar": "Recently viewed",
+  "Son bakılanları temizle": "Clear recently viewed"
 };

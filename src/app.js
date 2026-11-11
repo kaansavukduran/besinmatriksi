@@ -5,7 +5,7 @@ import { renderMatrix } from './matrix.js';
 import NOTICES from './data/notices.json';
 import { createPrintController } from './print.js';
 import { FONTS, fontStack, ensureFont } from './fonts.js';
-import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles, loadCollections, saveCollections } from './store.js';
+import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles, loadCollections, saveCollections, loadRecent, saveRecent, pushRecent } from './store.js';
 import { esc, fmtNum, fmtAmount, clamp, download, uid, configureFormatting, norm } from './util.js';
 import { matrixCSV } from './export.js';
 import { contrastRatio, accentText, exportTheme, parseTheme, COLOR_LABELS, validColor, themeTextContrast } from './theme.js';
@@ -33,7 +33,7 @@ const S = {
   tab: 'kesfet',
   searches: loadSearches(),
   profiles: loadProfiles(),
-  collections: loadCollections(), colPicker: false, sort: 'default', multi: false, picked: [], ingOpen: new Set(),
+  collections: loadCollections(), colPicker: false, sort: 'default', multi: false, picked: [], ingOpen: new Set(), recent: loadRecent((r) => !!FOODS.find((f) => f.id === r.id)?.forms[r.f]),
   cat: null,
   extGroup: null,
   q: '',
@@ -245,6 +245,16 @@ function customButton(f, action) {
   return `<button class="food" data-action="${action}" data-cid="${esc(f.id)}"><span class="fi">${S.settings.emoji ? '🏷️' : ''}</span><span class="fn">${esc(f.name)}</span><span class="ff">${L("Etiketten")} · ${f.v.energy != null ? fmtNum(f.v.energy) + ' kcal/100 g' : L("enerji yok")}</span></button>`;
 }
 
+const knownFood = (r) => !!FOODS.find((f) => f.id === r.id)?.forms[r.f];
+// Son bakılanlar: aramasız, kategorisiz Keşfet görünümünde tek satır
+function recentRow(prefix) {
+  if (prefix !== 'ex' || S.multi || !S.settings.showRecent) return '';
+  const items = S.recent.map((r) => ({ r, f: FOODS.find((x) => x.id === r.id) })).filter((x) => x.f);
+  if (!items.length) return '';
+  return `<div class="recent-row"><h3 class="grp">🕘 ${L("Son bakılanlar")}</h3><button class="btn ghost" data-action="recent-clear" aria-label="${L("Son bakılanları temizle")}">${L("Temizle")}</button></div>
+    <div class="presets recent">${items.map(({ r, f }) => `<button class="pchip" data-action="ex-pick-ref" data-ref='${esc(JSON.stringify(r))}'>${S.settings.emoji ? catIcon(f.cat) + ' ' : ''}${esc(foodName(f))}${f.forms.length > 1 ? ` <span class="muted">${esc(formName(f.forms[r.f].label))}</span>` : ''}</button>`).join('')}</div>`;
+}
+
 function foodList(prefix, cat, q, extGroup) {
   if (cat?.startsWith('col:')) return collectionList(prefix, cat, q);
   if (cat === 'custom') {
@@ -268,7 +278,7 @@ function foodList(prefix, cat, q, extGroup) {
   }
   const res = search(q, { cat, ext: S.settings.showExt && extLoaded() && !!q });
   if (!res.curated.length && !res.ext.length && !res.custom.length) return `<p class="empty">${L("Eşleşen besin yok. Aramayı kısalt veya “Tümü”ne dön.")}</p>`;
-  let html = sortBar(prefix);
+  let html = (!q && !cat ? recentRow(prefix) : '') + sortBar(prefix);
   if (!q && !cat && S.sort === 'default') {
     for (const c of CATEGORIES) {
       const fs = res.curated.filter((f) => f.cat === c.id);
@@ -535,6 +545,7 @@ function renderSettings() {
       ${tog('showSource', L("Kaynak etiketleri (USDA / Hesap / Etiket)"))}
       ${tog('showAlt', L("Varsa ikinci kaynağı göster (bu sürümde ikinci veri seti yok)"))}
       ${tog('showSd', L("Varsa kaynak standart sapmasını göster"))}
+      ${tog('showRecent', L("Keşfet'te son bakılan besinleri göster"))}
       ${tog('recipeGaps', L("Tarifte en düşük kalan besinleri ve kaynaklarını göster"))}
       ${tog('cardFacts', L("Besin kartlarında kısa özet (kcal, protein, lif)"))}
       ${tog('showMissing', L("“Veri yok” satırlarını listele"))}
@@ -835,6 +846,7 @@ function selectFood(prefix, ref) {
   const q = prefix === 'ex' ? S.q : S.picker?.q;
   if (q?.trim()) { S.searches = recentSearches(S.searches, q); saveSearches(S.searches); }
 
+  if (prefix === 'ex' && ref?.t === 'c') { S.recent = pushRecent(S.recent, ref, knownFood); saveRecent(S.recent); }
   if (prefix === 'ex') { S.sel = ref; S.amount = S.settings.defaultAmount; render(); const d = $('.detail'); if (d) d.scrollTop = 0; if (window.innerWidth < 900) window.scrollTo(0, 0); }
   else { S.picker.sel = ref; S.picker.amount = S.settings.defaultAmount; render(); }
 }
@@ -962,6 +974,7 @@ async function onClick(e) {
     case 'ex-pick-ref': selectFood('ex', JSON.parse(b.dataset.ref)); break;
     case 'pk-pick-ref': selectFood('pk', JSON.parse(b.dataset.ref)); break;
     case 'sort': S.sort = b.dataset.s; render(); break;
+    case 'recent-clear': S.recent = []; saveRecent([]); render(); break;
     case 'ing-open': { const id = b.dataset.id; if (S.ingOpen.has(id)) S.ingOpen.delete(id); else S.ingOpen.add(id); render(); document.querySelector(`[data-action="ing-open"][data-id="${CSS.escape(id)}"]`)?.focus(); break; }
     case 'multi-toggle': S.multi = !S.multi; S.picked = []; render(); break;
     case 'multi-pick': { const id = b.dataset.id; S.picked = S.picked.includes(id) ? S.picked.filter((x) => x !== id) : [...S.picked, id]; render(); break; }

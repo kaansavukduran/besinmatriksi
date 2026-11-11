@@ -500,3 +500,24 @@ test('tarif malzemesi tek satırda kalır; ±10, porsiyon başı gram ve Ayarla 
   await page.locator('[data-action="ing-open"]').click();
   await expect(page.locator('.ing .slider')).toHaveCount(0);
 });
+
+test('Keşfet son bakılan besinleri gösterir, kalıcıdır ve temizlenir (B061)', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('.presets.recent')).toHaveCount(0);
+  for (const id of ['muz', 'yulaf']) {
+    if (await page.locator('.back').isVisible()) await page.locator('.back').click();
+    await page.locator('#q').fill(id); await page.locator(`#foodlist [data-id="${id}"]`).click();
+  }
+  await page.reload();
+  const row = page.locator('.presets.recent .pchip');
+  await expect(row).toHaveCount(2);
+  await expect(row.first()).toContainText('Yulaf');
+  await row.nth(1).click();
+  await expect(page.locator('[data-action="ex-add-recipe"]')).toBeVisible();
+  if (await page.locator('.back').isVisible()) await page.locator('.back').click();
+  await expect(page.locator('.presets.recent .pchip').first()).toContainText('Muz');
+  await page.locator('[data-action="recent-clear"]').click();
+  await expect(page.locator('.presets.recent')).toHaveCount(0);
+  await page.reload();
+  await expect(page.locator('.presets.recent')).toHaveCount(0);
+});
