@@ -552,3 +552,22 @@ test('günlükteki gün tek dokunuşla tarife dönüşür (B063)', async ({ page
   await expect(page.locator('.ing .ing-h b')).toHaveText(['Muz', 'Yulaf ezmesi']);
   await expect(page.locator('.ing').first().locator('.amt-val b')).toHaveText('200');
 });
+
+test('Ayarlarda arama kartları süzer, odak korunur (B064)', async ({ page }) => {
+  await page.goto('/');
+  await tab(page, 'ayarlar');
+  const cards = page.locator('.settings > :not(.settings-search)');
+  const total = await cards.count();
+  expect(total).toBeGreaterThan(3);
+  const q = page.locator('#settings-q');
+  await q.fill('AİON');
+  await expect(page.locator('.aion-settings')).toBeVisible();
+  const visible = await cards.evaluateAll((els) => els.filter((e) => !e.hidden).length);
+  expect(visible).toBeGreaterThan(0); expect(visible).toBeLessThan(total);
+  await expect(q).toBeFocused();
+  await q.fill('zzqqxx');
+  await expect(page.locator('#settings-none')).toBeVisible();
+  await q.fill('');
+  expect(await cards.evaluateAll((els) => els.filter((e) => !e.hidden).length)).toBe(total);
+  await expect(page.locator('#settings-none')).toBeHidden();
+});

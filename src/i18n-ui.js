@@ -595,5 +595,8 @@ export const UI_EN = {
  "Bu günü tarif olarak kaydet": "Save this day as a recipe",
  "Günlük {d}": "Log {d}",
  "{n} malzemeli tarif oluşturuldu": "Recipe created with {n} ingredients",
- "{n} besin 1 kg sınırında kesildi": "{n} foods capped at 1 kg"
+ "{n} besin 1 kg sınırında kesildi": "{n} foods capped at 1 kg",
+ "Ayarlarda ara": "Search settings",
+ "ör. yazı, tema, Aion, yedek": "e.g. text, theme, Aion, backup",
+ "Bu aramaya uyan ayar yok.": "No settings match this search."
 };

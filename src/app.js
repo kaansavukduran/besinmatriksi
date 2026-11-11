@@ -33,7 +33,7 @@ const S = {
   tab: 'kesfet',
   searches: loadSearches(),
   profiles: loadProfiles(),
-  collections: loadCollections(), colPicker: false, sort: 'default', multi: false, picked: [], ingOpen: new Set(), recent: loadRecent((r) => !!FOODS.find((f) => f.id === r.id)?.forms[r.f]),
+  collections: loadCollections(), colPicker: false, sort: 'default', multi: false, picked: [], ingOpen: new Set(), settingsQ: '', recent: loadRecent((r) => !!FOODS.find((f) => f.id === r.id)?.forms[r.f]),
   cat: null,
   extGroup: null,
   q: '',
@@ -500,6 +500,8 @@ function renderSettings() {
   const tog = (k, label, help = '') => `<label class="toggle"><input type="checkbox" data-setbool="${k}" ${s[k] ? 'checked' : ''}><span class="sw"></span><span>${label}${help ? ` <span class="help" title="${esc(help)}">?</span>` : ''}</span></label>`;
   const step = (k, label, min, max, st, unit) => settingSlider(k, s[k], min, max, st, unit);
   return `<div class="settings">
+    <div class="settings-search"><label class="field"><span>🔎 ${L("Ayarlarda ara")}</span><input id="settings-q" type="search" value="${esc(S.settingsQ)}" placeholder="${L("ör. yazı, tema, Aion, yedek")}" autocomplete="off"></label>
+      <p class="hint" id="settings-none" role="status" hidden>${L("Bu aramaya uyan ayar yok.")}</p></div>
     ${renderAppearance(s)}
     <section class="card aion-settings"><h2>${tr('aionTitle')}</h2>
       <p class="hint">${tr('aionHint')}</p>
@@ -745,6 +747,7 @@ export function render() {
     <main class="view view-${S.tab}">${view}</main>
     ${renderPicker()}${renderColPicker()}${renderCustomEditor()}${renderThemeEditor(S.themeEditor, S.settings.customTheme)}`;
   aionMood(aionMoodFor());
+  if (S.tab === 'ayarlar') applySettingsFilter();
   document.querySelectorAll('.list, .detail, .pk-list, .cats').forEach((el, i) => (el.dataset.keepScroll = el.className.split(' ')[0] + i));
   document.querySelectorAll('[data-keep-scroll]').forEach((el) => { if (keep[el.dataset.keepScroll] != null) el.scrollTop = keep[el.dataset.keepScroll]; });
   window.scrollTo(0, winY);
@@ -1224,8 +1227,22 @@ function exportCSV() {
   toast(L("CSV hazırlandı"));
 }
 
+// Ayarlar araması: kartları başlık ve içerik metnine göre süzer (yeniden çizmeden, odak kaybolmaz)
+function applySettingsFilter() {
+  const root = document.querySelector('.settings'); if (!root) return;
+  const q = norm(S.settingsQ || '').trim();
+  let shown = 0;
+  for (const el of root.children) {
+    if (el.classList.contains('settings-search')) continue;
+    const hit = !q || norm(el.textContent || '').includes(q);
+    el.hidden = !hit; if (hit) shown++;
+  }
+  const none = document.getElementById('settings-none'); if (none) none.hidden = shown > 0;
+}
+
 function onInput(e) {
   const t = e.target;
+  if (t.id === 'settings-q') { S.settingsQ = t.value; applySettingsFilter(); return; }
   if (t.dataset.personalField) { updatePersonalDraft(t); return; }
   if (t.dataset.settingRange || t.dataset.settingNumber) { updateNumericSetting(t); return; }
   if (S.themeEditor && ['theme-color-picker', 'theme-color-hex'].includes(t.id)) {

@@ -262,3 +262,9 @@
 - Kanıt: `npm test` 73/73 (yeni birleştirme/filtre/sınır testi); Playwright 60/60 PASS (yeni B063 testi: muz ×2 + yulaf → 2 malzeme, muz 200 g).
 - Sürüm: 1.1.2-beta.6 (B061 son bakılanlar, B062 tarif→günlük, B063 günlük→tarif).
 - Sonraki: **B064** beta.6 yayın doğrulaması, ardından Ayarlar ekranında arama kutusu (ayar adına göre süzme).
+- Yayın: release run 42993729629 SUCCESS (commit 1fc970a). v1.1.2-beta.6 pre-release 2026-11-11T09:23Z; 22 varlık. Cihaz kurulumu NOT_RUN.
+
+## B064 · 2026-11-11 · Ayarlarda arama
+- Ayarlar'ın en üstünde "🔎 Ayarlarda ara": kartlar başlık ve içerik metnine göre büyük/küçük harf ve Türkçe karakter duyarsız (`norm`) süzülür; yeniden çizim yok, odak korunur; eşleşme yoksa "Bu aramaya uyan ayar yok." (role=status). Arama metni oturum boyunca korunur, ayar değişince yeniden uygulanır.
+- Kanıt: `npm test` 73/73; Playwright 62/62 PASS (yeni B064 testi: "AİON" → Aion kartı, odak, eşleşmesiz durum, temizleyince tümü); hesaplanan stil ile gizli kartların `display: none` olduğu doğrulandı. Beta.6 yayını yukarıda (run 42993729629).
+- Sonraki: **B065** tarif listesinde tarif arama/sıralama ve tarif başına kcal/porsiyon özeti.
