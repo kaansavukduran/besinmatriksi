@@ -276,3 +276,4 @@
 - Kanıt: `npm test` 73/73; Playwright 64/64 PASS (yeni B065 testi: kcal, arama, odak, eşleşmesiz, A–Z).
 - Sonraki: **B066** beta.7 yayını (B064 + B065) ve sonrasında Kıyasla ekranında farkları vurgulama (en yüksek değer işareti).
 - Sürüm: 1.1.2-beta.7 (B064 ayarlarda arama, B065 tarif listesi).
+- Beta.7 ilk koşu (run 43057431907) FAIL: web işinde `playwright install --with-deps` apt adımı "Temporary failure resolving 'security.ubuntu.com'" (runner DNS, kod dışı). Düşen işler yeniden çalıştırıldı. B066'nın ikinci kısmı (Kıyasla'da satırdaki en yüksek değer vurgusu) zaten mevcut (`td.best`, "yüksek = iyi değildir" notuyla); yeni iş açılmadı.
