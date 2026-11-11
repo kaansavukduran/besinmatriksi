@@ -1,5 +1,5 @@
 Besin Matriksi
-Version: 1.1.2-beta.6
+Version: 1.1.2-beta.7
 License: MIT
 
 MIT License

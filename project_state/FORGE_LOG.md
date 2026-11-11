@@ -275,3 +275,4 @@
 - İlk hata: axe, seçili tarifin vurgulu zemininde soluk kcal satırına kontrast ihlali verdi (2 test); renk düğme metninden alınacak şekilde düzeltildi.
 - Kanıt: `npm test` 73/73; Playwright 64/64 PASS (yeni B065 testi: kcal, arama, odak, eşleşmesiz, A–Z).
 - Sonraki: **B066** beta.7 yayını (B064 + B065) ve sonrasında Kıyasla ekranında farkları vurgulama (en yüksek değer işareti).
+- Sürüm: 1.1.2-beta.7 (B064 ayarlarda arama, B065 tarif listesi).
