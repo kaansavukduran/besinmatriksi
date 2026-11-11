@@ -17,7 +17,7 @@ import { renderRecipeSources, renderRecipeSourceRows } from './recipe-sources.js
 import { renderEfsaSettings } from './efsa-ui.js';
 import { t as tr, setLanguage, preferredLanguage, L } from './i18n.js';
 import { renderAppearance, settingSlider } from './appearance.js';
-import { recipeToEntries, loadPersonal, savePersonal, emptyProfile, normalizeProfile, mergePersonalFoods, localDay, validDay, dayResult, PERSONAL_KEY } from './personal.js';
+import { recipeToEntries, dayToRecipeItems, loadPersonal, savePersonal, emptyProfile, normalizeProfile, mergePersonalFoods, localDay, validDay, dayResult, PERSONAL_KEY } from './personal.js';
 import { renderPersonal, renderEnergy, renderDaySources } from './personal-view.js';
 import { nutrientLabel } from './i18n-nutrients.js';
 import { getLanguage } from './i18n.js';
@@ -924,6 +924,14 @@ async function onClick(e) {
   if (!document.querySelector('.modal')) modalOpener = focusSelector(b);
   switch (a) {
     case 'aion-demo': aionPlay(b.dataset.anim || 'celebrate'); aionSay(tr('aionHello'), 4000); break;
+    case 'personal-to-recipe': {
+      const { items, capped } = dayToRecipeItems(S.personal.entries, S.personalDay, { consumedOnly: S.consumedOnly, maxG: MAX_G });
+      if (!items.length) break;
+      const r = newRecipe(L("Günlük {d}", { d: S.personalDay })); r.items = items;
+      S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); S.tab = 'tarif'; render();
+      toast(L("{n} malzemeli tarif oluşturuldu", { n: items.length }) + (capped ? ' · ' + L("{n} besin 1 kg sınırında kesildi", { n: capped }) : ''));
+      aionPlay('celebrate'); break;
+    }
     case 'rc-to-day': {
       const rc = activeRecipe(); if (!rc.items.length) break;
       const ans = await uiDialog(L("“{r}” tarifinden kaç porsiyon? (Tarif {s} porsiyon; ölçü bugünün günlüğüne malzeme malzeme eklenir.)", { r: rc.name, s: rc.servings }), { input: '1', line: true, ok: L("Günlüğe ekle"), cancel: L("Vazgeç") });

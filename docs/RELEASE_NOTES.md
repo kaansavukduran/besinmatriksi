@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 5 · Çoklu seçim ve sade tarif
+# 🫐 Besin Matriksi 1.1.2 Beta 6 · Tarif ↔ Günlük
 
 Bitkisel besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama.
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -21,6 +21,9 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
+- **Tarifi günlüğe ekle:** Tarifte **📒 Günlüğe ekle** → kaç porsiyon yediğini yaz; her malzeme bugünün günlüğüne doğru gramla eklenir.
+- **Günü tarife çevir:** Günlük'te **🥣 Bu günü tarif olarak kaydet** → o günün yediklerinin toplam matriksini tarif olarak gör.
+- **Son bakılanlar:** Keşfet'in üstünde son açtığın 8 besin; dokun, aç.
 - **Çoklu seçim:** Keşfet'te **☑ Çoklu seç**e bas, istediğin besinlere dokun, **Tarife ekle (her biri 100 g)** ile hepsini tek seferde ekle.
 - **Sade tarif:** Her malzeme tek satır: −10 · gram · +10 ve porsiyon başı gram. Kaydırıcı, hazır gramlar ve fiyat **⚙ Ayarla**nın altında.
 - **Kartlarda kısa özet:** Her besinde 100 g için kcal · protein · lif tek bakışta (veri yoksa yazılmaz). Ayarlar → Matriks'ten kapatılabilir.
@@ -41,6 +44,6 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ---
 
-# Besin Matriksi 1.1.2 Beta 5 · Multi-select & calmer recipes
+# Besin Matriksi 1.1.2 Beta 6 · Recipe ↔ Log
 
-Offline plant-based food composition matrix. Download the file for your device from **Assets**: Windows `portable.exe` (no install) or `Setup.exe`, Android `.apk`, macOS `.dmg`, Linux `.AppImage`/`.deb`/`.rpm`, or `offline.html` for any browser. New: multi-select to add several foods at once, one-line recipe ingredients with per-serving grams (⚙ Adjust for slider and price). Also per-100 g kcal/protein/fibre on food cards, sorting by name/energy/protein/fibre, a 'lowest nutrients' card in recipes with the richest plant sources, an Updates section in Settings. Earlier: your own collections with subcategories (add/remove foods with ☆), a calmer screen with a large gram slider, and full English UI. Also: Aion, the pink-and-blue axolotl mascot with frame-by-frame sprite animation. Known limits: packages are unsigned; no in-app updater yet.
+Offline plant-based food composition matrix. Download the file for your device from **Assets**: Windows `portable.exe` (no install) or `Setup.exe`, Android `.apk`, macOS `.dmg`, Linux `.AppImage`/`.deb`/`.rpm`, or `offline.html` for any browser. New: add a recipe to today's log by servings, turn a logged day into a recipe, recently viewed foods. Also multi-select to add several foods at once, one-line recipe ingredients with per-serving grams (⚙ Adjust for slider and price). Also per-100 g kcal/protein/fibre on food cards, sorting by name/energy/protein/fibre, a 'lowest nutrients' card in recipes with the richest plant sources, an Updates section in Settings. Earlier: your own collections with subcategories (add/remove foods with ☆), a calmer screen with a large gram slider, and full English UI. Also: Aion, the pink-and-blue axolotl mascot with frame-by-frame sprite animation. Known limits: packages are unsigned; no in-app updater yet.

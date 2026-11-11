@@ -117,3 +117,17 @@ export function recipeToEntries(items, portions, servings, day, exists, newId = 
   }
   return { entries, skipped };
 }
+
+// Günlükteki bir günün kayıtlarını tarif malzemelerine çevirir; aynı besin birleşir (en fazla maxG), sıra korunur.
+export function dayToRecipeItems(entries, day, { consumedOnly = false, maxG = 1000, newId = uid } = {}) {
+  const out = [], byKey = new Map();
+  let capped = 0;
+  for (const e of entries) {
+    if (e.day !== day || (consumedOnly && !e.consumed)) continue;
+    const r = e.ref, k = r.t === 'c' ? `c:${r.id}:${r.f}` : r.t === 'u' ? `u:${r.id}` : `x:${r.n}`;
+    const prev = byKey.get(k);
+    if (prev) { const sum = Math.round((prev.g + e.g) * 100) / 100; if (sum > maxG) capped++; prev.g = Math.min(sum, maxG); }
+    else { const it = { id: newId(), ref: { ...r }, g: e.g }; byKey.set(k, it); out.push(it); }
+  }
+  return { items: out, capped };
+}

@@ -1,6 +1,6 @@
 import { NUTRIENTS, SECTIONS } from './nutrients.js';
 import { EN_NUTRIENTS } from './i18n-nutrients.js';
-import { t, getLanguage, locale } from './i18n.js';
+import { t, getLanguage, locale, L } from './i18n.js';
 import { esc, fmtNum, fmtAmount } from './util.js';
 import { PROFILE_RANGES, bodyMetrics, energyEstimate, dayResult, nutrientComparison } from './personal.js';
 import { recipeContributions } from './recipe-sources.js';
@@ -63,6 +63,7 @@ export function renderPersonal(state, draft, day, consumedOnly, settings, resolv
     <section class="card"><h2>${t('date')}: ${esc(dateText(day))}</h2><label class="field"><span>${t('date')}</span><input id="personal-day" type="date" value="${day}"></label><div class="presets"><button class="pchip ${!consumedOnly ? 'on' : ''}" data-action="personal-mode" data-mode="plan">${t('plan')}</button><button class="pchip ${consumedOnly ? 'on' : ''}" data-action="personal-mode" data-mode="consumed">${t('consumed')}</button><button class="btn primary" data-action="tab" data-tab="kesfet">${t('browseFood')}</button></div>
     <p>${t('loggedEnergy')}: <b>${amount(result.v.energy, 'kcal')}</b> · ${t('coverage', { known: result.cov.energy || 0, total: result.n })}</p><p>${t('dailyEnergy')}: <b>${target == null ? t('unknown') : amount(target, 'kcal')}</b> · ${t('energyGap')}: <b>${difference == null ? t(target == null ? 'noReference' : 'partial') : (difference > 0 ? '+' : '') + amount(difference, 'kcal')}</b></p><p class="hint">${t(manual ? 'manualEnergyHint' : state.profile.energySource === 'device' ? 'deviceEstimateHint' : 'estimateHint')}</p>
     ${entries.length ? `<ul class="source-ingredients">${entries.map(entry => { const item = resolve(entry.ref); return `<li><b>${item ? esc(foodName(item)) : t('missingRecord')}</b> · ${fmtNum(entry.g)} g<div class="presets"><button class="btn" data-action="personal-consumed" data-id="${entry.id}" aria-pressed="${entry.consumed}">${t(entry.consumed ? 'markPlanned' : 'markConsumed')}</button><button class="btn" data-action="personal-remove" data-id="${entry.id}">${t('remove')}</button></div></li>`; }).join('')}</ul>` : `<p>${t('emptyDay')}</p>`}
+    ${entries.length ? `<button class="btn" data-action="personal-to-recipe">🥣 ${L("Bu günü tarif olarak kaydet")}</button>` : ''}
     ${undo ? `<button class="btn" data-action="personal-undo">${t('undo')}</button>` : ''}
     <details class="personal-sources" ${sourceOpen ? 'open' : ''}><summary>${t('source')}</summary><label class="field"><span>${t('nutrient')}</span><select id="personal-source-key">${NUTRIENTS.map(n => `<option value="${n.key}" ${n.key === sourceKey ? 'selected' : ''}>${esc(label(n))}</option>`).join('')}</select></label><div id="personal-sources-content">${renderDaySources(entries, resolve, sourceKey)}</div></details>
     ${renderNutrients(result, settings, target > 0 ? { value: target, kind: manual ? 'manual' : 'estimate' } : null)}

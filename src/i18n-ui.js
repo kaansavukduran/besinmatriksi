@@ -591,5 +591,9 @@ export const UI_EN = {
  "Porsiyon 0'dan büyük ve en fazla 50 olmalı.": "Servings must be above 0 and at most 50.",
  "Eklenecek malzeme yok.": "No ingredients to add.",
  "{n} kayıt bugünün günlüğüne eklendi": "{n} entries added to today's log",
- "{n} malzeme atlandı (bulunamadı veya 1 g altı)": "{n} ingredients skipped (not found or under 1 g)"
+ "{n} malzeme atlandı (bulunamadı veya 1 g altı)": "{n} ingredients skipped (not found or under 1 g)",
+ "Bu günü tarif olarak kaydet": "Save this day as a recipe",
+ "Günlük {d}": "Log {d}",
+ "{n} malzemeli tarif oluşturuldu": "Recipe created with {n} ingredients",
+ "{n} besin 1 kg sınırında kesildi": "{n} foods capped at 1 kg"
 };

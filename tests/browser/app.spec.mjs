@@ -538,3 +538,17 @@ test('tarif porsiyonla bugünün günlüğüne malzeme malzeme eklenir (B062)', 
   await tab(page, 'gunluk');
   await expect(page.locator('main')).toContainText('Muz');
 });
+
+test('günlükteki gün tek dokunuşla tarife dönüşür (B063)', async ({ page }) => {
+  await page.goto('/');
+  for (const id of ['muz', 'yulaf', 'muz']) {
+    if (await page.locator('.back').isVisible()) await page.locator('.back').click();
+    await page.locator('#q').fill(id); await page.locator(`#foodlist [data-id="${id}"]`).click();
+    await page.locator('[data-action="ex-add-day"]').click();
+  }
+  await tab(page, 'gunluk');
+  await page.locator('[data-action="personal-to-recipe"]').click();
+  await expect(page.locator('#rc-name')).toHaveValue(/^Günlük \d{4}-\d{2}-\d{2}$/);
+  await expect(page.locator('.ing .ing-h b')).toHaveText(['Muz', 'Yulaf ezmesi']);
+  await expect(page.locator('.ing').first().locator('.amt-val b')).toHaveText('200');
+});

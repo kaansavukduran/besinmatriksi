@@ -256,3 +256,9 @@
 - Tarif başlığında "📒 Günlüğe ekle": "kaç porsiyon?" (virgül/nokta kabul, 0 < p ≤ 50). Her malzeme gram × porsiyon ÷ tarif porsiyonu olarak bugünün (yerel gün) günlüğüne ayrı kayıt olur; günlük kayıt sınırı 1000 g olduğundan büyük miktar bölünür; bulunamayan ve 1 g altı malzemeler atlanır ve bildirimde sayılır (sessiz yuvarlama yok). Saf fonksiyon `recipeToEntries` (`src/personal.js`); günlük şeması değişmedi.
 - Kanıt: `npm test` 72/72 (yeni recipe-day testleri: ölçekleme, bölme, atlama, geçersiz girdi); Playwright 58/58 PASS (yeni B062 testi: geçersiz girdi reddi, 2 porsiyonluk tarifte 1,5 porsiyon → 75 g, Günlük'te görünür); telefonda taşma yok (412 = 412), başlık ekran görüntüsü incelendi.
 - Sonraki: **B063** Günlük'te bir günün kayıtlarını tek dokunuşla tarife dönüştürme (tersi) ya da beta.6 yayını.
+
+## B063 · 2026-11-11 · Günlük'teki günü tarife çevirme ve beta.6
+- Günlük'te kayıt varsa "🥣 Bu günü tarif olarak kaydet": seçili günün kayıtları (Plan/Tüketildi görünümüne uyar) yeni "Günlük YYYY-AA-GG" tarifine malzeme olur; aynı besin birleşir, 1 kg sınırını aşan toplam kesilip bildirimde sayılır. Saf fonksiyon `dayToRecipeItems` (`src/personal.js`).
+- Kanıt: `npm test` 73/73 (yeni birleştirme/filtre/sınır testi); Playwright 60/60 PASS (yeni B063 testi: muz ×2 + yulaf → 2 malzeme, muz 200 g).
+- Sürüm: 1.1.2-beta.6 (B061 son bakılanlar, B062 tarif→günlük, B063 günlük→tarif).
+- Sonraki: **B064** beta.6 yayın doğrulaması, ardından Ayarlar ekranında arama kutusu (ayar adına göre süzme).
