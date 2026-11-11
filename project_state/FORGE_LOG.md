@@ -211,3 +211,9 @@
 - Kanıt: `npm test` 67/67; tarayıcı 46/46 PASS (yeni B052 testi kendiliğinden dış istek olmadığını da denetler).
 - CI notu: beta.3 run 42927583880 yalnız personal.spec EN/telefonda düştü; test 23:59:57–00:00 UTC arasında koştu, günlük kaydı gün dönümünde önceki güne kaldı (zamanlama, kod hatası değil). Yeniden çalıştırıldı.
 - Sonraki: **B056** günlük testini sabit saatle (gün dönümüne dayanıklı) çalıştırmak ve Tauri'de sürüm sayfasını dış tarayıcıda açmak için resmî opener eklentisini değerlendirmek.
+
+## B056 · 2026-11-11 · gün dönümüne dayanıklı günlük testi ve masaüstünde sürüm sayfasını açma
+- `tests/browser/personal.spec.mjs`: sayfa saati `page.clock.setFixedTime` ile sabitlendi; 00:00 UTC'de koşan CI'da kaydın önceki güne düşmesi (run 42927583880) tekrar edemez. Zamanlayıcılar normal akar.
+- Tauri resmî `tauri-plugin-opener` 2.x (MIT OR Apache-2.0, tauri-apps) eklendi; izin yalnız `https://github.com/kaansavukduran/besinmatriksi/releases*` ve yalnız kullanıcı "Sürüm sayfasını aç"a tıkladığında. Web/PWA/mobilde normal bağlantı davranışı.
+- Kanıt: `npm test` 67/67; personal.spec 6/6 PASS; yerel `npx tauri build --bundles deb` PASS (3,58 MiB) ve Xvfb altında masaüstü uygulaması açıldı, ekran görüntüsü incelendi (Aion, İngilizce arayüz). Dış tarayıcının gerçekten açılması bu ortamda NOT_RUN (masaüstü tarayıcı yok).
+- Sonraki: **B057** kategori görünümünde besin kartlarına küçük besin özeti (kcal/protein/lif) ve sıralama seçenekleri (ad, enerji, protein, lif).

@@ -1,7 +1,13 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Ana pencere; ağ veya dosya izni yok",
+  "description": "Ana pencere; dosya izni yok. Dış bağlantı yalnızca kullanıcı tıkladığında ve yalnızca GitHub sürüm sayfası için açılır.",
   "windows": ["main"],
-  "permissions": ["core:default"]
+  "permissions": [
+    "core:default",
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [{ "url": "https://github.com/kaansavukduran/besinmatriksi/releases*" }]
+    }
+  ]
 }

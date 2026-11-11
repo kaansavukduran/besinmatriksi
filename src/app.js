@@ -531,7 +531,7 @@ function renderSettings() {
     <section class="card updates"><h2>${L("Güncellemeler")}</h2>
       <div class="kv"><span>${L("Yüklü sürüm")}</span><span><b>${esc(window.__APP_VERSION__ || '')}</b></span></div>
       <p class="hint">${L("Uygulama kendiliğinden internete bağlanmaz. Yeni sürümü indirmek için sürüm sayfasını aç: GitHub hesabınla giriş yapmışken cihazına uygun dosyayı indir ve eskisinin üzerine kur. Tarifler, koleksiyonlar, ayarlar ve kendi besinlerin cihazda kalır; emin olmak için önce yedek al.")}</p>
-      <div class="presets"><a class="btn primary" href="${RELEASES_URL}" target="_blank" rel="noopener noreferrer">⬇ ${L("Sürüm sayfasını aç")}</a>
+      <div class="presets"><a class="btn primary" data-action="open-releases" href="${RELEASES_URL}" target="_blank" rel="noopener noreferrer">⬇ ${L("Sürüm sayfasını aç")}</a>
       <button class="btn" data-action="copy-releases">${L("Bağlantıyı kopyala")}</button>
       <button class="btn ghost" data-action="exp-file">${L("Önce yedek al (.json)")}</button></div>
       <p class="hint mono-url">${RELEASES_URL}</p>
@@ -1066,6 +1066,12 @@ async function onClick(e) {
     }
     case 'toggle-missing': setSetting('showMissing', true); refreshMatrix(); break;
     case 'exp-file': download(`besin-matriksi-yedek-${new Date().toISOString().slice(0, 10)}.json`, exportPayload(S.recipes, S.settings, customFoods(), S.profiles, S.collections)); toast(L("Yedek dosyası hazırlandı")); break;
+    case 'open-releases': {
+      // Masaüstü (Tauri): web görünümü dış bağlantı açmaz; resmî opener eklentisiyle sistem tarayıcısında aç.
+      const tauri = window.__TAURI_INTERNALS__;
+      if (tauri?.invoke) { e.preventDefault(); tauri.invoke('plugin:opener|open_url', { url: RELEASES_URL }).catch(() => toast(L("Bağlantı açılamadı; kopyalayıp tarayıcına yapıştır."))); }
+      break;
+    }
     case 'copy-releases':
       try { await navigator.clipboard.writeText(RELEASES_URL); toast(L("Bağlantı kopyalandı")); }
       catch { await uiDialog(L("Pano kullanılamadı. Bağlantıyı seçip kopyala:"), { input: RELEASES_URL, line: true, ok: L("Tamam") }); }

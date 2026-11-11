@@ -560,5 +560,6 @@ export const UI_EN = {
  "Bağlantıyı kopyala": "Copy link",
  "Önce yedek al (.json)": "Back up first (.json)",
  "Bağlantı kopyalandı": "Link copied",
- "Pano kullanılamadı. Bağlantıyı seçip kopyala:": "Clipboard unavailable. Select and copy the link:"
+ "Pano kullanılamadı. Bağlantıyı seçip kopyala:": "Clipboard unavailable. Select and copy the link:",
+ "Bağlantı açılamadı; kopyalayıp tarayıcına yapıştır.": "Could not open the link; copy it and paste it into your browser."
 };
