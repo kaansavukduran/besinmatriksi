@@ -2,7 +2,7 @@ import { NUTRIENTS, SECTIONS } from './nutrients.js';
 import { EN_NUTRIENTS } from './i18n-nutrients.js';
 import { t, getLanguage, locale, L } from './i18n.js';
 import { esc, fmtNum, fmtAmount } from './util.js';
-import { PROFILE_RANGES, bodyMetrics, energyEstimate, dayResult, nutrientComparison } from './personal.js';
+import { PROFILE_RANGES, bodyMetrics, energyEstimate, dayResult, nutrientComparison, weekSeries, localDay, shiftDay } from './personal.js';
 import { recipeContributions } from './recipe-sources.js';
 const label = n => getLanguage() === 'en' ? EN_NUTRIENTS[n.key] : n.label;
 const amount = (value, unit) => { if (value == null) return t('unknown'); const a = fmtAmount(value, unit); return `${a.n} ${esc(a.u)}`; };
@@ -48,6 +48,23 @@ function renderNutrients(result, settings, energyTarget) {
     }).join('')}</tbody></table></div></details>`;
   }).join('')}`;
 }
+// Son 7 gün enerji: kayıtsız gün çubuksuz "—", kısmi kapsam "≥" ve açık renkli; çubuğa dokununca o gün açılır
+export function renderWeek(state, day, resolve, consumedOnly) {
+  // Seçili gün son 7 gün içindeyse pencere bugünde biter (çubuğa dokununca grafik kaymaz)
+  const today = localDay(), end = day <= today && day > shiftDay(today, -7) ? today : day;
+  const s = weekSeries(state, end, resolve, 'energy', consumedOnly);
+  if (!s.some((x) => x.n)) return '';
+  const max = Math.max(1, ...s.map((x) => x.v ?? 0));
+  const wd = new Intl.DateTimeFormat(locale(), { weekday: 'short' });
+  return `<div class="week" role="group" aria-label="${L("Son 7 gün enerji")}"><p class="hint">${L("Son 7 gün enerji (kcal)")}</p><div class="week-bars">${s.map((x) => {
+    const h = x.v == null ? 0 : Math.max(4, (x.v / max) * 100);
+    const label = x.v == null ? '—' : `${x.partial ? '≥' : ''}${fmtNum(x.v)}`;
+    const name = wd.format(new Date(x.day + 'T12:00:00'));
+    return `<button class="wk ${x.day === day ? 'on' : ''} ${x.partial ? 'partial' : ''}" data-action="personal-goto-day" data-day="${x.day}" aria-label="${esc(name + ' ' + x.day + ': ' + (x.v == null ? L("kayıt yok") : label + ' kcal'))}" ${x.day === day ? 'aria-current="date"' : ''}>
+      <span class="wk-v">${label}</span><span class="wk-bar"><i style="height:${h.toFixed(1)}%"></i></span><span class="wk-d">${esc(name)}</span></button>`;
+  }).join('')}</div>${s.some((x) => x.partial) ? `<p class="hint">${L("≥: bazı kayıtlarda enerji verisi yok; gerçek değer daha yüksek olabilir.")}</p>` : ''}</div>`;
+}
+
 export function renderPersonal(state, draft, day, consumedOnly, settings, resolve, sourceKey, sourceOpen, undo, readError) {
   const { entries, result } = dayResult(state, day, resolve, consumedOnly);
   let estimate; try { estimate = energyEstimate(state.profile); } catch { estimate = {}; }
@@ -63,6 +80,7 @@ export function renderPersonal(state, draft, day, consumedOnly, settings, resolv
     <section class="card"><h2>${t('date')}: ${esc(dateText(day))}</h2><label class="field"><span>${t('date')}</span><input id="personal-day" type="date" value="${day}"></label><div class="presets"><button class="pchip ${!consumedOnly ? 'on' : ''}" data-action="personal-mode" data-mode="plan">${t('plan')}</button><button class="pchip ${consumedOnly ? 'on' : ''}" data-action="personal-mode" data-mode="consumed">${t('consumed')}</button><button class="btn primary" data-action="tab" data-tab="kesfet">${t('browseFood')}</button></div>
     <p>${t('loggedEnergy')}: <b>${amount(result.v.energy, 'kcal')}</b> · ${t('coverage', { known: result.cov.energy || 0, total: result.n })}</p><p>${t('dailyEnergy')}: <b>${target == null ? t('unknown') : amount(target, 'kcal')}</b> · ${t('energyGap')}: <b>${difference == null ? t(target == null ? 'noReference' : 'partial') : (difference > 0 ? '+' : '') + amount(difference, 'kcal')}</b></p><p class="hint">${t(manual ? 'manualEnergyHint' : state.profile.energySource === 'device' ? 'deviceEstimateHint' : 'estimateHint')}</p>
     ${entries.length ? `<ul class="source-ingredients">${entries.map(entry => { const item = resolve(entry.ref); return `<li><b>${item ? esc(foodName(item)) : t('missingRecord')}</b> · ${fmtNum(entry.g)} g<div class="presets"><button class="btn" data-action="personal-consumed" data-id="${entry.id}" aria-pressed="${entry.consumed}">${t(entry.consumed ? 'markPlanned' : 'markConsumed')}</button><button class="btn" data-action="personal-remove" data-id="${entry.id}">${t('remove')}</button></div></li>`; }).join('')}</ul>` : `<p>${t('emptyDay')}</p>`}
+    ${renderWeek(state, day, resolve, consumedOnly)}
     ${entries.length ? `<button class="btn" data-action="personal-to-recipe">🥣 ${L("Bu günü tarif olarak kaydet")}</button>` : ''}
     ${undo ? `<button class="btn" data-action="personal-undo">${t('undo')}</button>` : ''}
     <details class="personal-sources" ${sourceOpen ? 'open' : ''}><summary>${t('source')}</summary><label class="field"><span>${t('nutrient')}</span><select id="personal-source-key">${NUTRIENTS.map(n => `<option value="${n.key}" ${n.key === sourceKey ? 'selected' : ''}>${esc(label(n))}</option>`).join('')}</select></label><div id="personal-sources-content">${renderDaySources(entries, resolve, sourceKey)}</div></details>

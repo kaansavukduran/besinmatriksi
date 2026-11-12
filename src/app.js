@@ -968,6 +968,7 @@ async function onClick(e) {
   if (!document.querySelector('.modal')) modalOpener = focusSelector(b);
   switch (a) {
     case 'aion-demo': aionPlay(b.dataset.anim || 'celebrate'); aionSay(tr('aionHello'), 4000); break;
+    case 'personal-goto-day': if (validDay(b.dataset.day)) { S.personalDay = b.dataset.day; render(); } break;
     case 'personal-to-recipe': {
       const { items, capped } = dayToRecipeItems(S.personal.entries, S.personalDay, { consumedOnly: S.consumedOnly, maxG: MAX_G });
       if (!items.length) break;

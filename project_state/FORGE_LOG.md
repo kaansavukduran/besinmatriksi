@@ -304,3 +304,10 @@
 ## B071 · 2026-11-12 · beta.9 yayını
 - 1.1.2-beta.9 (B070 tanıtım turu). Sürüm dosyaları/Cargo.lock/lisans dökümü güncellendi; `npm test` PASS; `native-notices` 446 / eksik 0.
 - Sonraki: **B072** Günlük ekranında son 7 günün enerji/protein mini grafiği (yalnız bilinen değerler; veri yok günleri boş, 0 değil).
+- Yayın: release run 43173720653 SUCCESS (commit 86b83f2). v1.1.2-beta.9 pre-release 2026-11-12T07:21Z; 22 varlık. Cihaz kurulumu NOT_RUN.
+
+## B072 · 2026-11-12 · Günlük'te son 7 gün enerji grafiği
+- `weekSeries`/`shiftDay` (`src/personal.js`) + `renderWeek` (`src/personal-view.js`): 7 çubuk; kayıtsız gün "—" ve çubuksuz (0 değil); bazı kayıtlarda enerji yoksa "≥" ve açık renk + açıklama; Plan/Tüketildi görünümüne uyar; çubuğa dokununca o gün açılır (aria-current=date). Seçili gün son 7 gün içindeyse pencere bugünde sabit kalır.
+- İlk hata: çubuğa dokununca pencere seçili güne kaydı ve kayıtlı gün pencereden çıkınca grafik kayboldu (yeni test yakaladı); pencere sabitlemesi eklendi. İkinci bulgu: birim testinin sahte verisi `energy: null` kullandı; gerçek veride eksik bileşen anahtar olarak hiç yazılmıyor (foods.json'da null 0 adet), test verisi gerçek biçime uyduruldu.
+- Kanıt: `npm test` 76/76; Playwright 70/70 (tam koşu 68/70 + düzeltme sonrası B072 ve personal 8/8 PASS); telefonda ekran görüntüsü incelendi.
+- Sonraki: **B073** beta.10 yayını (B072).

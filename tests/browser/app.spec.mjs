@@ -630,3 +630,20 @@ test('ilk açılışta 3 adımlı tanıtım turu; ileri/geri, atlama kalıcı, A
   for (let i = 0; i < 3; i++) await page.locator('[data-action="tour-next"]').click();
   await expect(page.locator('.tour')).toHaveCount(0);
 });
+
+test('Günlük son 7 gün enerji grafiği: kayıtsız gün boş, güne dokununca o gün açılır (B072)', async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2026-06-15T12:00:00'));
+  await page.goto('/');
+  await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  await page.locator('[data-action="ex-add-day"]').click();
+  await tab(page, 'gunluk');
+  const bars = page.locator('.week-bars .wk');
+  await expect(bars).toHaveCount(7);
+  await expect(bars.nth(6)).toHaveAttribute('aria-current', 'date');
+  await expect(bars.nth(6).locator('.wk-v')).toHaveText('89');
+  await expect(bars.nth(5).locator('.wk-v')).toHaveText('—');
+  await bars.nth(5).click();
+  await expect(page.locator('#personal-day')).toHaveValue('2026-06-14');
+  await expect(page.locator('.week-bars .wk').nth(5)).toHaveAttribute('aria-current', 'date');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+});

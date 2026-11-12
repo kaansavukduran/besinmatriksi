@@ -131,3 +131,18 @@ export function dayToRecipeItems(entries, day, { consumedOnly = false, maxG = 10
   }
   return { items: out, capped };
 }
+
+// Seçili günle biten 7 günlük seri: günde kayıt yoksa v=null (0 değil); kısmi kapsam işaretlenir.
+export function shiftDay(day, delta) {
+  const d = new Date(day + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + delta); return d.toISOString().slice(0, 10);
+}
+export function weekSeries(state, endDay, resolve, key, consumedOnly = false, days = 7) {
+  const out = [];
+  for (let i = days - 1; i >= 0; i--) {
+    const day = shiftDay(endDay, -i);
+    const { entries, result } = dayResult(state, day, resolve, consumedOnly);
+    const known = result.cov?.[key] || 0;
+    out.push({ day, n: entries.length, v: entries.length && known ? result.v[key] : null, partial: entries.length > 0 && known < entries.length });
+  }
+  return out;
+}

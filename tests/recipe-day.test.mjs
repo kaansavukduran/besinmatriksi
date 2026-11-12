@@ -38,3 +38,21 @@ test('günün kayıtları tarife: aynı besin birleşir, gün ve tüketildi filt
   assert.deepEqual(eaten.items.map((i) => [i.ref.id, i.g]), [['muz', 200], ['yulaf', 600]]);
   assert.equal(dayToRecipeItems(E, '2026-11-12').items.length, 0);
 });
+
+import { weekSeries, shiftDay } from '../src/personal.js';
+test('7 günlük seri: kayıtsız gün null, kısmi kapsam işaretli, ay geçişi doğru', () => {
+  assert.equal(shiftDay('2026-03-01', -1), '2026-02-28');
+  const items = { a: { v: { energy: 100 }, s: {} }, b: { v: { protein: 1 }, s: {} } };
+  const resolve = (r) => items[r.id] ? { ...items[r.id], name: r.id, formLabel: '', cat: 'x', portions: [] } : null;
+  const st = { entries: [
+    { id: '1', day: '2026-11-12', ref: { t: 'c', id: 'a', f: 0 }, g: 200, consumed: true },
+    { id: '2', day: '2026-11-12', ref: { t: 'c', id: 'b', f: 0 }, g: 50, consumed: true },
+    { id: '3', day: '2026-11-10', ref: { t: 'c', id: 'a', f: 0 }, g: 100, consumed: false },
+  ] };
+  const s = weekSeries(st, '2026-11-12', resolve, 'energy');
+  assert.equal(s.length, 7); assert.equal(s[0].day, '2026-11-06'); assert.equal(s[6].day, '2026-11-12');
+  assert.equal(s[6].v, 200); assert.equal(s[6].partial, true);
+  assert.equal(s[4].v, 100); assert.equal(s[4].partial, false);
+  assert.equal(s[5].v, null); assert.equal(s[5].n, 0);
+  assert.equal(weekSeries(st, '2026-11-12', resolve, 'energy', true)[4].v, null);
+});

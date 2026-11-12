@@ -616,5 +616,9 @@ export const UI_EN = {
  "Tanıtım turunu başlat": "Start the quick tour",
  "Bir kategori seç ya da üstteki kutuya besin adı yaz.": "Pick a category or type a food name in the box above.",
  "Bir besine dokun. Büyük kaydırıcıyı sağa sola çekerek gramı ayarla; matriks hemen güncellenir.": "Tap a food. Drag the big slider left or right to set the grams; the matrix updates instantly.",
- "“Tarife ekle” ile besinleri topla. Tarif sekmesinde tüm tarifin toplam matriksini görürsün.": "Collect foods with “Add to recipe”. The Recipe tab shows the total matrix of the whole recipe."
+ "“Tarife ekle” ile besinleri topla. Tarif sekmesinde tüm tarifin toplam matriksini görürsün.": "Collect foods with “Add to recipe”. The Recipe tab shows the total matrix of the whole recipe.",
+ "Son 7 gün enerji": "Energy, last 7 days",
+ "Son 7 gün enerji (kcal)": "Energy, last 7 days (kcal)",
+ "kayıt yok": "no entries",
+ "≥: bazı kayıtlarda enerji verisi yok; gerçek değer daha yüksek olabilir.": "≥: some entries have no energy data; the real value may be higher."
 };
