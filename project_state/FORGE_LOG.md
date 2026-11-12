@@ -378,6 +378,7 @@
 ## B084 · 2026-11-12 · beta.13 yayını
 - 1.1.2-beta.13 (B082 geniş katalogta hayvansal gruplar, B083 simetrik seçici). Diğer ekranlarda `row` sınıf çakışması tarandı: yalnız matriks satırları kullanıyor (amaçlanan). `npm test` PASS; `native-notices` 446 / eksik 0.
 - Sonraki: **B085** Keşfet'teki kategori şeridini telefonda da isteğe bağlı simetrik ızgara olarak gösterme seçeneği (Ayarlar).
+- Yayın: release run 43227131132 SUCCESS (commit 0323563). v1.1.2-beta.13 pre-release 2026-11-12T13:34Z; 22 varlık. Cihaz kurulumu NOT_RUN.
 
 ## B085 · 2026-11-12 · Keşfet'te isteğe bağlı simetrik kategori ızgarası
 - Ayarlar → Matriks "Keşfet'te kategorileri eşit kutulu ızgara olarak göster" (`catGrid`, varsayılan kapalı; eski kayıtlar etkilenmez). Açıkken telefonda yana kayan şerit yerine B083'teki eşit genişlik/yükseklikte 2 sütunlu ızgara, geniş ekranda kenar sütunda tek sütun.
