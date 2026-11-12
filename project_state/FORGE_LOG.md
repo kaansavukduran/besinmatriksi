@@ -409,6 +409,7 @@
 - Dil: seçenek zaten vardı (Görünüm kartında); Kaan isteğiyle Ayarlar'ın en üstüne "🌐 Dil / Language" kartı: 🇹🇷 Türkçe · 🇬🇧 English · Cihaz dili (büyük düğmeler, kalıcı). Dil adları kendi dilinde (`lang` özniteliğiyle); B051 İngilizce taraması `[lang="tr"]` öğelerini atlayacak şekilde güncellendi.
 - Kanıt: `npm test` 81/81; Playwright 90/90 PASS (yeni B089 testi; B051/B089 düzeltme sonrası 4/4); denetim betiği TEMİZ.
 - Sonraki: **B090** beta.14 yayını (B085–B089).
+- Yayın: release run 43271159134 SUCCESS (commit d89bc49). v1.1.2-beta.14 pre-release 2026-11-12T17:51Z; 22 varlık. Cihaz kurulumu NOT_RUN.
 
 ## B090 · 2026-11-12 · Vercel: Chrome'da açılmama (service worker sağlamlaştırma)
 - Kaan: besinmatriksi.vercel.app Chrome'da açılmıyor, Firefox'ta açılıyor. Bu ortamdan vercel.app'e erişim yok (vekil CONNECT 403; sayfa okuma aracı ENOTFOUND) → canlı site NOT_RUN; Chrome'daki gerçek hata ekranı görülmedi.
@@ -418,3 +419,4 @@
 - Açık: Chrome'da gerçekte ne göründüğü (boş ekran, Vercel giriş sayfası, hata) Kaan'dan bekleniyor; önizleme bağlantılarında Vercel "Deployment Protection" Vercel'e giriş yapılmamış tarayıcıda giriş ister.
 - Sonraki: **B091** beta.15 yayını ve Vercel doğrulaması (Kaan'ın Chrome'daki sonucu).
 - B090 ek kanıt (yükseltme senaryosu, telefon görünümü, kalıcı tarayıcı profili, aynı origin): beta.5 (a2a0e39) ve beta.13 (0323563) derlenip kullanıldı (tarif, günlük, kıyas, ayar, son bakılanlar kaydedildi), sonra aynı adreste yeni derleme sunuldu. Her ikisinde: 1. yükleme eski önbellekten eski sürüm, 2. ve 3. yükleme 1.1.2-beta.14, booted=true, konsol/sayfa hatası yok. Eski kayıtlı veri açılışı bozmuyor. Kaan'ın telefonundaki Chrome'da "hiç açılmama" bu kanıtla açıklanmıyor; Chrome'un gösterdiği hata metni (ör. ERR_NAME_NOT_RESOLVED / ERR_CONNECTION_RESET) bekleniyor: bu tür hatalar Firefox'un güvenli DNS'i ile aşılan bir ağ/DNS engeline işaret eder.
+- Vercel: commit b5bb3bf (B090 service worker düzeltmesi dahil) için Vercel durumu success "Deployment has completed"; canlı site bu ortamdan erişilemediği için çalışma anı doğrulaması NOT_RUN.
