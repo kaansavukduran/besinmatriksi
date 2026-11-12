@@ -687,3 +687,4 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 .basic-tile small { color: var(--muted); }
 .basic-tile.big { grid-column: 1 / -1; flex-direction: row; align-items: baseline; justify-content: space-between; flex-wrap: wrap; }
 .basic-tile.big b { font-size: 1.6em; }
+.lang-pick .pchip { font-size: 1.05em; padding: .5rem 1rem; }

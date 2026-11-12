@@ -1,6 +1,6 @@
 [package]
 name = "besin-matriksi"
-version = "1.1.2-beta.13"
+version = "1.1.2-beta.14"
 description = "Çevrimdışı bitkisel besin matriksi"
 edition = "2021"
 license = "MIT"

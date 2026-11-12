@@ -656,6 +656,10 @@ export const UI_EN = {
  "Kalori": "Calories",
  "Şeker": "Sugar",
  "Az bilinen besinleri de listele (ör. jackfruit, teff); kapalıyken yalnız aramada çıkar": "List lesser-known foods too (e.g. jackfruit, teff); when off they appear only in search",
-  "Ticari ekmeklerin bazılarında süt, yumurta veya tereyağı bulunabilir; vegan uygunluğu için etikete bak.": "Some commercial breads contain milk, egg or butter; check the label for vegan suitability.",
-  "Musluk suyunun mineral içeriği bölgeye göre değişir; ambalajlı suda etikete bak.": "Tap water mineral content varies by region; for bottled water check the label."
+ "Ticari ekmeklerin bazılarında süt, yumurta veya tereyağı bulunabilir; vegan uygunluğu için etikete bak.": "Some commercial breads contain milk, egg or butter; check the label for vegan suitability.",
+ "Musluk suyunun mineral içeriği bölgeye göre değişir; ambalajlı suda etikete bak.": "Tap water mineral content varies by region; for bottled water check the label.",
+ "Dil": "Language",
+ "Cihaz dili": "Device language",
+ "Şimdilik Türkçe ve İngilizce. Besin adları, matriks, tarif ve dışa aktarma seçilen dile geçer.": "Turkish and English for now. Food names, the matrix, recipes and exports switch to the chosen language.",
+ "Karşılaştırma tablosu (yana kaydırılabilir)": "Comparison table (scrolls sideways)"
 };

@@ -402,3 +402,10 @@
 - İlk hata: yeni tarayıcı testi "Tahıllar" seçiliyken "su" aradı (boş sonuç); test "Tümü"ye geçecek şekilde düzeltildi, uygulama kodu değişmedi.
 - Kanıt: `npm run data` (curated 330); `npm test` 81/81 (330 benzersiz çizim, EN kapsamı); Playwright: tam koşu 86/88, düzeltme sonrası B088 2/2 PASS.
 - Sonraki: **B089** baştan sona denetim (hata taraması, dil ayarı TR/EN kontrolü) ve beta.14.
+
+## B089 · 2026-11-12 · baştan sona denetim ve Dil kartı
+- Çalışma anı denetimi (scratchpad `audit.cjs`, vite preview): telefon 390 px + masaüstü 1280 px × TR/EN × koyu/açık tema; besin seçip tarif/kıyas/günlüğe ekleyerek 6 sekme + besin seçici; her ekranda yatay taşma, konsol/sayfa hatası ve axe (wcag2a/aa) taraması. Tek bulgu: Kıyasla tablosunun kaydırma alanına klavyeyle ulaşılamıyordu (axe scrollable-region-focusable) → `.tablewrap` tabindex=0, role=region, etiketli. Yeniden tarama: TEMİZ (taşma 0, hata 0, axe ihlali 0).
+- Veri denetimi: 330 besinde aynı ad yok, makro toplamı 100 g'ı aşan biçim yok; tek eksik "jaggery" (USDA kaydı yok, "veri bekleniyor" etiketli, az bilinen olarak gizli; değerleri "veri yok", 0 değil).
+- Dil: seçenek zaten vardı (Görünüm kartında); Kaan isteğiyle Ayarlar'ın en üstüne "🌐 Dil / Language" kartı: 🇹🇷 Türkçe · 🇬🇧 English · Cihaz dili (büyük düğmeler, kalıcı). Dil adları kendi dilinde (`lang` özniteliğiyle); B051 İngilizce taraması `[lang="tr"]` öğelerini atlayacak şekilde güncellendi.
+- Kanıt: `npm test` 81/81; Playwright 90/90 PASS (yeni B089 testi; B051/B089 düzeltme sonrası 4/4); denetim betiği TEMİZ.
+- Sonraki: **B090** beta.14 yayını (B085–B089).

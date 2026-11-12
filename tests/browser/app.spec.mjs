@@ -328,7 +328,7 @@ test('İngilizce modda eski ekranlarda Türkçe arayüz metni kalmaz (B051)', as
   const leftovers = () => page.evaluate(() => {
     const re = /[çğışöüÇĞİŞÖÜ]/, out = [];
     const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
-    while (w.nextNode()) { const t = w.currentNode.textContent.trim(); if (t && re.test(t) && !w.currentNode.parentElement.closest('pre,.notice,option,.fontbtn,.theme-preview,.rname,#rc-name,.profile-bar')) out.push(t); }
+    while (w.nextNode()) { const t = w.currentNode.textContent.trim(); if (t && re.test(t) && !w.currentNode.parentElement.closest('pre,.notice,option,.fontbtn,.theme-preview,.rname,#rc-name,.profile-bar,[lang="tr"]')) out.push(t); }
     for (const el of document.querySelectorAll('[aria-label],[title],[placeholder]')) for (const a of ['aria-label', 'title', 'placeholder']) { const v = el.getAttribute(a); if (v && re.test(v) && !el.closest('.notice,.rname')) out.push(a + ': ' + v); }
     return out;
   });
@@ -782,4 +782,19 @@ test('yaygın eklenen besinler: ekmek, su, taze soğan, tavuk but listede ve çi
   }
   await page.locator('#q').fill('içme suyu'); await page.locator('#foodlist [data-id="su"]').click();
   await expect(page.locator('.basic-card [data-basic="energy"] b')).toContainText('0');
+});
+
+test('Ayarlar en üstte Dil kartı: Türkçe/English tek dokunuşla değişir ve kalıcıdır (B089)', async ({ page }) => {
+  await page.goto('/');
+  await tab(page, 'ayarlar');
+  const first = page.locator('.settings > section').first();
+  await expect(first).toHaveClass(/lang-card/);
+  await first.locator('[data-v=\'"en"\']').click();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await expect(page.locator('[data-action="tab"][data-tab="ayarlar"]')).toContainText('Settings');
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+  await page.locator('[data-action="tab"][data-tab="ayarlar"]').click();
+  await page.locator('.lang-card [data-v=\'"tr"\']').click();
+  await expect(page.locator('html')).toHaveAttribute('lang', 'tr');
 });

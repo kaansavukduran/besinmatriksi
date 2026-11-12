@@ -539,7 +539,7 @@ function renderCompare() {
       rows.push(cmpRow(n, vals));
     }
     table = `<div class="presets cmp-secs" role="group" aria-label="${L("Bölüm")}">${secChips}</div>
-      <div class="tablewrap"><table class="cmp"><thead><tr><th>${L("Bileşen")}</th>${items.map(({ c, item }) => `<th>${esc(item.name)}<br><span class="muted">${esc(item.formLabel)} · ${fmtNum(c.g)} g</span></th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>
+      <div class="tablewrap" tabindex="0" role="region" aria-label="${L("Karşılaştırma tablosu (yana kaydırılabilir)")}"><table class="cmp"><thead><tr><th>${L("Bileşen")}</th>${items.map(({ c, item }) => `<th>${esc(item.name)}<br><span class="muted">${esc(item.formLabel)} · ${fmtNum(c.g)} g</span></th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>
       <p class="hint">${L("Aynı miktar ve biçimde karşılaştırmak için miktarları eşitle:")} <button class="btn ghost" data-action="cmp-same" data-g="100">${L("Hepsi 100 g")}</button> <button class="btn ghost" data-action="cmp-same" data-g="50">${L("Hepsi 50 g")}</button>. ${L("Satırdaki en yüksek değer vurgulanır; “yüksek = iyi” anlamına gelmez (sodyum, toksik mineraller, antinutrientler).")}</p>`;
   } else {
     table = `<p class="empty">${L("İki ile dört besini yan yana koy. Keşfet'te “Karşılaştır”a tıklayarak da ekleyebilirsin.")}</p>`;
@@ -556,6 +556,9 @@ function renderSettings() {
   return `<div class="settings">
     <div class="settings-search"><label class="field"><span>🔎 ${L("Ayarlarda ara")}</span><input id="settings-q" type="search" value="${esc(S.settingsQ)}" placeholder="${L("ör. yazı, tema, Aion, yedek")}" autocomplete="off"></label>
       <p class="hint" id="settings-none" role="status" hidden>${L("Bu aramaya uyan ayar yok.")}</p></div>
+    <section class="card lang-card" aria-label="Dil / Language"><h2>🌐 ${L("Dil")} / Language</h2>
+      <div class="presets lang-pick" role="group" aria-label="Dil / Language">${[['tr', '🇹🇷 Türkçe'], ['en', '🇬🇧 English'], ['auto', L("Cihaz dili")]].map(([v, name]) => `<button class="pchip ${s.language === v ? 'on' : ''}" aria-pressed="${s.language === v}" data-action="set" data-k="language" data-v='"${v}"' lang="${v === 'auto' ? '' : v}">${name}</button>`).join('')}</div>
+      <p class="hint">${L("Şimdilik Türkçe ve İngilizce. Besin adları, matriks, tarif ve dışa aktarma seçilen dile geçer.")}</p></section>
     ${renderAppearance(s)}
     <section class="card aion-settings"><h2>${tr('aionTitle')}</h2>
       <p class="hint">${tr('aionHint')}</p>
