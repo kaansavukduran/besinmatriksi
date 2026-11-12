@@ -555,3 +555,11 @@
 - İlk hata: tek dosya HTML eski derlemeyle test edildi (4 test) → `npm run build:single` sonrası 4/4 PASS.
 - Kanıt: `npm test` 91/91; Playwright 120 (116 PASS + yeniden derleme sonrası tek-HTML 4/4 PASS).
 - Sonraki: **B114** beta.21 yayını.
+
+## B115 · 2026-11-12 · Çeşitlilik: longevity / vegan mutfak besinleri
+- Kaan: su eklenebilsin; besin mayası, buğday glüteni, buğday rüşeymi, karnıyarık otu tohumu, makadamya, Brezilya cevizi yok; çeşitlilik artsın.
+- Teşhis: su (İçme suyu), seitan/vital buğday glüteni, buğday rüşeymi zaten katalogda; makadamya, Brezilya cevizi, pekan, goji, kenevir, natto, teff, amarant, sorgum, moringa, maitake, enoki, kelp, wakame, agar, adzuki, nigarili tofu "az bilinen" (NICHE) diye listelerde gizliydi → NICHE'ten çıkarıldı, artık kategorilerde görünür.
+- Yeni USDA SR28 besinleri: sirken (11244), şalgam yaprağı (11568), karpuz çekirdeği (12174), altın çilek/Physalis (09138), arpacık soğan (11677), kestane mantarı/crimini (11266), horoz mantarı/chanterelle (11239), İrlanda yosunu/sea moss (11444), soya filizi (11452). Her birine özel çizim, simge, İngilizce ad.
+- Besin mayası ve psyllium: SR28, FDC Foundation ve FNDDS 2024'te yok (doğrulandı); değerler markaya göre çok değişir → katalogda açık notla yer alır, değer uydurulmaz; "Etiketten kendi besinim olarak ekle" düğmesi ürün etiketi formunu adıyla açar. Mevcut `besin_mayasi` kaydı aslında kuru ekmek mayasıdır (adı doğru: "Kuru ekmek mayası (aktif)").
+- Kanıt: `npm run data` (341 besin); `npm test` 91/91; Playwright 122/122.
+- Sonraki: **B116** beta.22 yayını (beta.21 sonucu kontrol edildikten sonra).

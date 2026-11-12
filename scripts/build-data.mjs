@@ -264,7 +264,7 @@ for (const food of FOODS) {
       const ffId = fillFromFoundation(ndb, v, s);
       usda = { ndb, desc: d.long, refuse: d.refuse, refDesc: d.refDesc || null, sci: d.sci || null, ...(ffId ? { fdc: ffId } : {}) };
     }
-    const unavailable = !ndb ? 'Bu besin için dağıtıma uygun doğrulanmış bileşim kaydı henüz yok. Önceki IFCT verileri NIN yazılı izni doğrulanmadığı için bu sürüme dahil edilmedi.' : null;
+    const unavailable = !ndb ? food.unavailable || 'Bu besin için dağıtıma uygun doğrulanmış bileşim kaydı henüz yok. Önceki IFCT verileri NIN yazılı izni doğrulanmadığı için bu sürüme dahil edilmedi.' : null;
     const portions = ndb ? usdaPortions(ndb) : [];
     return {
       key,

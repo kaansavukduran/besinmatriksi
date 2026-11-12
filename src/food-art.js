@@ -350,6 +350,17 @@ export const FOOD_ART = {
   pide_lavas: ['bread', '#e8c27a', '#fff3d6', 'flat'], pide_lavas_tam: ['bread', '#b98b5a', '#e6cba6', 'flat'], patlamis_misir: ['popcorn', '#fff8e1', '#e53935'],
   su: ['water', '#e3f2fd', '#90caf9'], uzum_suyu: ['cup', '#6a1b9a', '#ffffff', 'glass'], taze_sogan: ['long', '#f1f8e9', '#43a047', 'leek'],
   patates_kizartmasi: ['fries', '#fbc02d', '#d32f2f'], tavuk_but: ['meat', '#e6a57e', '#fff3e0', 'drumstick'], dana_biftek: ['meat', '#b71c1c', '#ffe0e0', 'steak'],
+  sirken: ["leafy", "#558b2f", "#dcedc8", "curly"],
+  salgam_yapragi: ["leafy", "#43a047", "#e8f5e9"],
+  karpuz_cekirdegi: ["seeds", "#efebe9", "#3e2723", "drop"],
+  altin_cilek: ["round", "#ffb300", "#c5e1a5", "seeds"],
+  arpacik_sogan: ["bulb", "#a1887f", "#8d6e63", "onion"],
+  kestane_mantari: ["mushroom", "#8d6e63", "#d7ccc8", "cap"],
+  horoz_mantari: ["mushroom", "#ffb74d", "#fff3e0", "cap"],
+  irlanda_yosunu: ["seaweed", "#bcaaa4", "#6d4c41", "sheet"],
+  soya_filizi: ["herb", "#fff59d", "#c0ca33", "feather"],
+  besin_mayasi_z: ["powder", "#ffd54f", "#f57f17", "pile"],
+  psyllium: ["powder", "#efebe9", "#a1887f", "pile"],
 };
 
 // Eski bir çizimde olmayan şablon/seçenek gelirse güvenle boş döner (emoji yedeği devreye girer)

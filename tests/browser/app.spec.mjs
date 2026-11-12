@@ -1000,3 +1000,18 @@ test('Keşfet: karşılama kartı üstte; seçili kategorinin besinleri sağda k
   await tiles.nth(1).click();
   await expect(page.locator('#matrix .basic-card')).toBeVisible();
 });
+
+test('çeşitlilik: longevity besinleri görünür; besin mayası/psyllium etiketten eklenir (B115)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('.cat[data-cat="kuruyemis"]').click();
+  await expect(page.locator('#foodlist [data-id="brezilya_cevizi"]')).toHaveCount(1);
+  await expect(page.locator('#foodlist [data-id="makadamya"]')).toHaveCount(1);
+  await page.locator('.cat[data-cat=""]').click();
+  for (const id of ['sirken', 'karpuz_cekirdegi', 'horoz_mantari', 'irlanda_yosunu']) {
+    await page.locator('#q').fill(id === 'sirken' ? 'sirken' : id === 'karpuz_cekirdegi' ? 'karpuz çekirdeği' : id === 'horoz_mantari' ? 'chanterelle' : 'sea moss');
+    await expect(page.locator(`#foodlist [data-id="${id}"]`)).toHaveCount(1);
+  }
+  await page.locator('#q').fill('besin mayası'); await page.locator('#foodlist [data-id="besin_mayasi_z"]').click();
+  await page.locator('.unavail [data-action="cu-new"]').click();
+  await expect(page.locator('.modal input').first()).toHaveValue(/Besin mayası/);
+});

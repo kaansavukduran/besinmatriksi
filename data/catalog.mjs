@@ -424,4 +424,16 @@ export const FOODS = [
   F('patates_kizartmasi', 'Patates kızartması (fırında)', 'french fries, oven-baked', 'kok', [['firin', '11841', null, 'Dondurulmuştan fırında, tuzsuz']]),
   F('tavuk_but', 'Tavuk but (derisiz)', 'chicken thigh', 'kumes', [['cig', '05096', null, 'Çiğ'], ['pismis', '05098', null, 'Fırında']]),
   F('dana_biftek', 'Dana biftek (yağsız, bonfile tipi)', 'beef top sirloin steak, lean', 'et', [['cig', '23625', null, 'Çiğ'], ['pismis', '23629', null, 'Izgara']]),
+  // B115 (2026-11-12): çeşitlilik — Kaan'ın istediği longevity/vegan mutfak besinleri
+  F('sirken', 'Sirken (yabani ıspanak)', 'lambsquarters', 'yaprak', [['cig', '11244', null]]),
+  F('salgam_yapragi', 'Şalgam yaprağı', 'turnip greens', 'yaprak', [['cig', '11568', null]]),
+  F('karpuz_cekirdegi', 'Karpuz çekirdeği (iç)', 'watermelon seed kernels', 'tohum', [['kurutulmus', '12174', null]]),
+  F('altin_cilek', 'Altın çilek (Physalis)', 'groundcherry', 'meyve', [['cig', '09138', null]]),
+  F('arpacik_sogan', 'Arpacık soğan (şalot)', 'shallot', 'sebze', [['cig', '11677', null]]),
+  F('kestane_mantari', 'Kestane mantarı (crimini)', 'cremini mushroom', 'mantar', [['cig', '11266', null]]),
+  F('horoz_mantari', 'Horoz mantarı (chanterelle)', 'chanterelle', 'mantar', [['cig', '11239', null]]),
+  F('irlanda_yosunu', 'İrlanda yosunu (sea moss)', 'irish moss', 'alg', [['cig', '11444', null]]),
+  F('soya_filizi', 'Soya filizi', 'soybean sprouts', 'soya', [['filiz', '11452', null]]),
+  F('besin_mayasi_z', 'Besin mayası (nutritional yeast)', 'nutritional yeast', 'diger', [['toz', null, null]], { unavailable: 'Besin mayası USDA SR28 / FoodData Central (Foundation, FNDDS) tablolarında yok; değerler markaya ve B12 zenginleştirmesine göre çok değişir. Ürün etiketindeki 100 g değerleriyle “Kendi besinlerim”den ekle.' }),
+  F('psyllium', 'Karnıyarık otu tohumu kabuğu (psyllium)', 'psyllium husk', 'tohum', [['toz', null, null]], { unavailable: 'Psyllium kabuğu USDA SR28 / FoodData Central (Foundation, FNDDS) tablolarında yok. Ürün etiketindeki 100 g değerleriyle “Kendi besinlerim”den ekle; çoğunlukla çözünür liftir.' }),
 ];

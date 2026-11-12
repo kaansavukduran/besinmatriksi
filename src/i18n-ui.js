@@ -712,5 +712,8 @@ export const UI_EN = {
  "USDA SR28 (2015) tam ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015)": "USDA SR28 (2015) full ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA Isoflavone 2.1 (2015)",
  "“{q}” için sonuçlar": "Results for “{q}”",
  "Tüm besinler": "All foods",
- "100 g için kcal; P: protein (g), Lif (g). Bir kareye dokun, matriksi açılsın.": "kcal per 100 g; P: protein (g), Fibre (g). Tap a square to open its matrix."
+ "100 g için kcal; P: protein (g), Lif (g). Bir kareye dokun, matriksi açılsın.": "kcal per 100 g; P: protein (g), Fibre (g). Tap a square to open its matrix.",
+ "Besin mayası USDA SR28 / FoodData Central (Foundation, FNDDS) tablolarında yok; değerler markaya ve B12 zenginleştirmesine göre çok değişir. Ürün etiketindeki 100 g değerleriyle “Kendi besinlerim”den ekle.": "Nutritional yeast is not in USDA SR28 / FoodData Central (Foundation, FNDDS); values vary a lot by brand and B12 fortification. Add it from your product label (per 100 g) under “My foods”.",
+ "Psyllium kabuğu USDA SR28 / FoodData Central (Foundation, FNDDS) tablolarında yok. Ürün etiketindeki 100 g değerleriyle “Kendi besinlerim”den ekle; çoğunlukla çözünür liftir.": "Psyllium husk is not in USDA SR28 / FoodData Central (Foundation, FNDDS). Add it from your product label (per 100 g) under “My foods”; it is mostly soluble fibre.",
+ "Etiketten kendi besinim olarak ekle": "Add from label as my own food"
 };

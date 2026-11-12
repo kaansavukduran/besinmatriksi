@@ -38,7 +38,7 @@ export const POPULAR = {
 };
 
 export const NICHE = new Set(['jackfruit', 'demirhindi', 'plantain', 'guava', 'carkifelek', 'lici', 'papaya', 'murver', 'bektasi', 'frenk_uzumu',
-  'kudret_narı', 'yonca_filizi', 'collard', 'pak_choi', 'amarant_yapragi', 'moringa', 'manyok', 'taro', 'yam', 'yaban_havucu', 'urad', 'adzuki',
-  'guvercin_bezelyesi', 'pinto', 'natto', 'tofu_nigari', 'teff', 'sorgum', 'amarant', 'kenevir', 'hardal_tohumu', 'maitake', 'enoki', 'kelp', 'wakame', 'agar',
-  'cemen', 'kereviz_tohumu', 'karaman_kimyonu', 'aspir_yagi', 'pirinc_kepegi_yagi', 'hardal_yagi', 'palm_yagi', 'jaggery', 'akcaagac', 'maya_ozu', 'goji', 'kuru_muz',
-  'kulak_mantari', 'brezilya_cevizi', 'makadamya', 'pekan', 'nane_pepermint', 'hindistancevizi_sutu', 'pirinc_sutu']);
+  'kudret_narı', 'yonca_filizi', 'collard', 'pak_choi', 'amarant_yapragi', 'manyok', 'taro', 'yam', 'yaban_havucu', 'urad',
+  'guvercin_bezelyesi', 'pinto', 'hardal_tohumu',
+  'cemen', 'kereviz_tohumu', 'karaman_kimyonu', 'aspir_yagi', 'pirinc_kepegi_yagi', 'hardal_yagi', 'palm_yagi', 'jaggery', 'akcaagac', 'maya_ozu', 'kuru_muz',
+  'nane_pepermint', 'hindistancevizi_sutu', 'pirinc_sutu']);

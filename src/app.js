@@ -360,6 +360,7 @@ function renderExplore() {
           <button class="btn icon ghost" data-action="print" title="${L("Yazdır veya PDF olarak kaydet")}" aria-label="${L("Yazdır veya PDF olarak kaydet")}">🖨<span class="lbl-opt"> ${L("Yazdır")}</span></button>
         </span>
       </div>
+      ${item.food && !Object.keys(item.v || {}).length ? `<div class="card unavail"><p>${esc(item.note || '')}</p><button class="btn primary" data-action="cu-new" data-name="${esc(item.name)}">＋ ${L("Etiketten kendi besinim olarak ekle")}</button></div>` : ''}
       ${similarRow(item)}
       <div id="matrix" class="matrix">${matrixForExplore(item)}</div>`
     : welcome() + periodicGrid();
@@ -1178,7 +1179,7 @@ async function onClick(e) {
     case 'rc-move': { const rc = activeRecipe(); const i = rc.items.findIndex((x) => x.id === b.dataset.id); rc.items = moveIndex(rc.items, i, +b.dataset.d); persistRecipes(); render(); break; }
     case 'col-remove-item': S.collections = removeRef(S.collections, b.dataset.id, JSON.parse(b.dataset.ref)); persistCollections(); render(); break;
     case 'pk-pick-custom': selectFood('pk', { t: 'u', id: b.dataset.cid }); break;
-    case 'cu-new': S.customEdit = { name: '', liquid: false, portion: null, v: {} }; render(); break;
+    case 'cu-new': S.customEdit = { name: b.dataset.name || '', liquid: false, portion: null, v: {} }; render(); break;
     case 'cu-edit': { const f = customFoods().find((x) => x.id === S.sel?.id); if (f) { S.customEdit = JSON.parse(JSON.stringify(f)); render(); } break; }
     case 'cu-close': S.customEdit = null; render(); break;
     case 'cu-liquid': S.customEdit.liquid = b.dataset.v === '1'; render(); break;
