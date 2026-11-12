@@ -420,3 +420,7 @@
 - Sonraki: **B091** beta.15 yayını ve Vercel doğrulaması (Kaan'ın Chrome'daki sonucu).
 - B090 ek kanıt (yükseltme senaryosu, telefon görünümü, kalıcı tarayıcı profili, aynı origin): beta.5 (a2a0e39) ve beta.13 (0323563) derlenip kullanıldı (tarif, günlük, kıyas, ayar, son bakılanlar kaydedildi), sonra aynı adreste yeni derleme sunuldu. Her ikisinde: 1. yükleme eski önbellekten eski sürüm, 2. ve 3. yükleme 1.1.2-beta.14, booted=true, konsol/sayfa hatası yok. Eski kayıtlı veri açılışı bozmuyor. Kaan'ın telefonundaki Chrome'da "hiç açılmama" bu kanıtla açıklanmıyor; Chrome'un gösterdiği hata metni (ör. ERR_NAME_NOT_RESOLVED / ERR_CONNECTION_RESET) bekleniyor: bu tür hatalar Firefox'un güvenli DNS'i ile aşılan bir ağ/DNS engeline işaret eder.
 - Vercel: commit b5bb3bf (B090 service worker düzeltmesi dahil) için Vercel durumu success "Deployment has completed"; canlı site bu ortamdan erişilemediği için çalışma anı doğrulaması NOT_RUN.
+
+## B091 · 2026-11-12 · beta.15 yayını
+- 1.1.2-beta.15 (B090 service worker düzeltmesi ve açılış bekçisi indirilebilir paketlere/PWA'ya). `npm test` PASS; `native-notices` 446 / eksik 0.
+- Sonraki: **B092** Kaan'ın Chrome'daki sonucuna göre: hâlâ açılmıyorsa hata metniyle ağ/DNS teşhisi ve gerekirse ikinci barındırma adresi.
