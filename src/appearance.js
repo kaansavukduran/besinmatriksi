@@ -12,7 +12,6 @@ export function settingSlider(key, value, min, max, step, unit = '', presets = [
 }
 export function renderAppearance(s) {
   return `<section class="card appearance-controls"><h2>${t('appearance')}</h2><p class="hint">${t('deviceOnly')}</p>
-    <label class="field"><span>${t('language')}</span><select id="app-language">${[['auto', t('autoLanguage')], ['tr', 'Türkçe'], ['en', 'English']].map(([v, name]) => `<option value="${v}" ${s.language === v ? 'selected' : ''}>${name}</option>`).join('')}</select></label>
     ${settingSlider('uiScale', s.uiScale, 80, 200, 5, '%', [80, 100, 125, 150, 175, 200])}<p class="hint">${t('scaleHint')}</p>
     <button class="btn" data-action="set" data-k="theme" data-v='"system"'>${t('systemTheme')}</button>
     <label class="toggle"><input type="checkbox" data-setbool="progressEnabled" ${s.progressEnabled ? 'checked' : ''}><span class="sw" aria-hidden="true"></span><span>${t('progressEnabled')}</span></label>

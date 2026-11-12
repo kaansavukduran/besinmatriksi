@@ -301,7 +301,7 @@ export const UI_EN = {
  "Oksalat : Kalsiyum (molar)": "Oxalate : Calcium (molar)",
  "≥ 1 molar oran": "≥ 1 molar ratio",
  "Oksalat/kalsiyum molar oranı; bağlanmayı veya kişideki gerçek emilimi doğrudan ölçmez. Hazırlama biçimi ve oksalatın çözünürlüğü önemlidir.": "Oxalate/calcium molar ratio; it does not directly measure binding or actual absorption. Preparation and oxalate solubility matter.",
- "Amino asit skoru: {s}%": "Amino acid score: {s}%",
+ "Amino asit skoru: {s}": "Amino acid score: {s}",
  "Sınırlayıcı: {a}": "Limiting: {a}",
  "WHO/FAO/UNU 2007 yetişkin referans örüntüsüne göre (mg/g protein). Sindirilebilirlik düzeltmesi YOK; PDCAAS/DIAAS değildir.": "Based on the WHO/FAO/UNU 2007 adult reference pattern (mg/g protein). NO digestibility correction; this is not PDCAAS/DIAAS.",
  "Bazı amino asitler ölçülmemiş.": "Some amino acids were not measured.",
@@ -678,5 +678,6 @@ export const UI_EN = {
  "İyi geceler! Geç oldu; uyku da sağlığın parçası.": "Good night! It's late; sleep is part of health too.",
  "kalori": "calorie",
  "protein": "protein",
- "Bugünkü {n} hedefine ulaştın! 🎉": "You reached today's {n} goal! 🎉"
+ "Bugünkü {n} hedefine ulaştın! 🎉": "You reached today's {n} goal! 🎉",
+ "BRD'de lif hedefi yok; Ayarlar'da EFSA seçilebilir": "No fibre target in the EU label reference; choose EFSA in Settings"
 };

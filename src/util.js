@@ -49,7 +49,9 @@ export function fmtAmount(x, unit, precision) {
   return { n: fmtNum(v, precision), u };
 }
 
-export const fmtPct = (x) => (x == null ? '–' : x >= 10 ? Math.round(x) + '%' : nf(0, 1).format(x) + '%');
+// Türkçede yüzde işareti başta yazılır (%20); İngilizcede sonda (20%).
+export const pctText = (n) => (getLanguage() === 'en' ? `${n}%` : `%${n}`);
+export const fmtPct = (x) => (x == null ? '–' : pctText(x >= 10 ? Math.round(x) : nf(0, 1).format(x)));
 
 export const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);
 

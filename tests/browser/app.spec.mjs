@@ -856,3 +856,22 @@ test('Aion Günlük hedefine ulaşınca bir kez kutlar (B094)', async ({ page })
   await expect(page.locator('.basic-tile.goal.done[data-basic="protein"]')).toHaveCount(1);
   await expect(page.locator('#aion .aion-bubble')).not.toContainText('hedefine ulaştın');
 });
+
+test('görünüm cilası: eşit kıyas sütunları, Türkçe yüzde, tek dil seçimi, telefonda ad (B095)', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('.brand b')).toBeVisible();
+  await page.locator('#q').fill('nohut'); await page.locator('#foodlist [data-id="nohut"]').click();
+  await expect(page.locator('#matrix .basic-card [data-basic="carb_avail"] small')).toContainText(/^%\d/);
+  await page.locator('[data-action="ex-add-compare"]').click();
+  if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
+  await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  await page.locator('[data-action="ex-add-compare"]').click();
+  await tab(page, 'karsilastir');
+  const w = await page.locator('table.cmp thead th').evaluateAll((els) => els.map((e) => e.getBoundingClientRect().width));
+  expect(Math.abs(w[1] - w[2])).toBeLessThan(2);
+  const wrap = await page.locator('.tablewrap').evaluate((e) => e.scrollWidth - e.clientWidth);
+  expect(wrap).toBeLessThanOrEqual(1);
+  await tab(page, 'ayarlar');
+  await expect(page.locator('#app-language')).toHaveCount(0);
+  await expect(page.locator('.lang-pick [data-k="language"]')).toHaveCount(3);
+});

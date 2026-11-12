@@ -5,7 +5,7 @@ for (const language of ['tr', 'en']) test(`kişisel profil, günlük ve görün�
   test.setTimeout(90000);
   // Gün dönümünde (00:00) kayıt önceki güne düşmesin: sayfa saatini sabitle, zamanlayıcılar normal akar.
   await page.clock.setFixedTime(new Date('2026-06-15T12:00:00'));
-  await page.goto('/'); await tab(page, 'ayarlar'); await page.locator('#app-language').selectOption(language);
+  await page.goto('/'); await tab(page, 'ayarlar'); await page.locator(`.lang-pick [data-k="language"][lang="${language}"]`).click();
   await expect(page.locator('html')).toHaveAttribute('lang', language);
   await page.locator('[data-setbool="progressEnabled"]').locator('..').click();
   await tab(page, 'gunluk');

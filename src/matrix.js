@@ -1,7 +1,7 @@
 // Besin matriksi görünümü (HTML üretimi)
 import { NUTRIENTS, SECTIONS, SOURCES, ALLERGENS } from './nutrients.js';
 import { derive } from './calc.js';
-import { esc, fmtNum, fmtAmount, fmtPct } from './util.js';
+import { esc, fmtNum, fmtAmount, fmtPct, pctText } from './util.js';
 import { normalizeSettings, referenceFor } from './settings.js';
 import { referenceLabel } from './references.js';
 import { L, getLanguage } from './i18n.js';
@@ -134,7 +134,7 @@ function derivedCard(r, cfg, open) {
   let aas = '';
   if (d.aas) {
     const a = d.aas;
-    aas = `<div class="aas"><div class="aas-head"><b>${L("Amino asit skoru: {s}%", { s: fmtNum(a.raw) })}</b>
+    aas = `<div class="aas"><div class="aas-head"><b>${L("Amino asit skoru: {s}", { s: pctText(fmtNum(a.raw)) })}</b>
       <span class="chip ${a.raw >= 100 ? 'ok' : a.raw >= 75 ? 'warn' : 'bad'}">${L("Sınırlayıcı: {a}", { a: esc(L(a.limiting)) })}</span>
       <span class="help" title="${L("WHO/FAO/UNU 2007 yetişkin referans örüntüsüne göre (mg/g protein). Sindirilebilirlik düzeltmesi YOK; PDCAAS/DIAAS değildir.")}${a.complete ? '' : ' ' + L("Bazı amino asitler ölçülmemiş.")}">?</span></div>
       <div class="aabars">${a.rows.map((x) => `<div class="aabar" title="${esc(L(x.label))}: ${x.mgPerG == null ? L("veri yok") : fmtNum(x.mgPerG) + ' mg/g protein, ' + L("referans") + ' ' + x.ref}">
@@ -238,7 +238,7 @@ export function basicCard(r, cfg, title = null, opts = {}) {
     if (opts.goals) {
       const limit = LIMIT_KEYS.has(k), goal = GOAL_KEYS.has(k);
       const val = x == null ? `<b class="miss">${L("veri yok")}</b>` : `<b>${partial ? '≥ ' : ''}${fmtAmount(x, n.unit, cfg.precision).n} <span class="unit">${esc(fmtAmount(x, n.unit).u)}</span></b>`;
-      if (pct == null) return `<div class="basic-tile" data-basic="${k}"><span>${L(BASIC_SHORT[k])}</span>${val}${x == null || ref?.value > 0 ? '' : `<small>${L("hedef yok")}</small>`}</div>`;
+      if (pct == null) return `<div class="basic-tile" data-basic="${k}"><span>${L(BASIC_SHORT[k])}</span>${val}${x == null || ref?.value > 0 ? '' : `<small>${k === 'fiber' && cfg.referenceMode !== 'efsa' ? L("BRD'de lif hedefi yok; Ayarlar'da EFSA seçilebilir") : L("hedef yok")}</small>`}</div>`;
       const left = ref.value - x;
       const note = limit ? (pct > 100 ? L("üst sınırı {p} aştı", { p: fmtPct(pct - 100) }) : L("üst sınırın {p}", { p: fmtPct(pct) }))
         : goal ? (left > 0 ? L("kalan {v}", { v: `${fmtAmount(left, n.unit, cfg.precision).n} ${fmtAmount(left, n.unit).u}` }) : L("hedefe ulaşıldı ✓"))

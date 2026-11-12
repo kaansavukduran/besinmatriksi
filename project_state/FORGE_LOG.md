@@ -445,3 +445,13 @@
 - Günlük'te kalori/protein/lif hedefi "ulaşıldı" olunca Aion kutlama hareketi + balon; gün başına cihazda hatırlanır (`bm.aion.goals`), yeniden açılışta tekrar etmez. Yeni çizim yok; mevcut 5 animasyon (idle, wave, read, sad, celebrate) kullanıldı. Yeni poz (uyku vb.) için kaynak çizim gerekir: PLANNED değil, varlık yok.
 - Kanıt: `npm test` 85/85; Playwright 100/100 (B094 desktop+phone: soya izolatı → protein hedefi → balon "protein"; yeniden yüklemede kutlama yok).
 - Sonraki: **B095** görünüm cilası (telefon/masaüstü ekran görüntüleriyle hizalama ve boşluk düzeltmeleri).
+
+## B095 · 2026-11-12 · Görünüm cilası
+- Telefon (390 px) ve masaüstü (1280 px) için 7 ekranın tam sayfa görüntüsü alındı (Keşfet, ayrıntı, Kıyasla, Günlük, Tarif, Ayarlar, Hakkında) ve şu sorunlar düzeltildi:
+  - Kıyasla: besin sütunları eşit genişlikte değildi (uzun biçim adı sütunu şişiriyordu); telefonda ikinci besin ekrandan taşıyordu → `table-layout: fixed`, ilk sütun %34, besin sütunları eşit, en küçük genişlik sütun sayısına göre.
+  - Türkçe yüzde biçimi "20%" → "%20" (`pctText`; İngilizcede "20%"). Eksik besin listesi ve amino asit skoru da aynı biçimde.
+  - Ayarlar'da dil seçimi iki kez vardı (üstte Dil kartı + Görünüm'de açılır liste) → yalnız Dil kartı.
+  - Telefonda üst çubuk yalnız logo gösteriyordu → "Besin Matriksi" adı görünür.
+  - Günlük lif karosu BRD modunda "hedef yok" diyordu → "BRD'de lif hedefi yok; Ayarlar'da EFSA seçilebilir".
+- Kanıt: `npm test` 85/85; Playwright 102/102 (B095 desktop+phone: kıyas sütun farkı < 2 px, yatay taşma yok, %-biçimi, tek dil seçimi).
+- Sonraki: **B096** beta.16 yayını (B093–B095).

@@ -6,7 +6,7 @@ import NOTICES from './data/notices.json';
 import { createPrintController } from './print.js';
 import { FONTS, fontStack, ensureFont } from './fonts.js';
 import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles, loadCollections, saveCollections, loadRecent, saveRecent, pushRecent } from './store.js';
-import { esc, fmtNum, fmtAmount, clamp, download, uid, configureFormatting, norm } from './util.js';
+import { esc, fmtNum, fmtAmount, clamp, download, uid, configureFormatting, norm, pctText } from './util.js';
 import { matrixCSV } from './export.js';
 import { contrastRatio, accentText, exportTheme, parseTheme, COLOR_LABELS, validColor, themeTextContrast } from './theme.js';
 import { renderThemeEditor, themePreview } from './theme-editor.js';
@@ -491,7 +491,7 @@ function renderRecipeGaps(r) {
   if (!S.settings.recipeGaps || S.basis === 'per100') return '';
   const gaps = recipeGaps(r, NUTRIENTS, visibleFoods(), (n) => referenceFor(n, S.settings));
   if (!gaps.length) return '';
-  const rows = gaps.map((g) => `<li><div class="gap-h"><b>${esc(nutrientLabel(g.n))}</b> <span class="muted">${fmtNum(g.pct, 'low')}%${g.partial ? ' · ' + L("kısmi veri, gerçek değer daha yüksek olabilir") : ''}</span></div>
+  const rows = gaps.map((g) => `<li><div class="gap-h"><b>${esc(nutrientLabel(g.n))}</b> <span class="muted">${pctText(fmtNum(g.pct, 'low'))}${g.partial ? ' · ' + L("kısmi veri, gerçek değer daha yüksek olabilir") : ''}</span></div>
     ${g.noPlant ? `<p class="hint">${L("Bitkisel besinlerde güvenilir doğal kaynağı yok; zenginleştirilmiş ürün veya takviye gerekir.")}</p>` : ''}
     ${!g.foods.length ? '' : `<div class="presets">${g.foods.map((x) => `<button class="pchip" data-action="gap-open" data-id="${esc(x.f.id)}">${esc(foodName(x.f))} <span class="muted">${fmtNum(x.v, 'low')} ${esc(g.n.unit)}/100 g</span></button>`).join('')}</div>`}</li>`).join('');
   return `<section class="card recipe-gaps" aria-label="${L("En düşük kalan besinler")}">
@@ -540,7 +540,7 @@ function renderCompare() {
       rows.push(cmpRow(n, vals));
     }
     table = `<div class="presets cmp-secs" role="group" aria-label="${L("Bölüm")}">${secChips}</div>
-      <div class="tablewrap" tabindex="0" role="region" aria-label="${L("Karşılaştırma tablosu (yana kaydırılabilir)")}"><table class="cmp"><thead><tr><th>${L("Bileşen")}</th>${items.map(({ c, item }) => `<th>${esc(item.name)}<br><span class="muted">${esc(item.formLabel)} · ${fmtNum(c.g)} g</span></th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>
+      <div class="tablewrap" tabindex="0" role="region" aria-label="${L("Karşılaştırma tablosu (yana kaydırılabilir)")}"><table class="cmp" style="--cmp-n:${items.length}"><thead><tr><th>${L("Bileşen")}</th>${items.map(({ c, item }) => `<th class="cmp-food">${esc(item.name)}<br><span class="muted">${esc(item.formLabel)} · ${fmtNum(c.g)} g</span></th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>
       <p class="hint">${L("Aynı miktar ve biçimde karşılaştırmak için miktarları eşitle:")} <button class="btn ghost" data-action="cmp-same" data-g="100">${L("Hepsi 100 g")}</button> <button class="btn ghost" data-action="cmp-same" data-g="50">${L("Hepsi 50 g")}</button>. ${L("Satırdaki en yüksek değer vurgulanır; “yüksek = iyi” anlamına gelmez (sodyum, toksik mineraller, antinutrientler).")}</p>`;
   } else {
     table = `<p class="empty">${L("İki ile dört besini yan yana koy. Keşfet'te “Karşılaştır”a tıklayarak da ekleyebilirsin.")}</p>`;
@@ -1385,7 +1385,6 @@ function onChange(e) {
   const t = e.target;
   if (t.dataset.personalField) { updatePersonalDraft(t); return; }
   if (t.dataset.settingNumber) { if (!t.checkValidity()) toast(tr('settingInvalid')); return; }
-  if (t.id === 'app-language') { setSetting('language', t.value); render(); return; }
   if (t.id === 'personal-day') { if (validDay(t.value)) { S.personalDay = t.value; render(); } else { toast(tr('dateInvalid')); t.value = S.personalDay; } return; }
   if (t.id === 'personal-source-key' && NUTRIENTS.some(n => n.key === t.value)) {
     S.personalSource = t.value; const data = dayResult(S.personal, S.personalDay, resolve, S.consumedOnly);

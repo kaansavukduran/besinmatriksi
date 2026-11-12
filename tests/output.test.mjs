@@ -33,4 +33,6 @@ test('Günlük hedef çubukları: hedefe doğru, üst sınır ve veri yok ayrım
   assert.match(tile('fiber'), /veri yok/);
   assert.ok(!tile('fat').includes('hedef yok'), 'veri yokken hedef yok denmez');
   assert.ok(!basicCard(r, {}).includes('gbar'), 'besin ekranında çubuk yok');
+  const fib = basicCard({ v: { fiber: 12 }, s: {}, n: 1, cov: {} }, {}, null, { goals: true });
+  assert.match(fib, /BRD'de lif hedefi yok/);
 });
