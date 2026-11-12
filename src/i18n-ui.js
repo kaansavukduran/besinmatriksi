@@ -703,5 +703,6 @@ export const UI_EN = {
  "Kalori dağılımı": "Calorie breakdown",
  "Kalori nereden geliyor?": "Where do the calories come from?",
  "Kalorinin yüzde kaçının protein, karbonhidrat, yağ ve liften geldiği (Atwater genel faktörleri 4 / 4 / 9 / 2 kcal/g; yaklaşık).": "Share of calories from protein, carbohydrate, fat and fibre (Atwater general factors 4 / 4 / 9 / 2 kcal/g; approximate).",
- "USDA SR28 (2015) tam ASCII; USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015)": "USDA SR28 (2015) full ASCII; USDA Flavonoid 3.3 (2018); USDA Isoflavone 2.1 (2015)"
+ "USDA SR28 (2015) tam ASCII; USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015)": "USDA SR28 (2015) full ASCII; USDA Flavonoid 3.3 (2018); USDA Isoflavone 2.1 (2015)",
+ "Makro verisi eksik; pasta çizilmedi.": "Macronutrient data missing; no pie drawn."
 };

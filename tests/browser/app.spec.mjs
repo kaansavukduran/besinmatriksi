@@ -904,3 +904,20 @@ test('makro pasta grafiği kalori kutusunun üstünde; flavonoid verisi USDA Fla
   await expect(page.locator('[data-sec="fito"]')).toContainText('Kuersetin');
   await expect(page.locator('[data-sec="fito"] .src-f').first()).toContainText('USDA Flavonoid');
 });
+
+test('pasta grafiği Keşfet, Tarif ve Kıyasla sekmelerinde (B102)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('nohut'); await page.locator('#foodlist [data-id="nohut"]').click();
+  await expect(page.locator('#matrix .macro-pie svg.pie')).toHaveCount(1);
+  await page.locator('[data-action="ex-add-recipe"]').click();
+  await page.locator('[data-action="ex-add-compare"]').click();
+  if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
+  await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  await page.locator('[data-action="ex-add-compare"]').click();
+  await tab(page, 'tarif');
+  await expect(page.locator('#matrix .macro-pie svg.pie')).toHaveCount(1);
+  await tab(page, 'karsilastir');
+  await expect(page.locator('.cmp-pies .macro-pie.mini svg.pie')).toHaveCount(2);
+  await expect(page.locator('.cmp-pies .macro-pie.mini').first()).toContainText('Nohut');
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
+});

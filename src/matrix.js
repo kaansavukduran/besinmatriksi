@@ -105,9 +105,9 @@ function section(sec, r, cfg, open) {
 }
 
 // Kalori kutusunun üstünde: kalorinin protein / karbonhidrat / yağ / lif paylarını gösteren pasta (halka) grafik
-export function macroPie(r, cfg) {
+export function macroPie(r, cfg, opts = {}) {
   const e = derive(r).energySplit;
-  if (!e) return '';
+  if (!e) return opts.compact ? `<div class="macro-pie mini none"><h4>${esc(opts.title || '')}</h4><p class="hint">${L("Makro verisi eksik; pasta çizilmedi.")}</p></div>` : '';
   const parts = [['p', L("Protein"), e.p, r.v.protein], ['c', L("Karbonhidrat"), e.c, r.v.carb_avail], ['f', L("Yağ"), e.f, r.v.fat], ['fib', L("Lif"), e.fib, r.v.fiber]];
   const R = 15.9155; // çevre = 100
   let off = 25, arcs = '';
@@ -117,6 +117,9 @@ export function macroPie(r, cfg) {
     off -= pct;
   }
   const label = parts.map(([, n, pct]) => `${n} ${fmtPct(pct)}`).join(', ');
+  if (opts.compact) return `<div class="macro-pie mini" aria-label="${esc((opts.title || '') + ': ' + label)}"><h4>${esc(opts.title || '')}</h4>
+    <svg viewBox="0 0 42 42" class="pie" role="img" aria-label="${esc(label)}"><circle r="${R}" cx="21" cy="21" fill="none" stroke="var(--line)" stroke-width="7"/>${arcs}</svg>
+    <ul class="pie-legend">${parts.map(([k, n, pct]) => `<li data-part="${k}"><b class="sp-${k}"></b><span>${n}</span><strong>${fmtPct(pct)}</strong></li>`).join('')}</ul></div>`;
   return `<section class="card macro-pie" data-sec="pasta" aria-label="${esc(L("Kalori dağılımı") + ': ' + label)}">
     <h3>${L("Kalori nereden geliyor?")}</h3>
     <div class="pie-wrap"><svg viewBox="0 0 42 42" class="pie" role="img" aria-label="${esc(label)}"><circle r="${R}" cx="21" cy="21" fill="none" stroke="var(--line)" stroke-width="7"/>${arcs}</svg>

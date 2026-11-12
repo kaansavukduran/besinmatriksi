@@ -718,3 +718,17 @@ table.cmp .cpct { display: block; font-size: .72rem; color: var(--muted); font-w
 .macro-pie .pie-legend b { width: 12px; height: 12px; border-radius: 3px; }
 .macro-pie .pie-legend strong { font-variant-numeric: tabular-nums; }
 .macro-pie .pie-legend small { color: var(--muted); min-width: 4em; text-align: right; }
+/* Kıyasla: besin başına küçük pasta grafikler */
+.cmp-pie-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: .8rem; }
+.macro-pie.mini { display: flex; flex-direction: column; align-items: center; gap: .4rem; min-width: 0; padding: .6rem; border: 1px solid var(--line); border-radius: calc(var(--radius) * .7); }
+.macro-pie.mini h4 { margin: 0; font-size: .9rem; text-align: center; overflow-wrap: anywhere; }
+.macro-pie.mini .pie { width: 96px; height: 96px; }
+.macro-pie.mini .pie-legend { list-style: none; margin: 0; padding: 0; display: grid; gap: .2rem; width: 100%; font-size: .82rem; }
+.macro-pie.mini .pie-legend li { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; align-items: center; gap: .4rem; }
+.macro-pie.mini .pie-legend b { width: 10px; height: 10px; border-radius: 3px; }
+.macro-pie.mini { padding: .5rem .45rem; }
+.macro-pie.mini .pie-legend { font-size: .78rem; }
+.macro-pie.mini .pie-legend li { gap: .3rem; }
+.macro-pie.mini .pie-legend span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.macro-pie.mini .pie-legend li { line-height: 1.25; margin: 0; padding: 0; min-height: 0; }
+.macro-pie.mini .pie-legend { flex: 0 0 auto; }

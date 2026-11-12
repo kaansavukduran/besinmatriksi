@@ -489,3 +489,9 @@
 
 ## B098 · 2026-11-12 · beta.17 yayın kanıtı
 - v1.1.2-beta.17 pre-release 2026-11-12T19:55:05Z (commit 3d8771b); 22 varlık (apk, portable.exe, Setup.exe, msi, dmg, AppImage, deb, rpm, offline.html, web-pwa.zip, source.zip, SHA256SUMS…). Cihaz kurulumu NOT_RUN.
+
+## B102 · 2026-11-12 · Pasta grafiği Kıyasla'da da
+- Kaan: pasta grafiği Keşfet, Tarif ve Kıyasla'da olsun. Keşfet ve Tarif'te matriks içinde kalori kutusunun üstünde zaten vardı; Kıyasla'ya tablonun üstüne "Kalori nereden geliyor?" kartı: her besin için küçük halka grafik + protein/karbonhidrat/yağ/lif yüzdeleri (`macroPie(..., { compact })`). Makro eksikse "pasta çizilmedi" notu.
+- İlk hatalar: (1) dar sütunda "Karbonhidrat" ikiye bölünüyordu → nowrap/küçük yazı; (2) açıklama listesi `flex-basis: 200px` dikey yönde yükseklik oldu (satırlar arası boşluk) → mini'de `flex: 0 0 auto`.
+- Kanıt: `npm test` 88/88; Playwright tam koşu 108/108 (CSS son düzeltmesinden önce), sonrasında ilgili 10 test PASS; telefon ekran görüntüsü kontrol edildi.
+- Sonraki: **B101** beta.18 yayın kanıtı, ardından **B103** beta.19 (Kıyasla pastaları).
