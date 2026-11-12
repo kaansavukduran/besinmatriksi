@@ -455,3 +455,8 @@
   - Günlük lif karosu BRD modunda "hedef yok" diyordu → "BRD'de lif hedefi yok; Ayarlar'da EFSA seçilebilir".
 - Kanıt: `npm test` 85/85; Playwright 102/102 (B095 desktop+phone: kıyas sütun farkı < 2 px, yatay taşma yok, %-biçimi, tek dil seçimi).
 - Sonraki: **B096** beta.16 yayını (B093–B095).
+
+## B096 · 2026-11-12 · beta.16 yayını
+- 1.1.2-beta.16 (B092 Türk ölçüleri, B093 hedef çubukları, B094 Aion selam/kutlama, B095 görünüm cilası).
+- Yayın: release run 43285600923 SUCCESS (commit 3e50caa; 6 iş: web+tarayıcı testleri, Android, iOS imzasız, Linux, Windows, macOS). v1.1.2-beta.16 pre-release 2026-11-12T19:15:58Z; 22 varlık (apk, portable.exe, Setup.exe, msi, dmg, AppImage, deb, rpm, offline.html, web-pwa.zip, source.zip, SHA256SUMS, BUILD_INFO…). Canlı site/cihaz kurulumu NOT_RUN (bu ortamdan erişim yok).
+- Sonraki: **B097** Günlük ekranında telefonda gün kartı ve temel değerler profilin üstüne (ekran görüntüsünde temel değerler ~1,5 ekran aşağıdaydı; profil kaydedildiyse katlanır).
