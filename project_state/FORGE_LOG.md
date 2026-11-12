@@ -311,3 +311,7 @@
 - İlk hata: çubuğa dokununca pencere seçili güne kaydı ve kayıtlı gün pencereden çıkınca grafik kayboldu (yeni test yakaladı); pencere sabitlemesi eklendi. İkinci bulgu: birim testinin sahte verisi `energy: null` kullandı; gerçek veride eksik bileşen anahtar olarak hiç yazılmıyor (foods.json'da null 0 adet), test verisi gerçek biçime uyduruldu.
 - Kanıt: `npm test` 76/76; Playwright 70/70 (tam koşu 68/70 + düzeltme sonrası B072 ve personal 8/8 PASS); telefonda ekran görüntüsü incelendi.
 - Sonraki: **B073** beta.10 yayını (B072).
+
+## B073 · 2026-11-12 · beta.10 yayını
+- 1.1.2-beta.10 (B072 haftalık grafik). İki basamaklı beta numarası kontrol edildi: mobil sürüm kodu yalnız major/minor/patch'ten (`mobileVersion`), MSI sürümü 1.1.2 sabit, release-assets sürüm deseni `beta.10`u kabul ediyor. `npm test` 76/76, `native-notices` 446 / eksik 0.
+- Sonraki: **B074** Kıyasla ekranında "Hepsi aynı porsiyon" yanında besin başına ölçü (USDA porsiyonu) hızlı seçimi.
