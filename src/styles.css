@@ -674,3 +674,16 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 .explore .cats.cats-grid { display: grid; flex-wrap: initial; overflow: visible; }
 @media (min-width: 701px) { .explore .cats.cats-grid { grid-template-columns: 1fr; } }
 @media (max-width: 700px) { .explore .cats.cats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); overflow-x: visible; } .explore .cats.cats-grid .cat { white-space: normal; } }
+/* Temel besin değerleri kartı: önce basit değerler, sonra ayrıntı */
+.basic-card { margin-bottom: 10px; }
+.basic-card h3 { margin: 0 0 8px; }
+.basic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(130px, 100%), 1fr)); gap: 8px; }
+@media (max-width: 700px) { .basic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.basic-tile { display: flex; flex-direction: column; gap: 2px; padding: .55rem .7rem; border-radius: calc(var(--radius) * .7); background: var(--card2, var(--card)); border: 1px solid var(--line); min-width: 0; }
+.basic-tile span { color: var(--muted); font-size: .85em; }
+.basic-tile b { font-size: 1.25em; font-variant-numeric: tabular-nums; }
+.basic-tile b .unit { font-size: .7em; font-weight: 400; color: var(--muted); }
+.basic-tile b.miss { font-size: 1em; color: var(--muted); font-weight: 600; }
+.basic-tile small { color: var(--muted); }
+.basic-tile.big { grid-column: 1 / -1; flex-direction: row; align-items: baseline; justify-content: space-between; flex-wrap: wrap; }
+.basic-tile.big b { font-size: 1.6em; }

@@ -734,3 +734,21 @@ test('Keşfet kategorileri isteğe bağlı simetrik ızgara (B085)', async ({ pa
   expect(new Set(sizes).size).toBe(1);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
 });
+
+test('önce temel besin değerleri: ayrıntı, Kıyasla ve Günlük en üstte basit değerleri gösterir (B086)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  const card = page.locator('#matrix .basic-card');
+  await expect(card).toBeVisible();
+  await expect(card.locator('[data-basic="energy"] b')).toContainText('89');
+  for (const k of ['protein', 'carb_avail', 'sugars', 'fat', 'fiber', 'salt']) await expect(card.locator(`[data-basic="${k}"]`)).toHaveCount(1);
+  // temel kart matriksteki ilk öğedir
+  expect(await page.locator('#matrix > *').first().getAttribute('class')).toContain('basic-card');
+  await page.locator('[data-action="ex-add-compare"]').click();
+  await page.locator('[data-action="ex-add-day"]').click();
+  await tab(page, 'karsilastir');
+  await expect(page.locator('table.cmp tbody tr').first()).toHaveClass(/secrow basic/);
+  await expect(page.locator('table.cmp tbody tr').nth(1)).toContainText('Enerji');
+  await tab(page, 'gunluk');
+  await expect(page.locator('.basic-card')).toContainText('89');
+});

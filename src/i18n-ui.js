@@ -649,5 +649,10 @@ export const UI_EN = {
  "Tahıllar ve makarna": "Grains & pasta",
  "Yağlar": "Fats & oils",
  "İçecekler": "Beverages",
- "Keşfet'te kategorileri eşit kutulu ızgara olarak göster": "Show Explore categories as an even grid"
+ "Keşfet'te kategorileri eşit kutulu ızgara olarak göster": "Show Explore categories as an even grid",
+ "Temel besin değerleri": "Key nutrition facts",
+ "Ayrıntılı bileşenler (vitaminler, mineraller, amino asitler…) aşağıda.": "Detailed components (vitamins, minerals, amino acids…) are below.",
+ "Günün temel besin değerleri": "Today's key nutrition facts",
+ "Kalori": "Calories",
+ "Şeker": "Sugar"
 };

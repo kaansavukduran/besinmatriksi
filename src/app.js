@@ -1,7 +1,7 @@
 import { extAnimalGroup, setAnimalVisible, visibleFoods, ANIMAL_CATS, foodName, categoryName, formName, CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, extGroups, extFoods, setCustomFoods, customFoods } from './data.js';
 import { NUTRIENTS, SECTIONS, SOURCES } from './nutrients.js';
 import { scaleItem, aggregate, scaleAggregate } from './calc.js';
-import { renderMatrix } from './matrix.js';
+import { renderMatrix, basicCard, BASIC_KEYS } from './matrix.js';
 import NOTICES from './data/notices.json';
 import { createPrintController } from './print.js';
 import { FONTS, fontStack, ensureFont } from './fonts.js';
@@ -511,22 +511,32 @@ function renderCompare() {
   let table = '';
   if (items.length) {
     const rs = items.map(({ c, item }) => scaleItem(item, c.g));
-    const secChips = [['all', L("Tümü")], ...SECTIONS.map((s) => [s.id, L(s.title)])].map(([id, t]) => `<button class="pchip ${S.cmpSection === id ? 'on' : ''}" data-action="cmp-sec" data-s="${id}">${esc(t)}</button>`).join('');
+    const secChips = [['all', L("Tümü")], ['temel', L("Temel besin değerleri")], ...SECTIONS.map((s) => [s.id, L(s.title)])].map(([id, t]) => `<button class="pchip ${S.cmpSection === id ? 'on' : ''}" data-action="cmp-sec" data-s="${id}">${esc(t)}</button>`).join('');
     const rows = [];
     let lastSec = null;
-    for (const n of NUTRIENTS) {
-      if (n.key === 'energy_kj' && S.settings.energyUnit === 'kcal') continue;
-      if (n.key === 'energy' && S.settings.energyUnit === 'kj') continue;
-      if (S.cmpSection !== 'all' && n.section !== S.cmpSection) continue;
-      const vals = rs.map((r) => r.v[n.key]);
-      if (vals.every((x) => x == null)) continue;
-      if (n.section !== lastSec) { lastSec = n.section; rows.push(`<tr class="secrow"><th colspan="${items.length + 1}">${esc(L(SECTIONS.find((s) => s.id === n.section).title))}</th></tr>`); }
+    const cmpRow = (n, vals) => {
       const max = Math.max(...vals.filter((x) => x != null));
-      rows.push(`<tr><th scope="row">${esc(nutrientLabel(n))} <span class="unit">${esc(n.unit)}</span></th>${vals.map((x) => {
+      return `<tr><th scope="row">${esc(nutrientLabel(n))} <span class="unit">${esc(n.unit)}</span></th>${vals.map((x) => {
         if (x == null) return `<td class="miss">${L("veri yok")}</td>`;
         const w = max > 0 ? (x / max) * 100 : 0;
         return `<td class="${x === max && items.length > 1 && max > 0 ? 'best' : ''}"><span class="cbar"><i style="width:${w.toFixed(1)}%"></i></span>${fmtAmount(x, n.unit, S.settings.precision).n}${fmtAmount(x, n.unit).u !== n.unit ? ' ' + fmtAmount(x, n.unit).u : ''}</td>`;
-      }).join('')}</tr>`);
+      }).join('')}</tr>`;
+    };
+    // Önce temel değerler (kalori, protein, karbonhidrat, şeker, yağ, doymuş yağ, lif, tuz), sonra ayrıntılı bölümler
+    const showBasic = S.cmpSection === 'all' || S.cmpSection === 'temel';
+    if (showBasic) {
+      rows.push(`<tr class="secrow basic"><th colspan="${items.length + 1}">${L("Temel besin değerleri")}</th></tr>`);
+      for (const k of BASIC_KEYS) { const n = NUTRIENTS.find((x) => x.key === k); if (n) rows.push(cmpRow(n, rs.map((r) => r.v[k]))); }
+    }
+    for (const n of S.cmpSection === 'temel' ? [] : NUTRIENTS) {
+      if (n.key === 'energy_kj' && S.settings.energyUnit === 'kcal') continue;
+      if (n.key === 'energy' && S.settings.energyUnit === 'kj') continue;
+      if (S.cmpSection !== 'all' && n.section !== S.cmpSection) continue;
+      if (S.cmpSection === 'all' && BASIC_KEYS.includes(n.key)) continue;
+      const vals = rs.map((r) => r.v[n.key]);
+      if (vals.every((x) => x == null)) continue;
+      if (n.section !== lastSec) { lastSec = n.section; rows.push(`<tr class="secrow"><th colspan="${items.length + 1}">${esc(L(SECTIONS.find((s) => s.id === n.section).title))}</th></tr>`); }
+      rows.push(cmpRow(n, vals));
     }
     table = `<div class="presets cmp-secs" role="group" aria-label="${L("Bölüm")}">${secChips}</div>
       <div class="tablewrap"><table class="cmp"><thead><tr><th>${L("Bileşen")}</th>${items.map(({ c, item }) => `<th>${esc(item.name)}<br><span class="muted">${esc(item.formLabel)} · ${fmtNum(c.g)} g</span></th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>

@@ -220,12 +220,30 @@ function coverage(r, cfg) {
   return `<div class="coverage">${secs.map((x) => `<span class="covchip ${x.have === 0 ? 'none' : x.have / x.total > 0.6 && !x.partial ? 'full' : 'part'}" title="${esc(L(x.s.title))}: ${x.have}/${x.total}; ${L("{n} kısmi malzeme kapsamı", { n: x.partial })}">${cfg.emoji ? x.s.icon + ' ' : ''}${x.have}/${x.total}</span>`).join('')}</div>`;
 }
 
+// Temel değerler: herkesin ilk baktığı 8 bileşen; ayrıntılar altında kalır. Ölçülmemiş = "veri yok", kısmi kapsam belirtilir.
+export const BASIC_KEYS = ['energy', 'protein', 'carb_avail', 'sugars', 'fat', 'sfa', 'fiber', 'salt'];
+const BASIC_SHORT = { energy: 'Kalori', protein: 'Protein', carb_avail: 'Karbonhidrat', sugars: 'Şeker', fat: 'Yağ', sfa: 'Doymuş yağ', fiber: 'Lif', salt: 'Tuz' };
+export function basicCard(r, cfg, title = null) {
+  cfg = normalizeSettings(cfg);
+  const tiles = BASIC_KEYS.map((k) => {
+    const n = NUTRIENTS.find((x) => x.key === k);
+    if (!n) return '';
+    const x = r.v[k];
+    const partial = x != null && r.n > 1 && (r.cov?.[k] || 0) < r.n;
+    const ref = referenceFor(n, cfg);
+    const pct = x != null && ref?.value > 0 ? (x / ref.value) * 100 : null;
+    const val = x == null ? `<b class="miss">${L("veri yok")}</b>` : `<b>${partial ? '≥ ' : ''}${fmtAmount(x, n.unit, cfg.precision).n} <span class="unit">${esc(fmtAmount(x, n.unit).u)}</span></b>`;
+    return `<div class="basic-tile" data-basic="${k}" title="${esc(nl(n))}"><span>${L(BASIC_SHORT[k])}</span>${val}${pct != null && cfg.showNrv ? `<small>${fmtPct(pct)} · ${esc(String(ref.label).replace(/^%/, ''))}</small>` : ''}</div>`;
+  }).join('');
+  return `<section class="card basic-card" aria-label="${L("Temel besin değerleri")}"><h3>${title || L("Temel besin değerleri")}</h3><div class="basic-grid">${tiles}</div><p class="hint">${L("Ayrıntılı bileşenler (vitaminler, mineraller, amino asitler…) aşağıda.")}</p></section>`;
+}
+
 export function renderMatrix(r, cfg, ctx = {}) {
   cfg = normalizeSettings(cfg);
   const item = ctx.item || null;
   cfg.sourceItem = item;
   const open = (id) => !ctx.closed?.has(id);
-  const d = [identityCard(item, r, cfg, ctx), coverage(r, cfg), `<p class="hint reference-label">${esc(referenceLabel(cfg))}</p>`];
+  const d = [ctx.recipe ? '' : basicCard(r, cfg), identityCard(item, r, cfg, ctx), coverage(r, cfg), `<p class="hint reference-label">${esc(referenceLabel(cfg))}</p>`];
   if (cfg.hiddenSections.length) d.push(`<p class="hint">${L("{n} bölüm ayarlarda gizlendi. Kapsam özeti ve CSV tüm bileşenleri içerir.", { n: cfg.hiddenSections.length })}</p>`);
   if (cfg.pinnedNutrients.length) {
     const rows = cfg.pinnedNutrients.map(k => NUTRIENTS.find(n => n.key === k)).map(n => {

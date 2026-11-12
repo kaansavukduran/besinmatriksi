@@ -384,3 +384,8 @@
 - Ayarlar → Matriks "Keşfet'te kategorileri eşit kutulu ızgara olarak göster" (`catGrid`, varsayılan kapalı; eski kayıtlar etkilenmez). Açıkken telefonda yana kayan şerit yerine B083'teki eşit genişlik/yükseklikte 2 sütunlu ızgara, geniş ekranda kenar sütunda tek sütun.
 - Kanıt: `npm test` 80/80; Playwright 82/82 PASS (yeni B085 testi: tüm kategori kutuları aynı genişlik, taşma yok).
 - Sonraki: **B086** beta.13 yayın doğrulaması; ardından Aion için yeni bir poz/ifade (ör. hayvansal besin açılınca bilgilendirici ifade değil, nötr kalsın) ve kalan UX gözden geçirmesi.
+
+## B086 · 2026-11-12 · önce temel besin değerleri
+- Kaan'ın isteği (ekran görüntüsü): besin seçince önce basit değerler, ayrıntı sonra; Kıyasla ve toplamlarda da aynı mantık. `basicCard` (`src/matrix.js`): Kalori, Protein, Karbonhidrat (lif hariç), Şeker, Yağ, Doymuş yağ, Lif, Tuz — 8 eşit kutu (telefonda 2×4), %referans küçük yazıyla; ölçülmemiş "veri yok", çok malzemeli toplamda kısmi kapsam "≥". Besin ayrıntısında matriksin ilk öğesi; Günlük'te "Günün temel besin değerleri"; tarifte mevcut özet zaten temel değerler olduğu için tekrar eklenmedi. Kıyasla tablosu "Temel besin değerleri" satırlarıyla başlar (ayrıntı bölümlerinde tekrar etmez), bölüm düğmelerine "Temel besin değerleri" eklendi.
+- Kanıt: `npm test` 80/80; Playwright 86/86 PASS (yeni B086 testi: temel kart ilk öğe, 8 bileşen, Kıyasla ilk satırlar, Günlük kartı); telefonda ekran görüntüsü incelendi, 412 = 412.
+- Sonraki: **B087** kategoriler içinde yaygınlık sırası (yaygın besinler üstte, niş olanlar altta).
