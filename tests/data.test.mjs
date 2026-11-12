@@ -18,7 +18,7 @@ test('her formun doğrulanmış değerleri veya açık kaynak boşluğu var', ()
       if (fm.unavailable) assert.deepEqual(fm.v, {});
       else assert.ok(fm.v.energy != null && fm.v.protein != null, `${f.id}/${fm.key}`);
       for (const k of Object.keys(fm.v)) assert.ok(keys.has(k), `bilinmeyen anahtar ${k}`);
-      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y'].includes(s), `${f.id} ${k} ${s}`);
+      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F'].includes(s), `${f.id} ${k} ${s}`);
     }
   }
 });
@@ -93,7 +93,7 @@ test('dağıtımda IFCT değerleri, alternatifleri ve bunlardan tahminler bulunm
   for (const food of DB.foods) for (const f of food.forms) {
     assert.equal(f.ifct, null); assert.equal(f.estFrom, null);
     assert.deepEqual(f.alt || {}, {}); assert.deepEqual(f.sd || {}, {});
-    assert.ok(Object.values(f.s).every(s => ['u', 'f', 'y'].includes(s)));
+    assert.ok(Object.values(f.s).every(s => ['u', 'f', 'y', 'F'].includes(s)));
   }
   assert.equal(fs.existsSync(new URL('../data/raw/IFCT2017.csv', import.meta.url)), false);
 });
@@ -133,4 +133,14 @@ test('USDA flavonoid/izoflavon verisi aynı NDB kaydından gelir, etiketlidir ve
   for (const food of DB.foods) for (const f of food.forms) for (const [k, s] of Object.entries(f.s)) if (s !== 'u') assert.ok(f.usda?.ndb, `${food.id}/${f.key}/${k}: NDB olmadan flavonoid yok`);
   const src = JSON.parse(fs.readFileSync(new URL('../data/raw/USDA_FLAVONOID_SOURCES.json', import.meta.url)));
   assert.equal(src.datasets.length, 2); assert.match(src.datasets[0].license, /CC0/);
+});
+test('USDA FoodData Central Foundation Foods yalnız SR28 boşluklarını doldurur, F etiketli ve FDC kimliği taşır (B111)', () => {
+  const form = (id, key) => DB.foods.find((f) => f.id === id).forms.find((x) => x.key === key);
+  const oj = form('portakal', 'suyu');
+  assert.equal(oj.s.citric, 'F'); assert.ok(oj.v.citric > 500); assert.ok(oj.usda.fdc > 0);
+  // SR28'de ölçülmüş değerler ezilmez
+  for (const f of DB.foods) for (const fm of f.forms) for (const [k, s] of Object.entries(fm.s)) if (s === 'F') assert.ok(fm.usda?.fdc, `${f.id}/${fm.key}/${k}`);
+  assert.equal(oj.s.energy, 'u');
+  const src = JSON.parse(fs.readFileSync(new URL('../data/raw/USDA_FDC_FOUNDATION_SOURCE.json', import.meta.url)));
+  assert.match(src.license, /CC0/);
 });

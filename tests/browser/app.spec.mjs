@@ -895,11 +895,13 @@ test('temel değerlerde ortalama kadın/erkek yüzdesi; Kıyasla yüzdeleri; kü
 test('makro pasta grafiği kalori kutusunun üstünde; flavonoid verisi USDA Flavonoid etiketiyle (B100)', async ({ page }) => {
   await page.goto('/');
   await page.locator('#q').fill('soğan'); await page.locator('#foodlist [data-id="sogan"]').click();
-  const pie = page.locator('#matrix .macro-pie');
+  const pie = page.locator('#matrix .basic-card .macro-pie');
   await expect(pie.locator('svg.pie circle[data-part]')).not.toHaveCount(0);
   await expect(pie.locator('li[data-part="c"] strong')).toContainText('%');
-  const order = await page.locator('#matrix > *').evaluateAll((els) => els.map((e) => e.dataset.sec || ''));
-  expect(order.indexOf('pasta') + 1).toBe(order.indexOf('enerji'));
+  // pasta temel değer kartının içinde; hesaplanan göstergeler hemen altında
+  const order = await page.locator('#matrix > *').evaluateAll((els) => els.map((e) => e.dataset.sec || e.className));
+  expect(order[0]).toContain('basic-card');
+  expect(order[1]).toBe('hesap');
   await page.locator('[data-sec="fito"] > summary').click();
   await expect(page.locator('[data-sec="fito"]')).toContainText('Kuersetin');
   await expect(page.locator('[data-sec="fito"] .src-f').first()).toContainText('USDA Flavonoid');
@@ -915,7 +917,7 @@ test('pasta grafiği Keşfet, Tarif ve Kıyasla sekmelerinde (B102)', async ({ p
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
   await page.locator('[data-action="ex-add-compare"]').click();
   await tab(page, 'tarif');
-  await expect(page.locator('#matrix .macro-pie svg.pie')).toHaveCount(1);
+  await expect(page.locator('#recipe-summary .basic-card .macro-pie svg.pie')).toHaveCount(1);
   await tab(page, 'karsilastir');
   await expect(page.locator('.cmp-pies .macro-pie.mini svg.pie')).toHaveCount(2);
   await expect(page.locator('.cmp-pies .macro-pie.mini').first()).toContainText('Nohut');

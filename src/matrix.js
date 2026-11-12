@@ -10,15 +10,15 @@ import { nutrientLabel } from './i18n-nutrients.js';
 
 const nl = nutrientLabel;
 
-const SRC_LABEL = { u: 'USDA', f: 'USDA Flavonoid', y: 'USDA İzoflavon', i: 'IFCT', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
+const SRC_LABEL = { u: 'USDA', F: 'USDA FDC', f: 'USDA Flavonoid', y: 'USDA İzoflavon', i: 'IFCT', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
 const SRC_TITLE = {
-  u: SOURCES.u.long, f: SOURCES.f.long, y: SOURCES.y.long, i: SOURCES.i.long, e: SOURCES.e.long,
+  u: SOURCES.u.long, F: SOURCES.F.long, f: SOURCES.f.long, y: SOURCES.y.long, i: SOURCES.i.long, e: SOURCES.e.long,
   d: 'Diğer ölçülmüş değerlerden hesaplandı (ör. tuz = sodyum × 2,5)', m: 'Tarifteki malzemeler farklı kaynaklardan', k: 'Kullanıcının ürün etiketinden girdiği değer',
 };
 
 function srcChip(s, item) {
   if (!s) return '';
-  const record = (s === 'u' || s === 'f' || s === 'y') && item?.usda ? (s === 'u' ? ' · USDA SR28 (2015), NDB ' : ' · NDB ') + `${item.usda.ndb} · ${item.usda.desc}` : s === 'i' && item?.ifct ? ` · IFCT 2017, ${item.ifct.code} · ${item.ifct.name}` : s === 'e' && item?.estFrom ? ' · ' + L("IFCT 2017 çiğ kaynak kaydı: {r}; protein/yağ oranı ile tahmin", { r: item.estFrom }) : '';
+  const record = s === 'F' && item?.usda?.fdc ? ` · FDC ${item.usda.fdc} (NDB ${item.usda.ndb})` : (s === 'u' || s === 'f' || s === 'y') && item?.usda ? (s === 'u' ? ' · USDA SR28 (2015), NDB ' : ' · NDB ') + `${item.usda.ndb} · ${item.usda.desc}` : s === 'i' && item?.ifct ? ` · IFCT 2017, ${item.ifct.code} · ${item.ifct.name}` : s === 'e' && item?.estFrom ? ' · ' + L("IFCT 2017 çiğ kaynak kaydı: {r}; protein/yağ oranı ile tahmin", { r: item.estFrom }) : '';
   return `<span class="src src-${s}" title="${esc(L(SRC_TITLE[s]) + record)}">${L(SRC_LABEL[s])}</span>`;
 }
 
@@ -120,6 +120,9 @@ export function macroPie(r, cfg, opts = {}) {
   if (opts.compact) return `<div class="macro-pie mini" aria-label="${esc((opts.title || '') + ': ' + label)}"><h4>${esc(opts.title || '')}</h4>
     <svg viewBox="0 0 42 42" class="pie" role="img" aria-label="${esc(label)}"><circle r="${R}" cx="21" cy="21" fill="none" stroke="var(--line)" stroke-width="7"/>${arcs}</svg>
     <ul class="pie-legend">${parts.map(([k, n, pct]) => `<li data-part="${k}"><b class="sp-${k}"></b><span>${n}</span><strong>${fmtPct(pct)}</strong></li>`).join('')}</ul></div>`;
+  if (opts.inline) return `<div class="macro-pie inline" data-sec="pasta" aria-label="${esc(L("Kalori dağılımı") + ': ' + label)}"><h4>${L("Kalori nereden geliyor?")}</h4>
+    <svg viewBox="0 0 42 42" class="pie" role="img" aria-label="${esc(label)}"><circle r="${R}" cx="21" cy="21" fill="none" stroke="var(--line)" stroke-width="7"/>${arcs}</svg>
+    <ul class="pie-legend">${parts.map(([k, n, pct]) => `<li data-part="${k}"><b class="sp-${k}"></b><span>${n}</span><strong>${fmtPct(pct)}</strong></li>`).join('')}</ul></div>`;
   return `<section class="card macro-pie" data-sec="pasta" aria-label="${esc(L("Kalori dağılımı") + ': ' + label)}">
     <h3>${L("Kalori nereden geliyor?")}</h3>
     <div class="pie-wrap"><svg viewBox="0 0 42 42" class="pie" role="img" aria-label="${esc(label)}"><circle r="${R}" cx="21" cy="21" fill="none" stroke="var(--line)" stroke-width="7"/>${arcs}</svg>
@@ -137,13 +140,7 @@ function ratioRow(label, val, fmt, verdict, help) {
 function derivedCard(r, cfg, open) {
   const d = derive(r);
   let h = '';
-  if (d.energySplit) {
-    const e = d.energySplit;
-    h += `<div class="split" aria-label="${L("Enerji dağılımı")}">
-      <div class="splitbar"><i class="sp-p" style="width:${e.p}%"></i><i class="sp-c" style="width:${e.c}%"></i><i class="sp-f" style="width:${e.f}%"></i><i class="sp-fib" style="width:${e.fib}%"></i></div>
-      <div class="legend"><span><b class="sp-p"></b>${L("Protein")} ${fmtPct(e.p)}</span><span><b class="sp-c"></b>${L("Karbonhidrat")} ${fmtPct(e.c)}</span><span><b class="sp-f"></b>${L("Yağ")} ${fmtPct(e.f)}</span><span><b class="sp-fib"></b>${L("Lif")} ${fmtPct(e.fib)}</span></div>
-      <p class="hint">${L("Atwater genel faktörleri (4 / 4 / 9 / 2 kcal/g) ile yaklaşık enerji payları.")}</p></div>`;
-  }
+  // Enerji dağılımı artık temel değer kartındaki pastada gösterilir (tekrar yok)
   const rows = [];
   if (d.protDensity != null) rows.push(ratioRow('Protein yoğunluğu', d.protDensity, `${fmtNum(d.protDensity)} g / 100 kcal`, null, '100 kcal enerji başına protein gramı.'));
   if (d.pral != null) rows.push(ratioRow('PRAL (seçilen miktar)', d.pral, `${fmtNum(d.pral)} mEq`, d.pral < 0 ? ['ok', 'alkali yönlü'] : ['warn', 'asit yönlü'],
@@ -281,7 +278,10 @@ export function basicCard(r, cfg, title = null, opts = {}) {
   const who = persona.custom ? L("kendi hedeflerin") : persona.sex === 'female' ? L("ortalama yetişkin kadın") : persona.sex === 'male' ? L("ortalama yetişkin erkek") : L("ortalama yetişkin kadın ve erkek");
   const foot = L("Yüzdeler günlük referansa göredir: {w}{e}. Kaynak: PHE Government Dietary Recommendations (2016, 19–64 yaş); şeker için AB 1169/2011 toplam şeker referansı. Kalori, protein ve lifte hedefe doğru; yağ, doymuş yağ, şeker ve tuzda üst sınıra göre. Kişisel ihtiyaç veya tıbbi öneri değildir.",
     { w: who, e: persona.energy > 0 && !persona.custom ? L("; kalori hedefi profilinden ({k} kcal)", { k: fmtNum(persona.energy) }) : '' });
-  return `<section class="card basic-card${opts.goals ? ' goals' : ''}" aria-label="${L("Temel besin değerleri")}"><h3>${title || L("Temel besin değerleri")}</h3><div class="basic-grid">${tiles}</div><p class="hint basic-src">${foot}</p></section>`;
+  // Pasta (kalori nereden geliyor) temel değerlerle aynı kartta: solda pasta, sağda 8 karo
+  const pie = opts.pie ? macroPie(r, cfg, { inline: true }) : '';
+  const pieNote = pie ? ' ' + L("Pasta: kalorinin protein, karbonhidrat, yağ ve liften gelen payı (Atwater 4 / 4 / 9 / 2 kcal/g; yaklaşık).") : '';
+  return `<section class="card basic-card${opts.goals ? ' goals' : ''}${pie ? ' with-pie' : ''}" aria-label="${L("Temel besin değerleri")}"><h3>${title || L("Temel besin değerleri")}</h3><div class="basic-layout">${pie}<div class="basic-tiles"><div class="basic-grid">${tiles}</div></div></div><p class="hint basic-src">${foot}${pieNote}</p></section>`;
 }
 
 export function renderMatrix(r, cfg, ctx = {}) {
@@ -289,7 +289,10 @@ export function renderMatrix(r, cfg, ctx = {}) {
   const item = ctx.item || null;
   cfg.sourceItem = item;
   const open = (id) => !ctx.closed?.has(id);
-  const d = [ctx.recipe ? '' : basicCard(r, cfg, null, { persona: ctx.persona })];
+  const d = [ctx.recipe ? '' : basicCard(r, cfg, null, { persona: ctx.persona, pie: true })];
+  // Hesaplanan göstergeler temel değer + pasta kartının hemen altında (gizlenmediyse)
+  const hesapFirst = cfg.sectionOrder.includes('hesap') && !cfg.hiddenSections.includes('hesap');
+  if (hesapFirst) d.push(derivedCard(r, cfg, open('hesap')));
   const tail = [identityCard(item, r, cfg, ctx), coverage(r, cfg), `<p class="hint reference-label">${esc(referenceLabel(cfg))}</p>`];
   if (cfg.hiddenSections.length) d.push(`<p class="hint">${L("{n} bölüm ayarlarda gizlendi. Kapsam özeti ve CSV tüm bileşenleri içerir.", { n: cfg.hiddenSections.length })}</p>`);
   if (cfg.pinnedNutrients.length) {
@@ -303,8 +306,8 @@ export function renderMatrix(r, cfg, ctx = {}) {
   for (const id of cfg.sectionOrder) {
     if (cfg.hiddenSections.includes(id)) continue;
     const sec = SECTIONS.find(s => s.id === id);
-    if (sec) { if (id === 'enerji') d.push(macroPie(r, cfg)); d.push(section(sec, r, cfg, open(id))); }
-    else if (id === 'hesap') d.push(derivedCard(r, cfg, open(id)));
+    if (sec) d.push(section(sec, r, cfg, open(id)));
+    else if (id === 'hesap' && !hesapFirst) d.push(derivedCard(r, cfg, open(id)));
     else if (id === 'tolerans') d.push(toleranceCard(r, item, cfg, open(id)));
     else if (id === 'kalinti') d.push(safetyExtra(cfg, open(id)));
     else if (id === 'hazirlik' && prep) d.push(`<details class="sec" data-sec="hazirlik" ${open('hazirlik') ? 'open' : ''}><summary><span class="ico">${cfg.emoji ? '🍳' : ''}</span><span class="st">${L("Hazırlama ve emilim")}</span></summary>${prep}</details>`);

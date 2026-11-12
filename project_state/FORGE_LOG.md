@@ -530,3 +530,17 @@
 ## B109 · 2026-11-12 · Kıyasla tablosu iç kaydırmasız
 - Kaan: tablonun sağındaki dikey kaydırma çubuğu saçma. `.tablewrap` `max-height: 75vh` kaldırıldı; tablo tam boyda, sayfa kaydırılır (yatay kaydırma dar ekranda kalır).
 - Kanıt: Playwright 118/118 (B109: tablewrap içinde dikey taşma yok, yükseklik > 1000 px).
+
+## B110 · 2026-11-12 · Temel değerler + pasta tek kartta; hesaplanan göstergeler hemen altında; Inter yazı tipi
+- Kaan: "Kalori nereden geliyor" ile "Temel besin değerleri" birleşsin (solda pasta, sağda dengeli kutular); "Hesaplanan göstergeler" onun altında; yazı tipi çocuksu, ciddi/klas olsun.
+- `basicCard(..., { pie: true })`: tek kart, solda halka grafik + yüzdeler, sağda 8 karo (karo alanı ≥640 px ise 4+4, değilse 2×4; telefonda pasta üstte yatay). Keşfet, Tarif özeti ve Günlük'te. Ayrı pasta kartı ve Hesaplanan göstergelerdeki enerji çubuğu (tekrar) kaldırıldı; Hesaplanan göstergeler matrikste temel kartın hemen altında (gizlenmediyse).
+- Yazı: varsayılan Inter; bir kerelik geçiş (`bm.fontV2`): sistem/Nunito/Andika/Lexend → Inter; Atkinson/OpenDyslexic ve sonraki seçimler korunur.
+- Kanıt: `npm test` 89/89 (yeni: geçiş testi); Playwright 118/118; masaüstü/telefon ekran görüntüsü kontrol edildi.
+
+## B111 · 2026-11-12 · Eksik veri: USDA FoodData Central Foundation Foods
+- Kaan: "veri yok" kalanları araştır, mümkün olduğunca doldur. Ortama `fdc.nal.usda.gov` eklendi (Kaan onaylı ortam düzenlemesi).
+- FDC Foundation Foods JSON 2026-10-29 (CC0) indirildi (sha256 `data/raw/USDA_FDC_FOUNDATION_SOURCE.json`); NDB numaralı 424 kayıt sıkıştırılmış olarak `data/raw`'da. Derlemede aynı NDB kaydı için yalnız SR28'de ölçülmemiş bileşenler doldurulur (SR28 asla ezilmez), etiket `F`, kayıtta FDC kimliği. SR numaralarının yanında ek eşleme: biyotin, molibden, iyot (yeni bileşen, BRD 150 µg), toplam şeker, sistein, sitrik/malik/kinik/oksalik asit, lutein, zeaksantin, γ-karoten, rafinoz, stakiyoz.
+- Sonuç: 72 küratörlü biçimde 480 yeni değer (+ geniş katalogda eşleşen 88 kayıt). Ör. portakal suyu: sitrik asit 757 mg, malik 160 mg, şeker türleri.
+- Kalan boşluklar: oksalat (yalnız 13 FDC kaydı), ağır metaller ve çoğu fitokimyasal için NDB eşlemeli açık veri yok → "veri yok" (uydurma yok).
+- Kanıt: `npm run data`; `npm test` 90/90; Playwright 118/118.
+- Sonraki: **B112** Keşfet: karşılama metni kaldırılıp seçili kategorinin besinleri sağda periyodik tablo gibi kare ızgara.

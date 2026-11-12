@@ -1,0 +1,10 @@
+{
+  "name": "USDA FoodData Central — Foundation Foods (JSON, 2026-10-29)",
+  "url": "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_foundation_food_json_2026-10-29.zip",
+  "zip_sha256": "dd414cc9f1a132626bad354ef6655972c78b44aff14f16114dc899708663c579",
+  "license": "CC0 1.0 (FoodData Central data are in the public domain)",
+  "license_url": "https://fdc.nal.usda.gov/api-guide/",
+  "checked_on": "2026-11-12",
+  "extracted": "Foods with ndbNumber only; per nutrient [number, name, unit, amount per 100 g]",
+  "use": "Fills only nutrients missing in SR28 for the same NDB record; never overrides SR28; source tag 'F'"
+}

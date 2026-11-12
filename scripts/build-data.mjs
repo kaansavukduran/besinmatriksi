@@ -85,6 +85,36 @@ for (const r of readCsvGz('USDA_FLAV_R3.3_FLAV_DAT.csv.gz')) {
 for (const [ndb, o] of theaf) if (THEAFLAVINS.every((k) => Number.isFinite(o[k]))) putFlav(ndb, 'theaflavins', String(THEAFLAVINS.reduce((a, k) => a + o[k], 0)), 'f');
 for (const r of readCsvGz('USDA_ISOFLAV_R2.1_ISFL_DAT.csv.gz')) if (ISFL_MAP[r.Nutr_No]) putFlav(r.NDB_No, ISFL_MAP[r.Nutr_No], r.Isfl_Val, 'y');
 
+// ---------- USDA FoodData Central Foundation Foods (2026-10-29, CC0) ----------
+// Yalnız SR28'de ölçümü olmayan bileşenleri aynı NDB kaydının daha yeni analiziyle doldurur (SR28'i asla ezmez); etiket 'F'.
+const FF_EXTRA = { '416': 'biotin', '316': 'mo', '314': 'iodine', '269.3': 'sugars', '526': 'cys', '236': 'citric', '243': 'malic',
+  '248': 'quinic', '245': 'oxalate', '338.1': 'lutein', '338.2': 'zeaxanthin', '332': 'gcarotene', '288': 'raffinose', '289': 'stachyose' };
+const FF_UNIT = { G: 'g', MG: 'mg', UG: 'µg', 'µg': 'µg', g: 'g', mg: 'mg' };
+const ffByNdb = new Map();
+{
+  const numToKey = new Map(Object.entries(USDA_NUTRIENTS).map(([k, v]) => [v, k]));
+  for (const [num, key] of Object.entries(FF_EXTRA)) numToKey.set(num, key);
+  const unitOf = new Map(NUTRIENTS.map((n) => [n.key, n.unit]));
+  const ff = JSON.parse(gunzipSync(fs.readFileSync(path.join(root, 'data/raw/USDA_FDC_FOUNDATION_2026-10-29.min.json.gz'))).toString('utf8'));
+  for (const f of ff) {
+    const v = {};
+    for (const [num, , unit, amount] of f.n) {
+      const key = numToKey.get(num);
+      if (!key || !unitOf.has(key) || !Number.isFinite(amount) || amount < 0) continue;
+      const u = FF_UNIT[unit]; if (!u) continue;
+      v[key] = Number((amount * unitFactor(u, unitOf.get(key))).toPrecision(8));
+    }
+    if (Object.keys(v).length) ffByNdb.set(f.ndb, { v, fdcId: f.fdcId });
+  }
+}
+function fillFromFoundation(ndb, v, s) {
+  const ff = ffByNdb.get(ndb);
+  if (!ff) return null;
+  let n = 0;
+  for (const [k, x] of Object.entries(ff.v)) if (v[k] == null) { v[k] = x; if (s) s[k] = 'F'; n++; }
+  return n ? ff.fdcId : null;
+}
+
 // ---------- yardımcılar ----------
 const round = (x) => {
   if (x === 0) return 0;
@@ -231,7 +261,8 @@ for (const food of FOODS) {
       for (const k of Object.keys(v)) s[k] = 'u';
       const fl = flavValues.get(ndb);
       if (fl) { Object.assign(v, fl.v); Object.assign(s, fl.s); }
-      usda = { ndb, desc: d.long, refuse: d.refuse, refDesc: d.refDesc || null, sci: d.sci || null };
+      const ffId = fillFromFoundation(ndb, v, s);
+      usda = { ndb, desc: d.long, refuse: d.refuse, refDesc: d.refDesc || null, sci: d.sci || null, ...(ffId ? { fdc: ffId } : {}) };
     }
     const unavailable = !ndb ? 'Bu besin için dağıtıma uygun doğrulanmış bileşim kaydı henüz yok. Önceki IFCT verileri NIN yazılı izni doğrulanmadığı için bu sürüme dahil edilmedi.' : null;
     const portions = ndb ? usdaPortions(ndb) : [];
@@ -296,15 +327,17 @@ for (const [ndb, d] of des) {
   const v = usdaValues(ndb);
   const fl = flavValues.get(ndb);
   if (fl) Object.assign(v, fl.v);
+  const fsTags = fl ? { ...fl.s } : {};
+  fillFromFoundation(ndb, v, fsTags);
   // fs: SR28 dışı kaynak etiketleri (f: USDA Flavonoid, y: USDA İzoflavon)
-  ext.push({ n: ndb, g: d.grp, en: name, sci: d.sci || null, r: d.refuse, rd: d.refDesc || null, p: usdaPortions(ndb), v, ...(fl ? { fs: fl.s } : {}), ...(animalGroup ? { a: 1 } : {}) });
+  ext.push({ n: ndb, g: d.grp, en: name, sci: d.sci || null, r: d.refuse, rd: d.refDesc || null, p: usdaPortions(ndb), v, ...(Object.keys(fsTags).length ? { fs: fsTags } : {}), ...(animalGroup ? { a: 1 } : {}) });
 }
 ext.sort((a, b) => a.en.localeCompare(b.en));
 
 const outDir = path.join(root, 'src/data');
 fs.mkdirSync(outDir, { recursive: true });
 const meta = {
-  sources: 'USDA SR28 (2015) tam ASCII; USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015)',
+  sources: 'USDA SR28 (2015) tam ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015)',
   dataPolicy: 'USDA public domain / CC0; IFCT ve IFCT tabanlı tahminler dağıtıma dahil değil',
   unavailableForms: foods.flatMap(f => f.forms).filter(f => f.unavailable).length,
   curated: foods.length,

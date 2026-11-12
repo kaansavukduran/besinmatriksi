@@ -30,7 +30,7 @@ import { similarFoods } from './similar.js';
 import { FOOD_ICONS } from './food-icons.js';
 import { foodArt } from './food-art.js';
 import { TOUR_STEPS, tourSeen, markTourSeen, nextStep } from './tour.js';
-import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS } from './settings.js';
+import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS, migrateFontV2 } from './settings.js';
 
 const PRESETS = [1, 5, 10, 25, 50, 100, 150, 200, 250, 500, 750, 1000];
 const MAX_G = 1000;
@@ -63,6 +63,7 @@ const S = {
 const personalLoaded = loadPersonal();
 S.personal = personalLoaded.state; S.personalDraft = structuredClone(S.personal.profile); S.personalReadError = personalLoaded.error;
 setCustomFoods(loadCustom());
+{ const m = migrateFontV2(S.settings); if (m !== S.settings) { S.settings = m; saveSettings(S.settings); } }
 S.amount = S.settings.defaultAmount;
 setLanguage(preferredLanguage(S.settings.language)); // varsayılan metinler doğru dilde oluşsun
 if (!S.recipes.length) S.recipes = [newRecipe(L("İlk tarifim"))];
@@ -481,7 +482,7 @@ function renderRecipe() {
 function renderRecipeSummary(rc, r) {
   const missing = rc.items.filter(it => !resolve(it.ref)).length;
   const title = S.basis === 'serving' ? L("1 porsiyon") : S.basis === 'per100' ? L("Son ürün 100 g") : L("Toplam tarif");
-  return basicCard(r, S.settings, title, { persona: persona() }) +
+  return basicCard(r, S.settings, title, { persona: persona(), pie: true }) +
     (missing ? `<p class="note" role="status">${L("{n} malzemenin kaydı bulunamadı. Bu malzemelerin ağırlığı toplamda, besin değerleri eksik kapsamda tutuldu.", { n: missing })}</p>` : '');
 }
 
@@ -692,6 +693,7 @@ function renderAbout() {
     <ul>
       <li><b>${esc(SOURCES.u.short)}</b>: ${esc(L(SOURCES.u.long))}. ${L("Su, enerji, makrolar, lif, şeker, vitaminler, mineraller, yağ sınıfları; pişmiş formlar dahil.")}</li>
       <li><b>${L("USDA tam bileşim tablosu:")}</b> ${L("Ölçümü bulunan amino asitler, şeker türleri, yağ asitleri, D2/D3, tokoferoller, fitosteroller, kafein ve betain. Eksik değerler sıfıra çevrilmez.")}</li>
+      <li><b>${esc(SOURCES.F.short)}</b>: ${esc(L(SOURCES.F.long))}. ${L("Aynı USDA kaydında SR28'de ölçülmeyen değerler (ör. biyotin, molibden, iyot, sitrik ve malik asit, şeker türleri) daha yeni analizden doldurulur; SR28 değerleri değiştirilmez.")}</li>
       <li><b>${esc(SOURCES.f.short)}</b>: ${esc(L(SOURCES.f.long))}. ${L("Flavonoller (kuersetin, kaempferol…), flavonlar, flavanonlar (hesperetin, naringenin), flavan-3-oller (kateşinler, EGCG) ve antosiyanidinler; aynı USDA kayıt numarasıyla eşleşen besinlerde.")}</li>
       <li><b>${esc(L(SOURCES.y.short))}</b>: ${esc(L(SOURCES.y.long))}. ${L("Daidzein, genistein, glisitein.")}</li>
       <li><b>IFCT 2017:</b> ${L("NIN ürün kullanım izni doğrulanmadığı için veri ve bu veriye dayanan tahminler bu sürümde dağıtılmıyor.")}</li>

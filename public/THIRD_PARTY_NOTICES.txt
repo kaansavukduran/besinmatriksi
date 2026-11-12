@@ -921,6 +921,15 @@ Dataset and documentation: https://www.ars.usda.gov/northeast-area/beltsville-md
 
 ========================================
 
+USDA FoodData Central — Foundation Foods (2026-10-29)
+Version: FoundationFoods JSON 2026-10-29
+License: CC0 1.0
+
+Source: U.S. Department of Agriculture, Agricultural Research Service. FoodData Central, Foundation Foods. fdc.nal.usda.gov
+FoodData Central data are in the public domain (CC0 1.0). https://fdc.nal.usda.gov/api-guide/
+
+========================================
+
 USDA Flavonoid Database, Release 3.3 (2018)
 Version: Flav_R03-3
 License: CC0 1.0

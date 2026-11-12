@@ -91,6 +91,13 @@
     "text": "Source: U.S. Department of Agriculture, Agricultural Research Service, National Nutrient Database for Standard Reference, Release 28.\nData are in the public domain. USDA licensing statement: https://fdc.nal.usda.gov/api-guide/\nDataset and documentation: https://www.ars.usda.gov/northeast-area/beltsville-md-bhnrc/beltsville-human-nutrition-research-center/methods-and-application-of-food-composition-laboratory/mafcl-site-pages/sr11-sr28/"
   },
   {
+    "id": "usda-fdc",
+    "name": "USDA FoodData Central — Foundation Foods (2026-10-29)",
+    "version": "FoundationFoods JSON 2026-10-29",
+    "license": "CC0 1.0",
+    "text": "Source: U.S. Department of Agriculture, Agricultural Research Service. FoodData Central, Foundation Foods. fdc.nal.usda.gov\nFoodData Central data are in the public domain (CC0 1.0). https://fdc.nal.usda.gov/api-guide/"
+  },
+  {
     "id": "usda-flav",
     "name": "USDA Flavonoid Database, Release 3.3 (2018)",
     "version": "Flav_R03-3",

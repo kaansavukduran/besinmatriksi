@@ -55,9 +55,19 @@ test('matriks gizleme, sıralama ve sabitleme ölçümleri değiştirmez', async
   assert.deepEqual(r, before);
 });
 
-test('yeni kurulum: varsayılan tema Koyu, yazı sistem yazısı; eski kayıtlı seçimler korunur (2026-11-12)', () => {
-  assert.equal(DEFAULT_SETTINGS.theme, 'dark'); assert.equal(DEFAULT_SETTINGS.font, 'system');
+test('yeni kurulum: varsayılan tema Koyu, yazı Inter (B110 kararı); eski kayıtlı seçimler korunur (2026-11-12)', () => {
+  assert.equal(DEFAULT_SETTINGS.theme, 'dark'); assert.equal(DEFAULT_SETTINGS.font, 'inter');
   const old = normalizeSettings({ theme: 'light', font: 'atkinson' });
   assert.equal(old.theme, 'light'); assert.equal(old.font, 'atkinson');
   assert.equal(normalizeSettings({}).theme, 'dark');
+});
+test('yazı tipi: varsayılan Inter; bir kerelik geçiş yuvarlak/sistem yazısını Inter yapar, erişilebilirlik seçimini korur (B110)', async () => {
+  const { DEFAULT_SETTINGS, migrateFontV2 } = await import('../src/settings.js');
+  assert.equal(DEFAULT_SETTINGS.font, 'inter');
+  const mem = () => { const m = new Map(); return { getItem: (k) => m.get(k) ?? null, setItem: (k, v) => m.set(k, String(v)) }; };
+  let st = mem(); assert.equal(migrateFontV2({ font: 'system' }, st).font, 'inter');
+  assert.equal(migrateFontV2({ font: 'nunito' }, st).font, 'nunito', 'geçiş bir kez yapılır; sonraki seçim korunur');
+  st = mem(); assert.equal(migrateFontV2({ font: 'lexend' }, st).font, 'inter');
+  st = mem(); assert.equal(migrateFontV2({ font: 'opendyslexic' }, st).font, 'opendyslexic');
+  st = mem(); assert.equal(migrateFontV2({ font: 'atkinson' }, st).font, 'atkinson');
 });

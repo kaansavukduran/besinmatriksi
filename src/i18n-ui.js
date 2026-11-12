@@ -704,5 +704,10 @@ export const UI_EN = {
  "Kalori nereden geliyor?": "Where do the calories come from?",
  "Kalorinin yüzde kaçının protein, karbonhidrat, yağ ve liften geldiği (Atwater genel faktörleri 4 / 4 / 9 / 2 kcal/g; yaklaşık).": "Share of calories from protein, carbohydrate, fat and fibre (Atwater general factors 4 / 4 / 9 / 2 kcal/g; approximate).",
  "USDA SR28 (2015) tam ASCII; USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015)": "USDA SR28 (2015) full ASCII; USDA Flavonoid 3.3 (2018); USDA Isoflavone 2.1 (2015)",
- "Makro verisi eksik; pasta çizilmedi.": "Macronutrient data missing; no pie drawn."
+ "Makro verisi eksik; pasta çizilmedi.": "Macronutrient data missing; no pie drawn.",
+ "Pasta: kalorinin protein, karbonhidrat, yağ ve liften gelen payı (Atwater 4 / 4 / 9 / 2 kcal/g; yaklaşık).": "Pie: share of calories from protein, carbohydrate, fat and fibre (Atwater 4 / 4 / 9 / 2 kcal/g; approximate).",
+ "İyot (I)": "Iodine (I)",
+ "USDA FoodData Central, Foundation Foods (2026-10-29, CC0); aynı USDA kaydının daha yeni analizi, yalnız SR28'de ölçülmeyen bileşenler için": "USDA FoodData Central, Foundation Foods (2026-10-29, CC0); a newer analysis of the same USDA record, only for components SR28 did not measure",
+ "Aynı USDA kaydında SR28'de ölçülmeyen değerler (ör. biyotin, molibden, iyot, sitrik ve malik asit, şeker türleri) daha yeni analizden doldurulur; SR28 değerleri değiştirilmez.": "Values SR28 did not measure for the same USDA record (e.g. biotin, molybdenum, iodine, citric and malic acid, sugar types) are filled from the newer analysis; SR28 values are never changed.",
+ "USDA SR28 (2015) tam ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015)": "USDA SR28 (2015) full ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA Isoflavone 2.1 (2015)"
 };

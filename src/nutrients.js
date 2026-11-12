@@ -160,6 +160,7 @@ const DEFINITIONS = [
   N('se', 'Selenyum (Se)', 'µg', 'mineral', 'İz elementler', 19, 'se', { nrv: 55 }),
   N('cr', 'Krom (Cr)', 'µg', 'mineral', 'İz elementler', null, 'cr', { nrv: 40 }),
   N('mo', 'Molibden (Mo)', 'µg', 'mineral', 'İz elementler', null, 'mo', { nrv: 50 }),
+  N('iodine', 'İyot (I)', 'µg', 'mineral', 'İz elementler', null, null, { nrv: 150 }),
   N('co', 'Kobalt (Co)', 'µg', 'mineral', 'Diğer iz elementler', null, 'co'),
   N('ni', 'Nikel (Ni)', 'µg', 'mineral', 'Diğer iz elementler', null, 'ni'),
   N('li', 'Lityum (Li)', 'µg', 'mineral', 'Diğer iz elementler', null, 'li'),
@@ -289,6 +290,7 @@ export const SOURCES = {
   u: { short: 'USDA SR28', long: 'USDA ARS, National Nutrient Database for Standard Reference, Release 28 (2015, kamu malı)' },
   i: { short: 'IFCT 2017', long: 'Longvah T. ve ark., Indian Food Composition Tables 2017, NIN-ICMR (Hindistan örnekleri; @ifct2017/compositions paketi)' },
   f: { short: 'USDA Flavonoid', long: 'USDA ARS, Database for the Flavonoid Content of Selected Foods, Release 3.3 (2018, CC0)' },
+  F: { short: 'USDA FDC', long: 'USDA FoodData Central, Foundation Foods (2026-10-29, CC0); aynı USDA kaydının daha yeni analizi, yalnız SR28\'de ölçülmeyen bileşenler için' },
   y: { short: 'USDA İzoflavon', long: 'USDA ARS, Database for the Isoflavone Content of Selected Foods, Release 2.1 (2015, kamu malı)' },
   e: { short: 'Tahmin', long: 'IFCT 2017 profil oranı × USDA formunun toplam protein/yağ değeri (aynı besinin çiğ/kuru ölçümünden ölçeklenmiş tahmin)' },
 };

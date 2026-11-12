@@ -7,7 +7,7 @@ export const MATRIX_SECTIONS = [...SECTIONS, { id: 'hesap', title: 'Hesaplanan g
 export const SETTINGS_VERSION = 2;
 export const SHORTCUT_ACTIONS = { kesfet: 'Keşfet', tarif: 'Tarif oluştur', karsilastir: 'Karşılaştır', ayarlar: 'Ayarlar', hakkinda: 'Hakkında', gunluk: 'Günlük ve profil' };
 export const DEFAULT_SETTINGS = {
-  theme: 'dark', accent: 'auto', font: 'system', fontSize: 17,
+  theme: 'dark', accent: 'auto', font: 'inter', fontSize: 17,
   lineHeight: 1.55, letterSpacing: 0, wordSpacing: 0, density: 'comfy',
   radius: 14, bold: false, reduceMotion: false, ruler: false,
   showNrv: true, showSource: true, showSd: false, showAlt: true,
@@ -91,4 +91,18 @@ export function parseSettings(text) {
   if (p?.app !== 'besin-matriksi-ayarlar' || p.version !== SETTINGS_VERSION || !p.settings || typeof p.settings !== 'object' || Array.isArray(p.settings))
     throw new Error('Bu dosya desteklenen bir Besin Matriksi ayar dosyası değil.');
   return normalizeSettings(p.settings);
+}
+
+// 2026-11-12 (Kaan): yuvarlak/çocuksu görünen yazılar yerine ciddi, net Inter. Bir kerelik geçiş:
+// varsayılan sistem yazısı ve yuvarlak yazılar (Nunito, Andika, Lexend) Inter'e taşınır; erişilebilirlik yazıları
+// (Atkinson, OpenDyslexic) ve sonradan yapılan seçimler korunur. Bayrak: bm.fontV2
+export const FONT_V2_KEY = 'bm.fontV2';
+export function migrateFontV2(settings, storage) {
+  try {
+    storage ??= globalThis.localStorage;
+    if (storage.getItem(FONT_V2_KEY)) return settings;
+    storage.setItem(FONT_V2_KEY, '1');
+    if (['system', 'nunito', 'andika', 'lexend'].includes(settings.font)) return { ...settings, font: 'inter' };
+  } catch {}
+  return settings;
 }
