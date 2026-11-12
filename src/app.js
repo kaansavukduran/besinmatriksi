@@ -6,24 +6,25 @@ import NOTICES from './data/notices.json';
 import { createPrintController } from './print.js';
 import { FONTS, fontStack, ensureFont } from './fonts.js';
 import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles, loadCollections, saveCollections, loadRecent, saveRecent, pushRecent } from './store.js';
-import { esc, fmtNum, fmtAmount, clamp, download, uid, configureFormatting, norm, pctText } from './util.js';
+import { esc, fmtNum, fmtAmount, clamp, download, uid, configureFormatting, norm, pctText, fmtPct } from './util.js';
 import { matrixCSV } from './export.js';
 import { contrastRatio, accentText, exportTheme, parseTheme, COLOR_LABELS, validColor, themeTextContrast } from './theme.js';
 import { renderThemeEditor, themePreview } from './theme-editor.js';
 import { focusSelector, syncModalFocus, trapModalTab } from './accessibility.js';
 import { recentSearches } from './search.js';
-import { recipeCost, normalizeCustom } from './records.js';
+import { normalizeCustom } from './records.js';
 import { renderRecipeSources, renderRecipeSourceRows } from './recipe-sources.js';
 import { renderEfsaSettings } from './efsa-ui.js';
 import { t as tr, setLanguage, preferredLanguage, L } from './i18n.js';
 import { renderAppearance, settingSlider } from './appearance.js';
-import { recipeToEntries, dayToRecipeItems, loadPersonal, savePersonal, emptyProfile, normalizeProfile, mergePersonalFoods, localDay, validDay, dayResult, PERSONAL_KEY } from './personal.js';
+import { energyEstimate, recipeToEntries, dayToRecipeItems, loadPersonal, savePersonal, emptyProfile, normalizeProfile, mergePersonalFoods, localDay, validDay, dayResult, PERSONAL_KEY } from './personal.js';
 import { renderPersonal, renderEnergy, renderDaySources } from './personal-view.js';
 import { nutrientLabel } from './i18n-nutrients.js';
 import { getLanguage } from './i18n.js';
 import { normalizeCollections, createCollection, renameCollection, deleteCollection, toggleRef, removeRef, collectionTree, collectionRefs, hasRef, moveRef, moveIndex } from './collections.js';
 import { mountAion, configureAion, aionMood, aionPlay, aionSay } from './aion.js';
 import { greetingFor, newlyReached, celebrationText } from './aion-moments.js';
+import { dailyRefs } from './daily-ref.js';
 import { recipeGaps } from './gaps.js';
 import { similarFoods } from './similar.js';
 import { FOOD_ICONS } from './food-icons.js';
@@ -390,7 +391,7 @@ function welcome() {
 
 function matrixForExplore(item) {
   const r = scaleItem(item, S.amount);
-  return renderMatrix(r, S.settings, { item, closed: S.closed });
+  return renderMatrix(r, S.settings, { item, closed: S.closed, persona: persona() });
 }
 
 // ---------------------------------------------------------------- TARİF
@@ -399,6 +400,13 @@ function persistRecipes() {
   const rc = activeRecipe();
   if (rc) rc.updated = Date.now();
   if (!saveRecipes(S.recipes)) toast(L("Kaydedilemedi: cihaz depolaması kullanılamıyor"));
+}
+
+// Temel değer yüzdeleri için kişi: profilde cinsiyet ve enerji tahmini varsa onlar, yoksa ortalama kadın/erkek
+function persona() {
+  const p = S.personal?.profile || {};
+  let energy = null; try { const e = energyEstimate(p); if (e.status === 'ready') energy = e.daily; } catch {}
+  return { sex: ['female', 'male'].includes(p.sex) ? p.sex : null, energy };
 }
 
 function recipeResult(rc) {
@@ -433,7 +441,6 @@ function renderRecipe() {
       <span class="move"><button class="btn ghost" data-action="rc-move" data-id="${it.id}" data-d="-1" ${idx === 0 ? 'disabled' : ''} aria-label="${esc(L("{n} yukarı taşı", { n: item.name }))}">↑</button><button class="btn ghost" data-action="rc-move" data-id="${it.id}" data-d="1" ${idx === rc.items.length - 1 ? 'disabled' : ''} aria-label="${esc(L("{n} aşağı taşı", { n: item.name }))}">↓</button></span>
       <button class="btn ghost danger" data-action="rc-del-item" data-id="${it.id}" aria-label="${L("Malzemeyi kaldır")}">✕</button></div>
       ${S.ingOpen.has(it.id) ? `${amountControls('rc:' + it.id, it.g, item.portions, { compact: true, liquid: item.liquid })}${perServing(it.g, rc.servings)}
-      <label class="price-field">${L("Kilogram fiyatı (TL/kg, isteğe bağlı)")}<input type="number" min="0" step="any" inputmode="decimal" data-price="${it.id}" value="${it.pricePerKg ?? ''}" aria-label="${L("{name} kilogram fiyatı", { name: esc(item.name) })}"></label>
       <button class="btn ghost" data-action="ing-open" data-id="${it.id}" aria-expanded="true">${L("Kapat")}</button>`
       : miniAmount('rc:' + it.id, it.g, rc.servings, it.id, item.name)}
     </div>`;
@@ -465,25 +472,17 @@ function renderRecipe() {
       </div>
       <div id="recipe-summary">${renderRecipeSummary(rc, r)}</div>
       <div id="recipe-gaps">${renderRecipeGaps(r)}</div>
-      <div id="recipe-sources">${renderRecipeSources(rc, resolve, { key: S.recipeSource, factor, basisLabel, open: S.recipeSourcesOpen, precision: S.settings.precision })}</div>
-      <div id="matrix" class="matrix">${renderMatrix(r, S.settings, { recipe: rc, basisLabel, closed: S.closed })}</div>` : ''}
+      <div id="matrix" class="matrix">${renderMatrix(r, S.settings, { recipe: rc, basisLabel, closed: S.closed })}</div>
+      <div id="recipe-sources">${renderRecipeSources(rc, resolve, { key: S.recipeSource, factor, basisLabel, open: S.recipeSourcesOpen, precision: S.settings.precision })}</div>` : ''}
     </section>
   </div>`;
 }
 
 function renderRecipeSummary(rc, r) {
-  const cost = recipeCost(rc);
   const missing = rc.items.filter(it => !resolve(it.ref)).length;
-  const nutrient = (key, label, unit) => {
-    const x = r.v[key], partial = x != null && (r.cov[key] || 0) < r.n;
-    return `<div><span>${label}</span><b>${x == null ? L("veri yok") : fmtNum(x) + ' ' + unit}</b>${partial ? `<small>${L("kısmi {a}/{b}", { a: r.cov[key], b: r.n })}</small>` : ''}</div>`;
-  };
-  return `<section class="card recipe-summary" aria-label="${L("Tarif özeti")}">
-    <h3>${S.basis === 'serving' ? L("1 porsiyon") : S.basis === 'per100' ? L("Son ürün 100 g") : L("Toplam tarif")}</h3>
-    <div class="nutrition-label">${nutrient('energy', L("Enerji"), 'kcal')}${nutrient('protein', L("Protein"), 'g')}${nutrient('carb_avail', L("Karbonhidrat (lif hariç)"), 'g')}${nutrient('fat', L("Yağ"), 'g')}${nutrient('fiber', L("Lif"), 'g')}${nutrient('salt', L("Tuz"), 'g')}</div>
-    <p><b>${L("Maliyet:")}</b> ${cost.known ? L("{t} TL toplam · {s} TL / porsiyon", { t: fmtNum(cost.total), s: fmtNum(cost.perServing) }) : L("fiyat girilmedi")}${cost.complete ? '' : ' · ' + L("kısmi {a}/{b} malzeme", { a: cost.known, b: cost.count })}</p>
-    ${missing ? `<p class="note" role="status">${L("{n} malzemenin kaydı bulunamadı. Bu malzemelerin ağırlığı toplamda, besin değerleri eksik kapsamda tutuldu.", { n: missing })}</p>` : ''}
-  </section>`;
+  const title = S.basis === 'serving' ? L("1 porsiyon") : S.basis === 'per100' ? L("Son ürün 100 g") : L("Toplam tarif");
+  return basicCard(r, S.settings, title, { persona: persona() }) +
+    (missing ? `<p class="note" role="status">${L("{n} malzemenin kaydı bulunamadı. Bu malzemelerin ağırlığı toplamda, besin değerleri eksik kapsamda tutuldu.", { n: missing })}</p>` : '');
 }
 
 // Hedefe en uzak 3 bileşen ve onları 100 g'da en çok veren katalog besinleri (öneri değil, yön gösterir)
@@ -515,21 +514,25 @@ function renderCompare() {
     const secChips = [['all', L("Tümü")], ['temel', L("Temel besin değerleri")], ...SECTIONS.map((s) => [s.id, L(s.title)])].map(([id, t]) => `<button class="pchip ${S.cmpSection === id ? 'on' : ''}" data-action="cmp-sec" data-s="${id}">${esc(t)}</button>`).join('');
     const rows = [];
     let lastSec = null;
-    const cmpRow = (n, vals) => {
+    const pr = persona();
+    const cmpRow = (n, vals, basic = false) => {
       const max = Math.max(...vals.filter((x) => x != null));
+      const refs = basic && S.settings.showNrv ? dailyRefs(n.key, { ...pr, custom: S.settings.referenceMode === 'custom' ? S.settings.targets : null }) : [];
+      const pcts = (x) => refs.length ? `<small class="cpct">${refs.map((ref) => `${refs.length > 1 ? L(ref.who === 'female' ? "K" : "E") + ' ' : ''}${fmtPct((x / ref.value) * 100)}`).join(' · ')}</small>` : '';
       return `<tr><th scope="row">${esc(nutrientLabel(n))} <span class="unit">${esc(n.unit)}</span></th>${vals.map((x) => {
         if (x == null) return `<td class="miss">${L("veri yok")}</td>`;
         const w = max > 0 ? (x / max) * 100 : 0;
-        return `<td class="${x === max && items.length > 1 && max > 0 ? 'best' : ''}"><span class="cbar"><i style="width:${w.toFixed(1)}%"></i></span>${fmtAmount(x, n.unit, S.settings.precision).n}${fmtAmount(x, n.unit).u !== n.unit ? ' ' + fmtAmount(x, n.unit).u : ''}</td>`;
+        return `<td class="${x === max && items.length > 1 && max > 0 ? 'best' : ''}"><span class="cbar"><i style="width:${w.toFixed(1)}%"></i></span>${fmtAmount(x, n.unit, S.settings.precision).n}${fmtAmount(x, n.unit).u !== n.unit ? ' ' + fmtAmount(x, n.unit).u : ''}${pcts(x)}</td>`;
       }).join('')}</tr>`;
     };
     // Önce temel değerler (kalori, protein, karbonhidrat, şeker, yağ, doymuş yağ, lif, tuz), sonra ayrıntılı bölümler
     const showBasic = S.cmpSection === 'all' || S.cmpSection === 'temel';
     if (showBasic) {
-      rows.push(`<tr class="secrow basic"><th colspan="${items.length + 1}">${L("Temel besin değerleri")}</th></tr>`);
-      for (const k of BASIC_KEYS) { const n = NUTRIENTS.find((x) => x.key === k); if (n) rows.push(cmpRow(n, rs.map((r) => r.v[k]))); }
+      rows.push(`<tr class="secrow basic"><th colspan="${items.length + 1}">${L("Temel besin değerleri")}${S.settings.showNrv ? ` <small class="muted">${pr.sex || S.settings.referenceMode === 'custom' ? L("% günlük referans") : L("% günlük referans · K: ortalama kadın, E: ortalama erkek")}</small>` : ''}</th></tr>`);
+      for (const k of BASIC_KEYS) { const n = NUTRIENTS.find((x) => x.key === k); if (n) rows.push(cmpRow(n, rs.map((r) => r.v[k]), true)); }
     }
     for (const n of S.cmpSection === 'temel' ? [] : NUTRIENTS) {
+      if (n.key === 'ash') continue;
       if (n.key === 'energy_kj' && S.settings.energyUnit === 'kcal') continue;
       if (n.key === 'energy' && S.settings.energyUnit === 'kj') continue;
       if (S.cmpSection !== 'all' && n.section !== S.cmpSection) continue;
@@ -541,7 +544,8 @@ function renderCompare() {
     }
     table = `<div class="presets cmp-secs" role="group" aria-label="${L("Bölüm")}">${secChips}</div>
       <div class="tablewrap" tabindex="0" role="region" aria-label="${L("Karşılaştırma tablosu (yana kaydırılabilir)")}"><table class="cmp" style="--cmp-n:${items.length}"><thead><tr><th>${L("Bileşen")}</th>${items.map(({ c, item }) => `<th class="cmp-food">${esc(item.name)}<br><span class="muted">${esc(item.formLabel)} · ${fmtNum(c.g)} g</span></th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>
-      <p class="hint">${L("Aynı miktar ve biçimde karşılaştırmak için miktarları eşitle:")} <button class="btn ghost" data-action="cmp-same" data-g="100">${L("Hepsi 100 g")}</button> <button class="btn ghost" data-action="cmp-same" data-g="50">${L("Hepsi 50 g")}</button>. ${L("Satırdaki en yüksek değer vurgulanır; “yüksek = iyi” anlamına gelmez (sodyum, toksik mineraller, antinutrientler).")}</p>`;
+      <p class="hint">${L("Aynı miktar ve biçimde karşılaştırmak için miktarları eşitle:")} <button class="btn ghost" data-action="cmp-same" data-g="100">${L("Hepsi 100 g")}</button> <button class="btn ghost" data-action="cmp-same" data-g="50">${L("Hepsi 50 g")}</button>. ${L("Satırdaki en yüksek değer vurgulanır; “yüksek = iyi” anlamına gelmez (sodyum, toksik mineraller, antinutrientler).")}</p>
+      <p class="hint basic-src">${L("Temel değer yüzdeleri: PHE Government Dietary Recommendations (2016, 19–64 yaş); şeker için AB 1169/2011. Kişisel ihtiyaç veya tıbbi öneri değildir.")}</p>`;
   } else {
     table = `<p class="empty">${L("İki ile dört besini yan yana koy. Keşfet'te “Karşılaştır”a tıklayarak da ekleyebilirsin.")}</p>`;
   }

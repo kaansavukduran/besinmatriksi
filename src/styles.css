@@ -697,4 +697,14 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 /* Kıyasla: besin sütunları eşit genişlikte (uzun biçim adı sütunu şişirmesin) */
 table.cmp { table-layout: fixed; min-width: calc(8rem + var(--cmp-n, 2) * 6.5rem); }
 table.cmp thead th:first-child { width: 34%; }
-table.cmp th, table.cmp td { overflow-wrap: anywhere; }
+table.cmp th, table.cmp td { overflow-wrap: break-word; hyphens: auto; }
+/* Temel değerlerde ortalama kadın/erkek çubukları */
+.basic-tile .gref { display: grid; grid-template-columns: 3.4em 1fr auto; align-items: center; gap: 6px; font-size: .78rem; color: var(--muted); margin-top: 4px; }
+.basic-tile .gref .gbar { margin: 0; height: 7px; }
+.basic-tile .gref .gpct { font-variant-numeric: tabular-nums; min-width: 3.2em; text-align: right; }
+.basic-tile .gref.done .gbar i { background: #2e9d5b; }
+.basic-tile .gref.over .gbar i { background: #d9534f; }
+.basic-tile .gref.over .gpct { color: #d9534f; font-weight: 600; }
+table.cmp .cpct { display: block; font-size: .72rem; color: var(--muted); font-weight: 400; }
+.basic-src { font-size: .8rem; }
+.basic-tile .gref span { font-size: inherit; }

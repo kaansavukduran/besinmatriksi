@@ -5,6 +5,7 @@ import { esc, fmtNum, fmtAmount, fmtPct, pctText } from './util.js';
 import { normalizeSettings, referenceFor } from './settings.js';
 import { referenceLabel } from './references.js';
 import { L, getLanguage } from './i18n.js';
+import { dailyRefs, refKind } from './daily-ref.js';
 import { nutrientLabel } from './i18n-nutrients.js';
 
 const nl = nutrientLabel;
@@ -60,7 +61,7 @@ function row(n, r, cfg) {
 }
 
 function section(sec, r, cfg, open) {
-  const list = NUTRIENTS.filter((n) => n.section === sec.id && n.key !== 'energy_kj');
+  const list = NUTRIENTS.filter((n) => n.section === sec.id && n.key !== 'energy_kj' && n.key !== 'ash');
   let html = '', sub = undefined, have = 0;
   const missing = [];
   for (const n of list) {
@@ -223,34 +224,42 @@ function coverage(r, cfg) {
 // Temel değerler: herkesin ilk baktığı 8 bileşen; ayrıntılar altında kalır. Ölçülmemiş = "veri yok", kısmi kapsam belirtilir.
 export const BASIC_KEYS = ['energy', 'protein', 'carb_avail', 'sugars', 'fat', 'sfa', 'fiber', 'salt'];
 const BASIC_SHORT = { energy: 'Kalori', protein: 'Protein', carb_avail: 'Karbonhidrat', sugars: 'Şeker', fat: 'Yağ', sfa: 'Doymuş yağ', fiber: 'Lif', salt: 'Tuz' };
-// Hedef çubukları (Günlük): protein/lif/kalori "hedefe doğru", şeker/doymuş yağ/tuz "üst sınır", karbonhidrat/yağ "referans"
-const LIMIT_KEYS = new Set(['sugars', 'sfa', 'salt']);
-const GOAL_KEYS = new Set(['energy', 'protein', 'fiber']);
+// Temel besin değerleri: her karoda günlük referansa göre çubuk ve yüzde.
+// Kişisel bilgi yoksa ortalama kadın ve erkek (PHE 2016, 19–64 yaş); elle hedef veya kişisel enerji varsa onlar.
+const WHO = { female: "Kadın", male: "Erkek", you: "Sen", both: "Günlük" };
 export function basicCard(r, cfg, title = null, opts = {}) {
   cfg = normalizeSettings(cfg);
+  const persona = { ...(opts.persona || {}), custom: cfg.referenceMode === 'custom' ? cfg.targets : null };
+  if (opts.energyTarget > 0 && !(persona.energy > 0)) persona.energy = opts.energyTarget;
   const tiles = BASIC_KEYS.map((k) => {
     const n = NUTRIENTS.find((x) => x.key === k);
     if (!n) return '';
     const x = r.v[k];
     const partial = x != null && r.n > 1 && (r.cov?.[k] || 0) < r.n;
-    const ref = k === 'energy' && opts.energyTarget > 0 ? { value: opts.energyTarget, label: L("enerji hedefi") } : referenceFor(n, cfg);
-    const pct = x != null && ref?.value > 0 ? (x / ref.value) * 100 : null;
-    if (opts.goals) {
-      const limit = LIMIT_KEYS.has(k), goal = GOAL_KEYS.has(k);
-      const val = x == null ? `<b class="miss">${L("veri yok")}</b>` : `<b>${partial ? '≥ ' : ''}${fmtAmount(x, n.unit, cfg.precision).n} <span class="unit">${esc(fmtAmount(x, n.unit).u)}</span></b>`;
-      if (pct == null) return `<div class="basic-tile" data-basic="${k}"><span>${L(BASIC_SHORT[k])}</span>${val}${x == null || ref?.value > 0 ? '' : `<small>${k === 'fiber' && cfg.referenceMode !== 'efsa' ? L("BRD'de lif hedefi yok; Ayarlar'da EFSA seçilebilir") : L("hedef yok")}</small>`}</div>`;
-      const left = ref.value - x;
-      const note = limit ? (pct > 100 ? L("üst sınırı {p} aştı", { p: fmtPct(pct - 100) }) : L("üst sınırın {p}", { p: fmtPct(pct) }))
-        : goal ? (left > 0 ? L("kalan {v}", { v: `${fmtAmount(left, n.unit, cfg.precision).n} ${fmtAmount(left, n.unit).u}` }) : L("hedefe ulaşıldı ✓"))
-          : L("referansın {p}", { p: fmtPct(pct) });
-      const cls = limit && pct > 100 ? 'over' : goal && pct >= 100 ? 'done' : '';
-      return `<div class="basic-tile goal${cls ? ' ' + cls : ''}" data-basic="${k}"><span>${L(BASIC_SHORT[k])}</span>${val}<span class="gbar" role="img" aria-label="${esc(fmtPct(pct))}"><i style="width:${Math.min(100, pct).toFixed(1)}%"></i></span><small>${note}</small></div>`;
-    }
     const val = x == null ? `<b class="miss">${L("veri yok")}</b>` : `<b>${partial ? '≥ ' : ''}${fmtAmount(x, n.unit, cfg.precision).n} <span class="unit">${esc(fmtAmount(x, n.unit).u)}</span></b>`;
-    return `<div class="basic-tile" data-basic="${k}" title="${esc(nl(n))}"><span>${L(BASIC_SHORT[k])}</span>${val}${pct != null && cfg.showNrv ? `<small>${fmtPct(pct)} · ${esc(String(ref.label).replace(/^%/, ''))}</small>` : ''}</div>`;
+    const refs = x == null || !cfg.showNrv ? [] : dailyRefs(k, persona);
+    const kind = refKind(k);
+    const bars = refs.map((ref) => {
+      const pct = (x / ref.value) * 100;
+      const cls = kind === 'limit' && pct > 100 ? 'over' : kind === 'goal' && pct >= 100 ? 'done' : '';
+      return `<span class="gref ${cls}" data-who="${ref.who}"><span class="gwho">${L(WHO[ref.who])}</span><span class="gbar" role="img" aria-label="${esc(L(WHO[ref.who]) + ' ' + fmtPct(pct))}"><i style="width:${Math.min(100, pct).toFixed(1)}%"></i></span><span class="gpct">${fmtPct(pct)}</span></span>`;
+    }).join('');
+    let note = '';
+    if (refs.length === 1 && opts.goals) {
+      const ref = refs[0], pct = (x / ref.value) * 100, left = ref.value - x;
+      note = kind === 'limit' ? (pct > 100 ? L("üst sınırı {p} aştı", { p: fmtPct(pct - 100) }) : L("üst sınırın {p}", { p: fmtPct(pct) }))
+        : kind === 'goal' ? (left > 0 ? L("kalan {v}", { v: `${fmtAmount(left, n.unit, cfg.precision).n} ${fmtAmount(left, n.unit).u}` }) : L("hedefe ulaşıldı ✓"))
+          : L("referansın {p}", { p: fmtPct(pct) });
+    } else if (refs.length && kind === 'limit') note = L("üst sınıra göre");
+    // Tüm referanslarda hedefe ulaşıldıysa "done"; herhangi birinde üst sınır aşıldıysa "over"
+    const pcts = refs.map((ref) => (x / ref.value) * 100);
+    const cls = !pcts.length ? '' : kind === 'limit' && pcts.some((p) => p > 100) ? ' over' : kind === 'goal' && pcts.every((p) => p >= 100) ? ' done' : '';
+    return `<div class="basic-tile${refs.length ? ' goal' : ''}${cls}" data-basic="${k}" title="${esc(nl(n))}"><span>${L(BASIC_SHORT[k])}</span>${val}${bars}${note ? `<small>${note}</small>` : ''}</div>`;
   }).join('');
-  const foot = opts.goals ? L("Çubuklar: kalori, protein ve lifte hedefe doğru; şeker, doymuş yağ ve tuzda üst sınıra göre. Referans: {r}. Kişisel ihtiyaç veya tıbbi öneri değildir.", { r: cfg.referenceMode === 'efsa' ? 'EFSA' : cfg.referenceMode === 'custom' ? L("kendi hedeflerin") : 'BRD (AB 1169/2011)' }) : L("Ayrıntılı bileşenler (vitaminler, mineraller, amino asitler…) aşağıda.");
-  return `<section class="card basic-card${opts.goals ? ' goals' : ''}" aria-label="${L("Temel besin değerleri")}"><h3>${title || L("Temel besin değerleri")}</h3><div class="basic-grid">${tiles}</div><p class="hint">${foot}</p></section>`;
+  const who = persona.custom ? L("kendi hedeflerin") : persona.sex === 'female' ? L("ortalama yetişkin kadın") : persona.sex === 'male' ? L("ortalama yetişkin erkek") : L("ortalama yetişkin kadın ve erkek");
+  const foot = L("Yüzdeler günlük referansa göredir: {w}{e}. Kaynak: PHE Government Dietary Recommendations (2016, 19–64 yaş); şeker için AB 1169/2011 toplam şeker referansı. Kalori, protein ve lifte hedefe doğru; yağ, doymuş yağ, şeker ve tuzda üst sınıra göre. Kişisel ihtiyaç veya tıbbi öneri değildir.",
+    { w: who, e: persona.energy > 0 && !persona.custom ? L("; kalori hedefi profilinden ({k} kcal)", { k: fmtNum(persona.energy) }) : '' });
+  return `<section class="card basic-card${opts.goals ? ' goals' : ''}" aria-label="${L("Temel besin değerleri")}"><h3>${title || L("Temel besin değerleri")}</h3><div class="basic-grid">${tiles}</div><p class="hint basic-src">${foot}</p></section>`;
 }
 
 export function renderMatrix(r, cfg, ctx = {}) {
@@ -258,7 +267,8 @@ export function renderMatrix(r, cfg, ctx = {}) {
   const item = ctx.item || null;
   cfg.sourceItem = item;
   const open = (id) => !ctx.closed?.has(id);
-  const d = [ctx.recipe ? '' : basicCard(r, cfg), identityCard(item, r, cfg, ctx), coverage(r, cfg), `<p class="hint reference-label">${esc(referenceLabel(cfg))}</p>`];
+  const d = [ctx.recipe ? '' : basicCard(r, cfg, null, { persona: ctx.persona })];
+  const tail = [identityCard(item, r, cfg, ctx), coverage(r, cfg), `<p class="hint reference-label">${esc(referenceLabel(cfg))}</p>`];
   if (cfg.hiddenSections.length) d.push(`<p class="hint">${L("{n} bölüm ayarlarda gizlendi. Kapsam özeti ve CSV tüm bileşenleri içerir.", { n: cfg.hiddenSections.length })}</p>`);
   if (cfg.pinnedNutrients.length) {
     const rows = cfg.pinnedNutrients.map(k => NUTRIENTS.find(n => n.key === k)).map(n => {
@@ -277,5 +287,5 @@ export function renderMatrix(r, cfg, ctx = {}) {
     else if (id === 'kalinti') d.push(safetyExtra(cfg, open(id)));
     else if (id === 'hazirlik' && prep) d.push(`<details class="sec" data-sec="hazirlik" ${open('hazirlik') ? 'open' : ''}><summary><span class="ico">${cfg.emoji ? '🍳' : ''}</span><span class="st">${L("Hazırlama ve emilim")}</span></summary>${prep}</details>`);
   }
-  return d.join('');
+  return d.concat(tail).join('');
 }

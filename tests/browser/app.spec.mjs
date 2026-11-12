@@ -5,7 +5,7 @@ const pickBanana = async page => {
   await page.locator('#q').fill('muz');
   await page.locator('#foodlist [data-id="muz"]').click();
 };
-test('besin, miktar, tarif maliyeti ve karşılaştırma uçtan uca çalışır', async ({ page }) => {
+test('besin, miktar, tarif ve karşılaştırma uçtan uca çalışır', async ({ page }) => {
   const errors = []; page.on('pageerror', e => errors.push(e.message));
   await page.goto('/'); await pickBanana(page);
   await page.locator('[data-amount="ex"] [data-val="250"]').click();
@@ -13,17 +13,15 @@ test('besin, miktar, tarif maliyeti ve karşılaştırma uçtan uca çalışır'
   await page.locator('[data-action="ex-add-recipe"]').click();
   await page.locator('[data-action="ex-add-compare"]').click();
   await tab(page, 'tarif');
-  await expect(page.locator('[data-price]')).toHaveCount(0);
+  // Maliyet hesabı yok (Kaan'ın 2026-11-12 kararı); özet temel değer kartıdır
   await page.locator('[data-action="ing-open"]').first().click();
-  await page.locator('[data-price]').fill('80');
-  await expect(page.locator('#recipe-summary')).toContainText('20 TL toplam');
+  await expect(page.locator('[data-price]')).toHaveCount(0);
+  await expect(page.locator('#recipe-summary')).not.toContainText('Maliyet');
+  await expect(page.locator('#recipe-summary .basic-card [data-basic="energy"] [data-who="female"]')).toHaveCount(1);
   await page.locator('[data-action="rc-serv"][data-d="1"]').click();
-  await expect(page.locator('#recipe-summary')).toContainText('10 TL / porsiyon');
   await page.locator('[data-action="rc-basis"][data-b="serving"]').click();
   await expect(page.locator('#recipe-summary')).toContainText('111');
-  await page.reload(); await tab(page, 'tarif');
-  await page.locator('[data-action="ing-open"]').first().click();
-  await expect(page.locator('[data-price]')).toHaveValue('80');
+  await page.reload();
   // Karşılaştırma geçici; bu test için yeniden seç.
   await tab(page, 'kesfet'); await pickBanana(page);
   await page.locator('[data-action="ex-add-compare"]').click(); await tab(page, 'karsilastir');
@@ -833,12 +831,14 @@ test('Türk ölçüleri düğmelerde ≈ ile görünür ve gramı ayarlar (B092)
 test('Günlük hedef çubukları: kalori hedefe doğru, yalnız Günlük\'te (B093)', async ({ page }) => {
   await page.goto('/');
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
-  await expect(page.locator('#matrix .basic-card .gbar')).toHaveCount(0);
+  await expect(page.locator('#matrix .basic-card.goals')).toHaveCount(0);
   await page.locator('[data-action="ex-add-day"]').click();
   await tab(page, 'gunluk');
   const card = page.locator('.basic-card.goals');
-  await expect(card.locator('[data-basic="energy"] .gbar')).toHaveCount(1);
-  await expect(card.locator('[data-basic="energy"] small')).toContainText('kalan');
+  await expect(card.locator('[data-basic="energy"] .gbar')).toHaveCount(2);
+  // profil yok: ortalama kadın ve erkek çubukları
+  await expect(card.locator('[data-basic="energy"] [data-who="female"]')).toContainText('%4');
+  await expect(card.locator('[data-basic="energy"] [data-who="male"]')).toHaveCount(1);
   await expect(card.locator('[data-basic="salt"]')).toContainText('üst sınır');
   await expect(card).toContainText('tıbbi öneri değildir');
 });
@@ -861,7 +861,7 @@ test('görünüm cilası: eşit kıyas sütunları, Türkçe yüzde, tek dil se�
   await page.goto('/');
   await expect(page.locator('.brand b')).toBeVisible();
   await page.locator('#q').fill('nohut'); await page.locator('#foodlist [data-id="nohut"]').click();
-  await expect(page.locator('#matrix .basic-card [data-basic="carb_avail"] small')).toContainText(/^%\d/);
+  await expect(page.locator('#matrix .basic-card [data-basic="carb_avail"] .gpct').first()).toContainText(/^%\d/);
   await page.locator('[data-action="ex-add-compare"]').click();
   if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
@@ -874,4 +874,20 @@ test('görünüm cilası: eşit kıyas sütunları, Türkçe yüzde, tek dil se�
   await tab(page, 'ayarlar');
   await expect(page.locator('#app-language')).toHaveCount(0);
   await expect(page.locator('.lang-pick [data-k="language"]')).toHaveCount(3);
+});
+
+test('temel değerlerde ortalama kadın/erkek yüzdesi; Kıyasla yüzdeleri; kül ve maliyet yok; kaynak en altta (B097)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('nohut'); await page.locator('#foodlist [data-id="nohut"]').click();
+  const card = page.locator('#matrix .basic-card');
+  await expect(card.locator('[data-basic="protein"] [data-who="female"] .gpct')).toHaveText('%45');
+  await expect(card.locator('[data-basic="protein"] [data-who="male"] .gpct')).toHaveText('%37');
+  await expect(card).toContainText('PHE');
+  await expect(page.locator('[data-sec="enerji"]')).not.toContainText('Kül');
+  const order = await page.locator('#matrix > *').evaluateAll((els) => els.map((e) => e.className));
+  expect(order.findIndex((c) => c.includes('reference-label'))).toBeGreaterThan(order.findIndex((c) => c.includes('sec')));
+  await page.locator('[data-action="ex-add-compare"]').click();
+  await tab(page, 'karsilastir');
+  await expect(page.locator('table.cmp tbody tr').nth(2)).toContainText('K %45');
+  await expect(page.locator('table.cmp')).not.toContainText('Kül');
 });

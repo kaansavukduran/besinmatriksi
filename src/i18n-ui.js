@@ -679,5 +679,19 @@ export const UI_EN = {
  "kalori": "calorie",
  "protein": "protein",
  "Bugünkü {n} hedefine ulaştın! 🎉": "You reached today's {n} goal! 🎉",
- "BRD'de lif hedefi yok; Ayarlar'da EFSA seçilebilir": "No fibre target in the EU label reference; choose EFSA in Settings"
+ "BRD'de lif hedefi yok; Ayarlar'da EFSA seçilebilir": "No fibre target in the EU label reference; choose EFSA in Settings",
+ "Kadın": "Women",
+ "Erkek": "Men",
+ "Sen": "You",
+ "K": "W",
+ "E": "M",
+ "üst sınıra göre": "against upper limit",
+ "ortalama yetişkin kadın": "average adult woman",
+ "ortalama yetişkin erkek": "average adult man",
+ "ortalama yetişkin kadın ve erkek": "average adult woman and man",
+ "; kalori hedefi profilinden ({k} kcal)": "; calorie goal from your profile ({k} kcal)",
+ "Yüzdeler günlük referansa göredir: {w}{e}. Kaynak: PHE Government Dietary Recommendations (2016, 19–64 yaş); şeker için AB 1169/2011 toplam şeker referansı. Kalori, protein ve lifte hedefe doğru; yağ, doymuş yağ, şeker ve tuzda üst sınıra göre. Kişisel ihtiyaç veya tıbbi öneri değildir.": "Percentages are against a daily reference: {w}{e}. Source: PHE Government Dietary Recommendations (2016, ages 19–64); sugar uses the EU 1169/2011 total sugars reference. Calories, protein and fibre count towards a goal; fat, saturated fat, sugar and salt against an upper limit. Not personal needs or medical advice.",
+ "% günlük referans": "% daily reference",
+ "% günlük referans · K: ortalama kadın, E: ortalama erkek": "% daily reference · W: average woman, M: average man",
+ "Temel değer yüzdeleri: PHE Government Dietary Recommendations (2016, 19–64 yaş); şeker için AB 1169/2011. Kişisel ihtiyaç veya tıbbi öneri değildir.": "Key value percentages: PHE Government Dietary Recommendations (2016, ages 19–64); sugar per EU 1169/2011. Not personal needs or medical advice."
 };

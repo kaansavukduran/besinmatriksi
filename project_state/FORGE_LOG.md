@@ -460,3 +460,14 @@
 - 1.1.2-beta.16 (B092 Türk ölçüleri, B093 hedef çubukları, B094 Aion selam/kutlama, B095 görünüm cilası).
 - Yayın: release run 43285600923 SUCCESS (commit 3e50caa; 6 iş: web+tarayıcı testleri, Android, iOS imzasız, Linux, Windows, macOS). v1.1.2-beta.16 pre-release 2026-11-12T19:15:58Z; 22 varlık (apk, portable.exe, Setup.exe, msi, dmg, AppImage, deb, rpm, offline.html, web-pwa.zip, source.zip, SHA256SUMS, BUILD_INFO…). Canlı site/cihaz kurulumu NOT_RUN (bu ortamdan erişim yok).
 - Sonraki: **B097** Günlük ekranında telefonda gün kartı ve temel değerler profilin üstüne (ekran görüntüsünde temel değerler ~1,5 ekran aşağıdaydı; profil kaydedildiyse katlanır).
+
+## B097 · 2026-11-12 · Temel değerlerde günlük yüzde (ortalama kadın/erkek), kaynak en altta, maliyet ve kül kaldırıldı
+- Kaan'ın isteği (ekran görüntüleriyle): temel değer karolarında çubuk + günün ne kadarını karşıladığı; kişisel bilgi yoksa ortalama kadın ve ortalama erkek; tarif, besin ayrıntısı ve Kıyasla'da aynı; kaynak en altta; maliyet hesabı yok; "Kül" satırı kaldırılsın.
+- `src/daily-ref.js`: ortalama yetişkin 19–64 yaş (PHE Government Dietary Recommendations 2016): enerji 2000/2500 kcal, protein 45/55,5 g, karbonhidrat 267/333 g, yağ ≤78/≤97 g, doymuş yağ ≤24/≤31 g, lif 30 g, tuz ≤6 g; şeker: PHE değeri serbest şeker olduğu için AB 1169/2011 toplam şeker 90 g. Doğrulama: doymuş yağ 31/24 ve lif 30 arama sonuçlarıyla doğrulandı; PDF bu ortamdan açılamadı (gov.uk proxy 403) → diğer değerler kaynağın bilinen tablosundan, PDF ile birebir kontrol NOT_RUN.
+- Profilde cinsiyet varsa yalnız o; enerji tahmini varsa kalori hedefi o; elle hedef (Ayarlar → kendi hedeflerin) varsa onlar. Hedefe doğru (kalori/protein/lif) tüm referanslarda ≥%100 ise yeşil; üst sınırlı (yağ/doymuş yağ/şeker/tuz) herhangi birinde aşılırsa kırmızı.
+- Tarif: "Toplam tarif" özeti artık aynı temel değer kartı; maliyet satırı ve kg fiyatı alanı kaldırıldı (eski kayıtlardaki fiyat verisi silinmez, gösterilmez). Kaynak/kapsam dökümü matriksin altına alındı.
+- Besin ayrıntısı: kimlik/kaynak kartı, kapsam ve referans notu matriksin en altına taşındı. "Kül (toplam mineral kalıntısı)" matrikste ve Kıyasla'da gösterilmez (veride kalır).
+- Kıyasla: temel satırlarda her değerin altında "K %x · E %y"; kaynak notu tablonun altında.
+- İlk hatalar: `fmtPct` app.js'e içe aktarılmamıştı (Kıyasla boş kaldı) → eklendi; B093/B094 testleri tek referans varsayıyordu → çift referans kuralına göre güncellendi.
+- Kanıt: `npm test` 86/86; Playwright 104/104 (son düzeltmeden sonra B093 2/2 yeniden PASS).
+- Sonraki: **B098** beta.17 yayını.

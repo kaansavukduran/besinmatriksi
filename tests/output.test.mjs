@@ -18,8 +18,8 @@ test('kaynak etiketi veri seti yılı ve kayıt kimliğini taşır; bilinmeyen a
 });
 test('Günlük hedef çubukları: hedefe doğru, üst sınır ve veri yok ayrımı (B093)', async () => {
   const { basicCard } = await import('../src/matrix.js');
-  const r = { v: { energy: 1000, protein: 60, sugars: 120, salt: 3 }, s: {}, n: 1, cov: {} };
-  const html = basicCard(r, {}, null, { goals: true, energyTarget: 2000 });
+  const r = { v: { energy: 1000, protein: 60, sugars: 120, salt: 3, fiber: 12 }, s: {}, n: 1, cov: {} };
+  const html = basicCard(r, {}, null, { goals: true, energyTarget: 2000, persona: { sex: 'male' } });
   const tile = (k) => html.match(new RegExp(`<div class="[^"]*" data-basic="${k}"[\\s\\S]*?</div>`))[0];
   assert.match(tile('energy'), /kalan 1\.000 kcal/);
   assert.match(tile('energy'), /width:50\.0%/);
@@ -27,12 +27,24 @@ test('Günlük hedef çubukları: hedefe doğru, üst sınır ve veri yok ayrım
   assert.match(tile('protein'), /goal done/);
   assert.match(tile('sugars'), /goal over/);
   assert.match(tile('sugars'), /üst sınırı .* aştı/);
-  assert.match(tile('salt'), /üst sınırın/);
+  assert.match(tile('salt'), /üst sınırın %50/);
+  assert.match(tile('fiber'), /kalan 18 g/);
   assert.match(tile('fat'), /veri yok/);
   assert.ok(!tile('fat').includes('gbar'), 'veri yokken çubuk çizilmez');
-  assert.match(tile('fiber'), /veri yok/);
-  assert.ok(!tile('fat').includes('hedef yok'), 'veri yokken hedef yok denmez');
-  assert.ok(!basicCard(r, {}).includes('gbar'), 'besin ekranında çubuk yok');
-  const fib = basicCard({ v: { fiber: 12 }, s: {}, n: 1, cov: {} }, {}, null, { goals: true });
-  assert.match(fib, /BRD'de lif hedefi yok/);
+  assert.match(html, /ortalama yetişkin erkek/);
+});
+test('kişisel bilgi yoksa temel değerlerde ortalama kadın ve erkek yüzdesi; kaynak en altta (B097)', async () => {
+  const { basicCard, renderMatrix } = await import('../src/matrix.js');
+  const r = { v: { energy: 1000, protein: 45, salt: 3, ash: 2 }, s: {}, n: 1, cov: {}, grams: 100 };
+  const html = basicCard(r, {});
+  const tile = (k) => html.match(new RegExp(`<div class="[^"]*" data-basic="${k}"[\\s\\S]*?</div>`))[0];
+  assert.match(tile('energy'), /data-who="female"[\s\S]*%50[\s\S]*data-who="male"[\s\S]*%40/);
+  assert.match(tile('protein'), /data-who="female"[^>]*>[\s\S]*%100/);
+  assert.match(tile('salt'), /data-who="both"[\s\S]*%50/);
+  assert.match(html, /PHE Government Dietary Recommendations \(2016/);
+  assert.ok(!html.includes('BRD'), 'BRD etiketi yok');
+  const m = renderMatrix(r, {}, { item: { name: 'Ürün', formLabel: 'Çiğ', custom: true, allergens: [] } });
+  assert.ok(m.indexOf('basic-card') < m.indexOf('data-sec="enerji"'));
+  assert.ok(m.indexOf('reference-label') > m.indexOf('data-sec="enerji"'), 'kaynak/kapsam en altta');
+  assert.ok(!/Kül/.test(m), 'kül satırı gösterilmez');
 });
