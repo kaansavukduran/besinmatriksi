@@ -10,7 +10,7 @@
   "branch": "ccr-1e1934aa-iv8aev",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
   "validated_code_commit": "6acd3b2",
-  "package_source_commit": "6acd3b2",
+  "package_source_commit": "7eef0c4",
   "verified_gates": [
     {
       "id": "unit",
@@ -345,5 +345,5 @@
   "remaining": [
     "B080"
   ],
-  "latest_release": "https://github.com/kaansavukduran/besinmatriksi/releases/tag/v1.1.2-beta.10"
+  "latest_release": "https://github.com/kaansavukduran/besinmatriksi/releases/tag/v1.1.2-beta.11"
 }

@@ -343,6 +343,7 @@
 ## B078 · 2026-11-12 · beta.11 yayını
 - 1.1.2-beta.11 (B075 kısa Kıyasla, B076 besin simgeleri, B077 hayvansal besinler). Sürüm notları güncellendi (uygulama tanımı artık "bitkisel ağırlıklı"). `npm test` PASS; `native-notices` 446 / eksik 0.
 - Sonraki: **B079** geniş USDA kataloğuna (Ayarlar → Geniş katalog) hayvansal USDA gruplarını (süt/yumurta, kümes, et, balık) `showAnimal` ile birlikte eklemek.
+- Yayın: release run 43222066446 SUCCESS (commit 7eef0c4). v1.1.2-beta.11 pre-release 2026-11-12T13:01Z; 22 varlık. Cihaz kurulumu NOT_RUN.
 
 ## B079 · 2026-11-12 · varsayılan Koyu tema ve sistem yazı tipi
 - Kaan'ın isteği: yeni kurulumda tema "Koyu" (`dark`), yazı "Sistem yazısı" (`system`: system-ui, -apple-system, Segoe UI, Roboto). Eski kayıtlı seçimler korunur (yalnız varsayılan değişti); geçersiz tema değeri artık Koyu'ya düşer.
