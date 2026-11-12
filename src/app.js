@@ -499,7 +499,7 @@ function renderCompare() {
   const cols = items.map(({ c, item }, i) => `<div class="cmp-col">
       <div class="cmp-h"><b>${esc(item.name)}</b><span class="muted">${esc(item.formLabel)}</span>
       <button class="btn ghost danger" data-action="cmp-del" data-i="${i}" aria-label="${L("Çıkar")}">✕</button></div>
-      ${amountControls('cmp:' + i, c.g, item.portions || [], { compact: true, liquid: item.liquid })}
+      ${S.ingOpen.has('cmp:' + i) ? `${amountControls('cmp:' + i, c.g, item.portions || [], { compact: true, liquid: item.liquid })}<button class="btn ghost" data-action="ing-open" data-id="cmp:${i}" aria-expanded="true">${L("Kapat")}</button>` : miniAmount('cmp:' + i, c.g, 1, 'cmp:' + i, item.name)}
     </div>`).join('');
   const addBtn = S.compare.length < 4 ? `<button class="cmp-add" data-action="cmp-add">＋ ${L("Besin ekle")}<br><span class="muted">${S.compare.length}/4</span></button>` : '';
   let table = '';
@@ -522,7 +522,7 @@ function renderCompare() {
         return `<td class="${x === max && items.length > 1 && max > 0 ? 'best' : ''}"><span class="cbar"><i style="width:${w.toFixed(1)}%"></i></span>${fmtAmount(x, n.unit, S.settings.precision).n}${fmtAmount(x, n.unit).u !== n.unit ? ' ' + fmtAmount(x, n.unit).u : ''}</td>`;
       }).join('')}</tr>`);
     }
-    table = `<div class="presets">${secChips}</div>
+    table = `<div class="presets cmp-secs" role="group" aria-label="${L("Bölüm")}">${secChips}</div>
       <div class="tablewrap"><table class="cmp"><thead><tr><th>${L("Bileşen")}</th>${items.map(({ c, item }) => `<th>${esc(item.name)}<br><span class="muted">${esc(item.formLabel)} · ${fmtNum(c.g)} g</span></th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>
       <p class="hint">${L("Aynı miktar ve biçimde karşılaştırmak için miktarları eşitle:")} <button class="btn ghost" data-action="cmp-same" data-g="100">${L("Hepsi 100 g")}</button> <button class="btn ghost" data-action="cmp-same" data-g="50">${L("Hepsi 50 g")}</button>. ${L("Satırdaki en yüksek değer vurgulanır; “yüksek = iyi” anlamına gelmez (sodyum, toksik mineraller, antinutrientler).")}</p>`;
   } else {
@@ -1145,7 +1145,7 @@ async function onClick(e) {
     case 'rc-cw-clear': { const rc = activeRecipe(); rc.cookedWeight = null; persistRecipes(); render(); break; }
     // karşılaştır
     case 'cmp-add': S.picker = { target: 'compare', cat: null, q: '', sel: null, amount: S.settings.defaultAmount }; render(); break;
-    case 'cmp-del': S.compare.splice(+b.dataset.i, 1); render(); break;
+    case 'cmp-del': S.compare.splice(+b.dataset.i, 1); [...S.ingOpen].filter((k) => k.startsWith('cmp:')).forEach((k) => S.ingOpen.delete(k)); render(); break;
     case 'cmp-sec': S.cmpSection = b.dataset.s; render(); break;
     case 'cmp-same': S.compare.forEach((c) => (c.g = Number(b.dataset.g))); render(); break;
     // seçici

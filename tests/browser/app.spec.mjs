@@ -653,6 +653,13 @@ test('Kıyasla: her besin için hazır ölçüler (USDA porsiyonu) tek dokunuşl
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
   await page.locator('[data-action="ex-add-compare"]').click();
   await tab(page, 'karsilastir');
+  // B075: varsayılan tek satır; ±10 çalışır, ölçüler Ayarla'nın altında
+  const mini = page.locator('.cmp-col .amount.mini');
+  await expect(mini.locator('.amt-val b')).toHaveText('100');
+  await mini.locator('[data-delta="10"]').click();
+  await expect(page.locator('table.cmp thead')).toContainText('110 g');
+  await expect(page.locator('.cmp-col .slider')).toHaveCount(0);
+  await page.locator('.cmp-col [data-action="ing-open"]').click();
   const por = page.locator('.cmp-col [data-amount="cmp:0"] .pchip.por');
   expect(await por.count()).toBeGreaterThan(0);
   const g = await por.first().getAttribute('data-val');

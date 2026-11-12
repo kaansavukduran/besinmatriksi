@@ -644,3 +644,4 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 .wk-bar i { display: block; width: 100%; background: var(--acc); border-radius: 6px 6px 2px 2px; }
 .wk.partial .wk-bar i { opacity: .55; }
 .wk-d { font-size: .8em; }
+@media (max-width: 700px) { .presets.cmp-secs { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; } .presets.cmp-secs .pchip { flex-shrink: 0; } .cmp-add { min-height: 0; padding: 14px; } }

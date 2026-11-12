@@ -321,3 +321,8 @@
 - Karşılaştırma sütunlarındaki miktar denetimine besinin USDA ölçüleri (ör. "1 su bardağı, dilimlenmiş · 150 g") eklendi; dokununca o sütunun gramı ve tablo güncellenir. Önceden boş liste geçiliyordu.
 - Kanıt: `npm test` 76/76; Playwright 72/72 PASS (yeni B074 testi: ölçü düğmesi ve tablo başlığındaki gram); telefonda 412 = 412, ekran görüntüsü incelendi.
 - Sonraki: **B075** Kıyasla'yı telefonda daha kısa yapmak: miktar denetimini B060'taki gibi tek satır (−10 · gram · +10 · ⚙ Ayarla) hâline getirmek.
+
+## B075 · 2026-11-12 · Kıyasla telefonda kısa
+- Kıyasla sütunlarında miktar varsayılan olarak tek satır (−10 · gram · +10 · ⚙ Ayarla; B060 `miniAmount` yeniden kullanıldı); Ayarla kaydırıcıyı, hazır gramları ve USDA ölçülerini açar. Sütun silinince açık durumlar sıfırlanır (indeks kayması yok). Telefonda bölüm düğmeleri yana kayan tek satır, "Besin ekle" kutusu küçüldü.
+- Kanıt: `npm test` 76/76; Playwright 72/72 PASS (B074 testi tek satır + ±10 + Ayarla adımlarıyla genişletildi); telefonda 412 = 412, ekran görüntüsü incelendi. Oturum yeniden başlatmaları nedeniyle kayıt sonradan; testler kayıttan önce yeniden koşuldu.
+- Kullanıcı yeni istekleri (2026-11-12): (1) hayvansal besinler uygun kategorilerde eklenmeli (CLAUDE.md'deki "yalnız bitkisel" kuralını değiştirir), (2) her besinin kendi küçük simgesi olmalı (şu an kategori simgesi; sebzelerin hepsinde brokoli). Sonraki: **B076** besin başına simge, **B077** hayvansal besinler.
