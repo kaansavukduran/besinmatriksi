@@ -7,7 +7,7 @@ export const MATRIX_SECTIONS = [...SECTIONS, { id: 'hesap', title: 'Hesaplanan g
 export const SETTINGS_VERSION = 2;
 export const SHORTCUT_ACTIONS = { kesfet: 'Keşfet', tarif: 'Tarif oluştur', karsilastir: 'Karşılaştır', ayarlar: 'Ayarlar', hakkinda: 'Hakkında', gunluk: 'Günlük ve profil' };
 export const DEFAULT_SETTINGS = {
-  theme: 'light', accent: 'auto', font: 'atkinson', fontSize: 17,
+  theme: 'dark', accent: 'auto', font: 'system', fontSize: 17,
   lineHeight: 1.55, letterSpacing: 0, wordSpacing: 0, density: 'comfy',
   radius: 14, bold: false, reduceMotion: false, ruler: false,
   showNrv: true, showSource: true, showSd: false, showAlt: true,

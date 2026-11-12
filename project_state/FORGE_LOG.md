@@ -343,3 +343,9 @@
 ## B078 · 2026-11-12 · beta.11 yayını
 - 1.1.2-beta.11 (B075 kısa Kıyasla, B076 besin simgeleri, B077 hayvansal besinler). Sürüm notları güncellendi (uygulama tanımı artık "bitkisel ağırlıklı"). `npm test` PASS; `native-notices` 446 / eksik 0.
 - Sonraki: **B079** geniş USDA kataloğuna (Ayarlar → Geniş katalog) hayvansal USDA gruplarını (süt/yumurta, kümes, et, balık) `showAnimal` ile birlikte eklemek.
+
+## B079 · 2026-11-12 · varsayılan Koyu tema ve sistem yazı tipi
+- Kaan'ın isteği: yeni kurulumda tema "Koyu" (`dark`), yazı "Sistem yazısı" (`system`: system-ui, -apple-system, Segoe UI, Roboto). Eski kayıtlı seçimler korunur (yalnız varsayılan değişti); geçersiz tema değeri artık Koyu'ya düşer.
+- Bulunan ve düzeltilen hata: telefonda %200 arayüz ölçeğinde Ayarlar sayfası 390→476 px taştı (yazı tipi kartında `minmax(200px, 1fr)`, Birimler ve Yüzde referansı kartlarında satır kırmayan uzun düğmeler); renk seçici penceresindeki düğmelere dokunulamadı. Yazı tipi ızgarası `minmax(min(200px, 100%), 1fr)`, ayar kartlarında min-width:0 ve düğme metni sarmalı → 390 = 390.
+- Kanıt: `npm test` 79/79 (yeni varsayılan/geri uyumluluk testi; eski "geçersiz tema → light" beklentisi "dark" oldu); Playwright 76/76 PASS; telefonda ekran görüntüsü: data-theme=dark, font-family system-ui.
+- Sonraki: **B080** besin simgelerinde tekrarları azaltmak (aynı emojiyi paylaşan besinler) ve kullanıcıya tam benzersiz resim seçeneklerini sunmak; ardından beta.12.

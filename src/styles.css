@@ -312,7 +312,7 @@ table.cmp td.miss { color: var(--muted); font-style: italic; }
 .swatches { display: flex; flex-wrap: wrap; gap: 8px; }
 .sw-btn { width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--card); outline: 2px solid var(--line); background: var(--sw, linear-gradient(135deg, var(--ac0), var(--card2))); font-size: .65rem; }
 .sw-btn.on { outline: 3px solid var(--fg); }
-.fonts { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; margin-bottom: .8rem; }
+.fonts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(200px, 100%), 1fr)); gap: 8px; margin-bottom: .8rem; }
 .fontbtn { display: flex; flex-direction: column; gap: .15rem; text-align: left; padding: .6rem .8rem; border-radius: var(--radius); border: 2px solid var(--line); background: var(--card); letter-spacing: normal; word-spacing: normal; }
 .fontbtn.on { border-color: var(--acc); }
 .fontbtn small { color: var(--muted); font-size: .75rem; line-height: 1.3; }
@@ -650,3 +650,8 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 .recipe-gaps .pchip { white-space: normal; text-align: left; max-width: 100%; }
 /* Telefonda bildirim balonu alttaki sekme çubuğunun üstünde durur; sekmeleri örtmez */
 @media (max-width: 700px) { .toast { bottom: calc(88px + env(safe-area-inset-bottom)); } }
+/* Büyük arayüz ölçeğinde (ör. %200) dar ekranda ayar kartları taşmasın */
+.settings > *, .settings .kv, .settings .toggle { min-width: 0; }
+.settings .kv .presets { flex-wrap: wrap; }
+.fontbtn { min-width: 0; overflow-wrap: anywhere; }
+.settings .pchip { white-space: normal; max-width: 100%; text-align: left; }
