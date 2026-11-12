@@ -23,28 +23,43 @@ if (!single) {
   const sw = `// Otomatik üretildi (scripts/postbuild.mjs)
 const CACHE = 'besin-matriksi-${version}';
 const FILES = ${JSON.stringify(['./', ...files.map((f) => './' + f)])};
+// Kurulum: tek dosyanın inmemesi kurulumu bozmaz (Promise.allSettled); HTTP önbelleği atlanır (cache: 'reload')
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(CACHE).then((c) => Promise.allSettled(FILES.map((f) => c.add(new Request(f, { cache: 'reload' }))))).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k.startsWith('besin-matriksi-') && k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
 });
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
-  if (new URL(e.request.url).origin !== self.location.origin) return;
-  e.respondWith(
-    caches.open(CACHE).then(async (cache) => {
-      // Modül isteğinin Origin başlığı, ön yüklemedekinden farklı olabilir
-      // (Vite Vary: Origin gönderir). Tüm kayıtlar aynı origin'den gelir.
-      const hit = await cache.match(e.request, { ignoreSearch: true, ignoreVary: true });
-      if (hit) return hit;
-      try { return await fetch(e.request); }
-      catch {
-        if (e.request.mode === 'navigate') return (await cache.match('./index.html', { ignoreVary: true })) || Response.error();
-        return Response.error();
+  const url = new URL(e.request.url);
+  if (url.origin !== self.location.origin) return;
+  // Sayfa açılışı: önce ağ (yeni sürüm hemen gelir), ağ yoksa önbellekteki sayfa — eski sürümde takılı kalınmaz
+  if (e.request.mode === 'navigate') {
+    e.respondWith((async () => {
+      const cache = await caches.open(CACHE);
+      try {
+        const res = await fetch(e.request, { cache: 'no-store' });
+        if (res.ok) cache.put('./index.html', res.clone()).catch(() => {});
+        return res;
+      } catch {
+        return (await cache.match('./index.html', { ignoreVary: true })) || (await cache.match('./', { ignoreVary: true })) || Response.error();
       }
-    })
-  );
+    })());
+    return;
+  }
+  // Diğer dosyalar (adları içerik özetli): önce önbellek, yoksa ağ ve önbelleğe ekle
+  e.respondWith((async () => {
+    const cache = await caches.open(CACHE);
+    // Modül isteğinin Origin başlığı ön yüklemedekinden farklı olabilir (Vary: Origin); tüm kayıtlar aynı origin'den
+    const hit = await cache.match(e.request, { ignoreSearch: true, ignoreVary: true });
+    if (hit) return hit;
+    try {
+      const res = await fetch(e.request);
+      if (res.ok && url.pathname.includes('/assets/')) cache.put(e.request, res.clone()).catch(() => {});
+      return res;
+    } catch { return Response.error(); }
+  })());
 });
 `;
   fs.writeFileSync(path.join(dir, 'sw.js'), sw);

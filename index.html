@@ -18,6 +18,21 @@
   <div id="ruler" aria-hidden="true"></div>
   <div id="app"><p style="padding:2rem;font-family:sans-serif">Besin Matriksi yükleniyor…</p></div>
   <noscript>Bu uygulama JavaScript gerektirir.</noscript>
+  <script>
+    // Açılış bekçisi: uygulama 10 sn'de açılmazsa (ör. tarayıcıda bozuk/eski önbellek) boş ekran yerine kurtarma düğmesi
+    setTimeout(function () {
+      if (window.__bmBooted) return;
+      var en = (navigator.language || '').toLowerCase().indexOf('tr') !== 0;
+      var box = document.getElementById('app');
+      box.innerHTML = '<div style="padding:2rem;font-family:sans-serif;max-width:32rem;margin:auto"><h1 style="font-size:1.3rem">' + (en ? 'Besin Matriksi did not start' : 'Besin Matriksi açılamadı') + '</h1><p>' + (en ? 'Your browser may be holding an old or broken copy. This clears only the app cache; your recipes and settings stay.' : 'Tarayıcın eski ya da bozuk bir kopyayı tutuyor olabilir. Bu yalnız uygulama önbelleğini temizler; tariflerin ve ayarların kalır.') + '</p><button id="bm-recover" style="font-size:1rem;padding:.7rem 1.2rem;border-radius:12px">' + (en ? 'Clear cache and reload' : 'Önbelleği temizle ve yeniden yükle') + '</button></div>';
+      document.getElementById('bm-recover').onclick = function () {
+        var jobs = [];
+        if (navigator.serviceWorker) jobs.push(navigator.serviceWorker.getRegistrations().then(function (rs) { return Promise.all(rs.map(function (r) { return r.unregister(); })); }));
+        if (window.caches) jobs.push(caches.keys().then(function (ks) { return Promise.all(ks.map(function (k) { return caches.delete(k); })); }));
+        Promise.all(jobs).catch(function () {}).then(function () { location.reload(); });
+      };
+    }, 10000);
+  </script>
   <script type="module" src="./src/main.js"></script>
 </body>
 </html>

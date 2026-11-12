@@ -409,3 +409,11 @@
 - Dil: seçenek zaten vardı (Görünüm kartında); Kaan isteğiyle Ayarlar'ın en üstüne "🌐 Dil / Language" kartı: 🇹🇷 Türkçe · 🇬🇧 English · Cihaz dili (büyük düğmeler, kalıcı). Dil adları kendi dilinde (`lang` özniteliğiyle); B051 İngilizce taraması `[lang="tr"]` öğelerini atlayacak şekilde güncellendi.
 - Kanıt: `npm test` 81/81; Playwright 90/90 PASS (yeni B089 testi; B051/B089 düzeltme sonrası 4/4); denetim betiği TEMİZ.
 - Sonraki: **B090** beta.14 yayını (B085–B089).
+
+## B090 · 2026-11-12 · Vercel: Chrome'da açılmama (service worker sağlamlaştırma)
+- Kaan: besinmatriksi.vercel.app Chrome'da açılmıyor, Firefox'ta açılıyor. Bu ortamdan vercel.app'e erişim yok (vekil CONNECT 403; sayfa okuma aracı ENOTFOUND) → canlı site NOT_RUN; Chrome'daki gerçek hata ekranı görülmedi.
+- Koddaki olası kök neden: service worker (sw.js) sayfa açılışını dahil her şeyi önce önbellekten veriyordu ve kurulum `cache.addAll` ile yapılıyordu (tek dosya inmezse yeni sürüm hiç kurulamaz). Chrome'da bir kez eski/yarım kopya önbelleğe alınırsa tarayıcı orada takılı kalabilir; önbelleği olmayan Firefox etkilenmez.
+- Düzeltmeler: (1) sayfa açılışı önce ağdan (`cache: 'no-store'`), ağ yoksa önbellekteki sayfa; (2) kurulum `Promise.allSettled` + `cache: 'reload'` (tek dosya hatası kurulumu bozmaz); (3) `register('./sw.js', { updateViaCache: 'none' })` + `update()`; güncellemede yeni sürüm devralınca bir kez yenileme; (4) `index.html` açılış bekçisi: uygulama 10 sn'de açılmazsa boş ekran yerine "Önbelleği temizle ve yeniden yükle" (yalnız SW/önbellek; tarif ve ayarlar localStorage'da kalır); (5) `vercel.json`: sw.js ve index önbelleklenmez, assets 1 yıl immutable, manifest türü.
+- Kanıt: `npm test` 81/81; Playwright 94/94 (yeni B090 testleri: ana betik engellenince 11 sn sonra kurtarma düğmesi görünür ve tıklanınca uygulama açılır; sw.js ağ-önce/allSettled içerir; çevrimdışı PWA testi geçmeye devam ediyor). B051 İngilizce taraması script/style içeriğini atlayacak şekilde düzeltildi.
+- Açık: Chrome'da gerçekte ne göründüğü (boş ekran, Vercel giriş sayfası, hata) Kaan'dan bekleniyor; önizleme bağlantılarında Vercel "Deployment Protection" Vercel'e giriş yapılmamış tarayıcıda giriş ister.
+- Sonraki: **B091** beta.15 yayını ve Vercel doğrulaması (Kaan'ın Chrome'daki sonucu).
