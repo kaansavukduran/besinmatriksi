@@ -333,3 +333,9 @@
 - Bulunan ve düzeltilen hatalar: (1) İngilizce telefonda "en düşük kalan besinler" kartındaki uzun adlı öneriler sayfayı 390→426 px genişletip sekme çubuğuna dokunmayı engelledi → satır kaydırma + min-width:0. (2) Telefonda bildirim balonu alt sekme çubuğunu örtüyordu → balon çubuğun üstüne taşındı (pointer-events:none denemesi renk seçici testini bozduğu için geri alındı).
 - Kanıt: `npm test` 77/77 (hayvansal kategori/işaret testi, B12 hayvansal kaynak testi); Playwright 74/74 PASS (yeni B077 testi: etiket, alerjen, gizleme ve kalıcılık); telefonda 412 = 412, ekran görüntüsü incelendi.
 - Sonraki: **B076** her besine kendi küçük simgesi (kategori simgesi yerine).
+
+## B076 · 2026-11-12 · her besine kendi simgesi
+- `src/food-icons.js`: 318 küratörlü besinin her birine simge (sistem emojisi; çevrimdışı, ek dosya/lisans yok). Kartlarda, ayrıntı başlığında, tarif malzemelerinde, koleksiyon ve "son bakılanlar" satırında kategori simgesi yerine besinin simgesi; eşlemesi olmayan (kendi besinlerim, geniş katalog) kategori simgesine düşer. Emoji ayarı kapalıysa simge gösterilmez.
+- Sınır (dürüst not): emoji setinde her besinin karşılığı yok; 318 besin için 88 farklı simge var. Tam karşılığı olmayanlarda en yakın görsel (ör. renkli daire, tahıl başağı) kullanıldı; Unicode 15+ simgeler (zencefil, bezelye kabuğu) eski Windows/Android'de görünmediği için seçilmedi. Her besine benzersiz çizim için ayrı bir simge seti (lisansı değerlendirilerek) ya da özel çizim gerekir.
+- Kanıt: `npm test` 78/78 (yeni: her besinin simgesi var, fazlası yok, domates ≠ brokoli); Playwright 76/76 PASS (yeni B076 testi); telefonda ekran görüntüsü incelendi, 412 = 412.
+- Sonraki: **B078** beta.11 yayını (B075 + B076 + B077).

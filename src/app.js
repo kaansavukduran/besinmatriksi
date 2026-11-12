@@ -25,6 +25,7 @@ import { normalizeCollections, createCollection, renameCollection, deleteCollect
 import { mountAion, configureAion, aionMood, aionPlay, aionSay } from './aion.js';
 import { recipeGaps } from './gaps.js';
 import { similarFoods } from './similar.js';
+import { FOOD_ICONS } from './food-icons.js';
 import { TOUR_STEPS, tourSeen, markTourSeen, nextStep } from './tour.js';
 import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS } from './settings.js';
 
@@ -131,6 +132,8 @@ function catName(id) {
   return c ? categoryName(c) : id === 'custom' ? L("Kendi besinlerim") : '';
 }
 const catIcon = (id) => (S.settings.emoji ? CATEGORIES.find((c) => c.id === id)?.icon || '📦' : '');
+// Besinin kendi simgesi; yoksa kategori simgesi
+const foodIcon = (f) => (S.settings.emoji ? FOOD_ICONS[f?.id] || catIcon(f?.cat) : '');
 
 function amountControls(target, g, portions = [], { compact = false, liquid = false } = {}) {
   const oz = S.settings.amountUnit === 'oz';
@@ -169,7 +172,7 @@ function foodButton(f, action, extra = '') {
   const multi = S.multi && action === 'ex-pick', on = multi && S.picked.includes(f.id);
   if (multi) { action = 'multi-pick'; extra += ` aria-pressed="${on}"`; }
   return `<button class="food ${on ? 'picked' : ''}" data-action="${action}" data-id="${esc(f.id)}" ${extra}>
-    <span class="fi" aria-hidden="true">${on ? '✓' : catIcon(f.cat)}</span>
+    <span class="fi" aria-hidden="true">${on ? '✓' : foodIcon(f)}</span>
     <span class="fn">${esc(foodName(f))}${f.animal ? ` <span class="tag-animal">${L("Hayvansal")}</span>` : ''}</span>
     <span class="ff">${f.forms.length > 1 ? L("{n} biçim", { n: f.forms.length }) : esc(formName(f.forms[0].label))}${quickFacts(f.forms[0].v)}</span>
   </button>`;
@@ -223,7 +226,7 @@ function refButton(ref, prefix, colId, index = -1, count = 0) {
   const moves = colId && prefix === 'ex' && index >= 0 ? `<span class="move"><button class="btn ghost" data-action="col-move" data-id="${esc(colId)}" data-i="${index}" data-d="-1" ${index === 0 ? 'disabled' : ''} aria-label="${esc(L("{n} yukarı taşı", { n: nm }))}">↑</button><button class="btn ghost" data-action="col-move" data-id="${esc(colId)}" data-i="${index}" data-d="1" ${index === count - 1 ? 'disabled' : ''} aria-label="${esc(L("{n} aşağı taşı", { n: nm }))}">↓</button></span>` : '';
   const remove = moves + (colId && prefix === 'ex' ? `<button class="btn ghost danger item-remove" data-action="col-remove-item" data-id="${esc(colId)}" data-ref="${esc(JSON.stringify(ref))}" aria-label="${esc(L("{n} koleksiyondan çıkar", { n: nm }))}">✕</button>` : '');
   if (!item) return `<div class="food missing-ref"><span class="fi">❔</span><span class="fn">${L("Kayıt bulunamadı")}</span><span class="ff">${esc(refKey(ref))}</span>${remove}</div>`;
-  return `<div class="food-wrap"><button class="food" data-action="${prefix}-pick-ref" data-ref="${esc(JSON.stringify(ref))}"><span class="fi" aria-hidden="true">${item.food ? catIcon(item.food.cat) : item.custom ? '🏷️' : '🇺🇸'}</span><span class="fn">${esc(item.name)}</span><span class="ff">${esc(item.formLabel)}</span></button>${remove}</div>`;
+  return `<div class="food-wrap"><button class="food" data-action="${prefix}-pick-ref" data-ref="${esc(JSON.stringify(ref))}"><span class="fi" aria-hidden="true">${item.food ? foodIcon(item.food) : item.custom ? '🏷️' : '🇺🇸'}</span><span class="fn">${esc(item.name)}</span><span class="ff">${esc(item.formLabel)}</span></button>${remove}</div>`;
 }
 
 function collectionList(prefix, cat, q) {
@@ -256,7 +259,7 @@ function recentRow(prefix) {
   const items = S.recent.map((r) => ({ r, f: FOODS.find((x) => x.id === r.id) })).filter((x) => x.f);
   if (!items.length) return '';
   return `<div class="recent-row"><h3 class="grp">🕘 ${L("Son bakılanlar")}</h3><button class="btn ghost" data-action="recent-clear" aria-label="${L("Son bakılanları temizle")}">${L("Temizle")}</button></div>
-    <div class="presets recent">${items.map(({ r, f }) => `<button class="pchip" data-action="ex-pick-ref" data-ref='${esc(JSON.stringify(r))}'>${S.settings.emoji ? catIcon(f.cat) + ' ' : ''}${esc(foodName(f))}${f.forms.length > 1 ? ` <span class="muted">${esc(formName(f.forms[r.f].label))}</span>` : ''}</button>`).join('')}</div>`;
+    <div class="presets recent">${items.map(({ r, f }) => `<button class="pchip" data-action="ex-pick-ref" data-ref='${esc(JSON.stringify(r))}'>${S.settings.emoji ? foodIcon(f) + ' ' : ''}${esc(foodName(f))}${f.forms.length > 1 ? ` <span class="muted">${esc(formName(f.forms[r.f].label))}</span>` : ''}</button>`).join('')}</div>`;
 }
 
 function foodList(prefix, cat, q, extGroup) {
@@ -337,7 +340,7 @@ function renderExplore() {
   const detail = item
     ? `<div class="dhead">
         <button class="back" data-action="ex-back" aria-label="${L("Listeye dön")}">← ${L("Liste")}</button>
-        <div class="dtitle"><h2>${S.settings.emoji && item.food ? catIcon(item.food.cat) + ' ' : ''}${esc(item.name)}</h2>
+        <div class="dtitle"><h2>${S.settings.emoji && item.food ? foodIcon(item.food) + ' ' : ''}${esc(item.name)}</h2>
           <div class="dsub">${item.animal ? `<span class="tag-animal">${L("Hayvansal")}</span> ` : ''}${esc(catName(item.cat))}${item.sci ? ` · <i>${esc(item.sci)}</i>` : ''}</div></div>
       </div>
       ${formChips('ex', S.sel)}
@@ -423,7 +426,7 @@ function renderRecipe() {
     const item = resolve(it.ref);
     if (!item) return `<div class="ing missing"><span>${L("Bulunamayan kayıt ({key})", { key: esc(refKey(it.ref)) })} ${it.ref.t === 'x' ? '— ' + L("geniş katalog açık olmalı") : ''}</span><button class="btn ghost" data-action="rc-del-item" data-id="${it.id}">${L("Kaldır")}</button></div>`;
     return `<div class="ing">
-      <div class="ing-h"><span class="fi">${item.food ? catIcon(item.food.cat) : ''}</span><b>${esc(item.name)}</b> <span class="muted">${esc(item.formLabel)}</span>
+      <div class="ing-h"><span class="fi">${item.food ? foodIcon(item.food) : ''}</span><b>${esc(item.name)}</b> <span class="muted">${esc(item.formLabel)}</span>
       <span class="ing-kcal">${item.v.energy != null ? fmtNum((item.v.energy * it.g) / 100) + ' kcal' : ''}</span>
       <span class="move"><button class="btn ghost" data-action="rc-move" data-id="${it.id}" data-d="-1" ${idx === 0 ? 'disabled' : ''} aria-label="${esc(L("{n} yukarı taşı", { n: item.name }))}">↑</button><button class="btn ghost" data-action="rc-move" data-id="${it.id}" data-d="1" ${idx === rc.items.length - 1 ? 'disabled' : ''} aria-label="${esc(L("{n} aşağı taşı", { n: item.name }))}">↓</button></span>
       <button class="btn ghost danger" data-action="rc-del-item" data-id="${it.id}" aria-label="${L("Malzemeyi kaldır")}">✕</button></div>

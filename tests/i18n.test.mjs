@@ -44,3 +44,14 @@ test('L() dile göre çevirir ve yer tutucuları doldurur; eksik çeviride Türk
   setLanguage('tr');
   assert.equal(L('{n} kayıt daha var; aramayla daralt.', { n: 7 }), '7 kayıt daha var; aramayla daralt.');
 });
+
+import { FOOD_ICONS } from '../src/food-icons.js';
+test('her küratörlü besinin kendi simgesi var (B076)', async () => {
+  const fs = await import('node:fs');
+  const db = JSON.parse(fs.readFileSync(new URL('../src/data/foods.json', import.meta.url)));
+  const missing = db.foods.filter((f) => !FOOD_ICONS[f.id]).map((f) => f.id);
+  assert.deepEqual(missing, []);
+  const extra = Object.keys(FOOD_ICONS).filter((k) => !db.foods.some((f) => f.id === k));
+  assert.deepEqual(extra, []);
+  assert.notEqual(FOOD_ICONS.domates, FOOD_ICONS.brokoli); // sebzeler artık aynı simgeyi taşımıyor
+});
