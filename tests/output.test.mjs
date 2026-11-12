@@ -47,4 +47,9 @@ test('kişisel bilgi yoksa temel değerlerde ortalama kadın ve erkek yüzdesi; 
   assert.ok(m.indexOf('basic-card') < m.indexOf('data-sec="enerji"'));
   assert.ok(m.indexOf('reference-label') > m.indexOf('data-sec="enerji"'), 'kaynak/kapsam en altta');
   assert.ok(!/Kül/.test(m), 'kül satırı gösterilmez');
+  // Kalori kutusu: yalnız kalori (su ve kJ yok) (B099)
+  const r2 = { ...r, v: { ...r.v, water: 70, energy_kj: 4184 } };
+  const sec = renderMatrix(r2, {}, { item: { name: 'Ürün', formLabel: 'Çiğ', custom: true, allergens: [] } }).match(/data-sec="enerji"[\s\S]*?<\/details>/)[0];
+  assert.match(sec, /Kalori/);
+  assert.ok(!/Su \(nem\)|kJ/.test(sec), 'kalori kutusunda su/kJ yok');
 });

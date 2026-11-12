@@ -4,7 +4,7 @@
 // AB/TGK listesinde bulunmayan bileşenlerde nrv yoktur (uydurulmaz).
 
 export const SECTIONS = [
-  { id: 'enerji', title: 'Su, enerji ve fiziksel özellikler', icon: '💧' },
+  { id: 'enerji', title: 'Kalori', icon: '🔥' },
   { id: 'protein', title: 'Protein ve amino asitler', icon: '🧬' },
   { id: 'karb', title: 'Karbonhidrat ve şekerler', icon: '🍯' },
   { id: 'lif', title: 'Nişasta ve lif', icon: '🌾' },

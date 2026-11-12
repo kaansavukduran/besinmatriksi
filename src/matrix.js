@@ -61,7 +61,7 @@ function row(n, r, cfg) {
 }
 
 function section(sec, r, cfg, open) {
-  const list = NUTRIENTS.filter((n) => n.section === sec.id && n.key !== 'energy_kj' && n.key !== 'ash');
+  const list = NUTRIENTS.filter((n) => n.section === sec.id && !['energy_kj', 'ash', 'water'].includes(n.key));
   let html = '', sub = undefined, have = 0;
   const missing = [];
   for (const n of list) {
@@ -72,9 +72,8 @@ function section(sec, r, cfg, open) {
       const ref = referenceFor(n, cfg);
       const p = ref.value ? (r.v.energy / ref.value) * 100 : null;
       const amount = cfg.energyUnit === 'kj' ? `${fmtNum(kj, cfg.precision)} <span class="unit">kJ</span>` : `${fmtNum(r.v.energy, cfg.precision)} <span class="unit">kcal</span>`;
-      html += `<div class="row" role="row"><span class="lbl" role="cell">${L("Enerji")}</span>
-        <span class="val" role="cell"><span class="num">${amount}</span>
-        ${kj != null && cfg.energyUnit === 'both' ? `<span class="kj">· ${fmtNum(kj, cfg.precision)} kJ</span>` : ''}</span>
+      html += `<div class="row" role="row"><span class="lbl" role="cell">${L("Kalori")}</span>
+        <span class="val" role="cell"><span class="num">${amount}</span></span>
         <span class="pctc" role="cell">${cfg.showNrv && p != null ? `<span class="nrv" title="${esc(ref.title)}; ${ref.label} ${fmtNum(ref.value)} kcal"><span class="bar"><i style="width:${Math.min(100, p).toFixed(1)}%"></i></span><span class="pct">${fmtPct(p)}</span></span>` : ''}</span>
         <span class="meta" role="cell">${cfg.showSource ? srcChip(r.s.energy, cfg.sourceItem) : ''}${r.cov && r.cov.energy < r.n ? `<span class="flag partial">${L("kısmi {a}/{b}", { a: r.cov.energy, b: r.n })}</span>` : ''}</span></div>`;
       continue;

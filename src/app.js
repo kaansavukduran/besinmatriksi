@@ -532,7 +532,9 @@ function renderCompare() {
       for (const k of BASIC_KEYS) { const n = NUTRIENTS.find((x) => x.key === k); if (n) rows.push(cmpRow(n, rs.map((r) => r.v[k]), true)); }
     }
     for (const n of S.cmpSection === 'temel' ? [] : NUTRIENTS) {
-      if (n.key === 'ash') continue;
+      // Kalori kutusu yalnız kaloriyi gösterir (su, kül, ayrıca kJ satırı yok; kJ seçiliyse kcal yerine kJ)
+      if (['ash', 'water'].includes(n.key)) continue;
+      if (n.key === 'energy_kj' && S.settings.energyUnit !== 'kj') continue;
       if (n.key === 'energy_kj' && S.settings.energyUnit === 'kcal') continue;
       if (n.key === 'energy' && S.settings.energyUnit === 'kj') continue;
       if (S.cmpSection !== 'all' && n.section !== S.cmpSection) continue;
