@@ -723,6 +723,7 @@ function renderAbout() {
       <li><b>${esc(SOURCES.u.short)}</b>: ${esc(L(SOURCES.u.long))}. ${L("Su, enerji, makrolar, lif, şeker, vitaminler, mineraller, yağ sınıfları; pişmiş formlar dahil.")}</li>
       <li><b>${L("USDA tam bileşim tablosu:")}</b> ${L("Ölçümü bulunan amino asitler, şeker türleri, yağ asitleri, D2/D3, tokoferoller, fitosteroller, kafein ve betain. Eksik değerler sıfıra çevrilmez.")}</li>
       <li><b>${esc(SOURCES.F.short)}</b>: ${esc(L(SOURCES.F.long))}. ${L("Aynı USDA kaydında SR28'de ölçülmeyen değerler (ör. biyotin, molibden, iyot, sitrik ve malik asit, şeker türleri) daha yeni analizden doldurulur; SR28 değerleri değiştirilmez.")}</li>
+      <li><b>${esc(SOURCES.N.short)}</b>: ${esc(L(SOURCES.N.long))}. ${L("Türk kahvesi, bitkisel sütlü latte ve cappuccino gibi SR28'de olmayan hazır içecekler.")}</li>
       <li><b>${esc(SOURCES.f.short)}</b>: ${esc(L(SOURCES.f.long))}. ${L("Flavonoller (kuersetin, kaempferol…), flavonlar, flavanonlar (hesperetin, naringenin), flavan-3-oller (kateşinler, EGCG) ve antosiyanidinler; aynı USDA kayıt numarasıyla eşleşen besinlerde.")}</li>
       <li><b>${esc(L(SOURCES.y.short))}</b>: ${esc(L(SOURCES.y.long))}. ${L("Daidzein, genistein, glisitein.")}</li>
       <li><b>IFCT 2017:</b> ${L("NIN ürün kullanım izni doğrulanmadığı için veri ve bu veriye dayanan tahminler bu sürümde dağıtılmıyor.")}</li>

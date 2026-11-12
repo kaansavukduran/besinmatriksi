@@ -436,4 +436,15 @@ export const FOODS = [
   F('soya_filizi', 'Soya filizi', 'soybean sprouts', 'soya', [['filiz', '11452', null]]),
   F('besin_mayasi_z', 'Besin mayası (nutritional yeast)', 'nutritional yeast', 'diger', [['toz', null, null]], { unavailable: 'Besin mayası USDA SR28 / FoodData Central (Foundation, FNDDS) tablolarında yok; değerler markaya ve B12 zenginleştirmesine göre çok değişir. Ürün etiketindeki 100 g değerleriyle “Kendi besinlerim”den ekle.' }),
   F('psyllium', 'Karnıyarık otu tohumu kabuğu (psyllium)', 'psyllium husk', 'tohum', [['toz', null, null]], { unavailable: 'Psyllium kabuğu USDA SR28 / FoodData Central (Foundation, FNDDS) tablolarında yok. Ürün etiketindeki 100 g değerleriyle “Kendi besinlerim”den ekle; çoğunlukla çözünür liftir.' }),
+  // B117 (2026-11-13): içecekler ve tahıl çeşitliliği
+  F('hibiskus_cayi', 'Hibiskus çayı (bamya çiçeği)', 'hibiscus tea', 'icecek', [['demleme', '14649', null]]),
+  F('bitki_cayi', 'Bitki çayı (ıhlamur, adaçayı, nane…; papatya dışı)', 'herbal tea', 'icecek', [['demleme', '14381', null]]),
+  F('oolong', 'Oolong çayı', 'oolong tea', 'icecek', [['demleme', '14185', null]]),
+  F('turk_kahvesi', 'Türk kahvesi (orta şekerli)', 'turkish coffee', 'icecek', [['icecek', 'N92101600', null]], { note: 'USDA FNDDS tarifi: demleme kahve + şeker. Telvesiyle pişen geleneksel Türk kahvesinin kafein ve şeker oranı fincana göre değişir; sade için “Kahve (filtre)”ye bak.' }),
+  F('latte_bitkisel', 'Latte (bitkisel sütle)', 'latte with plant milk', 'icecek', [['icecek', 'N92101903', null]], { note: 'USDA FNDDS: espresso + bitkisel süt (türü belirtilmemiş). Kendi sütünle Tarif oluştur’da hesaplayabilirsin.' }),
+  F('cappuccino_bitkisel', 'Cappuccino (bitkisel sütle)', 'cappuccino with plant milk', 'icecek', [['icecek', 'N92161002', null]], { note: 'USDA FNDDS: espresso + bitkisel süt + su (süt türü belirtilmemiş).' }),
+  F('americano', 'Americano', 'americano', 'icecek', [['icecek', null, null]], { unavailable: 'Americano için USDA’da ölçülmüş kayıt yok (espresso + sıcak su). Tarif oluştur’da 1 shot espresso (≈30 g) ve istediğin kadar su (ör. 120 g) ekleyerek hesapla.' }),
+  F('siyez_bulguru', 'Siyez bulguru', 'einkorn bulgur', 'tahil', [['kuru', null, null]], { unavailable: 'Siyez (einkorn) için USDA SR28 / FoodData Central’da kayıt yok. Paket etiketindeki 100 g değerleriyle “Kendi besinlerim”den ekle.' }),
+  F('siyah_pirinc', 'Siyah pirinç', 'black rice', 'tahil', [['kuru', null, null]], { unavailable: 'Siyah pirinç için USDA SR28 / FoodData Central’da kayıt yok. Paket etiketindeki 100 g değerleriyle “Kendi besinlerim”den ekle.' }),
+  F('siyah_mercimek', 'Siyah mercimek (beluga)', 'black beluga lentil', 'baklagil', [['kuru', null, null]], { unavailable: 'USDA tabloları mercimeği renk/çeşide göre ayırmaz; siyah (beluga) için ölçülmüş kayıt yok. Genel değerler için “Yeşil mercimek”e bak ya da etiketten ekle.' }),
 ];

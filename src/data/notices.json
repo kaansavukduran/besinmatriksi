@@ -98,6 +98,13 @@
     "text": "Source: U.S. Department of Agriculture, Agricultural Research Service. FoodData Central, Foundation Foods. fdc.nal.usda.gov\nFoodData Central data are in the public domain (CC0 1.0). https://fdc.nal.usda.gov/api-guide/"
   },
   {
+    "id": "usda-fndds",
+    "name": "USDA FoodData Central — Survey (FNDDS 2021-2023)",
+    "version": "Survey JSON 2024-10-31",
+    "license": "CC0 1.0",
+    "text": "Source: U.S. Department of Agriculture, Agricultural Research Service. Food and Nutrient Database for Dietary Studies 2021-2023, via FoodData Central. Public domain (CC0 1.0)."
+  },
+  {
     "id": "usda-flav",
     "name": "USDA Flavonoid Database, Release 3.3 (2018)",
     "version": "Flav_R03-3",

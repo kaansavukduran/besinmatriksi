@@ -107,6 +107,25 @@ const ffByNdb = new Map();
     if (Object.keys(v).length) ffByNdb.set(f.ndb, { v, fdcId: f.fdcId });
   }
 }
+// ---------- USDA FNDDS 2021-2023 (CC0): SR28'de kaydı olmayan hazır içecekler (Türk kahvesi, bitkisel sütlü latte...) ----------
+const fndds = new Map(JSON.parse(gunzipSync(fs.readFileSync(path.join(root, 'data/raw/USDA_FNDDS_2021-2023_SUBSET.json.gz'))).toString('utf8')).map((f) => [f.code, f]));
+function fnddsForm(code) {
+  const f = fndds.get(code);
+  if (!f) throw new Error('FNDDS kodu yok: ' + code);
+  const numToKey = new Map(Object.entries(USDA_NUTRIENTS).map(([k, v]) => [v, k]));
+  const unitOf = new Map(NUTRIENTS.map((n) => [n.key, n.unit]));
+  const v = {}, s = {};
+  for (const [num, , unit, amount] of f.n) {
+    const key = numToKey.get(num);
+    if (!key || !unitOf.has(key) || !Number.isFinite(amount) || amount < 0) continue;
+    const u = FF_UNIT[unit] || unit; if (!['g', 'mg', 'µg', 'kcal', 'kJ'].includes(u)) continue;
+    v[key] = u === unitOf.get(key) ? amount : Number((amount * unitFactor(u, unitOf.get(key))).toPrecision(8));
+    s[key] = 'N';
+  }
+  const base = f.p.filter(([d, g]) => d && g > 0 && g <= 1000 && !/not specified/i.test(d)).map(([d, g]) => ({ g, label: trPortion(d), en: d }));
+  return { v, s, portions: [...turkishMeasures(base), ...base], usda: { fndds: code, fdc: f.fdcId, desc: f.desc, ingredients: f.in } };
+}
+
 function fillFromFoundation(ndb, v, s) {
   const ff = ffByNdb.get(ndb);
   if (!ff) return null;
@@ -254,6 +273,10 @@ for (const food of FOODS) {
     if (!FORM_LABELS[key]) throw new Error('Bilinmeyen form: ' + key);
     const v = {}, s = {}, alt = {}, sd = {};
     let usda = null, ic = null;
+    if (ndb && ndb.startsWith('N')) {
+      const r = fnddsForm(ndb.slice(1));
+      return { key, label: custom || FORM_LABELS[key], usda: r.usda, ifct: null, estFrom: null, portions: r.portions, v: r.v, s: r.s };
+    }
     if (ndb) {
       const d = des.get(ndb);
       if (!d) throw new Error('FOOD_DES kodu yok: ' + ndb);

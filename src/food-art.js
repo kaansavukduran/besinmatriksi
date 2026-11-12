@@ -361,6 +361,16 @@ export const FOOD_ART = {
   soya_filizi: ["herb", "#fff59d", "#c0ca33", "feather"],
   besin_mayasi_z: ["powder", "#ffd54f", "#f57f17", "pile"],
   psyllium: ["powder", "#efebe9", "#a1887f", "pile"],
+  hibiskus_cayi: ["cup", "#c2185b", "#f8bbd0"],
+  bitki_cayi: ["cup", "#9e9d24", "#f0f4c3"],
+  oolong: ["cup", "#a1887f", "#efebe9"],
+  turk_kahvesi: ["cup", "#4e342e", "#d7ccc8"],
+  latte_bitkisel: ["cup", "#bcaaa4", "#fff8e1"],
+  cappuccino_bitkisel: ["cup", "#8d6e63", "#fffde7"],
+  americano: ["cup", "#3e2723", "#bcaaa4"],
+  siyez_bulguru: ["grain", "#a1887f", "#efebe9"],
+  siyah_pirinc: ["grain", "#311b92", "#d1c4e9"],
+  siyah_mercimek: ["legume", "#212121", "#9e9e9e"],
 };
 
 // Eski bir çizimde olmayan şablon/seçenek gelirse güvenle boş döner (emoji yedeği devreye girer)

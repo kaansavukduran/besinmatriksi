@@ -1015,3 +1015,16 @@ test('çeşitlilik: longevity besinleri görünür; besin mayası/psyllium etike
   await page.locator('.unavail [data-action="cu-new"]').click();
   await expect(page.locator('.modal input').first()).toHaveValue(/Besin mayası/);
 });
+
+test('içecekler ve tahıllar: Türk kahvesi (FNDDS), hibiskus; Americano ve siyez açıklamalı (B117)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('türk kahvesi'); await page.locator('#foodlist [data-id="turk_kahvesi"]').click();
+  await expect(page.locator('#matrix [data-basic="energy"]')).toContainText('27');
+  await expect(page.locator('#matrix .src-N').first()).toContainText('USDA FNDDS');
+  if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
+  await page.locator('#q').fill('hibiskus'); await expect(page.locator('#foodlist [data-id="hibiskus_cayi"]')).toHaveCount(1);
+  await page.locator('#q').fill('americano'); await page.locator('#foodlist [data-id="americano"]').click();
+  await expect(page.locator('.unavail')).toContainText('espresso');
+  if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
+  await page.locator('#q').fill('siyez'); await expect(page.locator('#foodlist [data-id="siyez_bulguru"]')).toHaveCount(1);
+});

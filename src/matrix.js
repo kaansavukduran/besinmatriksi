@@ -10,15 +10,15 @@ import { nutrientLabel } from './i18n-nutrients.js';
 
 const nl = nutrientLabel;
 
-const SRC_LABEL = { u: 'USDA', F: 'USDA FDC', f: 'USDA Flavonoid', y: 'USDA İzoflavon', i: 'IFCT', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
+const SRC_LABEL = { u: 'USDA', N: 'USDA FNDDS', F: 'USDA FDC', f: 'USDA Flavonoid', y: 'USDA İzoflavon', i: 'IFCT', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
 const SRC_TITLE = {
-  u: SOURCES.u.long, F: SOURCES.F.long, f: SOURCES.f.long, y: SOURCES.y.long, i: SOURCES.i.long, e: SOURCES.e.long,
+  u: SOURCES.u.long, N: SOURCES.N.long, F: SOURCES.F.long, f: SOURCES.f.long, y: SOURCES.y.long, i: SOURCES.i.long, e: SOURCES.e.long,
   d: 'Diğer ölçülmüş değerlerden hesaplandı (ör. tuz = sodyum × 2,5)', m: 'Tarifteki malzemeler farklı kaynaklardan', k: 'Kullanıcının ürün etiketinden girdiği değer',
 };
 
 function srcChip(s, item) {
   if (!s) return '';
-  const record = s === 'F' && item?.usda?.fdc ? ` · FDC ${item.usda.fdc} (NDB ${item.usda.ndb})` : (s === 'u' || s === 'f' || s === 'y') && item?.usda ? (s === 'u' ? ' · USDA SR28 (2015), NDB ' : ' · NDB ') + `${item.usda.ndb} · ${item.usda.desc}` : s === 'i' && item?.ifct ? ` · IFCT 2017, ${item.ifct.code} · ${item.ifct.name}` : s === 'e' && item?.estFrom ? ' · ' + L("IFCT 2017 çiğ kaynak kaydı: {r}; protein/yağ oranı ile tahmin", { r: item.estFrom }) : '';
+  const record = s === 'N' && item?.usda?.fndds ? ` · FNDDS ${item.usda.fndds} · ${item.usda.desc}` : s === 'F' && item?.usda?.fdc ? ` · FDC ${item.usda.fdc} (NDB ${item.usda.ndb})` : (s === 'u' || s === 'f' || s === 'y') && item?.usda ? (s === 'u' ? ' · USDA SR28 (2015), NDB ' : ' · NDB ') + `${item.usda.ndb} · ${item.usda.desc}` : s === 'i' && item?.ifct ? ` · IFCT 2017, ${item.ifct.code} · ${item.ifct.name}` : s === 'e' && item?.estFrom ? ' · ' + L("IFCT 2017 çiğ kaynak kaydı: {r}; protein/yağ oranı ile tahmin", { r: item.estFrom }) : '';
   return `<span class="src src-${s}" title="${esc(L(SRC_TITLE[s]) + record)}">${L(SRC_LABEL[s])}</span>`;
 }
 

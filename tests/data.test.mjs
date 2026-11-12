@@ -18,7 +18,7 @@ test('her formun doğrulanmış değerleri veya açık kaynak boşluğu var', ()
       if (fm.unavailable) assert.deepEqual(fm.v, {});
       else assert.ok(fm.v.energy != null && fm.v.protein != null, `${f.id}/${fm.key}`);
       for (const k of Object.keys(fm.v)) assert.ok(keys.has(k), `bilinmeyen anahtar ${k}`);
-      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F'].includes(s), `${f.id} ${k} ${s}`);
+      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F', 'N'].includes(s), `${f.id} ${k} ${s}`);
     }
   }
 });
@@ -81,7 +81,7 @@ test('hayvansal kayıtlar yalnız hayvansal kategorilerde ve işaretli; bitkisel
   for (const f of DB.foods) {
     if (animalCats.has(f.cat)) assert.equal(f.animal, true, f.id);
     if (f.animal) { animals++; continue; }
-    for (const fm of f.forms) if (fm.usda) assert.ok(!bad.test(fm.usda.desc.replace(/peanut butter|sesame butter|soymilk|almond milk|rice milk|coconut milk|coconut cream|cocoa butter|butternut|butterhead/gi, '')), fm.usda.desc);
+    for (const fm of f.forms) if (fm.usda) assert.ok(!bad.test(fm.usda.desc.replace(/peanut butter|sesame butter|soymilk|almond milk|rice milk|coconut milk|coconut cream|cocoa butter|butternut|butterhead|non-dairy milk/gi, '')), fm.usda.desc);
   }
   assert.ok(animals >= 30);
   assert.equal(DB.foods.find((f) => f.id === 'bal').animal, true);
@@ -93,7 +93,7 @@ test('dağıtımda IFCT değerleri, alternatifleri ve bunlardan tahminler bulunm
   for (const food of DB.foods) for (const f of food.forms) {
     assert.equal(f.ifct, null); assert.equal(f.estFrom, null);
     assert.deepEqual(f.alt || {}, {}); assert.deepEqual(f.sd || {}, {});
-    assert.ok(Object.values(f.s).every(s => ['u', 'f', 'y', 'F'].includes(s)));
+    assert.ok(Object.values(f.s).every(s => ['u', 'f', 'y', 'F', 'N'].includes(s)));
   }
   assert.equal(fs.existsSync(new URL('../data/raw/IFCT2017.csv', import.meta.url)), false);
 });
@@ -130,7 +130,7 @@ test('USDA flavonoid/izoflavon verisi aynı NDB kaydından gelir, etiketlidir ve
   const orange = form('portakal', 'cig');
   assert.ok(orange.v.hesperetin > 20); assert.equal(orange.s.hesperetin, 'f');
   assert.ok(!('cyanidin' in orange.v), 'portakalda ölçülmeyen antosiyanidin yazılmaz');
-  for (const food of DB.foods) for (const f of food.forms) for (const [k, s] of Object.entries(f.s)) if (s !== 'u') assert.ok(f.usda?.ndb, `${food.id}/${f.key}/${k}: NDB olmadan flavonoid yok`);
+  for (const food of DB.foods) for (const f of food.forms) for (const [k, s] of Object.entries(f.s)) if (s !== 'u') assert.ok(f.usda?.ndb || f.usda?.fndds, `${food.id}/${f.key}/${k}: NDB olmadan flavonoid yok`);
   const src = JSON.parse(fs.readFileSync(new URL('../data/raw/USDA_FLAVONOID_SOURCES.json', import.meta.url)));
   assert.equal(src.datasets.length, 2); assert.match(src.datasets[0].license, /CC0/);
 });
@@ -143,4 +143,11 @@ test('USDA FoodData Central Foundation Foods yalnız SR28 boşluklarını doldur
   assert.equal(oj.s.energy, 'u');
   const src = JSON.parse(fs.readFileSync(new URL('../data/raw/USDA_FDC_FOUNDATION_SOURCE.json', import.meta.url)));
   assert.match(src.license, /CC0/);
+});
+
+test('USDA FNDDS hazır içecekler: Türk kahvesi ve bitkisel sütlü latte N etiketli, FNDDS kodlu (B117)', () => {
+  const tk = DB.foods.find((f) => f.id === 'turk_kahvesi').forms[0];
+  assert.equal(tk.usda.fndds, '92101600'); assert.equal(tk.s.energy, 'N'); assert.equal(tk.v.energy, 27);
+  const am = DB.foods.find((f) => f.id === 'americano').forms[0];
+  assert.deepEqual(am.v, {}); assert.match(am.unavailable, /espresso/);
 });

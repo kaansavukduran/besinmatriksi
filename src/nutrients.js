@@ -291,6 +291,7 @@ export const SOURCES = {
   i: { short: 'IFCT 2017', long: 'Longvah T. ve ark., Indian Food Composition Tables 2017, NIN-ICMR (Hindistan örnekleri; @ifct2017/compositions paketi)' },
   f: { short: 'USDA Flavonoid', long: 'USDA ARS, Database for the Flavonoid Content of Selected Foods, Release 3.3 (2018, CC0)' },
   F: { short: 'USDA FDC', long: 'USDA FoodData Central, Foundation Foods (2026-10-29, CC0); aynı USDA kaydının daha yeni analizi, yalnız SR28\'de ölçülmeyen bileşenler için' },
+  N: { short: 'USDA FNDDS', long: 'USDA FoodData Central, Survey (FNDDS 2021-2023, CC0); USDA malzemelerinden hesaplanmış hazır içecek tarifi' },
   y: { short: 'USDA İzoflavon', long: 'USDA ARS, Database for the Isoflavone Content of Selected Foods, Release 2.1 (2015, kamu malı)' },
   e: { short: 'Tahmin', long: 'IFCT 2017 profil oranı × USDA formunun toplam protein/yağ değeri (aynı besinin çiğ/kuru ölçümünden ölçeklenmiş tahmin)' },
 };

@@ -66,4 +66,5 @@ export const FOOD_ICONS = {
   beyaz_ekmek: '🍞', tam_bugday_ekmegi: '🍞', cavdar_ekmegi: '🍞', pide_lavas: '🫓', pide_lavas_tam: '🫓', patlamis_misir: '🍿', su: '💧', uzum_suyu: '🍇',
   taze_sogan: '🧅', patates_kizartmasi: '🍟', tavuk_but: '🍗', dana_biftek: '🥩',
   sirken: '🌿', salgam_yapragi: '🥬', karpuz_cekirdegi: '🍉', altin_cilek: '🟠', arpacik_sogan: '🧅', kestane_mantari: '🍄', horoz_mantari: '🍄', irlanda_yosunu: '🌊', soya_filizi: '🌱', besin_mayasi_z: '🧀', psyllium: '🌾',
+  hibiskus_cayi: '🌺', bitki_cayi: '🍵', oolong: '🍵', turk_kahvesi: '☕', latte_bitkisel: '☕', cappuccino_bitkisel: '☕', americano: '☕', siyez_bulguru: '🌾', siyah_pirinc: '🍚', siyah_mercimek: '⚫',
 };
