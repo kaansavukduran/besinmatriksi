@@ -90,16 +90,18 @@ export function setCustomFoods(list) {
 export const customFoods = () => CUSTOM;
 
 // Hayvansal besinler Ayarlar'dan gizlenebilir; gizliyken liste, arama ve öneriler yalnız bitkisel kayıtları görür
-let SHOW_ANIMAL = true;
+let SHOW_ANIMAL = true, SHOW_NICHE = false;
 export function setAnimalVisible(v) { SHOW_ANIMAL = v !== false; }
-export const visibleFoods = () => (SHOW_ANIMAL ? FOODS : FOODS.filter((f) => !f.animal));
+// Az bilinen (niş) besinler kategori listelerinde varsayılan olarak gizli; aramada ve kayıtlı tariflerde görünür
+export function setNicheVisible(v) { SHOW_NICHE = v === true; }
+export const visibleFoods = ({ niche = SHOW_NICHE } = {}) => FOODS.filter((f) => (SHOW_ANIMAL || !f.animal) && (niche || !f.niche));
 export const ANIMAL_CATS = new Set(DB.animalCategories || []);
 
 export function search(q, { cat = null, ext = false, extGroup = null } = {}) {
   const k = norm(q);
   const terms = k ? k.split(' ') : [];
   const match = (s) => terms.every((t) => s.includes(t));
-  let out = visibleFoods().filter((f) => (!cat || f.cat === cat) && (!terms.length || match(f._k)));
+  let out = visibleFoods({ niche: SHOW_NICHE || terms.length > 0 }).filter((f) => (!cat || f.cat === cat) && (!terms.length || match(f._k)));
   if (terms.length) {
     out.sort((a, b) => score(b._k, k) - score(a._k, k) || a.tr.localeCompare(b.tr, 'tr'));
   }

@@ -654,5 +654,6 @@ export const UI_EN = {
  "Ayrıntılı bileşenler (vitaminler, mineraller, amino asitler…) aşağıda.": "Detailed components (vitamins, minerals, amino acids…) are below.",
  "Günün temel besin değerleri": "Today's key nutrition facts",
  "Kalori": "Calories",
- "Şeker": "Sugar"
+ "Şeker": "Sugar",
+ "Az bilinen besinleri de listele (ör. jackfruit, teff); kapalıyken yalnız aramada çıkar": "List lesser-known foods too (e.g. jackfruit, teff); when off they appear only in search"
 };

@@ -97,3 +97,14 @@ test('dağıtımda IFCT değerleri, alternatifleri ve bunlardan tahminler bulunm
   }
   assert.equal(fs.existsSync(new URL('../data/raw/IFCT2017.csv', import.meta.url)), false);
 });
+
+test('kategori içi yaygınlık sırası ve az bilinen besin işareti (B087)', async () => {
+  const { POPULAR, NICHE } = await import('../data/popularity.mjs');
+  const ids = (cat) => DB.foods.filter((f) => f.cat === cat).map((f) => f.id);
+  assert.deepEqual(ids('meyve').slice(0, 4), ['elma', 'muz', 'portakal', 'mandalina']);
+  assert.equal(ids('baklagil')[0], 'kirmizi_mercimek');
+  assert.equal(ids('sebze')[0], 'domates');
+  for (const [cat, list] of Object.entries(POPULAR)) for (const id of list) assert.equal(DB.foods.find((f) => f.id === id)?.cat, cat, id);
+  for (const id of NICHE) assert.equal(DB.foods.find((f) => f.id === id)?.niche, true, id);
+  assert.equal(DB.foods.find((f) => f.id === 'elma').niche, undefined);
+});

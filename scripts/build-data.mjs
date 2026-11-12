@@ -9,6 +9,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { NUTRIENTS } from '../src/nutrients.js';
 import { FOODS, CATEGORIES, FORM_LABELS, ANIMAL_CATS } from '../data/catalog.mjs';
+import { POPULAR, NICHE } from '../data/popularity.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const raw = (f) => fs.readFileSync(path.join(root, 'data/raw', f), 'utf8');
@@ -202,9 +203,19 @@ for (const food of FOODS) {
     sci: forms.find((f) => f.usda?.sci)?.usda.sci || forms.find((f) => f.ifct?.sci)?.ifct.sci || null,
     allergens: food.allergens || [],
     animal: !!food.animal || ANIMAL_CATS.includes(food.cat),
+    ...(NICHE.has(food.id) ? { niche: true } : {}),
     note: food.note || null,
     forms,
   });
+}
+
+// Kategori içi yaygınlık sırası (data/popularity.mjs); listede olmayanlar katalog sırasıyla sona
+{
+  const catIdx = Object.fromEntries(CATEGORIES.map(([id], i) => [id, i]));
+  const pos = new Map(foods.map((f, i) => [f.id, i]));
+  const rank = (f) => { const r = (POPULAR[f.cat] || []).indexOf(f.id); return r < 0 ? 1e6 + pos.get(f.id) : r; };
+  for (const [cat, ids] of Object.entries(POPULAR)) for (const id of ids) if (!foods.some((f) => f.id === id && f.cat === cat)) throw new Error('popularity: bilinmeyen/yanlış kategori ' + cat + '/' + id);
+  foods.sort((a, b) => catIdx[a.cat] - catIdx[b.cat] || rank(a) - rank(b));
 }
 
 // ---------- geniş katalog (USDA bitkisel gruplar) ----------

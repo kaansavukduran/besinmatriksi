@@ -752,3 +752,19 @@ test('önce temel besin değerleri: ayrıntı, Kıyasla ve Günlük en üstte ba
   await tab(page, 'gunluk');
   await expect(page.locator('.basic-card')).toContainText('89');
 });
+
+test('kategorilerde yaygın besinler önce; az bilinenler gizli ama aranabilir (B087)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('.cat[data-cat="meyve"]').click();
+  const ids = await page.locator('#foodlist .food').evaluateAll((els) => els.map((e) => e.dataset.id));
+  expect(ids.slice(0, 3)).toEqual(['elma', 'muz', 'portakal']);
+  expect(ids).not.toContain('jackfruit');
+  await page.locator('#q').fill('jackfruit');
+  await expect(page.locator('#foodlist [data-id="jackfruit"]')).toBeVisible();
+  await tab(page, 'ayarlar');
+  await page.locator('[data-setbool="showNiche"]').check({ force: true });
+  await tab(page, 'kesfet');
+  await page.locator('#q').fill('');
+  await page.locator('.cat[data-cat="meyve"]').click();
+  await expect(page.locator('#foodlist [data-id="jackfruit"]')).toBeVisible();
+});

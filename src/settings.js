@@ -19,14 +19,14 @@ export const DEFAULT_SETTINGS = {
   efsaAge: 25, efsaSex: 'unspecified', efsaPhytate: '', efsaIronGroup: 'unspecified',
   energyUnit: 'both', amountUnit: 'g', autoUnits: true, decimalSeparator: 'auto',
   shortcuts: { kesfet: 'Alt+1', tarif: 'Alt+2', karsilastir: 'Alt+3', ayarlar: 'Alt+4', hakkinda: 'Alt+5', gunluk: 'Alt+6' }, focusWidth: 3, largeCursor: false,
-  cardFacts: true, recipeGaps: true, showRecent: true, showSimilar: true, showAnimal: true, catGrid: false, aionEnabled: true, aionMotion: 'auto', aionSize: 'm', aionSide: 'right', aionTips: true,
+  cardFacts: true, recipeGaps: true, showRecent: true, showSimilar: true, showAnimal: true, catGrid: false, showNiche: false, aionEnabled: true, aionMotion: 'auto', aionSize: 'm', aionSide: 'right', aionTips: true,
 };
 export const SETTING_GROUPS = {
   appearance: ['theme', 'accent', 'radius', 'customTheme', 'uiScale'],
   reading: ['font', 'fontSize', 'lineHeight', 'letterSpacing', 'wordSpacing', 'bold'],
   aion: ['aionEnabled', 'aionMotion', 'aionSize', 'aionSide', 'aionTips'],
   accessibility: ['density', 'ruler', 'reduceMotion', 'emoji', 'shortcuts', 'focusWidth', 'largeCursor'],
-  matrix: ['cardFacts', 'recipeGaps', 'showRecent', 'showSimilar', 'showAnimal', 'catGrid', 'showNrv', 'showSource', 'showSd', 'showAlt', 'showMissing', 'precision', 'defaultAmount', 'showExt', 'sectionOrder', 'hiddenSections', 'pinnedNutrients', 'referenceMode', 'targets', 'efsaAge', 'efsaSex', 'efsaPhytate', 'efsaIronGroup', 'energyUnit', 'amountUnit', 'autoUnits', 'decimalSeparator'],
+  matrix: ['cardFacts', 'recipeGaps', 'showRecent', 'showSimilar', 'showAnimal', 'catGrid', 'showNiche', 'showNrv', 'showSource', 'showSd', 'showAlt', 'showMissing', 'precision', 'defaultAmount', 'showExt', 'sectionOrder', 'hiddenSections', 'pinnedNutrients', 'referenceMode', 'targets', 'efsaAge', 'efsaSex', 'efsaPhytate', 'efsaIronGroup', 'energyUnit', 'amountUnit', 'autoUnits', 'decimalSeparator'],
 };
 const enums = {
   theme: ['light', 'dark', 'oled', 'sepia', 'pastel', 'ocean', 'forest', 'contrast', 'contrast-dark', 'custom', 'system'], language: ['auto', 'tr', 'en'],

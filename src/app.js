@@ -1,4 +1,4 @@
-import { extAnimalGroup, setAnimalVisible, visibleFoods, ANIMAL_CATS, foodName, categoryName, formName, CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, extGroups, extFoods, setCustomFoods, customFoods } from './data.js';
+import { setNicheVisible, extAnimalGroup, setAnimalVisible, visibleFoods, ANIMAL_CATS, foodName, categoryName, formName, CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, extGroups, extFoods, setCustomFoods, customFoods } from './data.js';
 import { NUTRIENTS, SECTIONS, SOURCES } from './nutrients.js';
 import { scaleItem, aggregate, scaleAggregate } from './calc.js';
 import { renderMatrix, basicCard, BASIC_KEYS } from './matrix.js';
@@ -73,7 +73,7 @@ let printController;
 
 // ---------------------------------------------------------------- ayarlar
 function applySettings() {
-  setAnimalVisible(S.settings.showAnimal);
+  setAnimalVisible(S.settings.showAnimal); setNicheVisible(S.settings.showNiche);
   const s = S.settings, r = document.documentElement;
   setLanguage(preferredLanguage(s.language)); r.lang = preferredLanguage(s.language);
   r.style.zoom = String(s.uiScale / 100); r.style.setProperty('--ui-zoom', s.uiScale / 100);
@@ -601,6 +601,7 @@ function renderSettings() {
       ${tog('showSource', L("Kaynak etiketleri (USDA / Hesap / Etiket)"))}
       ${tog('showAlt', L("Varsa ikinci kaynağı göster (bu sürümde ikinci veri seti yok)"))}
       ${tog('showSd', L("Varsa kaynak standart sapmasını göster"))}
+      ${tog('showNiche', L("Az bilinen besinleri de listele (ör. jackfruit, teff); kapalıyken yalnız aramada çıkar"))}
       ${tog('catGrid', L("Keşfet'te kategorileri eşit kutulu ızgara olarak göster"))}
       ${tog('showAnimal', L("Hayvansal besinleri göster (süt, yumurta, et, balık, bal)"))}
       ${tog('showSimilar', L("Besin ayrıntısında benzer besinleri göster"))}

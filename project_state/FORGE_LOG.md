@@ -387,5 +387,11 @@
 
 ## B086 · 2026-11-12 · önce temel besin değerleri
 - Kaan'ın isteği (ekran görüntüsü): besin seçince önce basit değerler, ayrıntı sonra; Kıyasla ve toplamlarda da aynı mantık. `basicCard` (`src/matrix.js`): Kalori, Protein, Karbonhidrat (lif hariç), Şeker, Yağ, Doymuş yağ, Lif, Tuz — 8 eşit kutu (telefonda 2×4), %referans küçük yazıyla; ölçülmemiş "veri yok", çok malzemeli toplamda kısmi kapsam "≥". Besin ayrıntısında matriksin ilk öğesi; Günlük'te "Günün temel besin değerleri"; tarifte mevcut özet zaten temel değerler olduğu için tekrar eklenmedi. Kıyasla tablosu "Temel besin değerleri" satırlarıyla başlar (ayrıntı bölümlerinde tekrar etmez), bölüm düğmelerine "Temel besin değerleri" eklendi.
-- Kanıt: `npm test` 80/80; Playwright 86/86 PASS (yeni B086 testi: temel kart ilk öğe, 8 bileşen, Kıyasla ilk satırlar, Günlük kartı); telefonda ekran görüntüsü incelendi, 412 = 412.
+- Kanıt: `npm test` 80/80; Playwright 84/84 PASS (yeni B086 testi: temel kart ilk öğe, 8 bileşen, Kıyasla ilk satırlar, Günlük kartı); telefonda ekran görüntüsü incelendi, 412 = 412.
 - Sonraki: **B087** kategoriler içinde yaygınlık sırası (yaygın besinler üstte, niş olanlar altta).
+
+## B087 · 2026-11-12 · kategoriler içinde yaygınlık sırası, az bilinenler gizli
+- `data/popularity.mjs`: her kategori için Türkiye'de yaygın tüketimden aza editoryal sıra (ölçülmüş istatistik değildir; dosyada yazılı) ve 55 "az bilinen" besin (`niche`). `npm run data` sırayı foods.json'a uygular; yanlış kategori/bilinmeyen kimlik derlemeyi durdurur.
+- Arayüz: kategori listeleri ve "Tümü" sayısı varsayılan olarak az bilinenleri göstermez; arama ve kayıtlı tarif/günlük/koleksiyon kayıtları etkilenmez. Ayarlar → Matriks "Az bilinen besinleri de listele" (`showNiche`, varsayılan kapalı). Benzer besinler ve "en düşük kalan" önerileri de az bilinenleri önermez.
+- Kanıt: `npm test` 81/81 (yeni sıra/işaret testi); Playwright 86/86 PASS (yeni B087 testi: Meyveler elma-muz-portakal ile başlar, jackfruit listede yok ama aramada var, ayarla görünür).
+- Sonraki: **B088** yaygın ama eksik besinler (ekmek çeşitleri, su, taze soğan vb.).
