@@ -891,3 +891,16 @@ test('temel değerlerde ortalama kadın/erkek yüzdesi; Kıyasla yüzdeleri; kü
   await expect(page.locator('table.cmp tbody tr').nth(2)).toContainText('K %45');
   await expect(page.locator('table.cmp')).not.toContainText('Kül');
 });
+
+test('makro pasta grafiği kalori kutusunun üstünde; flavonoid verisi USDA Flavonoid etiketiyle (B100)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('soğan'); await page.locator('#foodlist [data-id="sogan"]').click();
+  const pie = page.locator('#matrix .macro-pie');
+  await expect(pie.locator('svg.pie circle[data-part]')).not.toHaveCount(0);
+  await expect(pie.locator('li[data-part="c"] strong')).toContainText('%');
+  const order = await page.locator('#matrix > *').evaluateAll((els) => els.map((e) => e.dataset.sec || ''));
+  expect(order.indexOf('pasta') + 1).toBe(order.indexOf('enerji'));
+  await page.locator('[data-sec="fito"] > summary').click();
+  await expect(page.locator('[data-sec="fito"]')).toContainText('Kuersetin');
+  await expect(page.locator('[data-sec="fito"] .src-f').first()).toContainText('USDA Flavonoid');
+});

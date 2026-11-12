@@ -55,6 +55,36 @@ for (const line of nutrientText.split('\n')) {
   fullValues.get(fields[0])[mapping.key] = Number((value * mapping.factor).toPrecision(12));
 }
 
+// ---------- USDA flavonoid (3.3) ve izoflavon (2.1) veri tabanları (aynı NDB numaraları) ----------
+// Kaynak/lisans: data/raw/USDA_FLAVONOID_SOURCES.json. Ölçülmeyen bileşen yazılmaz ("veri yok" ≠ 0).
+const FLAV_MAP = { 749: 'catechin', 750: 'egc', 751: 'epicatechin', 752: 'ecg', 753: 'egcg', 794: 'gc', 756: 'thearubigins',
+  758: 'eriodictyol', 759: 'hesperetin', 762: 'naringenin', 770: 'apigenin', 773: 'luteolin',
+  785: 'isorhamnetin', 786: 'kaempferol', 788: 'myricetin', 789: 'quercetin',
+  731: 'cyanidin', 741: 'delphinidin', 742: 'malvidin', 743: 'pelargonidin', 745: 'peonidin', 740: 'petunidin' };
+const THEAFLAVINS = ['755', '791', '792', '793'];
+const ISFL_MAP = { 710: 'daidzein', 711: 'genistein', 712: 'glycitein' };
+function readCsvGz(file) {
+  const text = gunzipSync(fs.readFileSync(path.join(root, 'data/raw', file))).toString('utf8');
+  const [head, ...lines] = text.split(/\r?\n/).filter(Boolean);
+  const cols = head.split(',');
+  return lines.map((line) => { const f = line.split(',').map((x) => x.replace(/^"|"$/g, '')); return Object.fromEntries(cols.map((c, i) => [c, f[i]])); });
+}
+const flavValues = new Map(); // ndb -> { v: {key: mg}, s: 'f'|'y' }
+function putFlav(ndb, key, val, tag) {
+  const x = Number(val);
+  if (val === '' || val == null || !Number.isFinite(x) || x < 0) return;
+  if (!flavValues.has(ndb)) flavValues.set(ndb, { v: {}, s: {} });
+  const e = flavValues.get(ndb); e.v[key] = Number(x.toPrecision(6)); e.s[key] = tag;
+}
+const theaf = new Map();
+for (const r of readCsvGz('USDA_FLAV_R3.3_FLAV_DAT.csv.gz')) {
+  if (FLAV_MAP[r.Nutr_no]) putFlav(r.NDB_No, FLAV_MAP[r.Nutr_no], r.Flav_Val, 'f');
+  if (THEAFLAVINS.includes(r.Nutr_no) && r.Flav_Val !== '') { if (!theaf.has(r.NDB_No)) theaf.set(r.NDB_No, {}); theaf.get(r.NDB_No)[r.Nutr_no] = Number(r.Flav_Val); }
+}
+// Toplam teaflavin yalnız dört bileşenin hepsi ölçülmüşse (eksik toplam yazılmaz)
+for (const [ndb, o] of theaf) if (THEAFLAVINS.every((k) => Number.isFinite(o[k]))) putFlav(ndb, 'theaflavins', String(THEAFLAVINS.reduce((a, k) => a + o[k], 0)), 'f');
+for (const r of readCsvGz('USDA_ISOFLAV_R2.1_ISFL_DAT.csv.gz')) if (ISFL_MAP[r.Nutr_No]) putFlav(r.NDB_No, ISFL_MAP[r.Nutr_No], r.Isfl_Val, 'y');
+
 // ---------- yardımcılar ----------
 const round = (x) => {
   if (x === 0) return 0;
@@ -199,6 +229,8 @@ for (const food of FOODS) {
       if (!d) throw new Error('FOOD_DES kodu yok: ' + ndb);
       Object.assign(v, usdaValues(ndb));
       for (const k of Object.keys(v)) s[k] = 'u';
+      const fl = flavValues.get(ndb);
+      if (fl) { Object.assign(v, fl.v); Object.assign(s, fl.s); }
       usda = { ndb, desc: d.long, refuse: d.refuse, refDesc: d.refDesc || null, sci: d.sci || null };
     }
     const unavailable = !ndb ? 'Bu besin için dağıtıma uygun doğrulanmış bileşim kaydı henüz yok. Önceki IFCT verileri NIN yazılı izni doğrulanmadığı için bu sürüme dahil edilmedi.' : null;
@@ -262,14 +294,17 @@ for (const [ndb, d] of des) {
   if (/[A-Z]{4,}/.test(name) || /\bmeatless\b/i.test(name)) continue;
   if (d.grp === '1400' && /\b(beer|wine|liqueur|whiskey|vodka|rum|gin|alcoholic|cocktail|distilled|daiquiri|martini)\b/i.test(name)) continue;
   const v = usdaValues(ndb);
-  ext.push({ n: ndb, g: d.grp, en: name, sci: d.sci || null, r: d.refuse, rd: d.refDesc || null, p: usdaPortions(ndb), v, ...(animalGroup ? { a: 1 } : {}) });
+  const fl = flavValues.get(ndb);
+  if (fl) Object.assign(v, fl.v);
+  // fs: SR28 dışı kaynak etiketleri (f: USDA Flavonoid, y: USDA İzoflavon)
+  ext.push({ n: ndb, g: d.grp, en: name, sci: d.sci || null, r: d.refuse, rd: d.refDesc || null, p: usdaPortions(ndb), v, ...(fl ? { fs: fl.s } : {}), ...(animalGroup ? { a: 1 } : {}) });
 }
 ext.sort((a, b) => a.en.localeCompare(b.en));
 
 const outDir = path.join(root, 'src/data');
 fs.mkdirSync(outDir, { recursive: true });
 const meta = {
-  sources: 'USDA SR28 (2015), tam ASCII bileşen tablosu',
+  sources: 'USDA SR28 (2015) tam ASCII; USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015)',
   dataPolicy: 'USDA public domain / CC0; IFCT ve IFCT tabanlı tahminler dağıtıma dahil değil',
   unavailableForms: foods.flatMap(f => f.forms).filter(f => f.unavailable).length,
   curated: foods.length,

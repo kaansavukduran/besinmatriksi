@@ -18,7 +18,7 @@ test('her formun doğrulanmış değerleri veya açık kaynak boşluğu var', ()
       if (fm.unavailable) assert.deepEqual(fm.v, {});
       else assert.ok(fm.v.energy != null && fm.v.protein != null, `${f.id}/${fm.key}`);
       for (const k of Object.keys(fm.v)) assert.ok(keys.has(k), `bilinmeyen anahtar ${k}`);
-      for (const [k, s] of Object.entries(fm.s)) assert.ok(s === 'u', `${f.id} ${k} ${s}`);
+      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y'].includes(s), `${f.id} ${k} ${s}`);
     }
   }
 });
@@ -93,7 +93,7 @@ test('dağıtımda IFCT değerleri, alternatifleri ve bunlardan tahminler bulunm
   for (const food of DB.foods) for (const f of food.forms) {
     assert.equal(f.ifct, null); assert.equal(f.estFrom, null);
     assert.deepEqual(f.alt || {}, {}); assert.deepEqual(f.sd || {}, {});
-    assert.ok(Object.values(f.s).every(s => s === 'u'));
+    assert.ok(Object.values(f.s).every(s => ['u', 'f', 'y'].includes(s)));
   }
   assert.equal(fs.existsSync(new URL('../data/raw/IFCT2017.csv', import.meta.url)), false);
 });
@@ -121,4 +121,16 @@ test('Türk ölçüleri USDA hacim ölçüsünden hesaplanır ve işaretlidir (B
   assert.ok(water.g > 195 && water.g < 205);
   // ölçüsü olmayan besinde uydurma ölçü yok
   assert.ok(form('beyaz_ekmek').portions.every((x) => !x.d));
+});
+
+test('USDA flavonoid/izoflavon verisi aynı NDB kaydından gelir, etiketlidir ve ölçülmeyen yazılmaz (B100)', () => {
+  const form = (id, key) => DB.foods.find((f) => f.id === id).forms.find((x) => x.key === key);
+  const onion = form('sogan', 'cig');
+  assert.equal(onion.v.quercetin, 20.3); assert.equal(onion.s.quercetin, 'f');
+  const orange = form('portakal', 'cig');
+  assert.ok(orange.v.hesperetin > 20); assert.equal(orange.s.hesperetin, 'f');
+  assert.ok(!('cyanidin' in orange.v), 'portakalda ölçülmeyen antosiyanidin yazılmaz');
+  for (const food of DB.foods) for (const f of food.forms) for (const [k, s] of Object.entries(f.s)) if (s !== 'u') assert.ok(f.usda?.ndb, `${food.id}/${f.key}/${k}: NDB olmadan flavonoid yok`);
+  const src = JSON.parse(fs.readFileSync(new URL('../data/raw/USDA_FLAVONOID_SOURCES.json', import.meta.url)));
+  assert.equal(src.datasets.length, 2); assert.match(src.datasets[0].license, /CC0/);
 });

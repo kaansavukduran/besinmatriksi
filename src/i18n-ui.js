@@ -393,6 +393,8 @@ export const UI_EN = {
  "Fenolik asitler": "Phenolic acids",
  "Flavonoidler": "Flavonoids",
  "Flavan-3-oller": "Flavan-3-ols",
+ "Antosiyanidinler": "Anthocyanidins",
+ "USDA İzoflavon": "USDA Isoflavone",
  "İzoflavonlar": "Isoflavones",
  "Stilbenler": "Stilbenes",
  "Pigmentler (karotenoidler)": "Pigments (carotenoids)",
@@ -693,5 +695,13 @@ export const UI_EN = {
  "Yüzdeler günlük referansa göredir: {w}{e}. Kaynak: PHE Government Dietary Recommendations (2016, 19–64 yaş); şeker için AB 1169/2011 toplam şeker referansı. Kalori, protein ve lifte hedefe doğru; yağ, doymuş yağ, şeker ve tuzda üst sınıra göre. Kişisel ihtiyaç veya tıbbi öneri değildir.": "Percentages are against a daily reference: {w}{e}. Source: PHE Government Dietary Recommendations (2016, ages 19–64); sugar uses the EU 1169/2011 total sugars reference. Calories, protein and fibre count towards a goal; fat, saturated fat, sugar and salt against an upper limit. Not personal needs or medical advice.",
  "% günlük referans": "% daily reference",
  "% günlük referans · K: ortalama kadın, E: ortalama erkek": "% daily reference · W: average woman, M: average man",
- "Temel değer yüzdeleri: PHE Government Dietary Recommendations (2016, 19–64 yaş); şeker için AB 1169/2011. Kişisel ihtiyaç veya tıbbi öneri değildir.": "Key value percentages: PHE Government Dietary Recommendations (2016, ages 19–64); sugar per EU 1169/2011. Not personal needs or medical advice."
+ "Temel değer yüzdeleri: PHE Government Dietary Recommendations (2016, 19–64 yaş); şeker için AB 1169/2011. Kişisel ihtiyaç veya tıbbi öneri değildir.": "Key value percentages: PHE Government Dietary Recommendations (2016, ages 19–64); sugar per EU 1169/2011. Not personal needs or medical advice.",
+ "Flavonoller (kuersetin, kaempferol…), flavonlar, flavanonlar (hesperetin, naringenin), flavan-3-oller (kateşinler, EGCG) ve antosiyanidinler; aynı USDA kayıt numarasıyla eşleşen besinlerde.": "Flavonols (quercetin, kaempferol…), flavones, flavanones (hesperetin, naringenin), flavan-3-ols (catechins, EGCG) and anthocyanidins; for foods matched by the same USDA record number.",
+ "Daidzein, genistein, glisitein.": "Daidzein, genistein, glycitein.",
+ "USDA ARS, Database for the Flavonoid Content of Selected Foods, Release 3.3 (2018, CC0)": "USDA ARS, Database for the Flavonoid Content of Selected Foods, Release 3.3 (2018, CC0)",
+ "USDA ARS, Database for the Isoflavone Content of Selected Foods, Release 2.1 (2015, kamu malı)": "USDA ARS, Database for the Isoflavone Content of Selected Foods, Release 2.1 (2015, public domain)",
+ "Kalori dağılımı": "Calorie breakdown",
+ "Kalori nereden geliyor?": "Where do the calories come from?",
+ "Kalorinin yüzde kaçının protein, karbonhidrat, yağ ve liften geldiği (Atwater genel faktörleri 4 / 4 / 9 / 2 kcal/g; yaklaşık).": "Share of calories from protein, carbohydrate, fat and fibre (Atwater general factors 4 / 4 / 9 / 2 kcal/g; approximate).",
+ "USDA SR28 (2015) tam ASCII; USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015)": "USDA SR28 (2015) full ASCII; USDA Flavonoid 3.3 (2018); USDA Isoflavone 2.1 (2015)"
 };

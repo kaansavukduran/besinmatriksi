@@ -1,0 +1,22 @@
+{
+  "datasets": [
+    {
+      "name": "USDA Database for the Flavonoid Content of Selected Foods, Release 3.3 (March 2018)",
+      "url": "https://www.ars.usda.gov/ARSUserFiles/80400535/Data/Flav/Flav_R03-3.accdb",
+      "doc_url": "https://www.ars.usda.gov/ARSUserFiles/80400535/Data/Flav/Flav3.3.pdf",
+      "sha256": "12c19c3638b6b8e434824486369069f3b38a9c426d5f726ec7b4deb0248846e3",
+      "license": "CC0 1.0 (data.gov catalog: Creative Commons CCZero); US Government work",
+      "exported_table": "FLAV_DAT -> USDA_FLAV_R3.3_FLAV_DAT.csv.gz (mdb-export, gzip -n)"
+    },
+    {
+      "name": "USDA Database for the Isoflavone Content of Selected Foods, Release 2.1 (2015)",
+      "url": "https://www.ars.usda.gov/ARSUserFiles/80400535/Data/isoflav/Isoflav_R2-1.accdb",
+      "doc_url": "https://www.ars.usda.gov/ARSUserFiles/80400535/Data/isoflav/Isoflav_R2-1.pdf",
+      "sha256": "6b56a73dfcd23512664afc97ed8a6efd994d6828b465341f8b18740512d942d6",
+      "license": "US Government work (public domain)",
+      "exported_table": "ISFL_DAT -> USDA_ISOFLAV_R2.1_ISFL_DAT.csv.gz (mdb-export, gzip -n)"
+    }
+  ],
+  "checked_on": "2026-11-12",
+  "join": "NDB_No (USDA SR numbers); values mg/100 g edible portion"
+}

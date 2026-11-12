@@ -53,3 +53,15 @@ test('kişisel bilgi yoksa temel değerlerde ortalama kadın ve erkek yüzdesi; 
   assert.match(sec, /Kalori/);
   assert.ok(!/Su \(nem\)|kJ/.test(sec), 'kalori kutusunda su/kJ yok');
 });
+test('kalori kutusunun üstünde makro pasta grafiği; eksik makroda çizilmez (B100)', async () => {
+  const { renderMatrix, macroPie } = await import('../src/matrix.js');
+  const r = { v: { energy: 100, protein: 5, carb_avail: 10, fat: 2, fiber: 2.5 }, s: {}, n: 1, cov: {}, grams: 100 };
+  const pie = macroPie(r, {});
+  // 5×4=20, 10×4=40, 2×9=18, 2.5×2=5 → toplam 83
+  assert.match(pie, /data-part="p"[\s\S]*%24/);
+  assert.match(pie, /data-part="c"[\s\S]*%48/);
+  assert.match(pie, /<svg[^>]*class="pie"/);
+  assert.equal(macroPie({ ...r, v: { energy: 100, protein: 5 } }, {}), '', 'eksik makroda pasta yok');
+  const m = renderMatrix(r, {}, { item: { name: 'Ürün', formLabel: 'Çiğ', custom: true, allergens: [] } });
+  assert.ok(m.indexOf('macro-pie') > 0 && m.indexOf('macro-pie') < m.indexOf('data-sec="enerji"'), 'pasta kalori kutusunun hemen üstünde');
+});

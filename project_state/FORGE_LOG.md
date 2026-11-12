@@ -471,3 +471,18 @@
 - İlk hatalar: `fmtPct` app.js'e içe aktarılmamıştı (Kıyasla boş kaldı) → eklendi; B093/B094 testleri tek referans varsayıyordu → çift referans kuralına göre güncellendi.
 - Kanıt: `npm test` 86/86; Playwright 104/104 (son düzeltmeden sonra B093 2/2 yeniden PASS).
 - Sonraki: **B098** beta.17 yayını.
+
+## B099 · 2026-11-12 · Kalori kutusu
+- "Su, enerji ve fiziksel özellikler" bölümü → "🔥 Kalori": yalnız kalori satırı (su ve kJ satırı matriks/Kıyasla'da gizli; kJ birimi seçiliyse kcal yerine kJ). Veri değişmedi.
+- Kanıt: `npm test` 86/86; Playwright 104/104.
+
+## B100 · 2026-11-12 · Eksik veri: USDA flavonoid/izoflavon; makro pasta grafiği; PHE değerleri PDF'ten doğrulandı
+- Kaan: "veri eksiğimiz var, çözmeye çalış" + kalori kutusunun üstüne protein/karbonhidrat/yağ pasta grafiği ve yüzdeler.
+- Teşhis: SR28'in 117 bileşeninin 116'sı zaten eşlenmiş (yalnız dihidrofilokinon hariç); boş fitokimyasal/oksalat/ağır metal satırları SR28'de yok. Ortam ağı ars.usda.gov'a kapalıydı → Kaan onayıyla kişisel "besinmatriksi" ortamı (www.ars.usda.gov, data.nal.usda.gov, assets.publishing.service.gov.uk) oluşturuldu.
+- Veri: USDA Flavonoid DB 3.3 (2018, CC0) ve İzoflavon DB 2.1 (2015, kamu malı) .accdb indirildi (sha256 `data/raw/USDA_FLAVONOID_SOURCES.json`), mdb-tools ile FLAV_DAT/ISFL_DAT CSV.gz olarak `data/raw`'a alındı; aynı NDB numarasıyla eşlenir. 22 flavonoid + 3 izoflavon bileşeni (yeni: ECG, tearubijinler, teaflavinler toplamı (yalnız 4 bileşen de ölçülmüşse), eriodiktiyol, 6 antosiyanidin, glisitein). Kaynak etiketleri `f` (USDA Flavonoid) / `y` (USDA İzoflavon); geniş katalogda `fs`. 425 küratörlü formdan 205'ine veri geldi (ör. çiğ soğan kuersetin 20,3 mg, portakal hesperetin 27,25 mg). Ölçülmeyen yazılmaz. Lisans bildirimi ve Hakkında güncellendi.
+- Oksalat ve ağır metaller için dağıtıma uygun, NDB eşlemeli açık veri bulunamadı → hâlâ "veri yok" (uydurma yok).
+- PHE Government Dietary Recommendations PDF'i indirildi; Tablo 2 (19–64) ile `src/daily-ref.js` değerleri birebir doğrulandı (2500/2000 kcal, 55,5/45 g protein, ≤97/78 yağ, ≤31/24 doymuş yağ, ≥333/267 karbonhidrat, 6 g tuz, 30 g lif).
+- Pasta: `macroPie` kalori kutusunun hemen üstünde, Atwater 4/4/9/2 ile kalorinin protein/karbonhidrat/yağ/lif payı + gram; makrolardan biri ölçülmemişse çizilmez.
+- İlk hatalar: (1) pasta açıklaması telefonda sayfayı 429 px'e genişletti, sekme çubuğu ekran dışına itildi (Playwright telefonda 18 test zaman aşımı) → legend min-width 0 / flex-basis; (2) Hakkında'da veri kaynağı metni İngilizcede çevrilmemişti (B051) → çeviri.
+- Kanıt: `npm run data`; `npm test` 88/88; Playwright tam koşu 104/106 → iki düzeltme sonrası B051+B100 4/4 PASS; telefon ekran görüntüsü kontrol edildi.
+- Sonraki: **B101** beta.18 yayını.

@@ -52,7 +52,7 @@ export function resolve(ref) {
     const f = extByNdb.get(ref.n);
     if (!f) return null;
     const s = {};
-    for (const k of Object.keys(f.v)) s[k] = 'u';
+    for (const k of Object.keys(f.v)) s[k] = f.fs?.[k] || 'u';
     return {
       ref, ext: f, animal: !!f.a, name: f.en, formLabel: L('USDA tanımı'), cat: 'ext:' + f.g,
       liquid: f.g === '1400', v: f.v, s, alt: {}, sd: {}, portions: f.p || [],

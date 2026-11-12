@@ -10,15 +10,15 @@ import { nutrientLabel } from './i18n-nutrients.js';
 
 const nl = nutrientLabel;
 
-const SRC_LABEL = { u: 'USDA', i: 'IFCT', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
+const SRC_LABEL = { u: 'USDA', f: 'USDA Flavonoid', y: 'USDA İzoflavon', i: 'IFCT', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
 const SRC_TITLE = {
-  u: SOURCES.u.long, i: SOURCES.i.long, e: SOURCES.e.long,
+  u: SOURCES.u.long, f: SOURCES.f.long, y: SOURCES.y.long, i: SOURCES.i.long, e: SOURCES.e.long,
   d: 'Diğer ölçülmüş değerlerden hesaplandı (ör. tuz = sodyum × 2,5)', m: 'Tarifteki malzemeler farklı kaynaklardan', k: 'Kullanıcının ürün etiketinden girdiği değer',
 };
 
 function srcChip(s, item) {
   if (!s) return '';
-  const record = s === 'u' && item?.usda ? ` · USDA SR28 (2015), NDB ${item.usda.ndb} · ${item.usda.desc}` : s === 'i' && item?.ifct ? ` · IFCT 2017, ${item.ifct.code} · ${item.ifct.name}` : s === 'e' && item?.estFrom ? ' · ' + L("IFCT 2017 çiğ kaynak kaydı: {r}; protein/yağ oranı ile tahmin", { r: item.estFrom }) : '';
+  const record = (s === 'u' || s === 'f' || s === 'y') && item?.usda ? (s === 'u' ? ' · USDA SR28 (2015), NDB ' : ' · NDB ') + `${item.usda.ndb} · ${item.usda.desc}` : s === 'i' && item?.ifct ? ` · IFCT 2017, ${item.ifct.code} · ${item.ifct.name}` : s === 'e' && item?.estFrom ? ' · ' + L("IFCT 2017 çiğ kaynak kaydı: {r}; protein/yağ oranı ile tahmin", { r: item.estFrom }) : '';
   return `<span class="src src-${s}" title="${esc(L(SRC_TITLE[s]) + record)}">${L(SRC_LABEL[s])}</span>`;
 }
 
@@ -102,6 +102,26 @@ function section(sec, r, cfg, open) {
     <summary><span class="ico" aria-hidden="true">${cfg.emoji ? sec.icon : ''}</span><span class="st">${esc(L(sec.title))}</span>
     <span class="cov ${have ? '' : 'none'}" title="${L("Verisi olan bileşen / tanımlı bileşen")}">${have}/${total}</span></summary>
     ${body}</details>`;
+}
+
+// Kalori kutusunun üstünde: kalorinin protein / karbonhidrat / yağ / lif paylarını gösteren pasta (halka) grafik
+export function macroPie(r, cfg) {
+  const e = derive(r).energySplit;
+  if (!e) return '';
+  const parts = [['p', L("Protein"), e.p, r.v.protein], ['c', L("Karbonhidrat"), e.c, r.v.carb_avail], ['f', L("Yağ"), e.f, r.v.fat], ['fib', L("Lif"), e.fib, r.v.fiber]];
+  const R = 15.9155; // çevre = 100
+  let off = 25, arcs = '';
+  for (const [k, , pct] of parts) {
+    if (pct <= 0) continue;
+    arcs += `<circle r="${R}" cx="21" cy="21" fill="none" stroke="var(--sp-${k})" stroke-width="7" stroke-dasharray="${pct.toFixed(2)} ${(100 - pct).toFixed(2)}" stroke-dashoffset="${off.toFixed(2)}" data-part="${k}"/>`;
+    off -= pct;
+  }
+  const label = parts.map(([, n, pct]) => `${n} ${fmtPct(pct)}`).join(', ');
+  return `<section class="card macro-pie" data-sec="pasta" aria-label="${esc(L("Kalori dağılımı") + ': ' + label)}">
+    <h3>${L("Kalori nereden geliyor?")}</h3>
+    <div class="pie-wrap"><svg viewBox="0 0 42 42" class="pie" role="img" aria-label="${esc(label)}"><circle r="${R}" cx="21" cy="21" fill="none" stroke="var(--line)" stroke-width="7"/>${arcs}</svg>
+    <ul class="pie-legend">${parts.map(([k, n, pct, g]) => `<li data-part="${k}"><b class="sp-${k}"></b><span>${n}</span><strong>${fmtPct(pct)}</strong>${g != null ? `<small>${fmtAmount(g, 'g', cfg.precision).n} g</small>` : ''}</li>`).join('')}</ul></div>
+    <p class="hint">${L("Kalorinin yüzde kaçının protein, karbonhidrat, yağ ve liften geldiği (Atwater genel faktörleri 4 / 4 / 9 / 2 kcal/g; yaklaşık).")}</p></section>`;
 }
 
 function ratioRow(label, val, fmt, verdict, help) {
@@ -280,7 +300,7 @@ export function renderMatrix(r, cfg, ctx = {}) {
   for (const id of cfg.sectionOrder) {
     if (cfg.hiddenSections.includes(id)) continue;
     const sec = SECTIONS.find(s => s.id === id);
-    if (sec) d.push(section(sec, r, cfg, open(id)));
+    if (sec) { if (id === 'enerji') d.push(macroPie(r, cfg)); d.push(section(sec, r, cfg, open(id))); }
     else if (id === 'hesap') d.push(derivedCard(r, cfg, open(id)));
     else if (id === 'tolerans') d.push(toleranceCard(r, item, cfg, open(id)));
     else if (id === 'kalinti') d.push(safetyExtra(cfg, open(id)));

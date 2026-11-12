@@ -921,6 +921,24 @@ Dataset and documentation: https://www.ars.usda.gov/northeast-area/beltsville-md
 
 ========================================
 
+USDA Flavonoid Database, Release 3.3 (2018)
+Version: Flav_R03-3
+License: CC0 1.0
+
+Source: Bhagwat S, Haytowitz DB. USDA Database for the Flavonoid Content of Selected Foods, Release 3.3 (March 2018). U.S. Department of Agriculture, Agricultural Research Service, Nutrient Data Laboratory.
+https://www.ars.usda.gov/nutrientdata/flav
+
+========================================
+
+USDA Isoflavone Database, Release 2.1 (2015)
+Version: Isoflav_R2-1
+License: Public domain (US Government work)
+
+Source: Bhagwat S, Haytowitz DB, Wasswa-Kintu SI, Holden JM. USDA Database for the Isoflavone Content of Selected Foods, Release 2.1 (2015). U.S. Department of Agriculture, Agricultural Research Service.
+https://www.ars.usda.gov/ARSUserFiles/80400535/Data/isoflav/Isoflav_R2-1.pdf
+
+========================================
+
 EFSA DRV Finder
 Version: 2026-11-09 snapshot
 License: Re-use with EFSA source acknowledgement

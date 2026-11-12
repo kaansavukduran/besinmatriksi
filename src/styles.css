@@ -708,3 +708,13 @@ table.cmp th, table.cmp td { overflow-wrap: break-word; hyphens: auto; }
 table.cmp .cpct { display: block; font-size: .72rem; color: var(--muted); font-weight: 400; }
 .basic-src { font-size: .8rem; }
 .basic-tile .gref span { font-size: inherit; }
+/* Kalori dağılımı pasta grafiği */
+.macro-pie .pie-wrap { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; }
+.macro-pie .pie { width: 132px; height: 132px; flex: 0 0 auto; transform: none; }
+.macro-pie .pie-legend { list-style: none; margin: 0; padding: 0; display: grid; gap: .35rem; flex: 1 1 200px; min-width: 0; max-width: 100%; }
+.macro-pie .pie-legend li { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto auto; align-items: center; gap: .5rem; min-width: 0; }
+.macro-pie .pie-legend li span { overflow-wrap: anywhere; }
+.macro-pie { min-width: 0; }
+.macro-pie .pie-legend b { width: 12px; height: 12px; border-radius: 3px; }
+.macro-pie .pie-legend strong { font-variant-numeric: tabular-nums; }
+.macro-pie .pie-legend small { color: var(--muted); min-width: 4em; text-align: right; }

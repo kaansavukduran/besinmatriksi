@@ -91,6 +91,20 @@
     "text": "Source: U.S. Department of Agriculture, Agricultural Research Service, National Nutrient Database for Standard Reference, Release 28.\nData are in the public domain. USDA licensing statement: https://fdc.nal.usda.gov/api-guide/\nDataset and documentation: https://www.ars.usda.gov/northeast-area/beltsville-md-bhnrc/beltsville-human-nutrition-research-center/methods-and-application-of-food-composition-laboratory/mafcl-site-pages/sr11-sr28/"
   },
   {
+    "id": "usda-flav",
+    "name": "USDA Flavonoid Database, Release 3.3 (2018)",
+    "version": "Flav_R03-3",
+    "license": "CC0 1.0",
+    "text": "Source: Bhagwat S, Haytowitz DB. USDA Database for the Flavonoid Content of Selected Foods, Release 3.3 (March 2018). U.S. Department of Agriculture, Agricultural Research Service, Nutrient Data Laboratory.\nhttps://www.ars.usda.gov/nutrientdata/flav"
+  },
+  {
+    "id": "usda-isoflav",
+    "name": "USDA Isoflavone Database, Release 2.1 (2015)",
+    "version": "Isoflav_R2-1",
+    "license": "Public domain (US Government work)",
+    "text": "Source: Bhagwat S, Haytowitz DB, Wasswa-Kintu SI, Holden JM. USDA Database for the Isoflavone Content of Selected Foods, Release 2.1 (2015). U.S. Department of Agriculture, Agricultural Research Service.\nhttps://www.ars.usda.gov/ARSUserFiles/80400535/Data/isoflav/Isoflav_R2-1.pdf"
+  },
+  {
     "id": "efsa",
     "name": "EFSA DRV Finder",
     "version": "2026-11-09 snapshot",
