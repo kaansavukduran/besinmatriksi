@@ -486,3 +486,6 @@
 - İlk hatalar: (1) pasta açıklaması telefonda sayfayı 429 px'e genişletti, sekme çubuğu ekran dışına itildi (Playwright telefonda 18 test zaman aşımı) → legend min-width 0 / flex-basis; (2) Hakkında'da veri kaynağı metni İngilizcede çevrilmemişti (B051) → çeviri.
 - Kanıt: `npm run data`; `npm test` 88/88; Playwright tam koşu 104/106 → iki düzeltme sonrası B051+B100 4/4 PASS; telefon ekran görüntüsü kontrol edildi.
 - Sonraki: **B101** beta.18 yayını.
+
+## B098 · 2026-11-12 · beta.17 yayın kanıtı
+- v1.1.2-beta.17 pre-release 2026-11-12T19:55:05Z (commit 3d8771b); 22 varlık (apk, portable.exe, Setup.exe, msi, dmg, AppImage, deb, rpm, offline.html, web-pwa.zip, source.zip, SHA256SUMS…). Cihaz kurulumu NOT_RUN.
