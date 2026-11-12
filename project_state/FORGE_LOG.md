@@ -300,3 +300,7 @@
 - `src/tour.js` + Keşfet listesinin başında akışta duran kart (hiçbir öğenin üstünü örtmez): 3 adım (kategori/arama → besin + büyük kaydırıcı → Tarife ekle ve toplam matriks), hedef kesik çizgiyle vurgulanır (azaltılmış harekette animasyon yok). Geri / İleri / Bitir / Turu atla; bitince veya atlanınca `bm.tour.v1=done` (yalnız cihazda); depolama kapalıysa tur zorla gösterilmez. Ayarlar → Aion'da "Tanıtım turunu başlat". Tur gösterildiğinde Aion karşılama balonu çıkmaz (iki ipucu üst üste binmez). TR/EN.
 - Kanıt: `npm test` 75/75 (yeni tour testi); Playwright 68/68 PASS (yeni B070 testi: adımlar, vurgu, geri sınırı, atlamanın kalıcılığı, Ayarlar'dan yeniden başlatma); telefonda 412 = 412, ekran görüntüsü incelendi.
 - Sonraki: **B071** beta.9 yayını (B070).
+
+## B071 · 2026-11-12 · beta.9 yayını
+- 1.1.2-beta.9 (B070 tanıtım turu). Sürüm dosyaları/Cargo.lock/lisans dökümü güncellendi; `npm test` PASS; `native-notices` 446 / eksik 0.
+- Sonraki: **B072** Günlük ekranında son 7 günün enerji/protein mini grafiği (yalnız bilinen değerler; veri yok günleri boş, 0 değil).
