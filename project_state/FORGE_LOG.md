@@ -295,3 +295,8 @@
 - Bekleme sınırı (2026-11-11) geçtiği için yeniden denendi. `curl https://turkomp.gov.tr/` ve `https://turkomp.tarimorman.gov.tr/` → "CONNECT tunnel failed, response 403" (ortam vekili); sayfa okuma aracı → ENOTFOUND (izinli alan dışı). Site metni okunamadı, lisans/yeniden dağıtım izni doğrulanamadı.
 - Durum BLOCKED_SOURCE_VERIFICATION → **BLOCKED_ENVIRONMENT**; veri içe aktarılmadı, USDA kaydı yeniden adlandırılmadı. Açılması için kullanıcının ortam ağ ayarlarında turkomp.gov.tr'yi açması veya resmî koşul metnini sağlaması gerekir.
 - Sonraki: **B070** Aion'a ilk açılışta kısa, atlanabilir 3 adımlı "nasıl kullanılır" turu (kategori → besin/kaydırıcı → tarif), azaltılmış harekete uyumlu.
+
+## B070 · 2026-11-12 · ilk kullanım turu
+- `src/tour.js` + Keşfet listesinin başında akışta duran kart (hiçbir öğenin üstünü örtmez): 3 adım (kategori/arama → besin + büyük kaydırıcı → Tarife ekle ve toplam matriks), hedef kesik çizgiyle vurgulanır (azaltılmış harekette animasyon yok). Geri / İleri / Bitir / Turu atla; bitince veya atlanınca `bm.tour.v1=done` (yalnız cihazda); depolama kapalıysa tur zorla gösterilmez. Ayarlar → Aion'da "Tanıtım turunu başlat". Tur gösterildiğinde Aion karşılama balonu çıkmaz (iki ipucu üst üste binmez). TR/EN.
+- Kanıt: `npm test` 75/75 (yeni tour testi); Playwright 68/68 PASS (yeni B070 testi: adımlar, vurgu, geri sınırı, atlamanın kalıcılığı, Ayarlar'dan yeniden başlatma); telefonda 412 = 412, ekran görüntüsü incelendi.
+- Sonraki: **B071** beta.9 yayını (B070).

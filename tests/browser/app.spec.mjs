@@ -607,3 +607,26 @@ test('besin ayrıntısında benzer besinler aynı kategoriden gelir ve açılır
   await expect(page.locator('.dsub')).toContainText(cat);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
 });
+
+test('ilk açılışta 3 adımlı tanıtım turu; ileri/geri, atlama kalıcı, Ayarlar\'dan yeniden başlar (B070)', async ({ page }) => {
+  await page.goto('/');
+  const tour = page.locator('.tour');
+  await expect(tour).toContainText('Adım 1/3');
+  await expect(page.locator('.cats')).toHaveClass(/tour-target/);
+  await expect(page.locator('[data-action="tour-prev"]')).toBeDisabled();
+  await page.locator('[data-action="tour-next"]').click();
+  await expect(tour).toContainText('Adım 2/3');
+  await expect(page.locator('#foodlist')).toHaveClass(/tour-target/);
+  await page.locator('[data-action="tour-prev"]').click();
+  await expect(tour).toContainText('Adım 1/3');
+  await page.locator('[data-action="tour-skip"]').click();
+  await expect(tour).toHaveCount(0);
+  await expect(page.locator('.tour-target')).toHaveCount(0);
+  await page.reload();
+  await expect(page.locator('.tour')).toHaveCount(0);
+  await tab(page, 'ayarlar');
+  await page.locator('[data-action="tour-start"]').click();
+  await expect(page.locator('.tour')).toContainText('Adım 1/3');
+  for (let i = 0; i < 3; i++) await page.locator('[data-action="tour-next"]').click();
+  await expect(page.locator('.tour')).toHaveCount(0);
+});

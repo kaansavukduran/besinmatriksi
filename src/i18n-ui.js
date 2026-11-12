@@ -606,5 +606,15 @@ export const UI_EN = {
  "Bu aramaya uyan tarif yok.": "No recipes match this search.",
  "Besin ayrıntısında benzer besinleri göster": "Show similar foods in food details",
  "Aynı kategoride 100 g'daki enerji, protein, karbonhidrat, yağ ve lif profili en yakın besinler. Vitamin ve mineraller farklı olabilir.": "Foods in the same category with the closest per-100 g energy, protein, carbohydrate, fat and fibre profile. Vitamins and minerals may differ.",
- "Benzer besinler:": "Similar foods:"
+ "Benzer besinler:": "Similar foods:",
+ "Kısa tanıtım": "Quick tour",
+ "Adım {i}/{n}": "Step {i}/{n}",
+ "Bitir": "Finish",
+ "İleri": "Next",
+ "Turu atla": "Skip tour",
+ "Hazırsın! Turu Ayarlar → Aion'dan yeniden başlatabilirsin.": "You're all set! You can restart the tour in Settings → Aion.",
+ "Tanıtım turunu başlat": "Start the quick tour",
+ "Bir kategori seç ya da üstteki kutuya besin adı yaz.": "Pick a category or type a food name in the box above.",
+ "Bir besine dokun. Büyük kaydırıcıyı sağa sola çekerek gramı ayarla; matriks hemen güncellenir.": "Tap a food. Drag the big slider left or right to set the grams; the matrix updates instantly.",
+ "“Tarife ekle” ile besinleri topla. Tarif sekmesinde tüm tarifin toplam matriksini görürsün.": "Collect foods with “Add to recipe”. The Recipe tab shows the total matrix of the whole recipe."
 };

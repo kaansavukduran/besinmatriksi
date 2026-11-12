@@ -631,3 +631,7 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 .similar { margin: 4px 0 10px; }
 .similar .presets { margin-top: 4px; }
 @media (max-width: 700px) { .similar .presets { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; } .similar .pchip { flex-shrink: 0; } }
+.tour { border: 2px solid var(--acc); margin-bottom: 10px; }
+.tour .tour-step { font-weight: 700; margin: 0 0 4px; }
+.tour .tour-text { margin: 0 0 8px; }
+.tour-target { outline: 3px dashed var(--acc); outline-offset: 3px; border-radius: 12px; }
