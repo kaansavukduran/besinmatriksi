@@ -954,3 +954,17 @@ test('temel değer karoları dengeli (4+4 ya da 2×4); tur vurgusu kesikli çizg
   expect(tops.length).toBe(8);
   expect(new Set(counts).size).toBe(1); // her satırda eşit sayıda karo
 });
+
+test('Ayarlar kartları boşluksuz sütunlara akar; yatay taşma yok (B108)', async ({ page }) => {
+  await page.goto('/'); await tab(page, 'ayarlar');
+  expect(await page.locator('.settings').evaluate((e) => getComputedStyle(e).columnWidth)).not.toBe('auto');
+  // aynı sütundaki ardışık kartlar arasında büyük boşluk yok
+  const gaps = await page.locator('.settings > .card').evaluateAll((els) => {
+    const r = els.filter((e) => e.offsetParent).map((e) => e.getBoundingClientRect());
+    const out = [];
+    for (const a of r) { const below = r.filter((b) => Math.abs(b.left - a.left) < 2 && b.top > a.bottom - 1).sort((x, y) => x.top - y.top)[0]; if (below) out.push(below.top - a.bottom); }
+    return out;
+  });
+  expect(Math.max(...gaps)).toBeLessThan(40);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+});

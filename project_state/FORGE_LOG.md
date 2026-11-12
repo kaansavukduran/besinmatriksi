@@ -522,3 +522,7 @@
 - Kaan: soldaki kesik mor çizgi (tanıtım turu hedef vurgusu) saçma duruyor; temel değer karoları 7+1 diziliyor, dengeli olmalı.
 - Tur hedefi: kesikli outline → yumuşak vurgu rengi halka + parıltı (box-shadow). Temel kart: 8 karo kart genişliğine göre 4+4, dar kartta (≤520 px, container query) 2×4.
 - Kanıt: `npm test` 88/88; Playwright 114/114 (B107: tur hedefinde dashed yok; karolar satır başına eşit sayıda).
+
+## B108 · 2026-11-12 · Ayarlar dengeli düzen
+- Kaan: Ayarlar kutuları dengesiz, boşluklu. Izgara satırları en uzun karta göre yükseldiği için büyük boşluklar kalıyordu → CSS çok sütunlu akış (masonry): `columns: 3 400px`, kartlar bölünmez, arama kutusu tam genişlik. Masaüstü 1600 px'te 3 sütun, telefonda tek sütun.
+- Kanıt: Playwright 116/116 (B108: aynı sütunda ardışık kartlar arası boşluk < 40 px, yatay taşma yok); ekran görüntüsü kontrol edildi.

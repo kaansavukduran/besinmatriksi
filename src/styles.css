@@ -735,3 +735,8 @@ table.cmp .cpct { display: block; font-size: .72rem; color: var(--muted); font-w
 .macro-pie.mini .pie-legend span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .macro-pie.mini .pie-legend li { line-height: 1.25; margin: 0; padding: 0; min-height: 0; }
 .macro-pie.mini .pie-legend { flex: 0 0 auto; }
+/* Ayarlar: farklı yükseklikteki kartlar boşluk bırakmadan sütunlara akar (masonry); arama kutusu tam genişlik */
+.settings { display: block; columns: 3 400px; column-gap: var(--gap); }
+.settings > * { break-inside: avoid; margin: 0 0 var(--gap); width: 100%; display: inline-block; vertical-align: top; }
+.settings > .settings-search { column-span: all; display: block; }
+.settings > [hidden] { display: none !important; }
