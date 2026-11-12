@@ -285,3 +285,7 @@
 - İlk hata: yeni tarayıcı testi "mercimek" aramasında ilk sonucun baklagil olduğunu varsaydı (gerçekte "mercimek filizi", Sebzeler). Test açılan besinin kategorisine göre düzeltildi; kod değişmedi.
 - Kanıt: `npm test` 74/74 (yeni similar testi); Playwright 64/66 → düzeltme sonrası B067 2/2 PASS; diğer 64 test aynı koşuda PASS; telefonda yatay taşma yok.
 - Sonraki: **B068** beta.8 yayını (B067) veya B021 TürKomp kaynak doğrulaması (2026-11-11 sonrası açılır).
+
+## B068 · 2026-11-12 · beta.8 yayını
+- 1.1.2-beta.8 (B067 benzer besinler). Sürüm dosyaları, Cargo.lock, lisans dökümleri güncellendi; `npm test` PASS, `native-notices` 446 paket / eksik 0.
+- Sonraki: **B069** B021 TürKomp kaynak doğrulaması (bekleme tarihi 2026-11-11 geçti): lisans/kullanım koşullarını resmî kaynaktan doğrula; uygun değilse BLOCKED olarak kaydet.
