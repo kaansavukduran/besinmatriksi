@@ -634,7 +634,7 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 .tour { border: 2px solid var(--acc); margin-bottom: 10px; }
 .tour .tour-step { font-weight: 700; margin: 0 0 4px; }
 .tour .tour-text { margin: 0 0 8px; }
-.tour-target { outline: 3px dashed var(--acc); outline-offset: 3px; border-radius: 12px; }
+.tour-target { outline: none; border-radius: 12px; box-shadow: 0 0 0 2px color-mix(in srgb, var(--acc) 70%, transparent), 0 0 18px 2px color-mix(in srgb, var(--acc) 35%, transparent); }
 .week { margin: 10px 0; }
 .week-bars { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; align-items: end; }
 .wk { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px 2px; border: 1px solid var(--line, transparent); border-radius: 10px; background: none; color: inherit; font: inherit; cursor: pointer; min-width: 0; }
@@ -677,7 +677,10 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 /* Temel besin değerleri kartı: önce basit değerler, sonra ayrıntı */
 .basic-card { margin-bottom: 10px; }
 .basic-card h3 { margin: 0 0 8px; }
-.basic-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(130px, 100%), 1fr)); gap: 8px; }
+/* 8 karo: geniş ekranda 4 + 4, telefonda 2 × 4 (her zaman dengeli) */
+.basic-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+@container (max-width: 520px) { .basic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.basic-card { container-type: inline-size; }
 @media (max-width: 700px) { .basic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .basic-tile { display: flex; flex-direction: column; gap: 2px; padding: .55rem .7rem; border-radius: calc(var(--radius) * .7); background: var(--card2, var(--card)); border: 1px solid var(--line); min-width: 0; }
 .basic-tile span { color: var(--muted); font-size: .85em; }

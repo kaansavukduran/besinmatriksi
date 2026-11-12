@@ -940,3 +940,17 @@ test('Günlük: günün kalori pasta grafiği temel değerlerin altında (B105)'
   await expect(page.locator('.personal .macro-pie svg.pie')).toHaveCount(1);
   await expect(page.locator('.personal .macro-pie li[data-part="p"] strong')).toContainText('%');
 });
+
+test('temel değer karoları dengeli (4+4 ya da 2×4); tur vurgusu kesikli çizgi değil (B107)', async ({ page }) => {
+  await page.addInitScript(() => localStorage.removeItem('bm.tour.v1'));
+  await page.goto('/');
+  const tgt = page.locator('.tour-target').first();
+  if (await tgt.count()) expect(await tgt.evaluate((e) => getComputedStyle(e).outlineStyle)).not.toBe('dashed');
+  await page.locator('[data-action="tour-skip"]').click().catch(() => {});
+  await page.locator('#q').fill('ıspanak'); await page.locator('#foodlist [data-id="ispanak"]').click();
+  const tops = await page.locator('#matrix .basic-card .basic-tile').evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().top)));
+  const rows = new Map(); for (const t of tops) rows.set(t, (rows.get(t) || 0) + 1);
+  const counts = [...rows.values()];
+  expect(tops.length).toBe(8);
+  expect(new Set(counts).size).toBe(1); // her satırda eşit sayıda karo
+});

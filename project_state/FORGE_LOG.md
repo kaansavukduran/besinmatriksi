@@ -517,3 +517,8 @@
 ## B106 · 2026-11-12 · beta.20 yayını
 - Run 43317990590 (commit bbecc42): ilk denemede yalnız Android APK işi düştü — Gradle, google-services eklentisinin bağımlılıklarını (guava 33.3.1-jre, kotlin-stdlib-jdk8 2.2.0) Maven Central'dan çözemedi ("Could not find"); Android dosyalarında değişiklik yoktu → geçici depo/ağ hatası. `rerun_failed_jobs` ile yeniden çalıştırıldı → SUCCESS; v1.1.2-beta.20 pre-release 2026-11-12T22:35:54Z. Cihaz kurulumu NOT_RUN.
 - Sonraki: **B107** Kaan'ın geri bildirimine göre; bekleyen yoksa Android derlemesine Maven çözümleme yeniden denemesi (Gradle `--refresh-dependencies` yerine adım düzeyinde 1 tekrar) eklemek.
+
+## B107 · 2026-11-12 · Tur vurgusu ve dengeli temel değer karoları
+- Kaan: soldaki kesik mor çizgi (tanıtım turu hedef vurgusu) saçma duruyor; temel değer karoları 7+1 diziliyor, dengeli olmalı.
+- Tur hedefi: kesikli outline → yumuşak vurgu rengi halka + parıltı (box-shadow). Temel kart: 8 karo kart genişliğine göre 4+4, dar kartta (≤520 px, container query) 2×4.
+- Kanıt: `npm test` 88/88; Playwright 114/114 (B107: tur hedefinde dashed yok; karolar satır başına eşit sayıda).
