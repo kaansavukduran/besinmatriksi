@@ -289,3 +289,9 @@
 ## B068 · 2026-11-12 · beta.8 yayını
 - 1.1.2-beta.8 (B067 benzer besinler). Sürüm dosyaları, Cargo.lock, lisans dökümleri güncellendi; `npm test` PASS, `native-notices` 446 paket / eksik 0.
 - Sonraki: **B069** B021 TürKomp kaynak doğrulaması (bekleme tarihi 2026-11-11 geçti): lisans/kullanım koşullarını resmî kaynaktan doğrula; uygun değilse BLOCKED olarak kaydet.
+- Yayın: release run 43139843086 SUCCESS (commit 2b75829). v1.1.2-beta.8 pre-release 2026-11-12T02:21Z; 22 varlık. Cihaz kurulumu NOT_RUN.
+
+## B069 · 2026-11-12 · TürKomp erişim/lisans yeniden denemesi
+- Bekleme sınırı (2026-11-11) geçtiği için yeniden denendi. `curl https://turkomp.gov.tr/` ve `https://turkomp.tarimorman.gov.tr/` → "CONNECT tunnel failed, response 403" (ortam vekili); sayfa okuma aracı → ENOTFOUND (izinli alan dışı). Site metni okunamadı, lisans/yeniden dağıtım izni doğrulanamadı.
+- Durum BLOCKED_SOURCE_VERIFICATION → **BLOCKED_ENVIRONMENT**; veri içe aktarılmadı, USDA kaydı yeniden adlandırılmadı. Açılması için kullanıcının ortam ağ ayarlarında turkomp.gov.tr'yi açması veya resmî koşul metnini sağlaması gerekir.
+- Sonraki: **B070** Aion'a ilk açılışta kısa, atlanabilir 3 adımlı "nasıl kullanılır" turu (kategori → besin/kaydırıcı → tarif), azaltılmış harekete uyumlu.

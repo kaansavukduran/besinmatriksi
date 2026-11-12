@@ -31,7 +31,7 @@ Durum etiketleri: PLANNED · IN_PROGRESS · DONE (yalnızca test kanıtıyla). S
 |---|---|---|
 | B020a | Tek besin kaynak etiketlerinde veri seti/yıl/kayıt no; kapsam özetinde kısmi malzemeyi ayır | DONE (UNIT_TESTED + BUILT) |
 | B020b | Tarif toplamındaki her değerin katkı veren malzeme/kaynak dökümü | DONE (PACKAGED; son kaynak 8e0b317, 43 birim / 28 tarayıcı testi PASS) |
-| B021 | Türkiye'ye özgü besinler (TürKomp erişimi ve lisansı araştırılıp kaydedilmeden veri eklenmez) | BLOCKED_SOURCE_VERIFICATION (docs/DATA_RESEARCH.md) |
+| B021 | Türkiye'ye özgü besinler (TürKomp erişimi ve lisansı araştırılıp kaydedilmeden veri eklenmez) | BLOCKED_ENVIRONMENT: ortam ağı turkomp.gov.tr'yi reddediyor (docs/DATA_RESEARCH.md) |
 
 ## Dağıtım
 

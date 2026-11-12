@@ -58,6 +58,8 @@ Türkiye'ye özgü bir ürünmüş gibi yeniden adlandırılmadı. Sonraki adım
 ve çevrimdışı uygulamada yeniden dağıtım koşullarını doğrulamak; ardından hazırlama
 biçimi ve 100 g yenebilir kısım temeli eşleşen kayıtları küratörlü eklemektir.
 
+12 Kasım 2026 yeniden deneme: bu bulut ortamının ağ kuralı turkomp.gov.tr ve turkomp.tarimorman.gov.tr adreslerini reddetti (vekil CONNECT 403; sayfa okuma aracında izinli alan dışı). Site koşulları okunamadı; durum BLOCKED_ENVIRONMENT. Kullanıcı ortam ağ ayarlarında bu alanı açarsa ya da resmî koşul sayfasını sağlarsa yeniden doğrulanır. Veri içe aktarılmadı.
+
 ## Mevcut katalog
 
 1.1.1 dağıtımı USDA SR28 tam bileşen tablosuyla yeniden üretildi. IFCT değerleri ve IFCT tabanlı tahminler NIN ürün izni doğrulanmadığı için çıkarıldı (docs/LICENSE_AUDIT.md). Kullanıcı etiket
