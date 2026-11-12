@@ -357,3 +357,7 @@
 - Görsel kontrol: 318 çizimin tamamı galeri sayfasında incelendi; brokoli/karnabahar lahanaya benzediği için çiçek biçimine, filizler soluk olduğu için koyu yeşile çevrildi; koyu temada koyu renkli çizimler kaybolduğu için kart arka planı eklendi.
 - Kanıt: `npm test` 80/80 (yeni: 318 benzersiz SVG); Playwright 76/76 PASS (B076 testi çizimlerin farklılığını denetliyor); telefonda ekran görüntüsü incelendi, 412 = 412.
 - Sonraki: **B081** beta.12 yayını (B079 + B080).
+
+## B081 · 2026-11-12 · beta.12 yayını
+- 1.1.2-beta.12 (B079 varsayılan Koyu tema + sistem yazısı, B080 besin çizimleri). `npm test` PASS; `native-notices` 446 / eksik 0.
+- Sonraki: **B082** geniş USDA kataloğuna hayvansal grupları (`showAnimal` ile) eklemek.
