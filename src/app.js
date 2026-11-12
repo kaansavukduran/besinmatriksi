@@ -1,4 +1,4 @@
-import { setAnimalVisible, visibleFoods, ANIMAL_CATS, foodName, categoryName, formName, CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, extGroups, extFoods, setCustomFoods, customFoods } from './data.js';
+import { extAnimalGroup, setAnimalVisible, visibleFoods, ANIMAL_CATS, foodName, categoryName, formName, CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, extGroups, extFoods, setCustomFoods, customFoods } from './data.js';
 import { NUTRIENTS, SECTIONS, SOURCES } from './nutrients.js';
 import { scaleItem, aggregate, scaleAggregate } from './calc.js';
 import { renderMatrix } from './matrix.js';
@@ -128,7 +128,7 @@ function toast(msg) {
 }
 
 function catName(id) {
-  if (id?.startsWith('ext:')) return 'USDA: ' + (extGroups()[id.slice(4)] || '');
+  if (id?.startsWith('ext:')) return 'USDA: ' + L(extGroups()[id.slice(4)] || '');
   const c = CATEGORIES.find((c) => c.id === id);
   return c ? categoryName(c) : id === 'custom' ? L("Kendi besinlerim") : '';
 }
@@ -274,13 +274,13 @@ function foodList(prefix, cat, q, extGroup) {
   if (cat === 'ext') {
     if (!extLoaded()) { loadExt().then(render); return `<p class="empty">${L("Geniş katalog yükleniyor…")}</p>`; }
     const groups = extGroups();
-    const chips = Object.entries(groups).map(([g, n]) => `<button class="pchip ${extGroup === g ? 'on' : ''}" data-action="${prefix}-extgroup" data-g="${g}">${esc(n)}</button>`).join('');
+    const chips = Object.entries(groups).filter(([g]) => S.settings.showAnimal || !extAnimalGroup(g)).map(([g, n]) => `<button class="pchip ${extGroup === g ? 'on' : ''}" data-action="${prefix}-extgroup" data-g="${g}">${esc(L(n))}</button>`).join('');
     let list = extFoods();
     if (extGroup) list = list.filter((f) => f.g === extGroup);
     if (q) list = search(q, { ext: true, extGroup }).ext;
     const shown = list.slice(0, 400);
     return `<div class="presets extgroups">${chips}</div>
-      <p class="hint">${L("USDA SR28'den bitkisel gruplar; hayvansal içerikli ve marka ürünler otomatik ayıklandı, yine de vegan uygunluğu ürün bazında doğrulanmalıdır.")}</p>
+      <p class="hint">${S.settings.showAnimal ? L("USDA SR28'den bitkisel ve hayvansal gruplar (hayvansal gruplar adlarında belirtilir); marka ürünler ayıklandı. Bitkisel gruplarda vegan uygunluğu ürün bazında doğrulanmalıdır.") : L("USDA SR28'den bitkisel gruplar; hayvansal içerikli ve marka ürünler otomatik ayıklandı, yine de vegan uygunluğu ürün bazında doğrulanmalıdır.")}</p>
       <div class="foods">${shown.map((f) => extButton(f, prefix + '-pick-ext')).join('')}</div>
       ${list.length > shown.length ? `<p class="hint">${L("{n} kayıt daha var; aramayla daralt.", { n: list.length - shown.length })}</p>` : ''}`;
   }
@@ -599,7 +599,7 @@ function renderSettings() {
       ${tog('showMissing', L("“Veri yok” satırlarını listele"))}
       <div class="kv"><span>${L("Ondalık hassasiyeti")}</span><span class="presets">${opt('precision', 'low', L("Az"))}${opt('precision', 'normal', L("Normal"))}${opt('precision', 'high', L("Çok"))}</span></div>
       <div class="kv"><span>${L("Varsayılan miktar")}</span><span class="presets">${[50, 100, 250, 1000].map((g) => opt('defaultAmount', g, g === 1000 ? '1 kg' : g + ' g')).join('')}</span></div>
-      ${tog('showExt', L("Geniş katalog (USDA, {n} bitkisel kayıt, İngilizce adlar)", { n: META.ext }))}
+      ${tog('showExt', L("Geniş katalog (USDA, {n} kayıt, İngilizce adlar)", { n: META.ext }))}
     </section>
 
     <section class="card"><h2>${L("Matriks bölümleri")}</h2>

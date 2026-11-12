@@ -27,7 +27,8 @@ export async function loadExt() {
 }
 export const extLoaded = () => !!EXT;
 export const extGroups = () => (EXT ? EXT.groups : {});
-export const extFoods = () => (EXT ? EXT.foods : []);
+export const extFoods = () => (EXT ? (SHOW_ANIMAL ? EXT.foods : EXT.foods.filter((f) => !f.a)) : []);
+export const extAnimalGroup = (g) => !!EXT && EXT.foods.some((f) => f.g === g && f.a);
 
 // Ref: { t: 'c', id, f } küratörlü | { t: 'x', n } geniş katalog
 export function resolve(ref) {
@@ -53,9 +54,9 @@ export function resolve(ref) {
     const s = {};
     for (const k of Object.keys(f.v)) s[k] = 'u';
     return {
-      ref, ext: f, name: f.en, formLabel: L('USDA tanımı'), cat: 'ext:' + f.g,
+      ref, ext: f, animal: !!f.a, name: f.en, formLabel: L('USDA tanımı'), cat: 'ext:' + f.g,
       liquid: f.g === '1400', v: f.v, s, alt: {}, sd: {}, portions: f.p || [],
-      allergens: [], note: L('Geniş katalog kaydı: vegan uygunluğu ve içerik ürüne göre doğrulanmalı.'), sci: f.sci,
+      allergens: [], note: f.a ? L('Geniş katalog kaydı (hayvansal, USDA İngilizce adı).') : L('Geniş katalog kaydı: vegan uygunluğu ve içerik ürüne göre doğrulanmalı.'), sci: f.sci,
       usda: { ndb: f.n, desc: f.en, refuse: f.r, refDesc: f.rd, sci: f.sci }, ifct: null, estFrom: null,
     };
   }
@@ -103,7 +104,7 @@ export function search(q, { cat = null, ext = false, extGroup = null } = {}) {
     out.sort((a, b) => score(b._k, k) - score(a._k, k) || a.tr.localeCompare(b.tr, 'tr'));
   }
   let extOut = [];
-  if (ext && EXT && terms.length) extOut = EXT.foods.filter((f) => (!extGroup || f.g === extGroup) && match(f._k)).slice(0, 80);
+  if (ext && EXT && terms.length) extOut = EXT.foods.filter((f) => (SHOW_ANIMAL || !f.a) && (!extGroup || f.g === extGroup) && match(f._k)).slice(0, 80);
   const custom = terms.length ? CUSTOM.filter((f) => match(f._k)) : [];
   return { curated: out, ext: extOut, custom };
 }

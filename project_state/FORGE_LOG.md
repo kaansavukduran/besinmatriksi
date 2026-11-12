@@ -361,3 +361,9 @@
 ## B081 · 2026-11-12 · beta.12 yayını
 - 1.1.2-beta.12 (B079 varsayılan Koyu tema + sistem yazısı, B080 besin çizimleri). `npm test` PASS; `native-notices` 446 / eksik 0.
 - Sonraki: **B082** geniş USDA kataloğuna hayvansal grupları (`showAnimal` ile) eklemek.
+
+## B082 · 2026-11-12 · geniş katalogta hayvansal USDA grupları
+- `scripts/build-data.mjs`: geniş kataloğa USDA SR28 hayvansal grupları eklendi (süt/yumurta 0100, kümes 0500, sığır 1300, kuzu/dana/av 1700, domuz 1000, balık/kabuklu 1500); kayıtlar `a: 1`. Et gruplarında aynı parçanın yağlı/kalite tekrarları ayıklandı (yalnız yağsız kısım; select/prime/ithal varyantları dışarıda) → 1.505 hayvansal kayıt, toplam 4.281; `foods-ext.json` 1,57 → 3,28 MB (yalnız geniş katalog açılınca yüklenir). Bitkisel gruplarda hayvansal içerikli karışık ürünler eskisi gibi ayıklanır.
+- `showAnimal` kapalıyken geniş katalog araması ve grup düğmeleri hayvansal kayıtları göstermez; ayrıntıda "Hayvansal" etiketi. Geniş katalog grup adları artık İngilizceye çevriliyor (eski eksik).
+- Kanıt: `npm run data` (ext 4281); `npm test` 80/80; Playwright 78/78 PASS (yeni B082 testi: balık grubu, arama, etiket, gizleme).
+- Sonraki: **B083** kullanıcı ekran görüntüsü: "besin ekle" penceresindeki kategori düğmeleri simetrik değil (sütunlar eşit değil, yükseklikler karışık).

@@ -631,5 +631,22 @@ export const UI_EN = {
  "Yumurta": "Egg",
  "Balık": "Fish",
  "Kabuklu deniz ürünleri": "Crustaceans",
- "Yumuşakçalar": "Molluscs"
+ "Yumuşakçalar": "Molluscs",
+ "Geniş katalog kaydı (hayvansal, USDA İngilizce adı).": "Extended catalogue entry (animal, USDA English name).",
+ "USDA SR28'den bitkisel ve hayvansal gruplar (hayvansal gruplar adlarında belirtilir); marka ürünler ayıklandı. Bitkisel gruplarda vegan uygunluğu ürün bazında doğrulanmalıdır.": "Plant and animal groups from USDA SR28 (animal groups are marked in their names); branded products removed. In plant groups, check vegan suitability per product.",
+ "Geniş katalog (USDA, {n} kayıt, İngilizce adlar)": "Extended catalogue (USDA, {n} entries, English names)",
+ "Süt ürünleri ve yumurta (hayvansal)": "Dairy & eggs (animal)",
+ "Kümes hayvanları (hayvansal)": "Poultry (animal)",
+ "Sığır eti (hayvansal)": "Beef (animal)",
+ "Kuzu, dana ve av eti (hayvansal)": "Lamb, veal & game (animal)",
+ "Domuz eti (hayvansal)": "Pork (animal)",
+ "Balık ve kabuklular (hayvansal)": "Fish & shellfish (animal)",
+ "Baharat ve otlar": "Spices & herbs",
+ "Meyveler ve meyve suları": "Fruits & juices",
+ "Sebzeler ve sebze ürünleri": "Vegetables & products",
+ "Kuruyemiş ve tohumlar": "Nuts & seeds",
+ "Baklagiller ve ürünleri": "Legumes & products",
+ "Tahıllar ve makarna": "Grains & pasta",
+ "Yağlar": "Fats & oils",
+ "İçecekler": "Beverages"
 };

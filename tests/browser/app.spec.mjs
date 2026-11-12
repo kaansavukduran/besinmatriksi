@@ -696,3 +696,21 @@ test('besin kartları ve ayrıntı kendi çizimini gösterir; sebzeler farklı (
   await page.locator('#foodlist [data-id="misir"]').click();
   await expect(page.locator('.dtitle h2 svg.fart')).toBeVisible();
 });
+
+test('geniş katalogda hayvansal USDA grupları; gizlenince aramadan da çıkar (B082)', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('bm.settings.v2', JSON.stringify({ version: 2, settings: { showExt: true } })));
+  await page.goto('/');
+  await page.locator('.cat[data-cat="ext"]').click();
+  await expect(page.locator('[data-action="ex-extgroup"][data-g="1500"]')).toContainText('Balık');
+  await page.locator('#q').fill('salmon atlantic wild raw');
+  await expect(page.locator('#foodlist [data-action="ex-pick-ext"]').first()).toBeVisible();
+  await page.locator('#foodlist [data-action="ex-pick-ext"]').first().click();
+  await expect(page.locator('.dsub .tag-animal')).toBeVisible();
+  await tab(page, 'ayarlar');
+  await page.locator('[data-setbool="showAnimal"]').uncheck({ force: true });
+  await tab(page, 'kesfet');
+  if (await page.locator('.back').isVisible()) await page.locator('.back').click();
+  await page.locator('#q').fill('salmon atlantic wild raw');
+  await expect(page.locator('#foodlist [data-action="ex-pick-ext"]')).toHaveCount(0);
+  await expect(page.locator('[data-action="ex-extgroup"][data-g="1500"]')).toHaveCount(0);
+});

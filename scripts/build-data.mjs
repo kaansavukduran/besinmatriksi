@@ -212,7 +212,11 @@ const EXT_GROUPS = {
   '0200': 'Baharat ve otlar', '0900': 'Meyveler ve meyve suları', '1100': 'Sebzeler ve sebze ürünleri',
   '1200': 'Kuruyemiş ve tohumlar', '1600': 'Baklagiller ve ürünleri', '2000': 'Tahıllar ve makarna',
   '0400': 'Yağlar', '1400': 'İçecekler',
+  // Hayvansal gruplar (2026-11-12 kullanıcı kararı); kayıtlar `a: 1` taşır ve arayüzde gizlenebilir
+  '0100': 'Süt ürünleri ve yumurta (hayvansal)', '0500': 'Kümes hayvanları (hayvansal)', '1300': 'Sığır eti (hayvansal)',
+  '1700': 'Kuzu, dana ve av eti (hayvansal)', '1000': 'Domuz eti (hayvansal)', '1500': 'Balık ve kabuklular (hayvansal)',
 };
+const ANIMAL_GROUPS = new Set(['0100', '0500', '1300', '1700', '1000', '1500']);
 const ANIMAL = /\b(milk|cheese|butter|eggs?|chicken|beef|pork|ham|bacon|fish|tuna|salmon|shrimp|crab|lard|tallow|gelatin|honey|whey|casein|cream|creamed|yogurt|meat|turkey|lamb|veal|anchov\w*|clam|sardine|cod|oyster|mayonnaise|ghee|sausage|frankfurter|bologna|cod liver|herring|menhaden|whale|seal|egg|mutton|goose|duck|poultry|buttermilk|lactose|nonfat dry milk|sour cream|ensure|formula|gravy|broth|chowder)\b/i;
 const PLANT_OK = /\b(soymilk|soy milk|almond milk|rice milk|coconut milk|coconut cream|oat milk|peanut butter|sesame butter|cashew butter|almond butter|nut butter|butternut|butterhead|butterbur|cocoa butter|shea|butter beans|milk substitute|coconut water|milkfish)\b/i;
 const curatedNdb = new Set(FOODS.flatMap((f) => f.forms.map((fm) => fm[1]).filter(Boolean)));
@@ -220,13 +224,16 @@ const ext = [];
 for (const [ndb, d] of des) {
   if (!EXT_GROUPS[d.grp] || curatedNdb.has(ndb)) continue;
   const name = d.long;
-  const animal = ANIMAL.test(name.replace(PLANT_OK, ''));
-  if (animal) continue;
+  const animalGroup = ANIMAL_GROUPS.has(d.grp);
+  // Bitkisel gruplarda hayvansal içerikli karışık ürünler yine ayıklanır (yanlış grupta durmasınlar)
+  if (!animalGroup && ANIMAL.test(name.replace(PLANT_OK, ''))) continue;
+  // Et gruplarında aynı parçanın yağlı/kaliteli tekrarları ayıklanır: yalnız "yağsız kısım" ve tek kalite (choice/all grades) tutulur
+  if (['1300', '1700', '1000'].includes(d.grp) && (/separable lean and fat|separable fat|\b(select|prime)\b|trimmed to 1\/4"|imported|New Zealand|Australian/i.test(name))) continue;
   // Marka ürünleri (büyük harfli marka adları) içerik doğrulanamadığı için dışarıda
   if (/[A-Z]{4,}/.test(name) || /\bmeatless\b/i.test(name)) continue;
   if (d.grp === '1400' && /\b(beer|wine|liqueur|whiskey|vodka|rum|gin|alcoholic|cocktail|distilled|daiquiri|martini)\b/i.test(name)) continue;
   const v = usdaValues(ndb);
-  ext.push({ n: ndb, g: d.grp, en: name, sci: d.sci || null, r: d.refuse, rd: d.refDesc || null, p: usdaPortions(ndb), v });
+  ext.push({ n: ndb, g: d.grp, en: name, sci: d.sci || null, r: d.refuse, rd: d.refDesc || null, p: usdaPortions(ndb), v, ...(animalGroup ? { a: 1 } : {}) });
 }
 ext.sort((a, b) => a.en.localeCompare(b.en));
 
