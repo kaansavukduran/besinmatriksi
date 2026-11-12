@@ -339,3 +339,7 @@
 - Sınır (dürüst not): emoji setinde her besinin karşılığı yok; 318 besin için 88 farklı simge var. Tam karşılığı olmayanlarda en yakın görsel (ör. renkli daire, tahıl başağı) kullanıldı; Unicode 15+ simgeler (zencefil, bezelye kabuğu) eski Windows/Android'de görünmediği için seçilmedi. Her besine benzersiz çizim için ayrı bir simge seti (lisansı değerlendirilerek) ya da özel çizim gerekir.
 - Kanıt: `npm test` 78/78 (yeni: her besinin simgesi var, fazlası yok, domates ≠ brokoli); Playwright 76/76 PASS (yeni B076 testi); telefonda ekran görüntüsü incelendi, 412 = 412.
 - Sonraki: **B078** beta.11 yayını (B075 + B076 + B077).
+
+## B078 · 2026-11-12 · beta.11 yayını
+- 1.1.2-beta.11 (B075 kısa Kıyasla, B076 besin simgeleri, B077 hayvansal besinler). Sürüm notları güncellendi (uygulama tanımı artık "bitkisel ağırlıklı"). `npm test` PASS; `native-notices` 446 / eksik 0.
+- Sonraki: **B079** geniş USDA kataloğuna (Ayarlar → Geniş katalog) hayvansal USDA gruplarını (süt/yumurta, kümes, et, balık) `showAnimal` ile birlikte eklemek.

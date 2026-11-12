@@ -1,6 +1,6 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 10 · Haftalık grafik
+# 🫐 Besin Matriksi 1.1.2 Beta 11 · Hayvansal besinler ve simgeler
 
-Bitkisel besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama.
+Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
 
 ## ⬇️ Hangi dosyayı indireyim?
@@ -21,6 +21,9 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
+- **Hayvansal besinler:** Süt ürünleri, yumurta, kırmızı et, kümes hayvanları, balık ve deniz ürünleri kendi kategorilerinde (33 besin, USDA verisi); bal da eklendi. Hepsi **“Hayvansal”** etiketli; Ayarlar → Matriks'ten tek dokunuşla gizlenir.
+- **Her besinin kendi simgesi:** Sebzelerin hepsinde brokoli yok artık; domates 🍅, patlıcan 🍆, mısır 🌽…
+- **Kısa Kıyasla:** Telefonda her besin tek satır (−10 · gram · +10 · ⚙ Ayarla); hazır ölçüler Ayarla'nın altında.
 - **Son 7 gün:** Günlük'te son 7 günün enerji çubukları; kayıtsız gün “—” (0 değil), eksik veride “≥”. Çubuğa dokun, o gün açılsın.
 - **Tanıtım turu:** İlk açılışta 3 kısa adım (kategori → besin ve gram kaydırıcısı → tarif). İstediğin an “Turu atla”; Ayarlar → Aion'dan yeniden başlat.
 - **Benzer besinler:** Bir besini açınca aynı kategoriden enerji, protein, karbonhidrat, yağ ve lif profili en yakın 6 besin; dokun, aç. (Vitamin ve mineraller farklı olabilir.)
@@ -49,6 +52,6 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ---
 
-# Besin Matriksi 1.1.2 Beta 10 · Weekly chart
+# Besin Matriksi 1.1.2 Beta 11 · Animal foods & icons
 
-Offline plant-based food composition matrix. Download the file for your device from **Assets**: Windows `portable.exe` (no install) or `Setup.exe`, Android `.apk`, macOS `.dmg`, Linux `.AppImage`/`.deb`/`.rpm`, or `offline.html` for any browser. New: a 7-day energy chart in the log. Also a skippable 3-step quick tour on first launch. Also similar foods in food details. Also settings search, recipe list search/sort with kcal per serving. Also add a recipe to today's log by servings, turn a logged day into a recipe, recently viewed foods. Also multi-select to add several foods at once, one-line recipe ingredients with per-serving grams (⚙ Adjust for slider and price). Also per-100 g kcal/protein/fibre on food cards, sorting by name/energy/protein/fibre, a 'lowest nutrients' card in recipes with the richest plant sources, an Updates section in Settings. Earlier: your own collections with subcategories (add/remove foods with ☆), a calmer screen with a large gram slider, and full English UI. Also: Aion, the pink-and-blue axolotl mascot with frame-by-frame sprite animation. Known limits: packages are unsigned; no in-app updater yet.
+Offline plant-based food composition matrix. Download the file for your device from **Assets**: Windows `portable.exe` (no install) or `Setup.exe`, Android `.apk`, macOS `.dmg`, Linux `.AppImage`/`.deb`/`.rpm`, or `offline.html` for any browser. New: animal foods in their own labelled categories (can be hidden), a dedicated icon for every food, a compact Compare screen. Also a 7-day energy chart in the log. Also a skippable 3-step quick tour on first launch. Also similar foods in food details. Also settings search, recipe list search/sort with kcal per serving. Also add a recipe to today's log by servings, turn a logged day into a recipe, recently viewed foods. Also multi-select to add several foods at once, one-line recipe ingredients with per-serving grams (⚙ Adjust for slider and price). Also per-100 g kcal/protein/fibre on food cards, sorting by name/energy/protein/fibre, a 'lowest nutrients' card in recipes with the richest plant sources, an Updates section in Settings. Earlier: your own collections with subcategories (add/remove foods with ☆), a calmer screen with a large gram slider, and full English UI. Also: Aion, the pink-and-blue axolotl mascot with frame-by-frame sprite animation. Known limits: packages are unsigned; no in-app updater yet.
