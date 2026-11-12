@@ -687,12 +687,12 @@ test('hayvansal besinler kendi kategorilerinde, etiketli; Ayarlar\'dan gizlenir 
   await expect(page.locator('.cat[data-cat="sut"]')).toHaveCount(0);
 });
 
-test('besin kartları ve ayrıntı kendi simgesini gösterir (B076)', async ({ page }) => {
+test('besin kartları ve ayrıntı kendi çizimini gösterir; sebzeler farklı (B076/B080)', async ({ page }) => {
   await page.goto('/');
   await page.locator('.cat[data-cat="sebze"]').click();
-  await expect(page.locator('#foodlist [data-id="domates"] .fi')).toHaveText('🍅');
-  await expect(page.locator('#foodlist [data-id="brokoli"] .fi')).toHaveText('🥦');
-  await expect(page.locator('#foodlist [data-id="patlican"] .fi')).toHaveText('🍆');
+  const art = (id) => page.locator(`#foodlist [data-id="${id}"] .fi svg.fart`).innerHTML();
+  const [d, b, p] = [await art('domates'), await art('brokoli'), await art('patlican')];
+  expect(new Set([d, b, p]).size).toBe(3);
   await page.locator('#foodlist [data-id="misir"]').click();
-  await expect(page.locator('.dtitle h2')).toContainText('🌽');
+  await expect(page.locator('.dtitle h2 svg.fart')).toBeVisible();
 });

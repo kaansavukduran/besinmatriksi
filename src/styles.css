@@ -655,3 +655,8 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 .settings .kv .presets { flex-wrap: wrap; }
 .fontbtn { min-width: 0; overflow-wrap: anywhere; }
 .settings .pchip { white-space: normal; max-width: 100%; text-align: left; }
+.fart { display: inline-block; vertical-align: middle; flex-shrink: 0; }
+.food .fi .fart { width: 40px; height: 40px; }
+.ing-h .fi .fart { width: 34px; height: 34px; }
+.dtitle h2 .fart { width: 48px; height: 48px; margin-right: 6px; }
+.pchip .fart { width: 24px; height: 24px; margin-right: 4px; }

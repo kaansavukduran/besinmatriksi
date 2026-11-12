@@ -26,6 +26,7 @@ import { mountAion, configureAion, aionMood, aionPlay, aionSay } from './aion.js
 import { recipeGaps } from './gaps.js';
 import { similarFoods } from './similar.js';
 import { FOOD_ICONS } from './food-icons.js';
+import { foodArt } from './food-art.js';
 import { TOUR_STEPS, tourSeen, markTourSeen, nextStep } from './tour.js';
 import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS } from './settings.js';
 
@@ -133,7 +134,7 @@ function catName(id) {
 }
 const catIcon = (id) => (S.settings.emoji ? CATEGORIES.find((c) => c.id === id)?.icon || '📦' : '');
 // Besinin kendi simgesi; yoksa kategori simgesi
-const foodIcon = (f) => (S.settings.emoji ? FOOD_ICONS[f?.id] || catIcon(f?.cat) : '');
+const foodIcon = (f, size = 28) => (S.settings.emoji ? foodArt(f?.id, size) || FOOD_ICONS[f?.id] || catIcon(f?.cat) : '');
 
 function amountControls(target, g, portions = [], { compact = false, liquid = false } = {}) {
   const oz = S.settings.amountUnit === 'oz';
@@ -340,7 +341,7 @@ function renderExplore() {
   const detail = item
     ? `<div class="dhead">
         <button class="back" data-action="ex-back" aria-label="${L("Listeye dön")}">← ${L("Liste")}</button>
-        <div class="dtitle"><h2>${S.settings.emoji && item.food ? foodIcon(item.food) + ' ' : ''}${esc(item.name)}</h2>
+        <div class="dtitle"><h2>${S.settings.emoji && item.food ? foodIcon(item.food, 40) + ' ' : ''}${esc(item.name)}</h2>
           <div class="dsub">${item.animal ? `<span class="tag-animal">${L("Hayvansal")}</span> ` : ''}${esc(catName(item.cat))}${item.sci ? ` · <i>${esc(item.sci)}</i>` : ''}</div></div>
       </div>
       ${formChips('ex', S.sel)}

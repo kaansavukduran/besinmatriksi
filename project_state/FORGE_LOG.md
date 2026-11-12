@@ -350,3 +350,10 @@
 - Bulunan ve düzeltilen hata: telefonda %200 arayüz ölçeğinde Ayarlar sayfası 390→476 px taştı (yazı tipi kartında `minmax(200px, 1fr)`, Birimler ve Yüzde referansı kartlarında satır kırmayan uzun düğmeler); renk seçici penceresindeki düğmelere dokunulamadı. Yazı tipi ızgarası `minmax(min(200px, 100%), 1fr)`, ayar kartlarında min-width:0 ve düğme metni sarmalı → 390 = 390.
 - Kanıt: `npm test` 79/79 (yeni varsayılan/geri uyumluluk testi; eski "geçersiz tema → light" beklentisi "dark" oldu); Playwright 76/76 PASS; telefonda ekran görüntüsü: data-theme=dark, font-family system-ui.
 - Sonraki: **B080** besin simgelerinde tekrarları azaltmak (aynı emojiyi paylaşan besinler) ve kullanıcıya tam benzersiz resim seçeneklerini sunmak; ardından beta.12.
+
+## B080 · 2026-11-12 · her besine kendine özgü SVG çizimi
+- Kaan'ın seçimi (özel çizim SVG): `src/food-art.js` — 26 parametreli şekil şablonu (yuvarlak meyve, armut, salkım, uzun sebze, yapraklı, soğanlı, yumru, baklagil, tahıl, kuruyemiş, tohum, mantar, alg, ot, baharat, şişe, fincan, kavanoz, blok, yumurta, et, balık, kâse, tatlandırıcı, toz, tuz) + her besine özgü renk/biçim. 318 besinin 318'i benzersiz çizim (test ediyor). Çizimler el yapımı kod; dış görsel veya lisanslı set yok, çevrimdışı.
+- Arayüz: kartta 40 px, ayrıntı başlığında 48 px, tarif malzemesinde 34 px, "son bakılanlar" düğmesinde 24 px. Açık renkli yuvarlak kart arka planı sayesinde koyu ve açık temada okunur. Çizimi olmayan kayıtlar (kendi besinlerim, geniş katalog) emojiye, o da yoksa kategori simgesine düşer; "emoji" ayarı kapalıysa resim gösterilmez.
+- Görsel kontrol: 318 çizimin tamamı galeri sayfasında incelendi; brokoli/karnabahar lahanaya benzediği için çiçek biçimine, filizler soluk olduğu için koyu yeşile çevrildi; koyu temada koyu renkli çizimler kaybolduğu için kart arka planı eklendi.
+- Kanıt: `npm test` 80/80 (yeni: 318 benzersiz SVG); Playwright 76/76 PASS (B076 testi çizimlerin farklılığını denetliyor); telefonda ekran görüntüsü incelendi, 412 = 412.
+- Sonraki: **B081** beta.12 yayını (B079 + B080).

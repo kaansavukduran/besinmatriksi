@@ -55,3 +55,14 @@ test('her küratörlü besinin kendi simgesi var (B076)', async () => {
   assert.deepEqual(extra, []);
   assert.notEqual(FOOD_ICONS.domates, FOOD_ICONS.brokoli); // sebzeler artık aynı simgeyi taşımıyor
 });
+
+import { FOOD_ART, foodArt } from '../src/food-art.js';
+test('her küratörlü besinin kendine özgü SVG çizimi var (B080)', async () => {
+  const fs = await import('node:fs');
+  const db = JSON.parse(fs.readFileSync(new URL('../src/data/foods.json', import.meta.url)));
+  const svgs = db.foods.map((f) => foodArt(f.id));
+  assert.ok(svgs.every((s) => s.startsWith('<svg') && /<(path|circle|rect|ellipse)/.test(s)));
+  assert.equal(new Set(svgs).size, db.foods.length); // hepsi benzersiz
+  assert.equal(Object.keys(FOOD_ART).length, db.foods.length);
+  assert.equal(foodArt('yok-boyle'), '');
+});
