@@ -315,3 +315,9 @@
 ## B073 · 2026-11-12 · beta.10 yayını
 - 1.1.2-beta.10 (B072 haftalık grafik). İki basamaklı beta numarası kontrol edildi: mobil sürüm kodu yalnız major/minor/patch'ten (`mobileVersion`), MSI sürümü 1.1.2 sabit, release-assets sürüm deseni `beta.10`u kabul ediyor. `npm test` 76/76, `native-notices` 446 / eksik 0.
 - Sonraki: **B074** Kıyasla ekranında "Hepsi aynı porsiyon" yanında besin başına ölçü (USDA porsiyonu) hızlı seçimi.
+- Yayın: release run 43181205058 SUCCESS (commit 6acd3b2). v1.1.2-beta.10 pre-release 2026-11-12T08:20Z; 22 varlık. Cihaz kurulumu NOT_RUN.
+
+## B074 · 2026-11-12 · Kıyasla'da hazır ölçüler
+- Karşılaştırma sütunlarındaki miktar denetimine besinin USDA ölçüleri (ör. "1 su bardağı, dilimlenmiş · 150 g") eklendi; dokununca o sütunun gramı ve tablo güncellenir. Önceden boş liste geçiliyordu.
+- Kanıt: `npm test` 76/76; Playwright 72/72 PASS (yeni B074 testi: ölçü düğmesi ve tablo başlığındaki gram); telefonda 412 = 412, ekran görüntüsü incelendi.
+- Sonraki: **B075** Kıyasla'yı telefonda daha kısa yapmak: miktar denetimini B060'taki gibi tek satır (−10 · gram · +10 · ⚙ Ayarla) hâline getirmek.

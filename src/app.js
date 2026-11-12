@@ -499,7 +499,7 @@ function renderCompare() {
   const cols = items.map(({ c, item }, i) => `<div class="cmp-col">
       <div class="cmp-h"><b>${esc(item.name)}</b><span class="muted">${esc(item.formLabel)}</span>
       <button class="btn ghost danger" data-action="cmp-del" data-i="${i}" aria-label="${L("Çıkar")}">✕</button></div>
-      ${amountControls('cmp:' + i, c.g, [], { compact: true, liquid: item.liquid })}
+      ${amountControls('cmp:' + i, c.g, item.portions || [], { compact: true, liquid: item.liquid })}
     </div>`).join('');
   const addBtn = S.compare.length < 4 ? `<button class="cmp-add" data-action="cmp-add">＋ ${L("Besin ekle")}<br><span class="muted">${S.compare.length}/4</span></button>` : '';
   let table = '';

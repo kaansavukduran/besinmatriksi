@@ -647,3 +647,15 @@ test('Günlük son 7 gün enerji grafiği: kayıtsız gün boş, güne dokununca
   await expect(page.locator('.week-bars .wk').nth(5)).toHaveAttribute('aria-current', 'date');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
 });
+
+test('Kıyasla: her besin için hazır ölçüler (USDA porsiyonu) tek dokunuşla seçilir (B074)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  await page.locator('[data-action="ex-add-compare"]').click();
+  await tab(page, 'karsilastir');
+  const por = page.locator('.cmp-col [data-amount="cmp:0"] .pchip.por');
+  expect(await por.count()).toBeGreaterThan(0);
+  const g = await por.first().getAttribute('data-val');
+  await por.first().click();
+  await expect(page.locator('table.cmp thead')).toContainText(`${Number(g).toLocaleString('tr-TR', { maximumFractionDigits: 1 })} g`);
+});
