@@ -544,3 +544,14 @@
 - Kalan boşluklar: oksalat (yalnız 13 FDC kaydı), ağır metaller ve çoğu fitokimyasal için NDB eşlemeli açık veri yok → "veri yok" (uydurma yok).
 - Kanıt: `npm run data`; `npm test` 90/90; Playwright 118/118.
 - Sonraki: **B112** Keşfet: karşılama metni kaldırılıp seçili kategorinin besinleri sağda periyodik tablo gibi kare ızgara.
+
+## B112 · 2026-11-12 · Keşfet: periyodik tablo gibi besin kareleri
+- Seçim yokken sağ panelde seçili kategorinin (ya da aramanın) besinleri kare ızgarada: sıra no, kcal/100 g, simge, ad, protein ve lif. "Tümü"nde kategori başlıklarıyla gruplu. Kareye dokununca matris açılır. Telefonda sağ panel seçim yokken gizli (orta liste kullanılır).
+
+## B113 · 2026-11-12 · Karşılama kartı geri, Aion kapalı, tek temel kart (ayrı Kalori kutusu yok)
+- Kaan önce karşılama metnini kaldırmayı istedi, sonra "vazgeçtim, kalsın; ekrana tam sığsın, boşluk kalmasın, soldaki kutularla dengeli olsun" dedi → karşılama kartı sağ panelin üstünde kompakt (adımlar iki sütun), altını periyodik tablo dolduruyor.
+- "Sağ alttaki Aion'u kaldır" → `aionEnabled` varsayılan false; mevcut kurulumlarda bir kez kapatılır (`bm.aionOffV1`), Ayarlar → Aion'dan yeniden açılabilir.
+- "Üç kutuyu birleştir; kalori iki kez geçmesin" → temel değer kartı (solda pasta, sağda 8 karo) tek kart; ayrı "Kalori" bölümü matriksten ve Kıyasla'dan kaldırıldı (veri CSV'de). Enerji birimi kJ seçiliyse temel kartta kJ gösterilir.
+- İlk hata: tek dosya HTML eski derlemeyle test edildi (4 test) → `npm run build:single` sonrası 4/4 PASS.
+- Kanıt: `npm test` 91/91; Playwright 120 (116 PASS + yeniden derleme sonrası tek-HTML 4/4 PASS).
+- Sonraki: **B114** beta.21 yayını.

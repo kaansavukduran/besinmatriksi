@@ -30,7 +30,7 @@ import { similarFoods } from './similar.js';
 import { FOOD_ICONS } from './food-icons.js';
 import { foodArt } from './food-art.js';
 import { TOUR_STEPS, tourSeen, markTourSeen, nextStep } from './tour.js';
-import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS, migrateFontV2 } from './settings.js';
+import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS, migrateFontV2, migrateAionOff } from './settings.js';
 
 const PRESETS = [1, 5, 10, 25, 50, 100, 150, 200, 250, 500, 750, 1000];
 const MAX_G = 1000;
@@ -63,7 +63,7 @@ const S = {
 const personalLoaded = loadPersonal();
 S.personal = personalLoaded.state; S.personalDraft = structuredClone(S.personal.profile); S.personalReadError = personalLoaded.error;
 setCustomFoods(loadCustom());
-{ const m = migrateFontV2(S.settings); if (m !== S.settings) { S.settings = m; saveSettings(S.settings); } }
+{ const m = migrateAionOff(migrateFontV2(S.settings)); if (m !== S.settings) { S.settings = m; saveSettings(S.settings); } }
 S.amount = S.settings.defaultAmount;
 setLanguage(preferredLanguage(S.settings.language)); // varsayılan metinler doğru dilde oluşsun
 if (!S.recipes.length) S.recipes = [newRecipe(L("İlk tarifim"))];
@@ -362,7 +362,7 @@ function renderExplore() {
       </div>
       ${similarRow(item)}
       <div id="matrix" class="matrix">${matrixForExplore(item)}</div>`
-    : welcome();
+    : welcome() + periodicGrid();
   return `<div class="explore ${item ? 'has-sel' : ''}">
     <nav class="cats ${S.settings.catGrid ? 'cats-grid' : ''}" aria-label="${L("Kategoriler")}">${categoryNav('ex', S.cat, S.settings.showExt)}</nav>
     <section class="list" aria-label="${L("Besinler")}">
@@ -376,18 +376,45 @@ function renderExplore() {
   </div>`;
 }
 
+// Seçim yokken sağ panel: seçili kategorinin (veya aramanın) besinleri periyodik tablo gibi kare ızgara
 function welcome() {
   return `<div class="welcome">
     <h2>${S.settings.emoji ? '🌱 ' : ''}${L("Besin matriksine hoş geldin")}</h2>
-    <ol>
+    <ol class="welcome-steps">
       <li>${L("Soldan bir kategori seç (ör. Baklagiller).")}</li>
       <li>${L("Bir besine tıkla (ör. Yeşil mercimek).")}</li>
       <li>${L("Biçimi (çiğ / haşlanmış…) seç, kaydırıcıyı sağa sola çekerek miktarı (1 g – 1 kg) ayarla.")}</li>
       <li>${L("“Tarife ekle” ile birden çok besinin toplam matriksini gör.")}</li>
     </ol>
     <p class="hint">${L("{foods} besin, {forms} biçim, USDA tam bileşim tablosu · tamamen çevrimdışı · klavye gerekmez.", { foods: META.curated, forms: META.forms })}</p>
-    <div class="quick">${['muz', 'yesil_mercimek', 'nohut', 'ispanak', 'yulaf', 'ceviz', 'tofu_sert', 'yabanmersini'].map((id) => { const f = FOODS.find((x) => x.id === id); return f ? foodButton(f, 'ex-pick') : ''; }).join('')}</div>
   </div>`;
+}
+
+function periodicGrid() {
+  const special = S.cat && (S.cat.startsWith('col:') || S.cat === 'custom' || S.cat === 'ext');
+  const res = search(S.q, { cat: special ? null : S.cat });
+  const foods = res.curated;
+  if (!foods.length) return `<p class="empty">${L("Eşleşen besin yok. Aramayı kısalt veya “Tümü”ne dön.")}</p>`;
+  const tile = (f, i) => {
+    const v = f.forms[0].v;
+    return `<button class="pt" data-action="ex-pick" data-id="${esc(f.id)}" title="${esc(foodName(f))}">
+      <span class="pt-n">${i + 1}</span><span class="pt-k">${v.energy != null ? fmtNum(v.energy) : '–'}<small>kcal</small></span>
+      <span class="pt-i" aria-hidden="true">${foodIcon(f, 40)}</span>
+      <b class="pt-name">${esc(foodName(f))}</b>
+      <span class="pt-m">${v.protein != null ? `P ${fmtNum(v.protein)}` : ''}${v.fiber != null ? ` · ${L("Lif")} ${fmtNum(v.fiber)}` : ''}</span></button>`;
+  };
+  const grid = (list) => `<div class="ptable">${list.map(tile).join('')}</div>`;
+  let body = '';
+  if (!S.q && !S.cat) {
+    let n = 0;
+    for (const c of CATEGORIES) {
+      const fs = foods.filter((f) => f.cat === c.id);
+      if (!fs.length) continue;
+      body += `<h3 class="pt-h">${S.settings.emoji ? c.icon + ' ' : ''}${esc(categoryName(c))} <span class="cnt">${fs.length}</span></h3><div class="ptable">${fs.map((f) => tile(f, n++)).join('')}</div>`;
+    }
+  } else body = grid(foods);
+  const title = S.q ? L("“{q}” için sonuçlar", { q: S.q }) : S.cat && !special ? categoryName(CATEGORIES.find((c) => c.id === S.cat) || { id: S.cat }) : L("Tüm besinler");
+  return `<div class="periodic"><h2>${esc(title)} <span class="cnt">${foods.length}</span></h2><p class="hint">${L("100 g için kcal; P: protein (g), Lif (g). Bir kareye dokun, matriksi açılsın.")}</p>${body}</div>`;
 }
 
 function matrixForExplore(item) {
@@ -512,7 +539,7 @@ function renderCompare() {
   let table = '';
   if (items.length) {
     const rs = items.map(({ c, item }) => scaleItem(item, c.g));
-    const secChips = [['all', L("Tümü")], ['temel', L("Temel besin değerleri")], ...SECTIONS.map((s) => [s.id, L(s.title)])].map(([id, t]) => `<button class="pchip ${S.cmpSection === id ? 'on' : ''}" data-action="cmp-sec" data-s="${id}">${esc(t)}</button>`).join('');
+    const secChips = [['all', L("Tümü")], ['temel', L("Temel besin değerleri")], ...SECTIONS.filter((s) => s.id !== 'enerji').map((s) => [s.id, L(s.title)])].map(([id, t]) => `<button class="pchip ${S.cmpSection === id ? 'on' : ''}" data-action="cmp-sec" data-s="${id}">${esc(t)}</button>`).join('');
     const rows = [];
     let lastSec = null;
     const pr = persona();
@@ -535,6 +562,7 @@ function renderCompare() {
     for (const n of S.cmpSection === 'temel' ? [] : NUTRIENTS) {
       // Kalori kutusu yalnız kaloriyi gösterir (su, kül, ayrıca kJ satırı yok; kJ seçiliyse kcal yerine kJ)
       if (['ash', 'water'].includes(n.key)) continue;
+      if (n.section === 'enerji') continue; // kalori Temel besin değerleri satırında
       if (n.key === 'energy_kj' && S.settings.energyUnit !== 'kj') continue;
       if (n.key === 'energy_kj' && S.settings.energyUnit === 'kcal') continue;
       if (n.key === 'energy' && S.settings.energyUnit === 'kj') continue;

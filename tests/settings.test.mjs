@@ -50,7 +50,7 @@ test('matriks gizleme, sıralama ve sabitleme ölçümleri değiştirmez', async
   const r = { v: { energy: 89, b12: 0, protein: 1 }, s: { energy: 'u', b12: 'u', protein: 'u' }, grams: 100, n: 1 };
   const before = structuredClone(r);
   const html = renderMatrix(r, { hiddenSections: ['hesap'], sectionOrder: ['tolerans'], pinnedNutrients: ['b12', 'fe'] }, { recipe: { name: 'Test' }, basisLabel: 'Toplam' });
-  assert.ok(!html.includes('data-sec="hesap"')); assert.ok(html.indexOf('data-sec="tolerans"') < html.indexOf('data-sec="enerji"'));
+  assert.ok(!html.includes('data-sec="hesap"')); assert.ok(html.indexOf('data-sec="tolerans"') < html.indexOf('data-sec="protein"'));
   assert.match(html, /Sabitlenen besin öğeleri/); assert.match(html, /kaynak 0/); assert.match(html, /veri yok/);
   assert.deepEqual(r, before);
 });
@@ -70,4 +70,11 @@ test('yazı tipi: varsayılan Inter; bir kerelik geçiş yuvarlak/sistem yazıs�
   st = mem(); assert.equal(migrateFontV2({ font: 'lexend' }, st).font, 'inter');
   st = mem(); assert.equal(migrateFontV2({ font: 'opendyslexic' }, st).font, 'opendyslexic');
   st = mem(); assert.equal(migrateFontV2({ font: 'atkinson' }, st).font, 'atkinson');
+});
+test('Aion varsayılan kapalı; mevcut kurulumda bir kez kapatılır, sonra kullanıcının açması korunur (B113)', async () => {
+  const { DEFAULT_SETTINGS, migrateAionOff } = await import('../src/settings.js');
+  assert.equal(DEFAULT_SETTINGS.aionEnabled, false);
+  const m = new Map(), st = { getItem: (k) => m.get(k) ?? null, setItem: (k, v) => m.set(k, String(v)) };
+  assert.equal(migrateAionOff({ aionEnabled: true }, st).aionEnabled, false);
+  assert.equal(migrateAionOff({ aionEnabled: true }, st).aionEnabled, true);
 });

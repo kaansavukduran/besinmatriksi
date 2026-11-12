@@ -19,7 +19,7 @@ export const DEFAULT_SETTINGS = {
   efsaAge: 25, efsaSex: 'unspecified', efsaPhytate: '', efsaIronGroup: 'unspecified',
   energyUnit: 'both', amountUnit: 'g', autoUnits: true, decimalSeparator: 'auto',
   shortcuts: { kesfet: 'Alt+1', tarif: 'Alt+2', karsilastir: 'Alt+3', ayarlar: 'Alt+4', hakkinda: 'Alt+5', gunluk: 'Alt+6' }, focusWidth: 3, largeCursor: false,
-  cardFacts: true, recipeGaps: true, showRecent: true, showSimilar: true, showAnimal: true, catGrid: false, showNiche: false, aionEnabled: true, aionMotion: 'auto', aionSize: 'm', aionSide: 'right', aionTips: true,
+  cardFacts: true, recipeGaps: true, showRecent: true, showSimilar: true, showAnimal: true, catGrid: false, showNiche: false, aionEnabled: false, aionMotion: 'auto', aionSize: 'm', aionSide: 'right', aionTips: true,
 };
 export const SETTING_GROUPS = {
   appearance: ['theme', 'accent', 'radius', 'customTheme', 'uiScale'],
@@ -103,6 +103,18 @@ export function migrateFontV2(settings, storage) {
     if (storage.getItem(FONT_V2_KEY)) return settings;
     storage.setItem(FONT_V2_KEY, '1');
     if (['system', 'nunito', 'andika', 'lexend'].includes(settings.font)) return { ...settings, font: 'inter' };
+  } catch {}
+  return settings;
+}
+
+// 2026-11-12 (Kaan): sağ alttaki Aion kaldırılsın → varsayılan kapalı; mevcut kurulumlarda bir kez kapatılır (Ayarlar → Aion'dan açılabilir). Bayrak: bm.aionOffV1
+export const AION_OFF_KEY = 'bm.aionOffV1';
+export function migrateAionOff(settings, storage) {
+  try {
+    storage ??= globalThis.localStorage;
+    if (storage.getItem(AION_OFF_KEY)) return settings;
+    storage.setItem(AION_OFF_KEY, '1');
+    if (settings.aionEnabled) return { ...settings, aionEnabled: false };
   } catch {}
   return settings;
 }

@@ -44,14 +44,11 @@ test('kişisel bilgi yoksa temel değerlerde ortalama kadın ve erkek yüzdesi; 
   assert.match(html, /PHE Government Dietary Recommendations \(2016/);
   assert.ok(!html.includes('BRD'), 'BRD etiketi yok');
   const m = renderMatrix(r, {}, { item: { name: 'Ürün', formLabel: 'Çiğ', custom: true, allergens: [] } });
-  assert.ok(m.indexOf('basic-card') < m.indexOf('data-sec="enerji"'));
-  assert.ok(m.indexOf('reference-label') > m.indexOf('data-sec="enerji"'), 'kaynak/kapsam en altta');
+  assert.ok(!m.includes('data-sec="enerji"'), 'ayrı Kalori kutusu yok; kalori temel kartta (B113)');
+  assert.ok(m.indexOf('reference-label') > m.indexOf('data-sec="protein"'), 'kaynak/kapsam en altta');
   assert.ok(!/Kül/.test(m), 'kül satırı gösterilmez');
-  // Kalori kutusu: yalnız kalori (su ve kJ yok) (B099)
-  const r2 = { ...r, v: { ...r.v, water: 70, energy_kj: 4184 } };
-  const sec = renderMatrix(r2, {}, { item: { name: 'Ürün', formLabel: 'Çiğ', custom: true, allergens: [] } }).match(/data-sec="enerji"[\s\S]*?<\/details>/)[0];
-  assert.match(sec, /Kalori/);
-  assert.ok(!/Su \(nem\)|kJ/.test(sec), 'kalori kutusunda su/kJ yok');
+  // B099 Kalori kutusu B113'te temel karta katıldı
+
 });
 test('kalori kutusunun üstünde makro pasta grafiği; eksik makroda çizilmez (B100)', async () => {
   const { renderMatrix, macroPie } = await import('../src/matrix.js');
@@ -63,5 +60,5 @@ test('kalori kutusunun üstünde makro pasta grafiği; eksik makroda çizilmez (
   assert.match(pie, /<svg[^>]*class="pie"/);
   assert.equal(macroPie({ ...r, v: { energy: 100, protein: 5 } }, {}), '', 'eksik makroda pasta yok');
   const m = renderMatrix(r, {}, { item: { name: 'Ürün', formLabel: 'Çiğ', custom: true, allergens: [] } });
-  assert.ok(m.indexOf('macro-pie') > 0 && m.indexOf('macro-pie') < m.indexOf('data-sec="enerji"'), 'pasta kalori kutusunun hemen üstünde');
+  assert.ok(m.indexOf('macro-pie') > 0 && m.indexOf('macro-pie') < m.indexOf('basic-tiles'), 'pasta temel değer kartında, karoların solunda');
 });

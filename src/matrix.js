@@ -255,7 +255,8 @@ export function basicCard(r, cfg, title = null, opts = {}) {
     if (!n) return '';
     const x = r.v[k];
     const partial = x != null && r.n > 1 && (r.cov?.[k] || 0) < r.n;
-    const val = x == null ? `<b class="miss">${L("veri yok")}</b>` : `<b>${partial ? '≥ ' : ''}${fmtAmount(x, n.unit, cfg.precision).n} <span class="unit">${esc(fmtAmount(x, n.unit).u)}</span></b>`;
+    const kj = k === 'energy' && cfg.energyUnit === 'kj' && r.v.energy_kj != null;
+    const val = x == null ? `<b class="miss">${L("veri yok")}</b>` : kj ? `<b>${partial ? '≥ ' : ''}${fmtNum(r.v.energy_kj, cfg.precision)} <span class="unit">kJ</span></b>` : `<b>${partial ? '≥ ' : ''}${fmtAmount(x, n.unit, cfg.precision).n} <span class="unit">${esc(fmtAmount(x, n.unit).u)}</span></b>`;
     const refs = x == null || !cfg.showNrv ? [] : dailyRefs(k, persona);
     const kind = refKind(k);
     const bars = refs.map((ref) => {
@@ -306,7 +307,8 @@ export function renderMatrix(r, cfg, ctx = {}) {
   for (const id of cfg.sectionOrder) {
     if (cfg.hiddenSections.includes(id)) continue;
     const sec = SECTIONS.find(s => s.id === id);
-    if (sec) d.push(section(sec, r, cfg, open(id)));
+    // Kalori temel değer kartında gösterilir; ayrı Kalori kutusu yok (Kaan, 2026-11-12)
+    if (sec) { if (sec.id !== 'enerji') d.push(section(sec, r, cfg, open(id))); }
     else if (id === 'hesap' && !hesapFirst) d.push(derivedCard(r, cfg, open(id)));
     else if (id === 'tolerans') d.push(toleranceCard(r, item, cfg, open(id)));
     else if (id === 'kalinti') d.push(safetyExtra(cfg, open(id)));
