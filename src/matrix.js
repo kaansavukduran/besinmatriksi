@@ -223,19 +223,34 @@ function coverage(r, cfg) {
 // Temel değerler: herkesin ilk baktığı 8 bileşen; ayrıntılar altında kalır. Ölçülmemiş = "veri yok", kısmi kapsam belirtilir.
 export const BASIC_KEYS = ['energy', 'protein', 'carb_avail', 'sugars', 'fat', 'sfa', 'fiber', 'salt'];
 const BASIC_SHORT = { energy: 'Kalori', protein: 'Protein', carb_avail: 'Karbonhidrat', sugars: 'Şeker', fat: 'Yağ', sfa: 'Doymuş yağ', fiber: 'Lif', salt: 'Tuz' };
-export function basicCard(r, cfg, title = null) {
+// Hedef çubukları (Günlük): protein/lif/kalori "hedefe doğru", şeker/doymuş yağ/tuz "üst sınır", karbonhidrat/yağ "referans"
+const LIMIT_KEYS = new Set(['sugars', 'sfa', 'salt']);
+const GOAL_KEYS = new Set(['energy', 'protein', 'fiber']);
+export function basicCard(r, cfg, title = null, opts = {}) {
   cfg = normalizeSettings(cfg);
   const tiles = BASIC_KEYS.map((k) => {
     const n = NUTRIENTS.find((x) => x.key === k);
     if (!n) return '';
     const x = r.v[k];
     const partial = x != null && r.n > 1 && (r.cov?.[k] || 0) < r.n;
-    const ref = referenceFor(n, cfg);
+    const ref = k === 'energy' && opts.energyTarget > 0 ? { value: opts.energyTarget, label: L("enerji hedefi") } : referenceFor(n, cfg);
     const pct = x != null && ref?.value > 0 ? (x / ref.value) * 100 : null;
+    if (opts.goals) {
+      const limit = LIMIT_KEYS.has(k), goal = GOAL_KEYS.has(k);
+      const val = x == null ? `<b class="miss">${L("veri yok")}</b>` : `<b>${partial ? '≥ ' : ''}${fmtAmount(x, n.unit, cfg.precision).n} <span class="unit">${esc(fmtAmount(x, n.unit).u)}</span></b>`;
+      if (pct == null) return `<div class="basic-tile" data-basic="${k}"><span>${L(BASIC_SHORT[k])}</span>${val}${x == null || ref?.value > 0 ? '' : `<small>${L("hedef yok")}</small>`}</div>`;
+      const left = ref.value - x;
+      const note = limit ? (pct > 100 ? L("üst sınırı {p} aştı", { p: fmtPct(pct - 100) }) : L("üst sınırın {p}", { p: fmtPct(pct) }))
+        : goal ? (left > 0 ? L("kalan {v}", { v: `${fmtAmount(left, n.unit, cfg.precision).n} ${fmtAmount(left, n.unit).u}` }) : L("hedefe ulaşıldı ✓"))
+          : L("referansın {p}", { p: fmtPct(pct) });
+      const cls = limit && pct > 100 ? 'over' : goal && pct >= 100 ? 'done' : '';
+      return `<div class="basic-tile goal${cls ? ' ' + cls : ''}" data-basic="${k}"><span>${L(BASIC_SHORT[k])}</span>${val}<span class="gbar" role="img" aria-label="${esc(fmtPct(pct))}"><i style="width:${Math.min(100, pct).toFixed(1)}%"></i></span><small>${note}</small></div>`;
+    }
     const val = x == null ? `<b class="miss">${L("veri yok")}</b>` : `<b>${partial ? '≥ ' : ''}${fmtAmount(x, n.unit, cfg.precision).n} <span class="unit">${esc(fmtAmount(x, n.unit).u)}</span></b>`;
     return `<div class="basic-tile" data-basic="${k}" title="${esc(nl(n))}"><span>${L(BASIC_SHORT[k])}</span>${val}${pct != null && cfg.showNrv ? `<small>${fmtPct(pct)} · ${esc(String(ref.label).replace(/^%/, ''))}</small>` : ''}</div>`;
   }).join('');
-  return `<section class="card basic-card" aria-label="${L("Temel besin değerleri")}"><h3>${title || L("Temel besin değerleri")}</h3><div class="basic-grid">${tiles}</div><p class="hint">${L("Ayrıntılı bileşenler (vitaminler, mineraller, amino asitler…) aşağıda.")}</p></section>`;
+  const foot = opts.goals ? L("Çubuklar: kalori, protein ve lifte hedefe doğru; şeker, doymuş yağ ve tuzda üst sınıra göre. Referans: {r}. Kişisel ihtiyaç veya tıbbi öneri değildir.", { r: cfg.referenceMode === 'efsa' ? 'EFSA' : cfg.referenceMode === 'custom' ? L("kendi hedeflerin") : 'BRD (AB 1169/2011)' }) : L("Ayrıntılı bileşenler (vitaminler, mineraller, amino asitler…) aşağıda.");
+  return `<section class="card basic-card${opts.goals ? ' goals' : ''}" aria-label="${L("Temel besin değerleri")}"><h3>${title || L("Temel besin değerleri")}</h3><div class="basic-grid">${tiles}</div><p class="hint">${foot}</p></section>`;
 }
 
 export function renderMatrix(r, cfg, ctx = {}) {

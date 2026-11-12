@@ -688,3 +688,9 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 .basic-tile.big { grid-column: 1 / -1; flex-direction: row; align-items: baseline; justify-content: space-between; flex-wrap: wrap; }
 .basic-tile.big b { font-size: 1.6em; }
 .lang-pick .pchip { font-size: 1.05em; padding: .5rem 1rem; }
+/* Günlük hedef çubukları */
+.basic-tile .gbar { display: block; height: 8px; border-radius: 99px; background: color-mix(in srgb, var(--fg) 12%, transparent); overflow: hidden; margin: 4px 0 2px; }
+.basic-tile .gbar i { display: block; height: 100%; border-radius: inherit; background: var(--acc); }
+.basic-tile.goal.done .gbar i { background: #2e9d5b; }
+.basic-tile.goal.over .gbar i { background: #d9534f; }
+.basic-tile.goal.over small { color: #d9534f; font-weight: 600; }

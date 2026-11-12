@@ -662,5 +662,14 @@ export const UI_EN = {
  "Cihaz dili": "Device language",
  "Şimdilik Türkçe ve İngilizce. Besin adları, matriks, tarif ve dışa aktarma seçilen dile geçer.": "Turkish and English for now. Food names, the matrix, recipes and exports switch to the chosen language.",
  "Karşılaştırma tablosu (yana kaydırılabilir)": "Comparison table (scrolls sideways)",
- "USDA “{u}” ölçüsünden hacimle hesaplandı; yaklaşık": "Calculated by volume from the USDA “{u}” measure; approximate"
+ "USDA “{u}” ölçüsünden hacimle hesaplandı; yaklaşık": "Calculated by volume from the USDA “{u}” measure; approximate",
+ "enerji hedefi": "energy goal",
+ "hedef yok": "no target",
+ "üst sınırı {p} aştı": "{p} over the limit",
+ "üst sınırın {p}": "{p} of the limit",
+ "kalan {v}": "{v} to go",
+ "hedefe ulaşıldı ✓": "goal reached ✓",
+ "referansın {p}": "{p} of reference",
+ "kendi hedeflerin": "your own targets",
+ "Çubuklar: kalori, protein ve lifte hedefe doğru; şeker, doymuş yağ ve tuzda üst sınıra göre. Referans: {r}. Kişisel ihtiyaç veya tıbbi öneri değildir.": "Bars: calories, protein and fibre count towards a goal; sugar, saturated fat and salt against an upper limit. Reference: {r}. Not personal needs or medical advice."
 };

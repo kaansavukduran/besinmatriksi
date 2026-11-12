@@ -432,3 +432,9 @@
 - İlk hatalar: (1) yeni birim testi derleme betiğini içe aktarıyordu (yan etki: veri dosyası yazma) → kaldırıldı; (2) B074 testi ilk ölçü düğmesinin tam sayı olduğunu varsayıyordu (artık 190,2 g; tablo başlığı yuvarlar) → beklenti yuvarlanmış değere çevrildi.
 - Kanıt: `npm run data`; `npm test` 82/82 (nohut 1 su bardağı = 1 cup × 200/236,6, su ≈ 200 g, ekmekte hesaplanmış ölçü yok); Playwright 94/96 → düzeltme sonrası B074/B092 4/4 PASS.
 - Sonraki: **B093** Günlük'te hedef çubukları.
+
+## B093 · 2026-11-12 · Günlük hedef çubukları
+- `basicCard(r, cfg, title, { goals, energyTarget })`: Günlük'te temel kart karolarına çubuk. Kalori (profil/elle hedef), protein, lif "hedefe doğru" ("kalan X" / "hedefe ulaşıldı ✓", yeşil); şeker, doymuş yağ, tuz "üst sınır" ("üst sınırın %X", aşınca kırmızı "üst sınırı %X aştı"); karbonhidrat ve yağ "referansın %X". Referansı olmayan değerde çubuk yok ("hedef yok"); veri yoksa yalnız "veri yok", çubuk yok. Lif referansı yalnız EFSA/kendi hedef modunda vardır (BRD'de yok). Altta kaynak ve "tıbbi öneri değildir" notu. Besin ekranı değişmedi. TR/EN.
+- İlk hata: birim testinin karo yakalayıcısı sınıfı kaçırıyordu; ayrıca veri yokken "hedef yok" da yazılıyordu → yalnız "veri yok".
+- Kanıt: `npm test` 83/83; Playwright 98/98 (B093 desktop+phone dahil).
+- Sonraki: **B094** Aion: günün saatine göre selam, hedeflere ulaşınca kutlama.

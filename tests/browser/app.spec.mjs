@@ -829,3 +829,16 @@ test('Türk ölçüleri düğmelerde ≈ ile görünür ve gramı ayarlar (B092)
   await chip.click();
   await expect(page.locator('[data-amount="ex"] .amt-val b')).toHaveText(/^169/);
 });
+
+test('Günlük hedef çubukları: kalori hedefe doğru, yalnız Günlük\'te (B093)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  await expect(page.locator('#matrix .basic-card .gbar')).toHaveCount(0);
+  await page.locator('[data-action="ex-add-day"]').click();
+  await tab(page, 'gunluk');
+  const card = page.locator('.basic-card.goals');
+  await expect(card.locator('[data-basic="energy"] .gbar')).toHaveCount(1);
+  await expect(card.locator('[data-basic="energy"] small')).toContainText('kalan');
+  await expect(card.locator('[data-basic="salt"]')).toContainText('üst sınır');
+  await expect(card).toContainText('tıbbi öneri değildir');
+});

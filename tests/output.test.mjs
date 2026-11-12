@@ -16,3 +16,21 @@ test('kaynak etiketi veri seti yılı ve kayıt kimliğini taşır; bilinmeyen a
   assert.match(html, /Bilgi girilmedi; ürün etiketini kontrol et/);
   assert.ok(!html.includes('Tahıl kaynaklı gluten beklenmez'));
 });
+test('Günlük hedef çubukları: hedefe doğru, üst sınır ve veri yok ayrımı (B093)', async () => {
+  const { basicCard } = await import('../src/matrix.js');
+  const r = { v: { energy: 1000, protein: 60, sugars: 120, salt: 3 }, s: {}, n: 1, cov: {} };
+  const html = basicCard(r, {}, null, { goals: true, energyTarget: 2000 });
+  const tile = (k) => html.match(new RegExp(`<div class="[^"]*" data-basic="${k}"[\\s\\S]*?</div>`))[0];
+  assert.match(tile('energy'), /kalan 1\.000 kcal/);
+  assert.match(tile('energy'), /width:50\.0%/);
+  assert.match(tile('protein'), /hedefe ulaşıldı/);
+  assert.match(tile('protein'), /goal done/);
+  assert.match(tile('sugars'), /goal over/);
+  assert.match(tile('sugars'), /üst sınırı .* aştı/);
+  assert.match(tile('salt'), /üst sınırın/);
+  assert.match(tile('fat'), /veri yok/);
+  assert.ok(!tile('fat').includes('gbar'), 'veri yokken çubuk çizilmez');
+  assert.match(tile('fiber'), /veri yok/);
+  assert.ok(!tile('fat').includes('hedef yok'), 'veri yokken hedef yok denmez');
+  assert.ok(!basicCard(r, {}).includes('gbar'), 'besin ekranında çubuk yok');
+});
