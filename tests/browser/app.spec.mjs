@@ -968,3 +968,16 @@ test('Ayarlar kartları boşluksuz sütunlara akar; yatay taşma yok (B108)', as
   expect(Math.max(...gaps)).toBeLessThan(40);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
 });
+
+test('Kıyasla tablosu kendi içinde dikey kaydırmaz; sayfa boyunca açık (B109)', async ({ page }) => {
+  await page.goto('/');
+  for (const id of ['limon', 'ananas']) {
+    await page.locator('#q').fill(id); await page.locator(`#foodlist [data-id="${id}"]`).click();
+    await page.locator('[data-action="ex-add-compare"]').click();
+    if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
+  }
+  await tab(page, 'karsilastir');
+  const w = page.locator('.tablewrap');
+  expect(await w.evaluate((e) => e.scrollHeight - e.clientHeight)).toBeLessThanOrEqual(1);
+  expect(await w.evaluate((e) => e.clientHeight)).toBeGreaterThan(1000);
+});

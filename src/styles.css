@@ -289,7 +289,7 @@ i.sci, .dsub i { font-style: italic; }
 .cmp-h .btn { margin-left: auto; }
 .cmp-add { min-height: 140px; border: 2px dashed var(--line); border-radius: var(--radius); background: transparent; font-size: 1.05rem; }
 .cmp-add:hover { border-color: var(--acc); color: var(--acc); }
-.tablewrap { overflow: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); max-height: 75vh; }
+.tablewrap { overflow-x: auto; overflow-y: visible; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
 table.cmp { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
 table.cmp th, table.cmp td { padding: .45rem .7rem; border-bottom: 1px solid var(--line); text-align: right; vertical-align: middle; }
 table.cmp th[scope="row"], table.cmp thead th:first-child { text-align: left; font-weight: 500; position: sticky; left: 0; background: var(--card); z-index: 1; }

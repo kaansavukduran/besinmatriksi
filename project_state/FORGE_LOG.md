@@ -526,3 +526,7 @@
 ## B108 · 2026-11-12 · Ayarlar dengeli düzen
 - Kaan: Ayarlar kutuları dengesiz, boşluklu. Izgara satırları en uzun karta göre yükseldiği için büyük boşluklar kalıyordu → CSS çok sütunlu akış (masonry): `columns: 3 400px`, kartlar bölünmez, arama kutusu tam genişlik. Masaüstü 1600 px'te 3 sütun, telefonda tek sütun.
 - Kanıt: Playwright 116/116 (B108: aynı sütunda ardışık kartlar arası boşluk < 40 px, yatay taşma yok); ekran görüntüsü kontrol edildi.
+
+## B109 · 2026-11-12 · Kıyasla tablosu iç kaydırmasız
+- Kaan: tablonun sağındaki dikey kaydırma çubuğu saçma. `.tablewrap` `max-height: 75vh` kaldırıldı; tablo tam boyda, sayfa kaydırılır (yatay kaydırma dar ekranda kalır).
+- Kanıt: Playwright 118/118 (B109: tablewrap içinde dikey taşma yok, yükseklik > 1000 px).
