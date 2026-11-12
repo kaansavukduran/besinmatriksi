@@ -664,7 +664,7 @@ test('Kıyasla: her besin için hazır ölçüler (USDA porsiyonu) tek dokunuşl
   expect(await por.count()).toBeGreaterThan(0);
   const g = await por.first().getAttribute('data-val');
   await por.first().click();
-  await expect(page.locator('table.cmp thead')).toContainText(`${Number(g).toLocaleString('tr-TR', { maximumFractionDigits: 1 })} g`);
+  await expect(page.locator('table.cmp thead')).toContainText(`${Math.round(Number(g))} g`);
 });
 
 test('hayvansal besinler kendi kategorilerinde, etiketli; Ayarlar\'dan gizlenir (B077)', async ({ page }) => {
@@ -819,4 +819,13 @@ test('service worker: sayfa açılışı önce ağdan, tek dosya hatası kurulum
   expect(sw).toContain("cache: 'no-store'");
   // sağlıklı açılışta bekçi mesajı çıkmaz
   expect(await page.evaluate(() => window.__bmBooted)).toBe(true);
+});
+
+test('Türk ölçüleri düğmelerde ≈ ile görünür ve gramı ayarlar (B092)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('nohut'); await page.locator('#foodlist [data-id="nohut"]').click();
+  const chip = page.locator('[data-amount="ex"] .pchip.por', { hasText: '1 su bardağı (200 ml)' });
+  await expect(chip).toContainText('≈');
+  await chip.click();
+  await expect(page.locator('[data-amount="ex"] .amt-val b')).toHaveText(/^169/);
 });

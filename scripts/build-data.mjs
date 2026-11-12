@@ -159,7 +159,25 @@ function usdaPortions(ndb) {
     if (!(g > 0) || g > 1000) continue;
     out.push({ g: round(g), label: trPortion(d), en: d });
   }
-  return out;
+  return [...turkishMeasures(out), ...out];
+}
+// Türk mutfak ölçüleri: USDA hacim ölçüsünden (cup 236,6 ml, tbsp 14,79 ml, tsp 4,93 ml) ml başına gram bulunup
+// su bardağı 200 ml, yemek kaşığı 15 ml, çay kaşığı 5 ml için hesaplanır. Yaklaşıktır (d: 1 ile işaretli).
+export function turkishMeasures(portions) {
+  const ML = { cup: 236.6, tbsp: 14.79, tablespoon: 14.79, tsp: 4.93, teaspoon: 4.93, 'fl oz': 29.57 };
+  let perMl = null, from = null;
+  for (const p of portions) {
+    const m = /^(\d*\.?\d+)\s*(cup|tbsp|tablespoon|tsp|teaspoon|fl oz)s?\b/i.exec(String(p.en).trim());
+    if (!m) continue;
+    const qty = Number(m[1]), unit = m[2].toLowerCase();
+    if (!(qty > 0)) continue;
+    perMl = p.g / (qty * ML[unit]); from = m[0];
+    if (unit === 'cup') break; // en güvenilir: bardak ölçüsü
+  }
+  if (!(perMl > 0)) return [];
+  const make = (ml, label, en) => ({ g: Math.round(perMl * ml * 10) / 10, label, en, d: 1, src: from });
+  const out = [make(200, '1 su bardağı (200 ml)', '1 Turkish cup (200 ml)'), make(15, '1 yemek kaşığı (15 ml)', '1 tablespoon (15 ml)'), make(5, '1 çay kaşığı (5 ml)', '1 teaspoon (5 ml)')];
+  return out.filter((p) => p.g > 0 && p.g <= 1000);
 }
 
 

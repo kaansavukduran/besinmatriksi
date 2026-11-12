@@ -108,3 +108,17 @@ test('kategori içi yaygınlık sırası ve az bilinen besin işareti (B087)', a
   for (const id of NICHE) assert.equal(DB.foods.find((f) => f.id === id)?.niche, true, id);
   assert.equal(DB.foods.find((f) => f.id === 'elma').niche, undefined);
 });
+
+test('Türk ölçüleri USDA hacim ölçüsünden hesaplanır ve işaretlidir (B092)', async () => {
+  const form = (id) => DB.foods.find((f) => f.id === id).forms[0];
+  const p = form('nohut').portions;
+  const su = p.find((x) => x.d && x.label.startsWith('1 su bardağı (200 ml)'));
+  const cup = p.find((x) => /^1 cup/.test(x.en));
+  assert.ok(su && cup);
+  assert.ok(Math.abs(su.g - cup.g * 200 / 236.6) < 0.2, `${su.g} vs ${cup.g}`);
+  assert.equal(su.src, '1 cup');
+  const water = form('su').portions.find((x) => x.d && x.label.startsWith('1 su bardağı'));
+  assert.ok(water.g > 195 && water.g < 205);
+  // ölçüsü olmayan besinde uydurma ölçü yok
+  assert.ok(form('beyaz_ekmek').portions.every((x) => !x.d));
+});

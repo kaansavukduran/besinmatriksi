@@ -661,5 +661,6 @@ export const UI_EN = {
  "Dil": "Language",
  "Cihaz dili": "Device language",
  "Şimdilik Türkçe ve İngilizce. Besin adları, matriks, tarif ve dışa aktarma seçilen dile geçer.": "Turkish and English for now. Food names, the matrix, recipes and exports switch to the chosen language.",
- "Karşılaştırma tablosu (yana kaydırılabilir)": "Comparison table (scrolls sideways)"
+ "Karşılaştırma tablosu (yana kaydırılabilir)": "Comparison table (scrolls sideways)",
+ "USDA “{u}” ölçüsünden hacimle hesaplandı; yaklaşık": "Calculated by volume from the USDA “{u}” measure; approximate"
 };

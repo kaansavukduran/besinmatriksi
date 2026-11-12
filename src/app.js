@@ -151,7 +151,7 @@ function amountControls(target, g, portions = [], { compact = false, liquid = fa
     <input type="range" class="slider" min="1" max="${MAX_G}" step="1" value="${g}" style="--fill:${((g - 1) / (MAX_G - 1)) * 100}%" data-slider="${esc(target)}" aria-valuetext="${fmtNum(g)} g" aria-label="${L("Miktar (gram)")}">
     ${compact ? '' : `<div class="slider-scale" aria-hidden="true"><span>1 g</span><span>250</span><span>500</span><span>750</span><span>1 kg</span></div>`}
     <div class="presets">${presets.map((p) => `<button class="pchip ${p === g ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p}">${p >= 1000 ? '1 kg' : p + ' g'}</button>`).join('')}</div>
-    ${portions.length ? `<div class="portions">${portions.map((p) => `<button class="pchip por ${Math.abs(p.g - g) < 0.01 ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p.g}" title="${esc(p.en)} (USDA)">${esc(getLanguage() === 'en' && p.en ? p.en : p.label)} · ${fmtNum(p.g)} g</button>`).join('')}</div>` : ''}
+    ${portions.length ? `<div class="portions">${portions.map((p) => `<button class="pchip por ${Math.abs(p.g - g) < 0.01 ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p.g}" title="${esc(p.d ? L("USDA “{u}” ölçüsünden hacimle hesaplandı; yaklaşık", { u: p.src }) : p.en + ' (USDA)')}">${esc(getLanguage() === 'en' && p.en ? p.en : p.label)} · ${p.d ? '≈ ' : ''}${fmtNum(p.g)} g</button>`).join('')}</div>` : ''}
   </div>`;
 }
 

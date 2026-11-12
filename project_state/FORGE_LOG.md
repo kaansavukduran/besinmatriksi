@@ -425,3 +425,10 @@
 - 1.1.2-beta.15 (B090 service worker düzeltmesi ve açılış bekçisi indirilebilir paketlere/PWA'ya). `npm test` PASS; `native-notices` 446 / eksik 0.
 - Sonraki: **B092** Kaan'ın Chrome'daki sonucuna göre: hâlâ açılmıyorsa hata metniyle ağ/DNS teşhisi ve gerekirse ikinci barındırma adresi.
 - Yayın: release run 43276002011 SUCCESS (commit d686224). v1.1.2-beta.15 pre-release 2026-11-12T18:12Z; 22 varlık. Vercel (d686224): success "Deployment has completed". Canlı site ve cihaz kurulumu NOT_RUN (bu ortamdan erişim yok).
+
+## B092 · 2026-11-12 · Türk mutfak ölçüleri
+- `scripts/build-data.mjs` `turkishMeasures`: USDA hacim ölçüsünden (cup 236,6 ml önceliklidir; yoksa tbsp 14,79, tsp 4,93, fl oz 29,57 ml) ml başına gram bulunur; 1 su bardağı (200 ml), 1 yemek kaşığı (15 ml), 1 çay kaşığı (5 ml) gramları hesaplanır (`d: 1`, `src`: kaynak ölçü). Hacim ölçüsü olmayan besinde (ör. ekmek: "1 dilim") uydurma ölçü yok. 355 küratörlü biçim + geniş katalog; foods.json 910→1046 KB, ext 3,27→3,72 MB.
+- Arayüz: ölçü düğmelerinde hesaplanan değerler "≈" ile, ipucunda "USDA “1 cup” ölçüsünden hacimle hesaplandı; yaklaşık". İngilizcede "1 Turkish cup (200 ml)".
+- İlk hatalar: (1) yeni birim testi derleme betiğini içe aktarıyordu (yan etki: veri dosyası yazma) → kaldırıldı; (2) B074 testi ilk ölçü düğmesinin tam sayı olduğunu varsayıyordu (artık 190,2 g; tablo başlığı yuvarlar) → beklenti yuvarlanmış değere çevrildi.
+- Kanıt: `npm run data`; `npm test` 82/82 (nohut 1 su bardağı = 1 cup × 200/236,6, su ≈ 200 g, ekmekte hesaplanmış ölçü yok); Playwright 94/96 → düzeltme sonrası B074/B092 4/4 PASS.
+- Sonraki: **B093** Günlük'te hedef çubukları.
