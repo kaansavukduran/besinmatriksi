@@ -508,3 +508,8 @@
 - Günlük ekranında sıra: gün kartı (tarih, plan/tüketilen) → günün temel değerleri (çubuklar) → enerji özeti → kayıtlar → 7 gün → kaynak → matriks; kişisel profil formu en alta (yedek düğmelerinin üstüne) taşındı. Telefonda temel değerler artık ilk ekranda.
 - Kanıt: `npm test` 88/88; Playwright 110/110 (B104 desktop+phone: temel kart ve tarih seçici profil kartının üstünde).
 - Sonraki: **B105** Kaan'ın geri bildirimine göre; bekleyen yoksa Günlük'te makro pasta grafiği (gün toplamı).
+
+## B105 · 2026-11-12 · Günlük'te gün toplamı pasta grafiği
+- Günlük'te günün temel değerlerinin hemen altında "Kalori nereden geliyor?" pastası (gün toplamı; makrolardan biri hiçbir kayıtta yoksa çizilmez). Artık pasta Keşfet, Tarif, Kıyasla ve Günlük'te.
+- Kanıt: `npm test` 88/88; Playwright 112/112.
+- Sonraki: **B106** beta.20 yayını (B104 + B105).

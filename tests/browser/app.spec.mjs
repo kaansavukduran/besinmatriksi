@@ -931,3 +931,12 @@ test('Günlük: gün kartı ve temel değerler profilin üstünde (B104)', async
   expect(await y('.personal .basic-card')).toBeLessThan(await y('.personal-profile'));
   expect(await y('#personal-day')).toBeLessThan(await y('.personal-profile'));
 });
+
+test('Günlük: günün kalori pasta grafiği temel değerlerin altında (B105)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('nohut'); await page.locator('#foodlist [data-id="nohut"]').click();
+  await page.locator('[data-action="ex-add-day"]').click();
+  await tab(page, 'gunluk');
+  await expect(page.locator('.personal .macro-pie svg.pie')).toHaveCount(1);
+  await expect(page.locator('.personal .macro-pie li[data-part="p"] strong')).toContainText('%');
+});
