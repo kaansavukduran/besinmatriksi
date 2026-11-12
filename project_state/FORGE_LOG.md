@@ -563,3 +563,7 @@
 - Besin mayası ve psyllium: SR28, FDC Foundation ve FNDDS 2024'te yok (doğrulandı); değerler markaya göre çok değişir → katalogda açık notla yer alır, değer uydurulmaz; "Etiketten kendi besinim olarak ekle" düğmesi ürün etiketi formunu adıyla açar. Mevcut `besin_mayasi` kaydı aslında kuru ekmek mayasıdır (adı doğru: "Kuru ekmek mayası (aktif)").
 - Kanıt: `npm run data` (341 besin); `npm test` 91/91; Playwright 122/122.
 - Sonraki: **B116** beta.22 yayını (beta.21 sonucu kontrol edildikten sonra).
+
+## B114 · 2026-11-12 · beta.21 yayın kanıtı
+- v1.1.2-beta.21 pre-release 2026-11-12T23:38:57Z (commit bd19671). Cihaz kurulumu NOT_RUN.
+- B116: beta.22 (B115) release.yml tetiklendi.
