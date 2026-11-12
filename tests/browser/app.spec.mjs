@@ -921,3 +921,13 @@ test('pasta grafiği Keşfet, Tarif ve Kıyasla sekmelerinde (B102)', async ({ p
   await expect(page.locator('.cmp-pies .macro-pie.mini').first()).toContainText('Nohut');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
 });
+
+test('Günlük: gün kartı ve temel değerler profilin üstünde (B104)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  await page.locator('[data-action="ex-add-day"]').click();
+  await tab(page, 'gunluk');
+  const y = async (sel) => (await page.locator(sel).first().boundingBox()).y;
+  expect(await y('.personal .basic-card')).toBeLessThan(await y('.personal-profile'));
+  expect(await y('#personal-day')).toBeLessThan(await y('.personal-profile'));
+});

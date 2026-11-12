@@ -503,3 +503,8 @@
 ## B103 · 2026-11-12 · beta.19 yayın kanıtı
 - v1.1.2-beta.19 pre-release 2026-11-12T20:53:57Z (commit 1b70f2b; Kıyasla'da besin başına kalori pastaları). Cihaz kurulumu NOT_RUN.
 - Sonraki: **B104** Günlük'te telefonda gün kartı ve temel değerler profilin üstüne (B096'da gözlenen uzun kaydırma).
+
+## B104 · 2026-11-12 · Günlük: önce gün, sonra profil
+- Günlük ekranında sıra: gün kartı (tarih, plan/tüketilen) → günün temel değerleri (çubuklar) → enerji özeti → kayıtlar → 7 gün → kaynak → matriks; kişisel profil formu en alta (yedek düğmelerinin üstüne) taşındı. Telefonda temel değerler artık ilk ekranda.
+- Kanıt: `npm test` 88/88; Playwright 110/110 (B104 desktop+phone: temel kart ve tarih seçici profil kartının üstünde).
+- Sonraki: **B105** Kaan'ın geri bildirimine göre; bekleyen yoksa Günlük'te makro pasta grafiği (gün toplamı).
