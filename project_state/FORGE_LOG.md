@@ -395,3 +395,10 @@
 - Arayüz: kategori listeleri ve "Tümü" sayısı varsayılan olarak az bilinenleri göstermez; arama ve kayıtlı tarif/günlük/koleksiyon kayıtları etkilenmez. Ayarlar → Matriks "Az bilinen besinleri de listele" (`showNiche`, varsayılan kapalı). Benzer besinler ve "en düşük kalan" önerileri de az bilinenleri önermez.
 - Kanıt: `npm test` 81/81 (yeni sıra/işaret testi); Playwright 86/86 PASS (yeni B087 testi: Meyveler elma-muz-portakal ile başlar, jackfruit listede yok ama aramada var, ayarla görünür).
 - Sonraki: **B088** yaygın ama eksik besinler (ekmek çeşitleri, su, taze soğan vb.).
+
+## B088 · 2026-11-12 · yaygın ama eksik besinler
+- 12 yeni besin (hepsi USDA SR28 kaydıyla, FOOD_DES.txt'ten doğrulandı): beyaz ekmek (taze/kızarmış), tam buğday ekmeği (taze/kızarmış), çavdar ekmeği, pide/lavaş beyaz ve tam buğday, patlamış mısır (yağsız, tuzsuz), içme suyu, üzüm suyu (şekersiz), taze soğan, fırında patates kızartması, tavuk but, dana biftek. Ekmeklerde "ticari ekmeklerde süt/yumurta olabilir, etikete bak", suda "mineral içeriği bölgeye göre değişir" notu. Toplam 330 küratörlü besin.
+- Yaygınlık sırasında yerlerine kondu (Tahıllar beyaz ekmekle, İçecekler suyla başlar). Her biri için yeni SVG çizimler (somun, pide, kızartma, patlamış mısır, su bardağı şablonları), emoji yedeği ve İngilizce adlar.
+- İlk hata: yeni tarayıcı testi "Tahıllar" seçiliyken "su" aradı (boş sonuç); test "Tümü"ye geçecek şekilde düzeltildi, uygulama kodu değişmedi.
+- Kanıt: `npm run data` (curated 330); `npm test` 81/81 (330 benzersiz çizim, EN kapsamı); Playwright: tam koşu 86/88, düzeltme sonrası B088 2/2 PASS.
+- Sonraki: **B089** baştan sona denetim (hata taraması, dil ayarı TR/EN kontrolü) ve beta.14.

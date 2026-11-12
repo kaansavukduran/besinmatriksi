@@ -655,5 +655,7 @@ export const UI_EN = {
  "Günün temel besin değerleri": "Today's key nutrition facts",
  "Kalori": "Calories",
  "Şeker": "Sugar",
- "Az bilinen besinleri de listele (ör. jackfruit, teff); kapalıyken yalnız aramada çıkar": "List lesser-known foods too (e.g. jackfruit, teff); when off they appear only in search"
+ "Az bilinen besinleri de listele (ör. jackfruit, teff); kapalıyken yalnız aramada çıkar": "List lesser-known foods too (e.g. jackfruit, teff); when off they appear only in search",
+  "Ticari ekmeklerin bazılarında süt, yumurta veya tereyağı bulunabilir; vegan uygunluğu için etikete bak.": "Some commercial breads contain milk, egg or butter; check the label for vegan suitability.",
+  "Musluk suyunun mineral içeriği bölgeye göre değişir; ambalajlı suda etikete bak.": "Tap water mineral content varies by region; for bottled water check the label."
 };

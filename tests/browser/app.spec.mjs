@@ -768,3 +768,18 @@ test('kategorilerde yaygın besinler önce; az bilinenler gizli ama aranabilir (
   await page.locator('.cat[data-cat="meyve"]').click();
   await expect(page.locator('#foodlist [data-id="jackfruit"]')).toBeVisible();
 });
+
+test('yaygın eklenen besinler: ekmek, su, taze soğan, tavuk but listede ve çizimli (B088)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('.cat[data-cat="tahil"]').click();
+  const ids = await page.locator('#foodlist .food').evaluateAll((els) => els.map((e) => e.dataset.id));
+  expect(ids[0]).toBe('beyaz_ekmek');
+  await expect(page.locator('#foodlist [data-id="beyaz_ekmek"] svg.fart')).toBeVisible();
+  await page.locator('.cat[data-cat=""]').click();
+  for (const q of ['su', 'taze soğan', 'tavuk but']) {
+    await page.locator('#q').fill(q);
+    await expect(page.locator('#foodlist .food').first()).toBeVisible();
+  }
+  await page.locator('#q').fill('içme suyu'); await page.locator('#foodlist [data-id="su"]').click();
+  await expect(page.locator('.basic-card [data-basic="energy"] b')).toContainText('0');
+});

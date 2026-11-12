@@ -410,4 +410,18 @@ export const FOODS = [
   F('karides', 'Karides', 'shrimp', 'balik', [['cig', '15270', null, 'Çiğ'], ['haslanmis', '15271', null, 'Pişmiş']], { allergens: ['kabuklu'] }),
   F('midye', 'Midye', 'blue mussel', 'balik', [['cig', '15164', null, 'Çiğ'], ['haslanmis', '15165', null, 'Buharda / haşlanmış']], { allergens: ['yumusakca'] }),
   F('bal', 'Bal', 'honey', 'tatli', [['macun', '19296', null, 'Bal']], { animal: true, note: 'Bal arı ürünüdür (vegan değildir). 1 yaşından küçük bebeklere verilmez.' }),
+
+  // ---------------- Yaygın tüketilen ek besinler (B088, 2026-11-12) ----------------
+  F('beyaz_ekmek', 'Beyaz ekmek', 'white bread', 'tahil', [['taze', '18069', null, 'Taze'], ['pismis', '18070', null, 'Kızarmış (tost)']], { allergens: ['gluten'], note: 'Ticari ekmeklerin bazılarında süt, yumurta veya tereyağı bulunabilir; vegan uygunluğu için etikete bak.' }),
+  F('tam_bugday_ekmegi', 'Tam buğday ekmeği', 'whole-wheat bread', 'tahil', [['taze', '18075', null, 'Taze'], ['pismis', '18076', null, 'Kızarmış (tost)']], { allergens: ['gluten'], note: 'Ticari ekmeklerin bazılarında süt, yumurta veya tereyağı bulunabilir; vegan uygunluğu için etikete bak.' }),
+  F('cavdar_ekmegi', 'Çavdar ekmeği', 'rye bread', 'tahil', [['taze', '18060', null, 'Taze']], { allergens: ['gluten'] }),
+  F('pide_lavas', 'Pide / lavaş (beyaz)', 'pita bread, white', 'tahil', [['taze', '18041', null, 'Taze']], { allergens: ['gluten'] }),
+  F('pide_lavas_tam', 'Pide / lavaş (tam buğday)', 'pita bread, whole-wheat', 'tahil', [['taze', '18042', null, 'Taze']], { allergens: ['gluten'] }),
+  F('patlamis_misir', 'Patlamış mısır (yağsız, tuzsuz)', 'air-popped popcorn', 'tahil', [['kavrulmus', '19806', null, 'Yağsız patlatılmış']]),
+  F('su', 'İçme suyu (musluk)', 'tap water', 'icecek', [['icecek', '14411', null, 'İçme suyu']], { note: 'Musluk suyunun mineral içeriği bölgeye göre değişir; ambalajlı suda etikete bak.' }),
+  F('uzum_suyu', 'Üzüm suyu (şekersiz)', 'grape juice, unsweetened', 'icecek', [['suyu', '09135', null, 'Şişelenmiş, şekersiz']]),
+  F('taze_sogan', 'Taze soğan', 'spring onion', 'sebze', [['cig', '11291', null]]),
+  F('patates_kizartmasi', 'Patates kızartması (fırında)', 'french fries, oven-baked', 'kok', [['firin', '11841', null, 'Dondurulmuştan fırında, tuzsuz']]),
+  F('tavuk_but', 'Tavuk but (derisiz)', 'chicken thigh', 'kumes', [['cig', '05096', null, 'Çiğ'], ['pismis', '05098', null, 'Fırında']]),
+  F('dana_biftek', 'Dana biftek (yağsız, bonfile tipi)', 'beef top sirloin steak, lean', 'et', [['cig', '23625', null, 'Çiğ'], ['pismis', '23629', null, 'Izgara']]),
 ];

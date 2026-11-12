@@ -9,6 +9,11 @@ export const EN_CATEGORIES = {
 };
 
 export const EN_FORMS = {
+  'Kızarmış (tost)': 'Toasted',
+  'Yağsız patlatılmış': 'Air-popped',
+  'İçme suyu': 'Drinking water',
+  'Şişelenmiş, şekersiz': 'Bottled, unsweetened',
+  'Dondurulmuştan fırında, tuzsuz': 'Oven-baked from frozen, no salt',
   'Tam yağlı %3,25 (vitamin eklenmemiş)': 'Whole 3.25% (no added vitamins)',
   '%2 yağlı (vitamin eklenmemiş)': '2% fat (no added vitamins)',
   'Yağsız (vitamin eklenmemiş)': 'Skim (no added vitamins)',
@@ -39,6 +44,18 @@ export const EN_FORMS = {
 };
 
 export const EN_FOODS = {
+  beyaz_ekmek: 'White bread',
+  tam_bugday_ekmegi: 'Whole-wheat bread',
+  cavdar_ekmegi: 'Rye bread',
+  pide_lavas: 'Pita / flatbread (white)',
+  pide_lavas_tam: 'Pita / flatbread (whole-wheat)',
+  patlamis_misir: 'Popcorn (air-popped, unsalted)',
+  su: 'Drinking water (tap)',
+  uzum_suyu: 'Grape juice (unsweetened)',
+  taze_sogan: 'Spring onion',
+  patates_kizartmasi: 'French fries (oven-baked)',
+  tavuk_but: 'Chicken thigh (skinless)',
+  dana_biftek: 'Beef steak (lean, sirloin)',
   inek_sutu: 'Cow milk (whole)',
   inek_sutu_yarim: 'Cow milk (2% fat)',
   inek_sutu_yagsiz: 'Cow milk (skim)',

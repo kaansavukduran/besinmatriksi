@@ -9,6 +9,13 @@ const leaf = (c = '#4caf50', x = 17, y = 7) => `<path d="M${x} ${y} q4-4 8-1 q-4
 const stem = (x = 16, y = 8) => `<path d="M${x} ${y} q.5-3 2-4.5" fill="none" ${st(1.4)}/>`;
 
 const SHAPES = {
+  // Ekmek: loaf (somun), flat (pide/lavaş); kızartma; patlamış mısır
+  bread: (c, c2 = '#f5deb3', v = 'loaf') => (v === 'flat'
+    ? `<ellipse cx="16" cy="18" rx="13" ry="8" fill="${c}" ${st()}/><ellipse cx="16" cy="17" rx="10" ry="5.5" fill="${c2}" opacity=".55"/>` + [[11, 16], [16, 15], [21, 17], [14, 20], [19, 20]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r=".9" fill="${K}" opacity=".35"/>`).join('')
+    : `<path d="M5 15 q0-8 11-8 q11 0 11 8 v10 q0 3-3 3 h-16 q-3 0-3-3z" fill="${c}" ${st()}/><path d="M7 16 q9-3 18 0 v8 q0 2-2 2 h-14 q-2 0-2-2z" fill="${c2}"/>` + [11, 16, 21].map((x) => `<path d="M${x - 2} 9 l3 3" stroke="${K}" stroke-width=".8" opacity=".45"/>`).join('')),
+  fries: (c, c2 = '#e53935') => `<path d="M7 14 h18 l-2 15 h-14z" fill="${c2}" ${st()}/>` + [9, 12, 15, 18, 21].map((x, i) => `<rect x="${x}" y="${4 + (i % 2) * 2}" width="2.6" height="12" rx="1" fill="${c}" ${st(.7)}/>`).join('') + `<path d="M7 14 h18 l-2 15 h-14z" fill="${c2}" ${st()}/><circle cx="16" cy="21" r="2.4" fill="#fff" opacity=".7"/>`,
+  popcorn: (c, c2 = '#e53935') => `<path d="M8 15 h16 l-2 14 h-12z" fill="#ffffff" ${st()}/><path d="M11 15 l1 14 M16 15 v14 M21 15 l-1 14" stroke="${c2}" stroke-width="1.6"/>` + [[10, 12], [14, 10], [18, 11], [22, 13], [12, 7], [17, 6], [20, 8], [15, 14]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="3" fill="${c}" ${st(.7)}/>`).join(''),
+  water: (c, c2 = '#90caf9') => `<path d="M8 6 h16 l-2 22 h-12z" fill="${c}" opacity=".35" ${st()}/><path d="M9.2 12 h13.6 l-1.5 16 h-10.6z" fill="${c2}"/><path d="M8 6 h16 l-2 22 h-12z" fill="none" ${st()}/><path d="M13 18 q3 2 6 0" fill="none" stroke="#fff" stroke-width="1"/>`,
   // Yuvarlak meyve/sebze. o: dots (narenciye), stripes (kavun), crease (çekirdekli), crown (nar), seeds (çilek)
   round: (c, c2 = '#4caf50', o = '') => {
     let s = `<circle cx="16" cy="18" r="11" fill="${c}" ${st()}/>`;
@@ -339,6 +346,10 @@ export const FOOD_ART = {
   hamsi: ['fish', '#78909c', '#e1f5fe', 'small'], uskumru: ['fish', '#1e88e5', '#e3f2fd', 'fish'], levrek: ['fish', '#b0bec5', '#ffffff', 'fish'],
   morina: ['fish', '#fff8e1', '#e0e0e0', 'fillet'], sardalya: ['fish', '#90a4ae', '#ffffff', 'can'], ton_baligi: ['fish', '#d7a99a', '#ffffff', 'can'],
   karides: ['fish', '#ff7043', '#ffccbc', 'shrimp'], midye: ['fish', '#263238', '#90a4ae', 'mussel'],
+  beyaz_ekmek: ['bread', '#d9a35b', '#fbefd5', 'loaf'], tam_bugday_ekmegi: ['bread', '#9c6a3c', '#d8b48a', 'loaf'], cavdar_ekmegi: ['bread', '#5d4037', '#a1887f', 'loaf'],
+  pide_lavas: ['bread', '#e8c27a', '#fff3d6', 'flat'], pide_lavas_tam: ['bread', '#b98b5a', '#e6cba6', 'flat'], patlamis_misir: ['popcorn', '#fff8e1', '#e53935'],
+  su: ['water', '#e3f2fd', '#90caf9'], uzum_suyu: ['cup', '#6a1b9a', '#ffffff', 'glass'], taze_sogan: ['long', '#f1f8e9', '#43a047', 'leek'],
+  patates_kizartmasi: ['fries', '#fbc02d', '#d32f2f'], tavuk_but: ['meat', '#e6a57e', '#fff3e0', 'drumstick'], dana_biftek: ['meat', '#b71c1c', '#ffe0e0', 'steak'],
 };
 
 // Eski bir çizimde olmayan şablon/seçenek gelirse güvenle boş döner (emoji yedeği devreye girer)
