@@ -361,6 +361,7 @@
 ## B081 · 2026-11-12 · beta.12 yayını
 - 1.1.2-beta.12 (B079 varsayılan Koyu tema + sistem yazısı, B080 besin çizimleri). `npm test` PASS; `native-notices` 446 / eksik 0.
 - Sonraki: **B082** geniş USDA kataloğuna hayvansal grupları (`showAnimal` ile) eklemek.
+- Yayın: release run 43225613166 SUCCESS (commit 47ba525). v1.1.2-beta.12 pre-release 2026-11-12T13:23Z; 22 varlık. Cihaz kurulumu NOT_RUN.
 
 ## B082 · 2026-11-12 · geniş katalogta hayvansal USDA grupları
 - `scripts/build-data.mjs`: geniş kataloğa USDA SR28 hayvansal grupları eklendi (süt/yumurta 0100, kümes 0500, sığır 1300, kuzu/dana/av 1700, domuz 1000, balık/kabuklu 1500); kayıtlar `a: 1`. Et gruplarında aynı parçanın yağlı/kalite tekrarları ayıklandı (yalnız yağsız kısım; select/prime/ithal varyantları dışarıda) → 1.505 hayvansal kayıt, toplam 4.281; `foods-ext.json` 1,57 → 3,28 MB (yalnız geniş katalog açılınca yüklenir). Bitkisel gruplarda hayvansal içerikli karışık ürünler eskisi gibi ayıklanır.
@@ -373,3 +374,7 @@
 - Yeni düzen: eşit sütunlar (telefonda 2 × 1fr, geniş ekranda otomatik), her düğme aynı yükseklikte (2 satırlık ad için yer ayrılır, daha uzun ad "…" ile kısalır), simge/ad/sayı ayrı hizalı; "Koleksiyonlarım" başlığı ve "yeni koleksiyon" tüm satırı kaplar. Pencere başlığındaki "× Kapat" tek satır.
 - Kanıt: Playwright 80/80 PASS (yeni B083 testi: tüm kategori düğmeleri aynı genişlik ve yükseklik, taşma yok); `npm test` 80/80; telefonda ekran görüntüsü incelendi.
 - Sonraki: **B084** beta.13 yayını (B082 + B083) ve diğer ekranlarda aynı `row` çakışması var mı taraması.
+
+## B084 · 2026-11-12 · beta.13 yayını
+- 1.1.2-beta.13 (B082 geniş katalogta hayvansal gruplar, B083 simetrik seçici). Diğer ekranlarda `row` sınıf çakışması tarandı: yalnız matriks satırları kullanıyor (amaçlanan). `npm test` PASS; `native-notices` 446 / eksik 0.
+- Sonraki: **B085** Keşfet'teki kategori şeridini telefonda da isteğe bağlı simetrik ızgara olarak gösterme seçeneği (Ayarlar).
