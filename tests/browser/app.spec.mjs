@@ -842,3 +842,17 @@ test('Günlük hedef çubukları: kalori hedefe doğru, yalnız Günlük\'te (B0
   await expect(card.locator('[data-basic="salt"]')).toContainText('üst sınır');
   await expect(card).toContainText('tıbbi öneri değildir');
 });
+
+test('Aion Günlük hedefine ulaşınca bir kez kutlar (B094)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('soya'); await page.locator('#foodlist [data-id="soya_izolat"]').click();
+  await page.locator('[data-action="ex-add-day"]').click();
+  await tab(page, 'gunluk');
+  await expect(page.locator('.basic-tile.goal.done[data-basic="protein"]')).toHaveCount(1);
+  await expect(page.locator('#aion .aion-bubble')).toContainText('protein');
+  const seen = await page.evaluate(() => JSON.parse(localStorage.getItem('bm.aion.goals')));
+  expect(seen.keys).toContain('protein');
+  await page.reload(); await tab(page, 'gunluk');
+  await expect(page.locator('.basic-tile.goal.done[data-basic="protein"]')).toHaveCount(1);
+  await expect(page.locator('#aion .aion-bubble')).not.toContainText('hedefine ulaştın');
+});

@@ -438,3 +438,10 @@
 - İlk hata: birim testinin karo yakalayıcısı sınıfı kaçırıyordu; ayrıca veri yokken "hedef yok" da yazılıyordu → yalnız "veri yok".
 - Kanıt: `npm test` 83/83; Playwright 98/98 (B093 desktop+phone dahil).
 - Sonraki: **B094** Aion: günün saatine göre selam, hedeflere ulaşınca kutlama.
+
+## B094 · 2026-11-12 · Aion: saat selamı ve hedef kutlaması
+- `src/aion-moments.js`: `greetingFor(saat)` (05–11 günaydın, 11–17 iyi günler, 17–22 iyi akşamlar, gece "uyku da sağlığın parçası"); `newlyReached`, `celebrationText`.
+- Açılışta (ilk tanışma selamından sonraki açılışlarda) günde bir kez saate göre selam (`bm.aion.greetDay`, Aion ipuçları açıksa).
+- Günlük'te kalori/protein/lif hedefi "ulaşıldı" olunca Aion kutlama hareketi + balon; gün başına cihazda hatırlanır (`bm.aion.goals`), yeniden açılışta tekrar etmez. Yeni çizim yok; mevcut 5 animasyon (idle, wave, read, sad, celebrate) kullanıldı. Yeni poz (uyku vb.) için kaynak çizim gerekir: PLANNED değil, varlık yok.
+- Kanıt: `npm test` 85/85; Playwright 100/100 (B094 desktop+phone: soya izolatı → protein hedefi → balon "protein"; yeniden yüklemede kutlama yok).
+- Sonraki: **B095** görünüm cilası (telefon/masaüstü ekran görüntüleriyle hizalama ve boşluk düzeltmeleri).

@@ -671,5 +671,12 @@ export const UI_EN = {
  "hedefe ulaşıldı ✓": "goal reached ✓",
  "referansın {p}": "{p} of reference",
  "kendi hedeflerin": "your own targets",
- "Çubuklar: kalori, protein ve lifte hedefe doğru; şeker, doymuş yağ ve tuzda üst sınıra göre. Referans: {r}. Kişisel ihtiyaç veya tıbbi öneri değildir.": "Bars: calories, protein and fibre count towards a goal; sugar, saturated fat and salt against an upper limit. Reference: {r}. Not personal needs or medical advice."
+ "Çubuklar: kalori, protein ve lifte hedefe doğru; şeker, doymuş yağ ve tuzda üst sınıra göre. Referans: {r}. Kişisel ihtiyaç veya tıbbi öneri değildir.": "Bars: calories, protein and fibre count towards a goal; sugar, saturated fat and salt against an upper limit. Reference: {r}. Not personal needs or medical advice.",
+ "Günaydın! Kahvaltıda ne var, bakalım mı?": "Good morning! Shall we see what's for breakfast?",
+ "İyi günler! Bugün neyi keşfediyoruz?": "Good afternoon! What are we exploring today?",
+ "İyi akşamlar! Günün nasıl geçti?": "Good evening! How was your day?",
+ "İyi geceler! Geç oldu; uyku da sağlığın parçası.": "Good night! It's late; sleep is part of health too.",
+ "kalori": "calorie",
+ "protein": "protein",
+ "Bugünkü {n} hedefine ulaştın! 🎉": "You reached today's {n} goal! 🎉"
 };

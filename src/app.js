@@ -23,6 +23,7 @@ import { nutrientLabel } from './i18n-nutrients.js';
 import { getLanguage } from './i18n.js';
 import { normalizeCollections, createCollection, renameCollection, deleteCollection, toggleRef, removeRef, collectionTree, collectionRefs, hasRef, moveRef, moveIndex } from './collections.js';
 import { mountAion, configureAion, aionMood, aionPlay, aionSay } from './aion.js';
+import { greetingFor, newlyReached, celebrationText } from './aion-moments.js';
 import { recipeGaps } from './gaps.js';
 import { similarFoods } from './similar.js';
 import { FOOD_ICONS } from './food-icons.js';
@@ -808,6 +809,7 @@ export function render() {
     <main class="view view-${S.tab}">${view}</main>
     ${renderPicker()}${renderColPicker()}${renderCustomEditor()}${renderThemeEditor(S.themeEditor, S.settings.customTheme)}`;
   aionMood(aionMoodFor());
+  celebrateGoals();
   if (S.tab === 'ayarlar') applySettingsFilter();
   applyTourTarget();
   if (S.tab === 'tarif') applyRecipeFilter();
@@ -915,6 +917,19 @@ function selectFood(prefix, ref) {
   if (prefix === 'ex' && ref?.t === 'c') { S.recent = pushRecent(S.recent, ref, knownFood); saveRecent(S.recent); }
   if (prefix === 'ex') { S.sel = ref; S.amount = S.settings.defaultAmount; render(); const d = $('.detail'); if (d) d.scrollTop = 0; if (window.innerWidth < 900) window.scrollTo(0, 0); }
   else { S.picker.sel = ref; S.picker.amount = S.settings.defaultAmount; render(); }
+}
+
+// Günlük hedeflerine ulaşıldıysa Aion o gün için bir kez kutlar (cihazda hatırlanır; yeniden açılışta tekrar etmez)
+function celebrateGoals() {
+  if (S.tab !== 'gunluk') return;
+  const keys = [...document.querySelectorAll('.basic-card.goals .basic-tile.goal.done')].map((e) => e.dataset.basic);
+  let seen = {}; try { seen = JSON.parse(localStorage.getItem('bm.aion.goals') || '{}') || {}; } catch {}
+  const prev = seen.day === S.personalDay && Array.isArray(seen.keys) ? seen.keys : [];
+  const fresh = newlyReached(prev, keys);
+  if (!fresh.length) return;
+  try { localStorage.setItem('bm.aion.goals', JSON.stringify({ day: S.personalDay, keys: [...new Set([...prev, ...keys])] })); } catch {}
+  aionPlay('celebrate');
+  if (S.settings.aionTips) aionSay(celebrationText(fresh), 6000);
 }
 
 // Aion'un ekrana göre ruh hali: karşılama, inceleme, çalışma
@@ -1423,6 +1438,12 @@ export function start() {
   try { greeted = !!localStorage.getItem('bm.aion.greeted'); if (!greeted) localStorage.setItem('bm.aion.greeted', '1'); } catch {}
   if (!tourSeen()) { S.tour = 0; render(); }
   else if (S.settings.aionTips && !greeted) setTimeout(() => aionSay(tr('aionHello'), 7000), 600);
+  else if (S.settings.aionTips) {
+    // Günde bir kez, saate göre selam
+    const today = new Date().toDateString();
+    let last = null; try { last = localStorage.getItem('bm.aion.greetDay'); localStorage.setItem('bm.aion.greetDay', today); } catch {}
+    if (last !== today) setTimeout(() => aionSay(greetingFor(new Date().getHours()), 6000), 600);
+  }
   document.addEventListener('click', onClick);
   document.addEventListener('input', onInput);
   document.addEventListener('change', onChange);
