@@ -495,3 +495,7 @@
 - İlk hatalar: (1) dar sütunda "Karbonhidrat" ikiye bölünüyordu → nowrap/küçük yazı; (2) açıklama listesi `flex-basis: 200px` dikey yönde yükseklik oldu (satırlar arası boşluk) → mini'de `flex: 0 0 auto`.
 - Kanıt: `npm test` 88/88; Playwright tam koşu 108/108 (CSS son düzeltmesinden önce), sonrasında ilgili 10 test PASS; telefon ekran görüntüsü kontrol edildi.
 - Sonraki: **B101** beta.18 yayın kanıtı, ardından **B103** beta.19 (Kıyasla pastaları).
+
+## B101 · 2026-11-12 · beta.18 yayın kanıtı
+- v1.1.2-beta.18 pre-release 2026-11-12T20:33:26Z (commit 982d203; flavonoid/izoflavon, kalori kutusu, Keşfet/Tarif pastası). Cihaz kurulumu NOT_RUN.
+- B103: beta.19 (Kıyasla pastaları) release.yml tetiklendi.
