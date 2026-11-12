@@ -499,3 +499,7 @@
 ## B101 · 2026-11-12 · beta.18 yayın kanıtı
 - v1.1.2-beta.18 pre-release 2026-11-12T20:33:26Z (commit 982d203; flavonoid/izoflavon, kalori kutusu, Keşfet/Tarif pastası). Cihaz kurulumu NOT_RUN.
 - B103: beta.19 (Kıyasla pastaları) release.yml tetiklendi.
+
+## B103 · 2026-11-12 · beta.19 yayın kanıtı
+- v1.1.2-beta.19 pre-release 2026-11-12T20:53:57Z (commit 1b70f2b; Kıyasla'da besin başına kalori pastaları). Cihaz kurulumu NOT_RUN.
+- Sonraki: **B104** Günlük'te telefonda gün kartı ve temel değerler profilin üstüne (B096'da gözlenen uzun kaydırma).
