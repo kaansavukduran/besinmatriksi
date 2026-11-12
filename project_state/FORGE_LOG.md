@@ -424,3 +424,4 @@
 ## B091 · 2026-11-12 · beta.15 yayını
 - 1.1.2-beta.15 (B090 service worker düzeltmesi ve açılış bekçisi indirilebilir paketlere/PWA'ya). `npm test` PASS; `native-notices` 446 / eksik 0.
 - Sonraki: **B092** Kaan'ın Chrome'daki sonucuna göre: hâlâ açılmıyorsa hata metniyle ağ/DNS teşhisi ve gerekirse ikinci barındırma adresi.
+- Yayın: release run 43276002011 SUCCESS (commit d686224). v1.1.2-beta.15 pre-release 2026-11-12T18:12Z; 22 varlık. Vercel (d686224): success "Deployment has completed". Canlı site ve cihaz kurulumu NOT_RUN (bu ortamdan erişim yok).
