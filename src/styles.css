@@ -645,3 +645,8 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 .wk.partial .wk-bar i { opacity: .55; }
 .wk-d { font-size: .8em; }
 @media (max-width: 700px) { .presets.cmp-secs { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; } .presets.cmp-secs .pchip { flex-shrink: 0; } .cmp-add { min-height: 0; padding: 14px; } }
+.tag-animal { display: inline-block; font-size: .72em; font-weight: 600; padding: 1px 7px; border-radius: 999px; border: 1px solid currentColor; color: var(--muted); vertical-align: middle; }
+.recipe-gaps .gaps > li, .rmain { min-width: 0; }
+.recipe-gaps .pchip { white-space: normal; text-align: left; max-width: 100%; }
+/* Telefonda bildirim balonu alttaki sekme çubuğunun üstünde durur; sekmeleri örtmez */
+@media (max-width: 700px) { .toast { bottom: calc(88px + env(safe-area-inset-bottom)); } }

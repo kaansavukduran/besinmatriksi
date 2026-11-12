@@ -1,4 +1,5 @@
-// Küratörlü besin kataloğu (yalnızca bitkisel / mantar / alg; vegan uyumlu).
+// Küratörlü besin kataloğu: bitkisel / mantar / alg ve (2026-11-12 kullanıcı kararıyla) ayrı kategorilerde hayvansal besinler.
+// Hayvansal kayıtlar `animal: true` taşır; arayüzde etiketlenir ve Ayarlar'dan gizlenebilir.
 // Her form: [formAnahtarı, USDA SR28 NDB no | null, ayrılmış alan (null), özel etiket?]
 // USDA tam bileşen tablosu formun kendi kaydıyla eşlenir. Kaynağı bulunmayan
 // form veri boşluğu olarak korunur; başka bir gıda veya hazırlamayla doldurulmaz.
@@ -41,8 +42,15 @@ export const CATEGORIES = [
   ['yag', 'Bitkisel yağlar', '🫒'],
   ['icecek', 'İçecekler ve bitkisel sütler', '🥛'],
   ['tatli', 'Tatlandırıcılar ve kakao', '🍫'],
+  ['sut', 'Süt ve süt ürünleri', '🧀'],
+  ['yumurta', 'Yumurta', '🥚'],
+  ['et', 'Kırmızı et ve sakatat', '🥩'],
+  ['kumes', 'Kümes hayvanları', '🍗'],
+  ['balik', 'Balık ve deniz ürünleri', '🐟'],
   ['diger', 'Diğer', '🧪'],
 ];
+// Hayvansal kategoriler (bu kategorilerdeki her besin hayvansaldır)
+export const ANIMAL_CATS = ['sut', 'yumurta', 'et', 'kumes', 'balik'];
 
 const F = (id, tr, en, cat, forms, o = {}) => ({ id, tr, en, cat, forms, ...o });
 
@@ -367,4 +375,39 @@ export const FOODS = [
   F('hardal', 'Hardal (hazır, sarı)', 'prepared mustard', 'diger', [['macun', '02046', null]], { allergens: ['hardal'] }),
   F('balzamik', 'Balzamik sirke', 'balsamic vinegar', 'diger', [['icecek', '02069', null]], { allergens: ['sulfit'] }),
   F('tuz', 'Sofra tuzu', 'table salt', 'diger', [['toz', '02047', null]], { note: 'İyotlu tuzun iyot değeri USDA tablosunda yoktur; etiketten bak.' }),
+
+  // ---------------- Hayvansal (kullanıcı kararı 2026-11-12; ayrı kategoriler, etiketli) ----------------
+  F('inek_sutu', 'İnek sütü (tam yağlı)', 'whole cow milk', 'sut', [['icecek', '01211', null, 'Tam yağlı %3,25 (vitamin eklenmemiş)']], { allergens: ['sut'] }),
+  F('inek_sutu_yarim', 'İnek sütü (yarım yağlı %2)', 'reduced fat cow milk', 'sut', [['icecek', '01174', null, '%2 yağlı (vitamin eklenmemiş)']], { allergens: ['sut'] }),
+  F('inek_sutu_yagsiz', 'İnek sütü (yağsız)', 'skim cow milk', 'sut', [['icecek', '01151', null, 'Yağsız (vitamin eklenmemiş)']], { allergens: ['sut'] }),
+  F('yogurt', 'Yoğurt (tam yağlı, sade)', 'plain whole milk yogurt', 'sut', [['cig', '01116', null, 'Sade']], { allergens: ['sut'] }),
+  F('suzme_yogurt', 'Süzme yoğurt (Yunan tipi, tam yağlı)', 'Greek yogurt', 'sut', [['cig', '01293', null, 'Sade']], { allergens: ['sut'] }),
+  F('beyaz_peynir', 'Beyaz peynir (feta)', 'feta cheese', 'sut', [['cig', '01019', null, 'Peynir']], { allergens: ['sut'] }),
+  F('kasar', 'Kaşar tipi peynir (cheddar)', 'cheddar cheese', 'sut', [['cig', '01009', null, 'Peynir']], { allergens: ['sut'] }),
+  F('mozzarella', 'Mozzarella (tam yağlı)', 'mozzarella', 'sut', [['cig', '01026', null, 'Peynir']], { allergens: ['sut'] }),
+  F('lor', 'Lor / çökelek tipi (cottage)', 'cottage cheese', 'sut', [['cig', '01012', null, 'Peynir']], { allergens: ['sut'] }),
+  F('ricotta', 'Ricotta (tam yağlı)', 'ricotta', 'sut', [['cig', '01036', null, 'Peynir']], { allergens: ['sut'] }),
+  F('parmesan', 'Parmesan', 'parmesan', 'sut', [['cig', '01033', null, 'Sert peynir']], { allergens: ['sut'] }),
+  F('krem_peynir', 'Krem peynir', 'cream cheese', 'sut', [['cig', '01017', null, 'Peynir']], { allergens: ['sut'] }),
+  F('tereyagi', 'Tereyağı (tuzsuz)', 'unsalted butter', 'sut', [['yag', '01145', null, 'Tuzsuz']], { allergens: ['sut'] }),
+  F('krema', 'Krema (çırpma, yağlı)', 'heavy cream', 'sut', [['icecek', '01053', null, 'Sıvı krema']], { allergens: ['sut'] }),
+  F('yumurta', 'Tavuk yumurtası', 'egg', 'yumurta', [['cig', '01123', null, 'Bütün, çiğ'], ['haslanmis', '01129', null, 'Bütün, katı haşlanmış']], { allergens: ['yumurta'] }),
+  F('yumurta_aki', 'Yumurta akı', 'egg white', 'yumurta', [['cig', '01124', null, 'Çiğ']], { allergens: ['yumurta'] }),
+  F('yumurta_sarisi', 'Yumurta sarısı', 'egg yolk', 'yumurta', [['cig', '01125', null, 'Çiğ']], { allergens: ['yumurta'] }),
+  F('dana_kiyma', 'Dana kıyma (%15 yağlı)', 'ground beef 85% lean', 'et', [['cig', '23567', null, 'Çiğ'], ['pismis', '23569', null, 'Tavada pişmiş köfte']]),
+  F('kuzu_but', 'Kuzu but (yağsız kısım)', 'lamb leg, lean', 'et', [['cig', '17013', null, 'Çiğ'], ['pismis', '17014', null, 'Fırında']]),
+  F('dana_ciger', 'Dana ciğeri', 'beef liver', 'et', [['cig', '13325', null, 'Çiğ'], ['pismis', '13327', null, 'Tavada']], { note: 'Ciğer çok yüksek A vitamini (retinol) içerir; gebelikte ve takviye kullanırken üst sınıra dikkat.' }),
+  F('tavuk_gogus', 'Tavuk göğsü (derisiz)', 'chicken breast', 'kumes', [['cig', '05062', null, 'Çiğ'], ['pismis', '05064', null, 'Fırında']]),
+  F('hindi', 'Hindi eti (bütün, derisiz)', 'turkey meat', 'kumes', [['cig', '05167', null, 'Çiğ'], ['pismis', '05168', null, 'Fırında']]),
+  F('somon', 'Somon (Atlantik, çiftlik)', 'Atlantic salmon, farmed', 'balik', [['cig', '15236', null, 'Çiğ'], ['pismis', '15237', null, 'Izgara / fırın']], { allergens: ['balik'] }),
+  F('alabalik', 'Alabalık (gökkuşağı, çiftlik)', 'rainbow trout, farmed', 'balik', [['cig', '15240', null, 'Çiğ'], ['pismis', '15241', null, 'Izgara / fırın']], { allergens: ['balik'] }),
+  F('hamsi', 'Hamsi', 'European anchovy', 'balik', [['cig', '15001', null, 'Çiğ'], ['konserve', '15002', null, 'Yağda konserve, süzülmüş']], { allergens: ['balik'] }),
+  F('uskumru', 'Uskumru (Atlantik)', 'Atlantic mackerel', 'balik', [['cig', '15046', null, 'Çiğ'], ['pismis', '15047', null, 'Izgara / fırın']], { allergens: ['balik'] }),
+  F('levrek', 'Levrek', 'sea bass', 'balik', [['cig', '15091', null, 'Çiğ'], ['pismis', '15092', null, 'Izgara / fırın']], { allergens: ['balik'] }),
+  F('morina', 'Morina (Atlantik)', 'Atlantic cod', 'balik', [['cig', '15015', null, 'Çiğ']], { allergens: ['balik'] }),
+  F('sardalya', 'Sardalya (yağda konserve)', 'sardine, canned in oil', 'balik', [['konserve', '15088', null, 'Kılçığıyla, süzülmüş']], { allergens: ['balik'] }),
+  F('ton_baligi', 'Ton balığı (suda konserve, tuzsuz)', 'light tuna, canned in water', 'balik', [['konserve', '15184', null, 'Suda, tuzsuz, süzülmüş']], { allergens: ['balik'], note: 'Ton balığında cıva bulunabilir; gebelikte ve çocuklarda tüketim önerilerine bak.' }),
+  F('karides', 'Karides', 'shrimp', 'balik', [['cig', '15270', null, 'Çiğ'], ['haslanmis', '15271', null, 'Pişmiş']], { allergens: ['kabuklu'] }),
+  F('midye', 'Midye', 'blue mussel', 'balik', [['cig', '15164', null, 'Çiğ'], ['haslanmis', '15165', null, 'Buharda / haşlanmış']], { allergens: ['yumusakca'] }),
+  F('bal', 'Bal', 'honey', 'tatli', [['macun', '19296', null, 'Bal']], { animal: true, note: 'Bal arı ürünüdür (vegan değildir). 1 yaşından küçük bebeklere verilmez.' }),
 ];

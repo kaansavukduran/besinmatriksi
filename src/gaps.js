@@ -1,7 +1,7 @@
 // Tarifin günlük referansa en uzak kaldığı besin bileşenleri ve onları 100 g'da en çok veren katalog besinleri.
 // Saf fonksiyon: referans, besin listesi ve katalog dışarıdan verilir. "veri yok" bir açık sayılmaz (0 değildir).
 export const GAP_EXCLUDE = new Set(['energy', 'energy_kj', 'carb_avail', 'sugars', 'fat', 'sfa', 'salt']);
-// Bitkisel besinlerde güvenilir doğal kaynağı olmayanlar: besin önerilmez, not gösterilir.
+// Bitkisel besinlerde güvenilir doğal kaynağı olmayanlar: not gösterilir; bitkisel besin önerilmez, yalnız (görünürse) hayvansal kaynaklar listelenir.
 export const NO_PLANT_SOURCE = new Set(['b12', 'vitd']);
 
 // Baharat ve taze otlar 100 g'da yüksek görünür ama bu miktarda yenmez; öneriye alınmaz.
@@ -20,13 +20,14 @@ export function recipeGaps(r, nutrients, foods, refFor, { count = 3, perGap = 3 
   }
   gaps.sort((a, b) => a.pct - b.pct);
   return gaps.slice(0, count).map((g) => {
-    if (NO_PLANT_SOURCE.has(g.n.key)) return { ...g, foods: [], noPlant: true };
+    const noPlant = NO_PLANT_SOURCE.has(g.n.key);
     const best = foods
+      .filter((f) => !noPlant || f.animal)
       .filter((f) => !GAP_SKIP_CATS.has(f.cat))
       .map((f) => ({ f, v: f.forms[0]?.v?.[g.n.key] }))
       .filter((x) => x.v != null && x.v > 0)
       .sort((a, b) => b.v - a.v)
       .slice(0, perGap);
-    return { ...g, foods: best };
+    return { ...g, foods: best, noPlant };
   });
 }

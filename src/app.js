@@ -1,4 +1,4 @@
-import { foodName, categoryName, formName, CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, extGroups, extFoods, setCustomFoods, customFoods } from './data.js';
+import { setAnimalVisible, visibleFoods, ANIMAL_CATS, foodName, categoryName, formName, CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, extGroups, extFoods, setCustomFoods, customFoods } from './data.js';
 import { NUTRIENTS, SECTIONS, SOURCES } from './nutrients.js';
 import { scaleItem, aggregate, scaleAggregate } from './calc.js';
 import { renderMatrix } from './matrix.js';
@@ -71,6 +71,7 @@ let printController;
 
 // ---------------------------------------------------------------- ayarlar
 function applySettings() {
+  setAnimalVisible(S.settings.showAnimal);
   const s = S.settings, r = document.documentElement;
   setLanguage(preferredLanguage(s.language)); r.lang = preferredLanguage(s.language);
   r.style.zoom = String(s.uiScale / 100); r.style.setProperty('--ui-zoom', s.uiScale / 100);
@@ -169,7 +170,7 @@ function foodButton(f, action, extra = '') {
   if (multi) { action = 'multi-pick'; extra += ` aria-pressed="${on}"`; }
   return `<button class="food ${on ? 'picked' : ''}" data-action="${action}" data-id="${esc(f.id)}" ${extra}>
     <span class="fi" aria-hidden="true">${on ? '✓' : catIcon(f.cat)}</span>
-    <span class="fn">${esc(foodName(f))}</span>
+    <span class="fn">${esc(foodName(f))}${f.animal ? ` <span class="tag-animal">${L("Hayvansal")}</span>` : ''}</span>
     <span class="ff">${f.forms.length > 1 ? L("{n} biçim", { n: f.forms.length }) : esc(formName(f.forms[0].label))}${quickFacts(f.forms[0].v)}</span>
   </button>`;
 }
@@ -199,9 +200,10 @@ function extButton(f, action) {
 
 // ---------------------------------------------------------------- KEŞFET
 function categoryNav(prefix, current, withExt) {
-  const all = `<button class="cat ${!current ? 'on' : ''}" data-action="${prefix}-cat" data-cat="">${S.settings.emoji ? '✨ ' : ''}${L("Tümü")} <span class="cnt">${FOODS.length}</span></button>`;
-  const cats = CATEGORIES.map((c) => {
-    const n = FOODS.filter((f) => f.cat === c.id).length;
+  const vis = visibleFoods();
+  const all = `<button class="cat ${!current ? 'on' : ''}" data-action="${prefix}-cat" data-cat="">${S.settings.emoji ? '✨ ' : ''}${L("Tümü")} <span class="cnt">${vis.length}</span></button>`;
+  const cats = CATEGORIES.filter((c) => S.settings.showAnimal || !ANIMAL_CATS.has(c.id)).map((c) => {
+    const n = vis.filter((f) => f.cat === c.id).length;
     return `<button class="cat ${current === c.id ? 'on' : ''}" data-action="${prefix}-cat" data-cat="${c.id}">${S.settings.emoji ? c.icon + ' ' : ''}${esc(categoryName(c))} <span class="cnt">${n}</span></button>`;
   }).join('');
   const ext = withExt ? `<button class="cat ${current === 'ext' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="ext">${S.settings.emoji ? '🗂️ ' : ''}${L("Geniş katalog (USDA, İngilizce)")}</button>` : '';
@@ -305,7 +307,7 @@ function formChips(prefix, ref) {
 // Aynı kategoride makro profili en yakın besinler (alternatif bulmak için; "eşdeğer" iddiası değil)
 function similarRow(item) {
   if (!S.settings.showSimilar || !item.food) return '';
-  const list = similarFoods(item.food, FOODS, { formIndex: S.sel.f });
+  const list = similarFoods(item.food, visibleFoods(), { formIndex: S.sel.f });
   if (!list.length) return '';
   return `<div class="similar"><span class="hint" title="${esc(L("Aynı kategoride 100 g'daki enerji, protein, karbonhidrat, yağ ve lif profili en yakın besinler. Vitamin ve mineraller farklı olabilir."))}">${L("Benzer besinler:")}</span>
     <div class="presets">${list.map((f) => `<button class="pchip" data-action="ex-pick" data-id="${esc(f.id)}">${esc(foodName(f))}</button>`).join('')}</div></div>`;
@@ -336,7 +338,7 @@ function renderExplore() {
     ? `<div class="dhead">
         <button class="back" data-action="ex-back" aria-label="${L("Listeye dön")}">← ${L("Liste")}</button>
         <div class="dtitle"><h2>${S.settings.emoji && item.food ? catIcon(item.food.cat) + ' ' : ''}${esc(item.name)}</h2>
-          <div class="dsub">${esc(catName(item.cat))}${item.sci ? ` · <i>${esc(item.sci)}</i>` : ''}</div></div>
+          <div class="dsub">${item.animal ? `<span class="tag-animal">${L("Hayvansal")}</span> ` : ''}${esc(catName(item.cat))}${item.sci ? ` · <i>${esc(item.sci)}</i>` : ''}</div></div>
       </div>
       ${formChips('ex', S.sel)}
       ${amountControls('ex', S.amount, item.portions, { liquid: item.liquid })}
@@ -482,11 +484,11 @@ function renderRecipeSummary(rc, r) {
 // Hedefe en uzak 3 bileşen ve onları 100 g'da en çok veren katalog besinleri (öneri değil, yön gösterir)
 function renderRecipeGaps(r) {
   if (!S.settings.recipeGaps || S.basis === 'per100') return '';
-  const gaps = recipeGaps(r, NUTRIENTS, FOODS, (n) => referenceFor(n, S.settings));
+  const gaps = recipeGaps(r, NUTRIENTS, visibleFoods(), (n) => referenceFor(n, S.settings));
   if (!gaps.length) return '';
   const rows = gaps.map((g) => `<li><div class="gap-h"><b>${esc(nutrientLabel(g.n))}</b> <span class="muted">${fmtNum(g.pct, 'low')}%${g.partial ? ' · ' + L("kısmi veri, gerçek değer daha yüksek olabilir") : ''}</span></div>
-    ${g.noPlant ? `<p class="hint">${L("Bitkisel besinlerde güvenilir doğal kaynağı yok; zenginleştirilmiş ürün veya takviye gerekir.")}</p>`
-      : `<div class="presets">${g.foods.map((x) => `<button class="pchip" data-action="gap-open" data-id="${esc(x.f.id)}">${esc(foodName(x.f))} <span class="muted">${fmtNum(x.v, 'low')} ${esc(g.n.unit)}/100 g</span></button>`).join('')}</div>`}</li>`).join('');
+    ${g.noPlant ? `<p class="hint">${L("Bitkisel besinlerde güvenilir doğal kaynağı yok; zenginleştirilmiş ürün veya takviye gerekir.")}</p>` : ''}
+    ${!g.foods.length ? '' : `<div class="presets">${g.foods.map((x) => `<button class="pchip" data-action="gap-open" data-id="${esc(x.f.id)}">${esc(foodName(x.f))} <span class="muted">${fmtNum(x.v, 'low')} ${esc(g.n.unit)}/100 g</span></button>`).join('')}</div>`}</li>`).join('');
   return `<section class="card recipe-gaps" aria-label="${L("En düşük kalan besinler")}">
     <h3>${L("En düşük kalan besinler")}</h3>
     <p class="hint">${L("Referansa göre en düşük yüzdeler ve bunları 100 g'da en çok veren besinler. Kişisel ihtiyaç veya emilim değildir; veri olmayan bileşenler burada sayılmaz.")}</p>
@@ -585,6 +587,7 @@ function renderSettings() {
       ${tog('showSource', L("Kaynak etiketleri (USDA / Hesap / Etiket)"))}
       ${tog('showAlt', L("Varsa ikinci kaynağı göster (bu sürümde ikinci veri seti yok)"))}
       ${tog('showSd', L("Varsa kaynak standart sapmasını göster"))}
+      ${tog('showAnimal', L("Hayvansal besinleri göster (süt, yumurta, et, balık, bal)"))}
       ${tog('showSimilar', L("Besin ayrıntısında benzer besinleri göster"))}
       ${tog('showRecent', L("Keşfet'te son bakılan besinleri göster"))}
       ${tog('recipeGaps', L("Tarifte en düşük kalan besinleri ve kaynaklarını göster"))}
@@ -657,7 +660,7 @@ function renderSettings() {
 function renderAbout() {
   return `<div class="about card">
     <h2>Besin Matriksi</h2>
-    <p>${L("Çevrimdışı çalışan, bitkisel (vegan) besinler için ayrıntılı bileşim gezgini ve tarif hesaplayıcı. İnternet bağlantısı gerekmez; hiçbir veri cihazdan çıkmaz.")}</p>
+    <p>${L("Çevrimdışı çalışan, ayrıntılı besin bileşimi gezgini ve tarif hesaplayıcı. Bitkisel besinler ağırlıklı; hayvansal besinler ayrı kategorilerde ve etiketli (Ayarlar'dan gizlenebilir). İnternet bağlantısı gerekmez; hiçbir veri cihazdan çıkmaz.")}</p>
     <h3>${L("Veri kaynakları")}</h3>
     <ul>
       <li><b>${esc(SOURCES.u.short)}</b>: ${esc(L(SOURCES.u.long))}. ${L("Su, enerji, makrolar, lif, şeker, vitaminler, mineraller, yağ sınıfları; pişmiş formlar dahil.")}</li>

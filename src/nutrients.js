@@ -267,6 +267,11 @@ export const ALLERGENS = {
   kereviz: 'Kereviz',
   aci_bakla: 'Acı bakla (lupin)',
   sulfit: 'Kükürt dioksit / sülfit',
+  sut: 'Süt',
+  yumurta: 'Yumurta',
+  balik: 'Balık',
+  kabuklu: 'Kabuklu deniz ürünleri',
+  yumusakca: 'Yumuşakçalar',
 };
 
 export const SOURCES = {

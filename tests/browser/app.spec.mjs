@@ -666,3 +666,23 @@ test('Kıyasla: her besin için hazır ölçüler (USDA porsiyonu) tek dokunuşl
   await por.first().click();
   await expect(page.locator('table.cmp thead')).toContainText(`${Number(g).toLocaleString('tr-TR', { maximumFractionDigits: 1 })} g`);
 });
+
+test('hayvansal besinler kendi kategorilerinde, etiketli; Ayarlar\'dan gizlenir (B077)', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('.cat[data-cat="balik"]')).toBeVisible();
+  await page.locator('#q').fill('somon');
+  const card = page.locator('#foodlist [data-id="somon"]');
+  await expect(card.locator('.tag-animal')).toHaveText('Hayvansal');
+  await card.click();
+  await expect(page.locator('.dsub .tag-animal')).toBeVisible();
+  await expect(page.locator('.matrix')).toContainText('Balık');
+  await tab(page, 'ayarlar');
+  await page.locator('[data-setbool="showAnimal"]').uncheck({ force: true });
+  await tab(page, 'kesfet');
+  if (await page.locator('.back').isVisible()) await page.locator('.back').click();
+  await page.locator('#q').fill('somon');
+  await expect(page.locator('#foodlist [data-id="somon"]')).toHaveCount(0);
+  await expect(page.locator('.cat[data-cat="balik"]')).toHaveCount(0);
+  await page.reload();
+  await expect(page.locator('.cat[data-cat="sut"]')).toHaveCount(0);
+});

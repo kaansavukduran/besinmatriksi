@@ -620,5 +620,16 @@ export const UI_EN = {
  "Son 7 gün enerji": "Energy, last 7 days",
  "Son 7 gün enerji (kcal)": "Energy, last 7 days (kcal)",
  "kayıt yok": "no entries",
- "≥: bazı kayıtlarda enerji verisi yok; gerçek değer daha yüksek olabilir.": "≥: some entries have no energy data; the real value may be higher."
+ "≥: bazı kayıtlarda enerji verisi yok; gerçek değer daha yüksek olabilir.": "≥: some entries have no energy data; the real value may be higher.",
+ "Hayvansal besinleri göster (süt, yumurta, et, balık, bal)": "Show animal foods (dairy, eggs, meat, fish, honey)",
+ "Hayvansal": "Animal",
+ "Çevrimdışı çalışan, ayrıntılı besin bileşimi gezgini ve tarif hesaplayıcı. Bitkisel besinler ağırlıklı; hayvansal besinler ayrı kategorilerde ve etiketli (Ayarlar'dan gizlenebilir). İnternet bağlantısı gerekmez; hiçbir veri cihazdan çıkmaz.": "Offline, detailed food composition explorer and recipe calculator. Mostly plant foods; animal foods sit in separate, labelled categories (can be hidden in Settings). No internet needed; no data leaves your device.",
+ "Bal arı ürünüdür (vegan değildir). 1 yaşından küçük bebeklere verilmez.": "Honey is a bee product (not vegan). Do not give to infants under 1 year.",
+ "Ciğer çok yüksek A vitamini (retinol) içerir; gebelikte ve takviye kullanırken üst sınıra dikkat.": "Liver is very high in vitamin A (retinol); mind the upper limit in pregnancy and when using supplements.",
+ "Ton balığında cıva bulunabilir; gebelikte ve çocuklarda tüketim önerilerine bak.": "Tuna may contain mercury; check consumption advice for pregnancy and children.",
+ "Süt": "Milk",
+ "Yumurta": "Egg",
+ "Balık": "Fish",
+ "Kabuklu deniz ürünleri": "Crustaceans",
+ "Yumuşakçalar": "Molluscs"
 };

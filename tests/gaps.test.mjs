@@ -16,7 +16,7 @@ test('en düşük yüzdeler önce; veri yok açık sayılmaz; enerji dışlanır
   const r = { n: 2, v: { energy: 100, fe: 1.4, ca: 400, k: 2500, b12: 0.1, zn: null }, cov: { fe: 2, ca: 1, k: 2, b12: 2 } };
   const g = recipeGaps(r, N, foods, refFor);
   assert.deepEqual(g.map((x) => x.n.key), ['b12', 'fe', 'ca']); // k ≥%100, zn veri yok, energy dışlanır
-  assert.equal(g[0].noPlant, true); assert.equal(g[0].foods.length, 0);
+  assert.equal(g[0].noPlant, true); assert.equal(g[0].foods.length, 0); // test listesinde hayvansal yok
   assert.deepEqual(g[1].foods.map((x) => x.f.id), ['a', 'b']); // null ve 0 önerilmez
   assert.equal(g[2].partial, true);
   assert.equal(Math.round(g[1].pct), 10);
@@ -25,4 +25,13 @@ test('en düşük yüzdeler önce; veri yok açık sayılmaz; enerji dışlanır
 test('referans yoksa öneri yok', () => {
   const r = { n: 1, v: { fe: 1 }, cov: { fe: 1 } };
   assert.deepEqual(recipeGaps(r, N, foods, () => ({ value: undefined })), []);
+});
+
+test('B12/D: bitkisel besin önerilmez, görünür hayvansal kaynaklar listelenir', () => {
+  const N2 = [{ key: 'b12', unit: 'µg' }];
+  const fs2 = [{ id: 'mantar', forms: [{ v: { b12: 0.1 } }] }, { id: 'ciger', animal: true, forms: [{ v: { b12: 59 } }] }];
+  const g = recipeGaps({ n: 1, v: { b12: 0 }, cov: { b12: 1 } }, N2, fs2, () => ({ value: 2.5 }));
+  assert.equal(g[0].noPlant, true); assert.deepEqual(g[0].foods.map((x) => x.f.id), ['ciger']);
+  const g2 = recipeGaps({ n: 1, v: { b12: 0 }, cov: { b12: 1 } }, N2, fs2.filter((f) => !f.animal), () => ({ value: 2.5 }));
+  assert.equal(g2[0].foods.length, 0);
 });

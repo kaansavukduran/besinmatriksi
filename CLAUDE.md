@@ -1,6 +1,6 @@
 # CLAUDE.md: Besin Matriksi
 
-Çevrimdışı, fareyle/dokunarak kullanılan, disleksi dostu, özelleştirilebilir bitkisel (vegan) besin matriksi. Vite + düz JS; masaüstü Tauri, mobil Capacitor, PWA ve tek dosya HTML. Türkçe ana dil; tüm ekranlar merkezi TR/EN: yeni metinler `L("Türkçe")` ile yazılır ve İngilizcesi `src/i18n-ui.js`e eklenir (`tests/i18n.test.mjs` eksikleri yakalar). Maskot Aion: `src/aion.js`, sprite üretimi `scripts/build-aion.py`. Ayrıntılar `README.md`.
+Çevrimdışı, fareyle/dokunarak kullanılan, disleksi dostu, özelleştirilebilir besin matriksi (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli). Vite + düz JS; masaüstü Tauri, mobil Capacitor, PWA ve tek dosya HTML. Türkçe ana dil; tüm ekranlar merkezi TR/EN: yeni metinler `L("Türkçe")` ile yazılır ve İngilizcesi `src/i18n-ui.js`e eklenir (`tests/i18n.test.mjs` eksikleri yakalar). Maskot Aion: `src/aion.js`, sprite üretimi `scripts/build-aion.py`. Ayrıntılar `README.md`.
 
 Önce `project_state/CURRENT_STATE.json` (imleç: `active_forge`, `next_recommended_forge`), sonra `docs/ROADMAP.md` okunur.
 
@@ -17,7 +17,7 @@ Windows/macOS/Android/iOS paketleri yalnızca `.github/workflows/release.yml` il
 ## Kurallar (bozma)
 
 - Ölçülmemiş = "veri yok", asla 0. Tahmin değerleri "Tahmin" etiketi taşır; ısıyla değişen bileşenler tahmin edilmez. Var olan ≠ ölçülen ≠ emilen ≠ fayda.
-- Katalog yalnızca bitkisel/mantar/alg; hayvansal ürün eklenmez.
+- Katalog bitkisel/mantar/alg ağırlıklıdır. Hayvansal besinler (Kaan'ın 2026-11-12 kararı) yalnız ayrı hayvansal kategorilerde (`ANIMAL_CATS`) ya da `animal: true` işaretiyle, USDA kaydıyla eklenir; arayüzde "Hayvansal" etiketi taşır ve Ayarlar'dan gizlenebilir (`showAnimal`). Bitkisel kategorilere hayvansal kayıt konmaz.
 - Hiçbir şey ağa gitmez; çalışma anında CDN yok.
 - Ayar anahtarı eklemek `DEFAULT_SETTINGS`'e varsayılanla eklemek demektir; eski kayıtlı ayarlar bozulmadan açılmalı (test ister).
 - Üçüncü taraf paket: lisans, bakım, platform değerlendirmesi kaydedilmeden eklenmez; `package-lock.json` commit'lenir.

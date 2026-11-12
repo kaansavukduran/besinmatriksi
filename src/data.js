@@ -38,7 +38,7 @@ export function resolve(ref) {
     const form = food.forms[ref.f];
     if (!form) return null;
     return {
-      ref, food, form,
+      ref, food, form, animal: !!food.animal,
       name: foodName(food), formLabel: formName(form.label), cat: food.cat,
       liquid: ['icecek', 'demleme', 'suyu', 'yag'].includes(form.key),
       v: form.v, s: form.s, alt: form.alt || {}, sd: form.sd || {},
@@ -88,11 +88,17 @@ export function setCustomFoods(list) {
 }
 export const customFoods = () => CUSTOM;
 
+// Hayvansal besinler Ayarlar'dan gizlenebilir; gizliyken liste, arama ve öneriler yalnız bitkisel kayıtları görür
+let SHOW_ANIMAL = true;
+export function setAnimalVisible(v) { SHOW_ANIMAL = v !== false; }
+export const visibleFoods = () => (SHOW_ANIMAL ? FOODS : FOODS.filter((f) => !f.animal));
+export const ANIMAL_CATS = new Set(DB.animalCategories || []);
+
 export function search(q, { cat = null, ext = false, extGroup = null } = {}) {
   const k = norm(q);
   const terms = k ? k.split(' ') : [];
   const match = (s) => terms.every((t) => s.includes(t));
-  let out = FOODS.filter((f) => (!cat || f.cat === cat) && (!terms.length || match(f._k)));
+  let out = visibleFoods().filter((f) => (!cat || f.cat === cat) && (!terms.length || match(f._k)));
   if (terms.length) {
     out.sort((a, b) => score(b._k, k) - score(a._k, k) || a.tr.localeCompare(b.tr, 'tr'));
   }

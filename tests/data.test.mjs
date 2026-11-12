@@ -73,13 +73,20 @@ test('ölçülmeyen oksalat oranı üretilmez; USDA amino asit skoru hesaplanır
   assert.equal(le.aas.limiting, 'Met + Sis');
 });
 
-test('katalogda hayvansal ürün yok', () => {
-  const bad = /\b(milk|cheese|egg|honey|beef|chicken|fish|butter|ghee|yogurt)\b/i;
-  for (const f of DB.foods) for (const fm of f.forms) {
-    if (fm.usda) assert.ok(!bad.test(fm.usda.desc.replace(/peanut butter|sesame butter|soymilk|almond milk|rice milk|coconut milk/gi, '')), fm.usda.desc);
+test('hayvansal kayıtlar yalnız hayvansal kategorilerde ve işaretli; bitkisel kayıtlarda hayvansal USDA verisi yok', () => {
+  const bad = /\b(milk|cheese|egg|honey|beef|chicken|fish|butter|ghee|yogurt|lamb|turkey|cream|shrimp|mussel|tuna|salmon)\b/i;
+  const animalCats = new Set(DB.animalCategories);
+  assert.deepEqual([...animalCats].sort(), ['balik', 'et', 'kumes', 'sut', 'yumurta']);
+  let animals = 0;
+  for (const f of DB.foods) {
+    if (animalCats.has(f.cat)) assert.equal(f.animal, true, f.id);
+    if (f.animal) { animals++; continue; }
+    for (const fm of f.forms) if (fm.usda) assert.ok(!bad.test(fm.usda.desc.replace(/peanut butter|sesame butter|soymilk|almond milk|rice milk|coconut milk|coconut cream|cocoa butter|butternut|butterhead/gi, '')), fm.usda.desc);
   }
+  assert.ok(animals >= 30);
+  assert.equal(DB.foods.find((f) => f.id === 'bal').animal, true);
+  assert.equal(DB.foods.find((f) => f.id === 'kirmizi_mercimek').animal, false);
 });
-
 
 test('dağıtımda IFCT değerleri, alternatifleri ve bunlardan tahminler bulunmaz', () => {
   assert.equal(DB.meta.ifctLinked, 0); assert.equal(DB.meta.estimated, 0);

@@ -8,7 +8,7 @@ import { USDA_NUTRIENTS, unitFactor } from '../data/usda-nutrients.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { NUTRIENTS } from '../src/nutrients.js';
-import { FOODS, CATEGORIES, FORM_LABELS } from '../data/catalog.mjs';
+import { FOODS, CATEGORIES, FORM_LABELS, ANIMAL_CATS } from '../data/catalog.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const raw = (f) => fs.readFileSync(path.join(root, 'data/raw', f), 'utf8');
@@ -201,6 +201,7 @@ for (const food of FOODS) {
     id: food.id, tr: food.tr, en: food.en, cat: food.cat,
     sci: forms.find((f) => f.usda?.sci)?.usda.sci || forms.find((f) => f.ifct?.sci)?.ifct.sci || null,
     allergens: food.allergens || [],
+    animal: !!food.animal || ANIMAL_CATS.includes(food.cat),
     note: food.note || null,
     forms,
   });
@@ -239,6 +240,6 @@ const meta = {
   forms: foods.reduce((a, f) => a + f.forms.length, 0),
   ifctLinked, estimated, ext: ext.length,
 };
-fs.writeFileSync(path.join(outDir, 'foods.json'), JSON.stringify({ meta, categories: CATEGORIES, foods }));
+fs.writeFileSync(path.join(outDir, 'foods.json'), JSON.stringify({ meta, categories: CATEGORIES, animalCategories: ANIMAL_CATS, foods }));
 fs.writeFileSync(path.join(outDir, 'foods-ext.json'), JSON.stringify({ groups: EXT_GROUPS, foods: ext }));
 console.log(meta, 'foods.json', (fs.statSync(path.join(outDir, 'foods.json')).size / 1024).toFixed(0) + ' KB', 'ext', (fs.statSync(path.join(outDir, 'foods-ext.json')).size / 1024).toFixed(0) + ' KB');
