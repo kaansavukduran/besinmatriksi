@@ -714,3 +714,14 @@ test('geniş katalogda hayvansal USDA grupları; gizlenince aramadan da çıkar 
   await expect(page.locator('#foodlist [data-action="ex-pick-ext"]')).toHaveCount(0);
   await expect(page.locator('[data-action="ex-extgroup"][data-g="1500"]')).toHaveCount(0);
 });
+
+test('"besin ekle" penceresinde kategori düğmeleri simetrik: eşit genişlik ve yükseklik (B083)', async ({ page }) => {
+  await page.goto('/');
+  await tab(page, 'karsilastir');
+  await page.locator('[data-action="cmp-add"]').click();
+  const sizes = await page.locator('.cats.cats-grid .cat:not(.add)').evaluateAll((els) => els.map((e) => { const r = e.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height)]; }));
+  expect(sizes.length).toBeGreaterThan(10);
+  expect(new Set(sizes.map((s) => s[0])).size).toBe(1);
+  expect(new Set(sizes.map((s) => s[1])).size).toBe(1);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+});

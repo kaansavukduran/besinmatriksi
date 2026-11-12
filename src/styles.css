@@ -148,9 +148,9 @@ i.sci, .dsub i { font-style: italic; }
 .cat { flex-shrink: 0; display: flex; align-items: center; gap: .3rem; text-align: left; min-height: var(--tap); padding: .3rem .8rem; border-radius: calc(var(--radius) * .7); border: 1px solid transparent; background: transparent; color: var(--fg); }
 .cat:hover { background: var(--card2); }
 .cat.on { background: var(--acc); color: var(--ac-fg); font-weight: 700; }
-.cats.row { flex-direction: row; flex-wrap: wrap; position: static; max-height: none; }
-.cats.row .cat { border-color: var(--line); background: var(--card); }
-.cats.row .cat.on { background: var(--acc); }
+.cats.cats-grid { flex-direction: row; flex-wrap: wrap; position: static; max-height: none; }
+.cats.cats-grid .cat { border-color: var(--line); background: var(--card); }
+.cats.cats-grid .cat.on { background: var(--acc); }
 
 .list { position: sticky; top: 72px; max-height: calc(100vh - 90px); overflow: auto; padding-right: 4px; }
 .searchbar { display: flex; gap: 6px; margin-bottom: 8px; position: sticky; top: 0; background: var(--bg); padding-bottom: 6px; z-index: 2; }
@@ -660,3 +660,13 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 .ing-h .fi .fart { width: 34px; height: 34px; }
 .dtitle h2 .fart { width: 48px; height: 48px; margin-right: 6px; }
 .pchip .fart { width: 24px; height: 24px; margin-right: 4px; }
+/* "Besin ekle" penceresindeki kategori ızgarası: eşit sütunlar, eşit yükseklikte satırlar, simetrik */
+.cats.cats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(170px, 100%), 1fr)); gap: 8px; padding-right: 0; align-items: stretch; }
+.cats.cats-grid .cat { width: 100%; min-width: 0; min-height: calc(2.4em + .6rem + 2px); }
+.cats.cats-grid .cat-group, .cats.cats-grid .cat.add { grid-column: 1 / -1; }
+.cat-i:empty { display: none; }
+.cats.cats-grid .cat .cat-l { flex: 1; min-width: 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.2; }
+.cats.cats-grid .cat .cnt { flex-shrink: 0; }
+.cats.cats-grid .col-head, .cats.cats-grid .nav-h, .cats.cats-grid h3, .cats.cats-grid .col-new { grid-column: 1 / -1; }
+@media (max-width: 700px) { .cats.cats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .cats.cats-grid .cat { font-size: .92em; padding: .3rem .6rem; } }
+.modal-h .btn { white-space: nowrap; flex-shrink: 0; }

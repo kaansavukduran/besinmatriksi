@@ -367,3 +367,9 @@
 - `showAnimal` kapalıyken geniş katalog araması ve grup düğmeleri hayvansal kayıtları göstermez; ayrıntıda "Hayvansal" etiketi. Geniş katalog grup adları artık İngilizceye çevriliyor (eski eksik).
 - Kanıt: `npm run data` (ext 4281); `npm test` 80/80; Playwright 78/78 PASS (yeni B082 testi: balık grubu, arama, etiket, gizleme).
 - Sonraki: **B083** kullanıcı ekran görüntüsü: "besin ekle" penceresindeki kategori düğmeleri simetrik değil (sütunlar eşit değil, yükseklikler karışık).
+
+## B083 · 2026-11-12 · "besin ekle" penceresinde simetrik kategori düğmeleri
+- Kaan'ın ekran görüntüsü (Android, Karşılaştırmaya besin ekle): sol/sağ sütun genişlikleri farklı, kutu yükseklikleri karışık. Kök neden: seçici penceresindeki kategori kabı `row` sınıfını kullanıyordu; aynı ad besin tablosu satırları için tanımlı `.row { grid-template-columns: … 1fr auto }` ve daha özgül `:root[data-ui-narrow] .row` kurallarıyla çakışıp 1fr+auto (geniş+dar) ızgara üretiyordu. Sınıf `cats-grid` olarak ayrıldı.
+- Yeni düzen: eşit sütunlar (telefonda 2 × 1fr, geniş ekranda otomatik), her düğme aynı yükseklikte (2 satırlık ad için yer ayrılır, daha uzun ad "…" ile kısalır), simge/ad/sayı ayrı hizalı; "Koleksiyonlarım" başlığı ve "yeni koleksiyon" tüm satırı kaplar. Pencere başlığındaki "× Kapat" tek satır.
+- Kanıt: Playwright 80/80 PASS (yeni B083 testi: tüm kategori düğmeleri aynı genişlik ve yükseklik, taşma yok); `npm test` 80/80; telefonda ekran görüntüsü incelendi.
+- Sonraki: **B084** beta.13 yayını (B082 + B083) ve diğer ekranlarda aynı `row` çakışması var mı taraması.

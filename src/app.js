@@ -205,16 +205,16 @@ function extButton(f, action) {
 // ---------------------------------------------------------------- KEŞFET
 function categoryNav(prefix, current, withExt) {
   const vis = visibleFoods();
-  const all = `<button class="cat ${!current ? 'on' : ''}" data-action="${prefix}-cat" data-cat="">${S.settings.emoji ? '✨ ' : ''}${L("Tümü")} <span class="cnt">${vis.length}</span></button>`;
+  const all = `<button class="cat ${!current ? 'on' : ''}" data-action="${prefix}-cat" data-cat=""><span class="cat-i">${S.settings.emoji ? '✨' : ''}</span><span class="cat-l">${L("Tümü")}</span> <span class="cnt">${vis.length}</span></button>`;
   const cats = CATEGORIES.filter((c) => S.settings.showAnimal || !ANIMAL_CATS.has(c.id)).map((c) => {
     const n = vis.filter((f) => f.cat === c.id).length;
-    return `<button class="cat ${current === c.id ? 'on' : ''}" data-action="${prefix}-cat" data-cat="${c.id}">${S.settings.emoji ? c.icon + ' ' : ''}${esc(categoryName(c))} <span class="cnt">${n}</span></button>`;
+    return `<button class="cat ${current === c.id ? 'on' : ''}" data-action="${prefix}-cat" data-cat="${c.id}"><span class="cat-i">${S.settings.emoji ? c.icon : ''}</span><span class="cat-l">${esc(categoryName(c))}</span> <span class="cnt">${n}</span></button>`;
   }).join('');
-  const ext = withExt ? `<button class="cat ${current === 'ext' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="ext">${S.settings.emoji ? '🗂️ ' : ''}${L("Geniş katalog (USDA, İngilizce)")}</button>` : '';
-  const cu = `<button class="cat ${current === 'custom' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="custom">${S.settings.emoji ? '🏷️ ' : ''}${L("Kendi besinlerim")} <span class="cnt">${customFoods().length}</span></button>`;
+  const ext = withExt ? `<button class="cat ${current === 'ext' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="ext"><span class="cat-i">${S.settings.emoji ? '🗂️' : ''}</span><span class="cat-l">${L("Geniş katalog (USDA, İngilizce)")}</span></button>` : '';
+  const cu = `<button class="cat ${current === 'custom' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="custom"><span class="cat-i">${S.settings.emoji ? '🏷️' : ''}</span><span class="cat-l">${L("Kendi besinlerim")}</span> <span class="cnt">${customFoods().length}</span></button>`;
   const colBtn = (c, sub) => {
     const n = sub ? c.items.length : collectionRefs(S.collections, c.id).length;
-    return `<button class="cat ${sub ? 'sub' : ''} ${current === 'col:' + c.id ? 'on' : ''}" data-action="${prefix}-cat" data-cat="col:${c.id}">${sub ? '↳ ' : S.settings.emoji ? '📁 ' : ''}${esc(c.name)} <span class="cnt">${n}</span></button>`;
+    return `<button class="cat ${sub ? 'sub' : ''} ${current === 'col:' + c.id ? 'on' : ''}" data-action="${prefix}-cat" data-cat="col:${c.id}"><span class="cat-i">${sub ? '↳' : S.settings.emoji ? '📁' : ''}</span><span class="cat-l">${esc(c.name)}</span> <span class="cnt">${n}</span></button>`;
   };
   const tree = collectionTree(S.collections);
   const cols = `<div class="cat-group" role="presentation">${L("Koleksiyonlarım")}</div>${tree.map((c) => colBtn(c, false) + c.children.map((ch) => colBtn(ch, true)).join('')).join('')}${prefix === 'ex' ? `<button class="cat add" data-action="col-new">＋ ${L("Yeni koleksiyon")}</button>` : ''}`;
@@ -702,7 +702,7 @@ function renderPicker() {
           <div class="pk-prev">${item.v.energy != null ? `${fmtNum((item.v.energy * P.amount) / 100)} kcal · ` : ''}${item.v.protein != null ? `${fmtNum((item.v.protein * P.amount) / 100)} g protein · ` : ''}${item.v.fiber != null ? `${fmtNum((item.v.fiber * P.amount) / 100)} g ${L("lif")}` : ''}</div>
           <button class="btn primary big" data-action="pk-confirm">${P.target === 'recipe' ? '＋ ' + L("Tarife ekle") : '＋ ' + L("Karşılaştırmaya ekle")}</button>
           ${P.target === 'recipe' ? `<button class="btn" data-action="pk-confirm-more">＋ ${L("Ekle ve başka seç")}</button>` : ''}</div>`
-      : `<nav class="cats row">${categoryNav('pk', P.cat, S.settings.showExt)}</nav>
+      : `<nav class="cats cats-grid">${categoryNav('pk', P.cat, S.settings.showExt)}</nav>
         <div class="searchbar"><input type="search" id="pq" placeholder="${L("Ara (isteğe bağlı)")}" value="${esc(P.q)}" autocomplete="off" aria-label="${L("Besin ara")}"></div>
         <div class="pk-list">${foodList('pk', P.cat, P.q, P.extGroup)}</div>`}
     </div></div>`;
