@@ -361,7 +361,7 @@ function renderExplore() {
       <div id="matrix" class="matrix">${matrixForExplore(item)}</div>`
     : welcome();
   return `<div class="explore ${item ? 'has-sel' : ''}">
-    <nav class="cats" aria-label="${L("Kategoriler")}">${categoryNav('ex', S.cat, S.settings.showExt)}</nav>
+    <nav class="cats ${S.settings.catGrid ? 'cats-grid' : ''}" aria-label="${L("Kategoriler")}">${categoryNav('ex', S.cat, S.settings.showExt)}</nav>
     <section class="list" aria-label="${L("Besinler")}">
       ${tourCard()}
       <div class="searchbar"><input type="search" id="q" placeholder="${L("Ara (isteğe bağlı): muz, mercimek, lentil…")}" value="${esc(S.q)}" autocomplete="off" aria-label="${L("Besin ara")}">
@@ -591,6 +591,7 @@ function renderSettings() {
       ${tog('showSource', L("Kaynak etiketleri (USDA / Hesap / Etiket)"))}
       ${tog('showAlt', L("Varsa ikinci kaynağı göster (bu sürümde ikinci veri seti yok)"))}
       ${tog('showSd', L("Varsa kaynak standart sapmasını göster"))}
+      ${tog('catGrid', L("Keşfet'te kategorileri eşit kutulu ızgara olarak göster"))}
       ${tog('showAnimal', L("Hayvansal besinleri göster (süt, yumurta, et, balık, bal)"))}
       ${tog('showSimilar', L("Besin ayrıntısında benzer besinleri göster"))}
       ${tog('showRecent', L("Keşfet'te son bakılan besinleri göster"))}

@@ -648,5 +648,6 @@ export const UI_EN = {
  "Baklagiller ve ürünleri": "Legumes & products",
  "Tahıllar ve makarna": "Grains & pasta",
  "Yağlar": "Fats & oils",
- "İçecekler": "Beverages"
+ "İçecekler": "Beverages",
+ "Keşfet'te kategorileri eşit kutulu ızgara olarak göster": "Show Explore categories as an even grid"
 };

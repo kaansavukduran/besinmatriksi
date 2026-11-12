@@ -670,3 +670,7 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 .cats.cats-grid .col-head, .cats.cats-grid .nav-h, .cats.cats-grid h3, .cats.cats-grid .col-new { grid-column: 1 / -1; }
 @media (max-width: 700px) { .cats.cats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .cats.cats-grid .cat { font-size: .92em; padding: .3rem .6rem; } }
 .modal-h .btn { white-space: nowrap; flex-shrink: 0; }
+/* Keşfet'te ızgara seçeneği: şerit yerine eşit kutular (telefonda 2 sütun, geniş ekranda kenar sütunda tek sütun) */
+.explore .cats.cats-grid { display: grid; flex-wrap: initial; overflow: visible; }
+@media (min-width: 701px) { .explore .cats.cats-grid { grid-template-columns: 1fr; } }
+@media (max-width: 700px) { .explore .cats.cats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); overflow-x: visible; } .explore .cats.cats-grid .cat { white-space: normal; } }

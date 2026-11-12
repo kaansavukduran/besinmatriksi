@@ -725,3 +725,12 @@ test('"besin ekle" penceresinde kategori düğmeleri simetrik: eşit genişlik v
   expect(new Set(sizes.map((s) => s[1])).size).toBe(1);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
 });
+
+test('Keşfet kategorileri isteğe bağlı simetrik ızgara (B085)', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('bm.settings.v2', JSON.stringify({ version: 2, settings: { catGrid: true } })));
+  await page.goto('/');
+  const sizes = await page.locator('.explore .cats.cats-grid .cat:not(.add)').evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().width)));
+  expect(sizes.length).toBeGreaterThan(10);
+  expect(new Set(sizes).size).toBe(1);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+});

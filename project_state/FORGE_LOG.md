@@ -378,3 +378,8 @@
 ## B084 · 2026-11-12 · beta.13 yayını
 - 1.1.2-beta.13 (B082 geniş katalogta hayvansal gruplar, B083 simetrik seçici). Diğer ekranlarda `row` sınıf çakışması tarandı: yalnız matriks satırları kullanıyor (amaçlanan). `npm test` PASS; `native-notices` 446 / eksik 0.
 - Sonraki: **B085** Keşfet'teki kategori şeridini telefonda da isteğe bağlı simetrik ızgara olarak gösterme seçeneği (Ayarlar).
+
+## B085 · 2026-11-12 · Keşfet'te isteğe bağlı simetrik kategori ızgarası
+- Ayarlar → Matriks "Keşfet'te kategorileri eşit kutulu ızgara olarak göster" (`catGrid`, varsayılan kapalı; eski kayıtlar etkilenmez). Açıkken telefonda yana kayan şerit yerine B083'teki eşit genişlik/yükseklikte 2 sütunlu ızgara, geniş ekranda kenar sütunda tek sütun.
+- Kanıt: `npm test` 80/80; Playwright 82/82 PASS (yeni B085 testi: tüm kategori kutuları aynı genişlik, taşma yok).
+- Sonraki: **B086** beta.13 yayın doğrulaması; ardından Aion için yeni bir poz/ifade (ör. hayvansal besin açılınca bilgilendirici ifade değil, nötr kalsın) ve kalan UX gözden geçirmesi.
