@@ -705,3 +705,4 @@
 - Kanıt: `npm run data` (619 besin); `npm test` 107/107; build + build:single; Playwright 152/152.
 - Sürüm 1.1.2-beta.28 (B134 + B135).
 - Sonraki: **B136** kalan temizlik (#17-20: matrix.js ölü dallar, .quick/.split CSS, kullanılmayan dışa aktarımlar) ya da kullanıcı önceliklerinden (3) koleksiyon/alt kategori deneyimi.
+- Yayın kanıtı: release.yml run 43448667453 deneme 1 macOS işi runner bulamadan 15 dk sonra iptal (kod hatası değil; diğer 5 platform başarılı) → rerun_failed_jobs; deneme 2 success, v1.1.2-beta.28 pre-release 2026-11-13T15:47:35Z. ci.yml run 43448656370 (c718cc6) success.
