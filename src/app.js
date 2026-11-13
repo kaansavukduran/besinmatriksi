@@ -29,7 +29,6 @@ import { recipeGaps } from './gaps.js';
 import { similarFoods } from './similar.js';
 import { FOOD_ICONS } from './food-icons.js';
 import { foodArt } from './food-art.js';
-import { TOUR_STEPS, tourSeen, markTourSeen, nextStep } from './tour.js';
 import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS, migrateFontV2, migrateAionOff } from './settings.js';
 
 const PRESETS = [1, 5, 10, 25, 50, 100, 150, 200, 250, 500, 750, 1000];
@@ -39,7 +38,7 @@ const S = {
   tab: 'kesfet',
   searches: loadSearches(),
   profiles: loadProfiles(),
-  collections: loadCollections(), colPicker: false, sort: 'default', multi: false, picked: [], ingOpen: new Set(), tour: null, settingsQ: '', rcQ: '', rcSort: 'manual', recent: loadRecent((r) => !!FOODS.find((f) => f.id === r.id)?.forms[r.f]),
+  collections: loadCollections(), colPicker: false, sort: 'default', multi: false, picked: [], ingOpen: new Set(), settingsQ: '', rcQ: '', rcSort: 'manual', recent: loadRecent((r) => !!FOODS.find((f) => f.id === r.id)?.forms[r.f]),
   cat: null,
   extGroup: null,
   q: '',
@@ -321,23 +320,6 @@ function similarRow(item) {
 }
 
 // İlk kullanım turu: listenin başında akışta duran küçük kart (hiçbir şeyin üstünü örtmez), hedefi vurgular
-function tourCard() {
-  if (S.tour == null) return '';
-  const i = S.tour, n = TOUR_STEPS.length;
-  return `<section class="tour card" role="region" aria-label="${L("Kısa tanıtım")}" aria-live="polite">
-    <p class="tour-step">${S.settings.emoji ? '👋 ' : ''}${L("Kısa tanıtım")} · ${L("Adım {i}/{n}", { i: i + 1, n })}</p>
-    <p class="tour-text">${esc(L(TOUR_STEPS[i].text))}</p>
-    <div class="presets"><button class="btn" data-action="tour-prev" ${i === 0 ? 'disabled' : ''}>← ${L("Geri")}</button>
-      <button class="btn primary" data-action="tour-next">${i === n - 1 ? L("Bitir") : L("İleri") + ' →'}</button>
-      <button class="btn ghost" data-action="tour-skip">${L("Turu atla")}</button></div>
-  </section>`;
-}
-function applyTourTarget() {
-  document.querySelectorAll('.tour-target').forEach((el) => el.classList.remove('tour-target'));
-  if (S.tour == null || S.tab !== 'kesfet') return;
-  document.querySelector(TOUR_STEPS[S.tour].target)?.classList.add('tour-target');
-}
-function endTour() { S.tour = null; markTourSeen(); render(); }
 
 function renderExplore() {
   const item = S.sel ? resolve(S.sel) : null;
@@ -367,7 +349,6 @@ function renderExplore() {
   return `<div class="explore ${item ? 'has-sel' : ''}">
     <nav class="cats ${S.settings.catGrid ? 'cats-grid' : ''}" aria-label="${L("Kategoriler")}">${categoryNav('ex', S.cat, S.settings.showExt)}</nav>
     <section class="list" aria-label="${L("Besinler")}">
-      ${tourCard()}
       <div class="searchbar"><input type="search" id="q" placeholder="${L("Ara (isteğe bağlı): muz, mercimek, lentil…")}" value="${esc(S.q)}" autocomplete="off" aria-label="${L("Besin ara")}">
       ${S.q ? `<button class="btn ghost" data-action="ex-clear">${L("Temizle")}</button>` : ''}</div>
       ${S.searches.length ? `<div class="recent-searches" aria-label="${L("Son aramalar")}"><span class="hint">${L("Son aramalar")}</span><div class="presets">${S.searches.map(q => `<button class="pchip" data-action="search-recent" data-q="${esc(q)}">${esc(q)}</button>`).join('')}<button class="btn ghost" data-action="search-clear">${L("Geçmişi temizle")}</button></div></div>` : ''}
@@ -605,7 +586,7 @@ function renderSettings() {
       <div class="kv"><span>${tr('aionSizeLabel')}</span><span class="presets">${opt('aionSize', 's', tr('sizeS'))}${opt('aionSize', 'm', tr('sizeM'))}${opt('aionSize', 'l', tr('sizeL'))}</span></div>
       <div class="kv"><span>${tr('aionSideLabel')}</span><span class="presets">${opt('aionSide', 'left', tr('sideLeft'))}${opt('aionSide', 'right', tr('sideRight'))}</span></div>
       ${tog('aionTips', tr('aionTipsLabel'))}
-      <div class="presets"><button class="btn" data-action="aion-demo" data-anim="celebrate">${tr('aionTry')}</button><button class="btn" data-action="tour-start">${L("Tanıtım turunu başlat")}</button><button class="btn ghost" data-action="reset-group" data-group="aion">${tr('aionReset')}</button></div>
+      <div class="presets"><button class="btn" data-action="aion-demo" data-anim="celebrate">${tr('aionTry')}</button><button class="btn ghost" data-action="reset-group" data-group="aion">${tr('aionReset')}</button></div>
     </section>
     <section class="card"><h2>${tr('quickPresets')}</h2><div class="presets">
       <button class="btn" data-action="preset" data-p="dyslexia">${tr('dyslexiaPreset')}</button>
@@ -852,7 +833,6 @@ export function render() {
   aionMood(aionMoodFor());
   celebrateGoals();
   if (S.tab === 'ayarlar') applySettingsFilter();
-  applyTourTarget();
   if (S.tab === 'tarif') applyRecipeFilter();
   document.querySelectorAll('.list, .detail, .pk-list, .cats').forEach((el, i) => (el.dataset.keepScroll = el.className.split(' ')[0] + i));
   document.querySelectorAll('[data-keep-scroll]').forEach((el) => { if (keep[el.dataset.keepScroll] != null) el.scrollTop = keep[el.dataset.keepScroll]; });
@@ -1119,10 +1099,6 @@ async function onClick(e) {
     case 'pk-pick-ref': selectFood('pk', JSON.parse(b.dataset.ref)); break;
     case 'sort': S.sort = b.dataset.s; render(); break;
     case 'rc-sort': S.rcSort = b.dataset.s; render(); break;
-    case 'tour-next': { const j = nextStep(S.tour ?? 0, 1); if (j == null) { endTour(); toast(L("Hazırsın! Turu Ayarlar → Aion'dan yeniden başlatabilirsin.")); } else { S.tour = j; render(); } break; }
-    case 'tour-prev': S.tour = nextStep(S.tour ?? 0, -1); render(); break;
-    case 'tour-skip': endTour(); break;
-    case 'tour-start': S.tour = 0; S.tab = 'kesfet'; S.sel = null; render(); window.scrollTo(0, 0); break;
     case 'recent-clear': S.recent = []; saveRecent([]); render(); break;
     case 'ing-open': { const id = b.dataset.id; if (S.ingOpen.has(id)) S.ingOpen.delete(id); else S.ingOpen.add(id); render(); document.querySelector(`[data-action="ing-open"][data-id="${CSS.escape(id)}"]`)?.focus(); break; }
     case 'multi-toggle': S.multi = !S.multi; S.picked = []; render(); break;
@@ -1476,8 +1452,7 @@ export function start() {
   // İlk açılış selamı; depolama yoksa (gizli pencere, about:blank) sessizce atla
   let greeted = true;
   try { greeted = !!localStorage.getItem('bm.aion.greeted'); if (!greeted) localStorage.setItem('bm.aion.greeted', '1'); } catch {}
-  if (!tourSeen()) { S.tour = 0; render(); }
-  else if (S.settings.aionTips && !greeted) setTimeout(() => aionSay(tr('aionHello'), 7000), 600);
+  if (S.settings.aionTips && !greeted) setTimeout(() => aionSay(tr('aionHello'), 7000), 600);
   else if (S.settings.aionTips) {
     // Günde bir kez, saate göre selam
     const today = new Date().toDateString();

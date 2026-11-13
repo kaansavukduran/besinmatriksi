@@ -148,14 +148,20 @@ test('tek HTML içeriği harici istek olmadan çalışır', async ({ page, conte
   expect(requests.filter(url => /^https?:/.test(url))).toEqual([]);
 });
 
-test('A4 çıktısı tabloyu ve tüm değerleri korur, bölüm durumunu geri yükler', async ({ page }, testInfo) => {
+test('A4 çıktısı tabloyu ve tüm değerleri korur, bölüm durumunu geri yükler', async ({ page, browserName }, testInfo) => {
   await page.goto('/'); await pickBanana(page);
   const before = await page.locator('#matrix .row').allTextContents();
   const protein = page.locator('[data-sec="protein"]');
   await protein.locator('summary').click(); await expect(protein).not.toHaveAttribute('open', '');
-  const pdf = await page.pdf({ path: testInfo.outputPath('muz-a4.pdf'), preferCSSPageSize: true, printBackground: true });
-  const pages = (pdf.toString('latin1').match(/\/Type\s*\/Page\b/g) || []).length;
-  expect(pages).toBeGreaterThan(0); expect(pages).toBeLessThanOrEqual(10);
+  if (browserName === 'chromium') { // page.pdf yalnız Chromium'da desteklenir; diğer tarayıcılarda baskı ortamı öykünülür
+    const pdf = await page.pdf({ path: testInfo.outputPath('muz-a4.pdf'), preferCSSPageSize: true, printBackground: true });
+    const pages = (pdf.toString('latin1').match(/\/Type\s*\/Page\b/g) || []).length;
+    expect(pages).toBeGreaterThan(0); expect(pages).toBeLessThanOrEqual(10);
+  } else {
+    await page.emulateMedia({ media: 'print' });
+    await expect(page.locator('#matrix .row').first()).toBeVisible();
+    await page.emulateMedia({ media: 'screen' });
+  }
   await expect(protein).not.toHaveAttribute('open', '');
   expect(await page.locator('#matrix .row').allTextContents()).toEqual(before);
   await page.locator('[data-amount="ex"] [data-val="250"]').click();
@@ -607,27 +613,12 @@ test('besin ayrıntısında benzer besinler aynı kategoriden gelir ve açılır
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
 });
 
-test('ilk açılışta 3 adımlı tanıtım turu; ileri/geri, atlama kalıcı, Ayarlar\'dan yeniden başlar (B070)', async ({ page }) => {
+test('tanıtım turu kaldırıldı: ilk açılışta tur kartı ve vurgu yok; Ayarlar\'da tur düğmesi yok (B123; B070 kaldırıldı)', async ({ page }) => {
   await page.goto('/');
-  const tour = page.locator('.tour');
-  await expect(tour).toContainText('Adım 1/3');
-  await expect(page.locator('.cats')).toHaveClass(/tour-target/);
-  await expect(page.locator('[data-action="tour-prev"]')).toBeDisabled();
-  await page.locator('[data-action="tour-next"]').click();
-  await expect(tour).toContainText('Adım 2/3');
-  await expect(page.locator('#foodlist')).toHaveClass(/tour-target/);
-  await page.locator('[data-action="tour-prev"]').click();
-  await expect(tour).toContainText('Adım 1/3');
-  await page.locator('[data-action="tour-skip"]').click();
-  await expect(tour).toHaveCount(0);
-  await expect(page.locator('.tour-target')).toHaveCount(0);
-  await page.reload();
-  await expect(page.locator('.tour')).toHaveCount(0);
+  await expect(page.locator('.tour, .tour-target, [data-action^="tour-"]')).toHaveCount(0);
+  await expect(page.locator('#q')).toBeVisible();
   await tab(page, 'ayarlar');
-  await page.locator('[data-action="tour-start"]').click();
-  await expect(page.locator('.tour')).toContainText('Adım 1/3');
-  for (let i = 0; i < 3; i++) await page.locator('[data-action="tour-next"]').click();
-  await expect(page.locator('.tour')).toHaveCount(0);
+  await expect(page.locator('[data-action="tour-start"]')).toHaveCount(0);
 });
 
 test('Günlük son 7 gün enerji grafiği: kayıtsız gün boş, güne dokununca o gün açılır (B072)', async ({ page }) => {
@@ -945,12 +936,8 @@ test('Günlük: günün kalori pasta grafiği temel değerlerin altında (B105)'
   await expect(page.locator('.personal .macro-pie li[data-part="p"] strong')).toContainText('%');
 });
 
-test('temel değer karoları dengeli (4+4 ya da 2×4); tur vurgusu kesikli çizgi değil (B107)', async ({ page }) => {
-  await page.addInitScript(() => localStorage.removeItem('bm.tour.v1'));
+test('temel değer karoları dengeli (4+4 ya da 2×4) (B107)', async ({ page }) => {
   await page.goto('/');
-  const tgt = page.locator('.tour-target').first();
-  if (await tgt.count()) expect(await tgt.evaluate((e) => getComputedStyle(e).outlineStyle)).not.toBe('dashed');
-  await page.locator('[data-action="tour-skip"]').click().catch(() => {});
   await page.locator('#q').fill('ıspanak'); await page.locator('#foodlist [data-id="ispanak"]').click();
   const tops = await page.locator('#matrix .basic-card .basic-tile').evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().top)));
   const rows = new Map(); for (const t of tops) rows.set(t, (rows.get(t) || 0) + 1);
@@ -990,7 +977,7 @@ test('Keşfet: karşılama kartı üstte; seçili kategorinin besinleri sağda k
   await page.goto('/');
   await expect(page.locator('.welcome')).toHaveCount(1);
   await expect(page.locator('#aion')).toBeHidden(); // Aion varsayılan kapalı (B113)
-  if (info.project.name === 'phone') return; // telefonda orta liste kullanılır
+  if (page.viewportSize().width <= 700) return; // dar ekranda (telefon) orta liste kullanılır
   await expect(page.locator('.detail .periodic .pt').first()).toBeVisible();
   await page.locator('.cat[data-cat="meyve"]').click();
   const tiles = page.locator('.detail .periodic .pt');

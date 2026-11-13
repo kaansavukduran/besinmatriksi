@@ -631,10 +631,6 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 .similar { margin: 4px 0 10px; }
 .similar .presets { margin-top: 4px; }
 @media (max-width: 700px) { .similar .presets { flex-wrap: nowrap; overflow-x: auto; max-width: 100%; } .similar .pchip { flex-shrink: 0; } }
-.tour { border: 2px solid var(--acc); margin-bottom: 10px; }
-.tour .tour-step { font-weight: 700; margin: 0 0 4px; }
-.tour .tour-text { margin: 0 0 8px; }
-.tour-target { outline: none; border-radius: 12px; box-shadow: 0 0 0 2px color-mix(in srgb, var(--acc) 70%, transparent), 0 0 18px 2px color-mix(in srgb, var(--acc) 35%, transparent); }
 .week { margin: 10px 0; }
 .week-bars { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; align-items: end; }
 .wk { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px 2px; border: 1px solid var(--line, transparent); border-radius: 10px; background: none; color: inherit; font: inherit; cursor: pointer; min-width: 0; }
@@ -786,3 +782,5 @@ table.cmp .cpct { display: block; font-size: .72rem; color: var(--muted); font-w
 .ing-h > [data-action="rc-del-item"] { position: absolute; top: calc(var(--pad) - 2px); right: calc(var(--pad) - 2px); margin: 0; }
 .cmp-h { padding-right: 2.6rem; min-height: 2.2rem; }
 .cmp-h > [data-action="cmp-del"] { position: absolute; top: calc(var(--pad) - 2px); right: calc(var(--pad) - 2px); margin: 0; }
+/* WebKit: içerik kareyi uzatmasın (aspect-ratio tercih edilen boyuttur; min-height:auto içerikle büyütür) */
+.pt { min-height: 0; overflow: hidden; }

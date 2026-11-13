@@ -602,3 +602,9 @@
 ## B122 · 2026-11-13 · Günlük: kişisel profil yeniden en üstte
 - Kaan (ekran görüntüsüyle): "Kişisel profil bulunduğu sekmede en üstte olmalı, en altta değil." B104'teki sıra tersine çevrildi: profil → gün kartı (tarih, temel değerler + pasta) → kayıtlar → 7 gün → matriks → yedek.
 - Kanıt: `npm test` 95/95; Playwright ilgili 18 test PASS (B122: profil kartı tarih seçicinin, o da temel kartın üstünde).
+
+## B123 · 2026-11-13 · Tanıtım turu kaldırıldı; Firefox/WebKit uyum düzeltmeleri
+- Kaan: "şu quick tour şeyini kaldır." → tur kartı, hedef vurgusu, Ayarlar'daki "Tanıtım turunu başlat" düğmesi, `src/tour.js` ve testleri kaldırıldı (B070 geri alındı). Karşılama kartı kısa yönergeyi zaten veriyor.
+- Tarayıcı uyumu CI (run 43337769454; Firefox, Safari/WebKit, iPhone, iPad; 256 testten 250 PASS): 2 ayrı neden. (1) `page.pdf` yalnız Chromium'da var → A4 testi diğer tarayıcılarda baskı ortamı öykünmesiyle çalışır (ürün hatası değil). (2) WebKit'te periyodik tablo karesi 5 px uzuyordu (aspect-ratio + min-height:auto) → `.pt { min-height: 0; overflow: hidden }`; B112 testi proje adına değil ekran genişliğine bakar (iPhone'da sağ panel gizli).
+- Kişisel profilin Günlük'te en üstte olduğu doğrulandı (B122, commit 26c5930).
+- Kanıt: `npm test` 94/94; Playwright (Chromium masaüstü+telefon) 128/128. Firefox/WebKit sonucu: CI'da yeniden koşacak (NOT_RUN yerel).
