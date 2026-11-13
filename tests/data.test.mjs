@@ -262,3 +262,14 @@ test('gözlemeler bitkisel, peynirsiz, 200-260 kcal (B135)', () => {
     assert.ok(f.forms[0].v.energy > 200 && f.forms[0].v.energy < 260, id);
   }
 });
+
+test('vegan Türk tarifleri: kısır, piyaz, fava, ezogelin; bitkisel, tarif hesabı (B136)', () => {
+  for (const [id, lo, hi] of [['kisir', 120, 190], ['piyaz', 120, 190], ['fava', 150, 230], ['ezogelin_corbasi', 50, 90]]) {
+    const f = DB.foods.find((x) => x.id === id); const fm = f.forms[0];
+    assert.equal(f.animal, false, id); assert.equal(f.cat, 'yemek', id);
+    assert.ok(Object.values(fm.s).every((s) => s === 'r'), id);
+    assert.ok(fm.v.energy > lo && fm.v.energy < hi, `${id} ${fm.v.energy}`);
+    assert.ok(Math.abs(fm.recipeOf.reduce((a, x) => a + x.pct, 0) - 100) < 0.5, id);
+  }
+  assert.match(DB.foods.find((x) => x.id === 'fava').note, /Favizm/);
+});

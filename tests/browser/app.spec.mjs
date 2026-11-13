@@ -1179,3 +1179,13 @@ test('gözleme aranır, pişme verimi %85 gösterilir (B135)', async ({ page }) 
   await page.locator('#foodlist [data-id="gozleme_ispanakli"]').click();
   await expect(page.locator('#matrix')).toContainText('%85');
 });
+
+test('kısır ve ezogelin aranır, tarif hesabı etiketiyle açılır (B136)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('ezogelin');
+  await page.locator('#foodlist [data-id="ezogelin_corbasi"]').click();
+  await expect(page.locator('#matrix .src-r').first()).toContainText('Tahmin (tarif)');
+  if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
+  await page.locator('#q').fill('kısır');
+  await expect(page.locator('#foodlist [data-id="kisir"]')).toHaveCount(1);
+});
