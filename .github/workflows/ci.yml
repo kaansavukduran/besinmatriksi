@@ -29,3 +29,23 @@ jobs:
           name: browser-test-traces
           path: test-results/
           retention-days: 7
+
+  cross-browser:
+    name: Tarayıcı uyumu (Firefox, Safari/WebKit, iPhone, iPad)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - run: npm run build && npm run build:single
+      - run: npx playwright install --with-deps firefox webkit
+      - name: Firefox ve WebKit ile tarayıcı testleri
+        run: npx playwright test --project=firefox --project=safari --project=iphone --project=ipad --reporter=line
+        env: { PW_BROWSERS: all }
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cross-browser-traces
+          path: test-results/
+          retention-days: 7
