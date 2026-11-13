@@ -345,5 +345,13 @@
   "remaining": [
     "B127"
   ],
-  "latest_release": "https://github.com/kaansavukduran/besinmatriksi/releases/tag/v1.1.2-beta.23"
+  "latest_release": {
+    "tag": "v1.1.2-beta.24",
+    "commit": "ddc0b34",
+    "published_at": "2026-11-13T06:42:14Z",
+    "prerelease": true,
+    "release_run": 43379363604,
+    "cross_browser_run": 43379343063,
+    "cross_browser": "PASS (Firefox, WebKit, iPhone 13, iPad)"
+  }
 }

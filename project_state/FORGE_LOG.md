@@ -640,3 +640,4 @@
 - i18n: kalan sabit Türkçe metinler L() ile.
 - Kanıt: `npm test` 97/97; `npm run build && npm run build:single`; Playwright 136/136.
 - Sonraki: **B128** eksik veri paketleri (iyot, kolin, proantosiyanidin, SR Legacy) + yeni besin adayları (150 doğrulanmış aday hazır).
+- Yayın kanıtı: v1.1.2-beta.24 pre-release 2026-11-13T06:42:14Z (release.yml run 43379363604 success). ci.yml run 43379343063 (commit ddc0b34): "Tarayıcı uyumu (Firefox, Safari/WebKit, iPhone, iPad)" success ve "test" success → çapraz tarayıcı RUNTIME_TESTED.
