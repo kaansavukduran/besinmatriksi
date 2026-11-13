@@ -454,6 +454,8 @@ export const FOOD_ART = {
   sigir_proteini: ["powder", "#d7a99a", "#8d3a3a", "scoop"],
   kolajen_peptit: ["powder", "#fff8e1", "#f48fb1", "scoop"],
   kreatin: ["powder", "#ffffff", "#90a4ae", "pile"],
+  ayran: ["cup", "#ffffff", "#b0bec5"],
+  kaju_ayrani: ["cup", "#fff3e0", "#d7a86e"],
 };
 
 // Eski bir çizimde olmayan şablon/seçenek gelirse güvenle boş döner (emoji yedeği devreye girer)

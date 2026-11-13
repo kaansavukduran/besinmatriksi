@@ -78,3 +78,13 @@ test('Aion varsayılan kapalı; mevcut kurulumda bir kez kapatılır, sonra kull
   assert.equal(migrateAionOff({ aionEnabled: true }, st).aionEnabled, false);
   assert.equal(migrateAionOff({ aionEnabled: true }, st).aionEnabled, true);
 });
+
+test("bölüm sırası: Protein Lifler'in üstünde, Lifler Vitaminler'in altında; eski varsayılan sıra yeniye geçer, özel sıra korunur (B125)", async () => {
+  const { DEFAULT_SETTINGS, normalizeSettings } = await import('../src/settings.js');
+  const o = DEFAULT_SETTINGS.sectionOrder;
+  assert.ok(o.indexOf('protein') < o.indexOf('lif')); assert.equal(o.indexOf('lif'), o.indexOf('vitamin') + 1);
+  const old = ['enerji', 'protein', 'karb', 'lif', 'yag', 'vitamin', 'mineral', 'organik', 'fito', 'anti', 'toksik', 'hesap', 'tolerans', 'kalinti', 'hazirlik'];
+  assert.deepEqual(normalizeSettings({ sectionOrder: old }).sectionOrder, o);
+  const custom = ['mineral', ...o.filter((x) => x !== 'mineral')];
+  assert.deepEqual(normalizeSettings({ sectionOrder: custom }).sectionOrder, custom);
+});

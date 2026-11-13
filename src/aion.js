@@ -128,8 +128,10 @@ export function aionPlay(name, { once = true } = {}) {
   schedule();
 }
 
-export function aionSay(text, ms = 6000) {
+// ifIdle: gecikmeli selam gibi düşük öncelikli mesajlar, o an görünen daha yeni bir mesajın üzerine yazılmaz
+export function aionSay(text, ms = 6000, { ifIdle = false } = {}) {
   if (!root || !cfg.enabled || !cfg.tips || !text) return;
+  if (ifIdle && !bubble.hidden) return;
   bubbleText.textContent = text;
   bubble.hidden = false;
   clearTimeout(bubbleTimer);

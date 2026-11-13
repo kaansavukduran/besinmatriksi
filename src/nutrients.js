@@ -7,9 +7,9 @@ export const SECTIONS = [
   { id: 'enerji', title: 'Kalori', icon: '🔥' },
   { id: 'protein', title: 'Protein ve amino asitler', icon: '🧬' },
   { id: 'karb', title: 'Karbonhidrat ve şekerler', icon: '🍯' },
-  { id: 'lif', title: 'Lifler (diyet lifi ve türleri)', icon: '🌾' },
   { id: 'yag', title: 'Yağlar, yağ asitleri ve steroller', icon: '🫒' },
   { id: 'vitamin', title: 'Vitaminler ve kimyasal biçimleri', icon: '🍊' },
+  { id: 'lif', title: 'Lifler (diyet lifi ve türleri)', icon: '🌾' },
   { id: 'mineral', title: 'Mineraller, elektrolitler ve iz elementler', icon: '⚙️' },
   { id: 'organik', title: 'Organik asitler', icon: '🍋' },
   { id: 'fito', title: 'Fitokimyasallar', icon: '🫐' },
@@ -304,5 +304,6 @@ export const SOURCES = {
   F: { short: 'USDA FDC', long: 'USDA FoodData Central, Foundation Foods (2026-10-29, CC0); aynı USDA kaydının daha yeni analizi, yalnız SR28\'de ölçülmeyen bileşenler için' },
   N: { short: 'USDA FNDDS', long: 'USDA FoodData Central, Survey (FNDDS 2021-2023, CC0); USDA malzemelerinden hesaplanmış hazır içecek tarifi' },
   y: { short: 'USDA İzoflavon', long: 'USDA ARS, Database for the Isoflavone Content of Selected Foods, Release 2.1 (2015, kamu malı)' },
+  r: { short: 'Tahmin (tarif)', long: 'USDA malzemelerinden tarif oranıyla hesaplanan tahmin; ölçüm değildir' },
   e: { short: 'Tahmin', long: 'IFCT 2017 profil oranı × USDA formunun toplam protein/yağ değeri (aynı besinin çiğ/kuru ölçümünden ölçeklenmiş tahmin)' },
 };

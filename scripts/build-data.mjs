@@ -297,6 +297,25 @@ for (const food of FOODS) {
       const ffId = fillFromFoundation(ndb, v, s);
       usda = { ndb, desc: d.long, refuse: d.refuse, refDesc: d.refDesc || null, sci: d.sci || null, ...(ffId ? { fdc: ffId } : {}) };
     }
+    if (!ndb && food.recipe) {
+      // Bileşik besin (ör. ayran): USDA malzemelerinden tarif oranıyla HESAPLANAN TAHMİN (etiket 'r'); ölçüm değildir.
+      // Bir bileşen yalnız tüm malzemelerde ölçülmüşse yazılır. 'inert' malzemede (içme suyu, sofra tuzu) ölçülmemiş
+      // organik bileşenler kimyasal olarak bulunmadığından 0 alınır; mineralleri USDA ölçümünden gelir.
+      const parts = food.recipe.map(([code, g, inert]) => {
+        const d = des.get(code); if (!d) throw new Error('Tarif malzemesi yok: ' + code);
+        const pv = usdaValues(code); const fl = flavValues.get(code); if (fl) Object.assign(pv, fl.v); fillFromFoundation(code, pv, null);
+        return { code, g, inert: !!inert, v: pv, desc: d.long };
+      });
+      const total = parts.reduce((a, x) => a + x.g, 0);
+      const v = {}, s = {};
+      for (const n of NUTRIENTS) {
+        if (!parts.every((x) => x.v[n.key] != null || x.inert) || !parts.some((x) => x.v[n.key] != null)) continue;
+        v[n.key] = round(parts.reduce((a, x) => a + (x.v[n.key] ?? 0) * x.g, 0) / total); s[n.key] = 'r';
+      }
+      return { key, label: custom || FORM_LABELS[key], usda: null, ifct: null, estFrom: null,
+        recipeOf: parts.map((x) => ({ ndb: x.code, desc: x.desc, pct: Math.round((x.g / total) * 1000) / 10 })),
+        portions: [{ g: 200, label: '1 su bardağı (≈200 g)', en: '1 glass (≈200 g)' }], v, s };
+    }
     if (!ndb && food.fixed) {
       // Kimyasal formülden hesaplanan değer (ör. kreatin monohidrattaki kreatin); kaynak 'd' (hesap)
       const v = { ...food.fixed.v }, s = Object.fromEntries(Object.keys(v).map((k) => [k, 'd']));

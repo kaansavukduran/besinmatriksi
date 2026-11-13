@@ -3,6 +3,7 @@ import { SECTIONS, NUTRIENTS } from './nutrients.js';
 import { DEFAULT_COLORS, normalizeColors } from './theme.js';
 import { efsaReference } from './references.js';
 import { L } from './i18n.js';
+const OLD_SECTION_ORDER = ['enerji', 'protein', 'karb', 'lif', 'yag', 'vitamin', 'mineral', 'organik', 'fito', 'anti', 'toksik', 'hesap', 'tolerans', 'kalinti', 'hazirlik'];
 export const MATRIX_SECTIONS = [...SECTIONS, { id: 'hesap', title: 'Hesaplanan göstergeler' }, { id: 'tolerans', title: 'Alerji, intolerans ve uyarılar' }, { id: 'kalinti', title: 'Kalıntılar ve kapsam dışı' }, { id: 'hazirlik', title: 'Hazırlama ve emilim' }];
 export const SETTINGS_VERSION = 2;
 export const SHORTCUT_ACTIONS = { kesfet: 'Keşfet', tarif: 'Tarif oluştur', karsilastir: 'Karşılaştır', ayarlar: 'Ayarlar', hakkinda: 'Hakkında', gunluk: 'Günlük ve profil' };
@@ -57,6 +58,8 @@ export function normalizeSettings(input) {
       const allowed = k === 'pinnedNutrients' ? NUTRIENTS.filter(n => !['energy', 'energy_kj'].includes(n.key)).map(n => n.key) : MATRIX_SECTIONS.map(s => s.id);
       const selected = Array.isArray(v) ? [...new Set(v.filter(x => allowed.includes(x)))] : [];
       out[k] = k === 'sectionOrder' ? [...selected, ...allowed.filter(x => !selected.includes(x))] : selected.slice(0, k === 'pinnedNutrients' ? 24 : allowed.length);
+      // 2026-11-13 (Kaan): Lifler, Vitaminler'in altına taşındı. Kullanıcı sırayı hiç değiştirmediyse (eski varsayılan) yeni varsayılana geç.
+      if (k === 'sectionOrder' && out[k].join() === OLD_SECTION_ORDER.join()) out[k] = MATRIX_SECTIONS.map((x) => x.id);
     } else if (enums[k]) { if (enums[k].includes(v)) out[k] = v; }
     else if (ranges[k]) {
       if (typeof v === 'number' && Number.isFinite(v)) out[k] = Math.min(ranges[k][1], Math.max(ranges[k][0], v));

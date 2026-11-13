@@ -732,5 +732,11 @@ export const UI_EN = {
  "Kreatin monohidrat (C4H9N3O2·H2O, 149,15 g/mol) içinde kütlece %87,92 kreatin (131,13 g/mol) bulunur; bu değer kimyasal formülden hesaplanır. Etiketlerde enerji genellikle 0 kcal yazılır ama USDA ölçümü yok. Takviye; yaygın kullanım günde 3–5 g. Böbrek hastalığı olanlar hekime danışmalı.": "Creatine monohydrate (C4H9N3O2·H2O, 149.15 g/mol) contains 87.92% creatine by mass (131.13 g/mol); this value is calculated from the chemical formula. Labels usually state 0 kcal, but there is no USDA measurement. Supplement; typical use is 3–5 g a day. People with kidney disease should ask their doctor.",
  "Hayvansal kolajenden elde edilir; protein içeriği yüksek ama triptofan içermez (eksik protein).": "Made from animal collagen; high in protein but contains no tryptophan (incomplete protein).",
  "Lif türleri": "Fibre types",
- "Lifler (diyet lifi ve türleri)": "Fibre (dietary fibre and types)"
+ "Lifler (diyet lifi ve türleri)": "Fibre (dietary fibre and types)",
+ "USDA malzemelerinden tarif oranıyla hesaplanan tahmin; ölçüm değildir": "An estimate calculated from USDA ingredients by recipe ratio; not a measurement",
+ "Ölçüm değil; USDA malzemelerinden şu oranla hesaplandı:": "Not a measurement; calculated from USDA ingredients in this ratio:",
+ "Tahmin (tarif)": "Estimate (recipe)",
+ "Ölçüm değil, tarif hesabı (tahmin): %60 tam yağlı yoğurt + %39,5 su + %0,5 tuz (USDA kayıtlarından). Markaya ve ev tarifine göre yoğurt, su ve tuz oranı değişir; kendi oranınla Tarif oluştur’da hesaplayabilirsin.": "Not a measurement but a recipe calculation (estimate): 60% whole-milk yogurt + 39.5% water + 0.5% salt (from USDA records). The yogurt, water and salt ratio varies by brand and home recipe; you can calculate your own ratio in Create recipe.",
+ "Ölçüm değil, tarif hesabı (tahmin): %20 çiğ kaju + %79,5 su + %0,5 tuz (USDA kayıtlarından), süzülmeden. Fermantasyonla şekerin bir kısmı azalır ve probiyotik içerik oluşur; bunlar hesaba katılmadı.": "Not a measurement but a recipe calculation (estimate): 20% raw cashews + 79.5% water + 0.5% salt (from USDA records), unstrained. Fermentation lowers some of the sugar and creates probiotic content; these are not accounted for.",
+ "1 su bardağı (≈200 g)": "1 glass (≈200 g)"
 };

@@ -784,3 +784,5 @@ table.cmp .cpct { display: block; font-size: .72rem; color: var(--muted); font-w
 .cmp-h > [data-action="cmp-del"] { position: absolute; top: calc(var(--pad) - 2px); right: calc(var(--pad) - 2px); margin: 0; }
 /* WebKit: içerik kareyi uzatmasın (aspect-ratio tercih edilen boyuttur; min-height:auto içerikle büyütür) */
 .pt { min-height: 0; overflow: hidden; }
+
+.src-r { color: var(--warn); background: var(--warnbg); border-style: dashed; }

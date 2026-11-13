@@ -34,6 +34,7 @@ export const CATEGORIES = [
   ['baklagil', 'Baklagiller', '🫘'],
   ['soya', 'Soya ürünleri', '🧈'],
   ['tahil', 'Tahıllar ve psödotahıllar', '🌾'],
+  ['ekmek', 'Ekmek ve unlu mamuller', '🍞'],
   ['kuruyemis', 'Kuruyemişler', '🌰'],
   ['tohum', 'Tohumlar', '🌻'],
   ['mantar', 'Mantarlar', '🍄'],
@@ -48,6 +49,7 @@ export const CATEGORIES = [
   ['et', 'Kırmızı et ve sakatat', '🥩'],
   ['kumes', 'Kümes hayvanları', '🍗'],
   ['balik', 'Balık ve deniz ürünleri', '🐟'],
+  ['yemek', 'Hazır yemekler ve mezeler', '🍲'],
   ['takviye', 'Protein tozları ve takviyeler', '💪'],
   ['diger', 'Diğer', '🧪'],
 ];
@@ -414,11 +416,11 @@ export const FOODS = [
   F('bal', 'Bal', 'honey', 'tatli', [['macun', '19296', null, 'Bal']], { animal: true, note: 'Bal arı ürünüdür (vegan değildir). 1 yaşından küçük bebeklere verilmez.' }),
 
   // ---------------- Yaygın tüketilen ek besinler (B088, 2026-11-12) ----------------
-  F('beyaz_ekmek', 'Beyaz ekmek', 'white bread', 'tahil', [['taze', '18069', null, 'Taze'], ['pismis', '18070', null, 'Kızarmış (tost)']], { allergens: ['gluten'], note: 'Ticari ekmeklerin bazılarında süt, yumurta veya tereyağı bulunabilir; vegan uygunluğu için etikete bak.' }),
-  F('tam_bugday_ekmegi', 'Tam buğday ekmeği', 'whole-wheat bread', 'tahil', [['taze', '18075', null, 'Taze'], ['pismis', '18076', null, 'Kızarmış (tost)']], { allergens: ['gluten'], note: 'Ticari ekmeklerin bazılarında süt, yumurta veya tereyağı bulunabilir; vegan uygunluğu için etikete bak.' }),
-  F('cavdar_ekmegi', 'Çavdar ekmeği', 'rye bread', 'tahil', [['taze', '18060', null, 'Taze']], { allergens: ['gluten'] }),
-  F('pide_lavas', 'Pide / lavaş (beyaz)', 'pita bread, white', 'tahil', [['taze', '18041', null, 'Taze']], { allergens: ['gluten'] }),
-  F('pide_lavas_tam', 'Pide / lavaş (tam buğday)', 'pita bread, whole-wheat', 'tahil', [['taze', '18042', null, 'Taze']], { allergens: ['gluten'] }),
+  F('beyaz_ekmek', 'Beyaz ekmek', 'white bread', 'ekmek', [['taze', '18069', null, 'Taze'], ['pismis', '18070', null, 'Kızarmış (tost)']], { allergens: ['gluten'], note: 'Ticari ekmeklerin bazılarında süt, yumurta veya tereyağı bulunabilir; vegan uygunluğu için etikete bak.' }),
+  F('tam_bugday_ekmegi', 'Tam buğday ekmeği', 'whole-wheat bread', 'ekmek', [['taze', '18075', null, 'Taze'], ['pismis', '18076', null, 'Kızarmış (tost)']], { allergens: ['gluten'], note: 'Ticari ekmeklerin bazılarında süt, yumurta veya tereyağı bulunabilir; vegan uygunluğu için etikete bak.' }),
+  F('cavdar_ekmegi', 'Çavdar ekmeği', 'rye bread', 'ekmek', [['taze', '18060', null, 'Taze']], { allergens: ['gluten'] }),
+  F('pide_lavas', 'Pide / lavaş (beyaz)', 'pita bread, white', 'ekmek', [['taze', '18041', null, 'Taze']], { allergens: ['gluten'] }),
+  F('pide_lavas_tam', 'Pide / lavaş (tam buğday)', 'pita bread, whole-wheat', 'ekmek', [['taze', '18042', null, 'Taze']], { allergens: ['gluten'] }),
   F('patlamis_misir', 'Patlamış mısır (yağsız, tuzsuz)', 'air-popped popcorn', 'tahil', [['kavrulmus', '19806', null, 'Yağsız patlatılmış']]),
   F('su', 'İçme suyu (musluk)', 'tap water', 'icecek', [['icecek', '14411', null, 'İçme suyu']], { note: 'Musluk suyunun mineral içeriği bölgeye göre değişir; ambalajlı suda etikete bak.' }),
   F('uzum_suyu', 'Üzüm suyu (şekersiz)', 'grape juice, unsweetened', 'icecek', [['suyu', '09135', null, 'Şişelenmiş, şekersiz']]),
@@ -536,4 +538,7 @@ export const FOODS = [
   F('sigir_proteini', 'Sığır (beef) protein izolatı', 'beef protein isolate', 'et', [['toz', null, null]], { unavailable: "Bu protein tozu türü için USDA SR28 / FoodData Central'da (Foundation, FNDDS) ölçülmüş genel kayıt yok; içerik markaya göre çok değişir. Ürün etiketindeki 100 g değerleriyle “Kendi besinlerim”den ekle." }),
   F('kolajen_peptit', 'Kolajen peptitleri', 'collagen peptides', 'et', [['toz', null, null]], { unavailable: "Bu protein tozu türü için USDA SR28 / FoodData Central'da (Foundation, FNDDS) ölçülmüş genel kayıt yok; içerik markaya göre çok değişir. Ürün etiketindeki 100 g değerleriyle “Kendi besinlerim”den ekle." }),
   F('kreatin', 'Kreatin monohidrat', 'creatine monohydrate', 'takviye', [['toz', null, null]], { fixed: { v: { creatine: 87.92 } }, note: "Kreatin monohidrat (C4H9N3O2·H2O, 149,15 g/mol) içinde kütlece %87,92 kreatin (131,13 g/mol) bulunur; bu değer kimyasal formülden hesaplanır. Etiketlerde enerji genellikle 0 kcal yazılır ama USDA ölçümü yok. Takviye; yaygın kullanım günde 3–5 g. Böbrek hastalığı olanlar hekime danışmalı." }),
+  // B124 (2026-11-13): tarif hesabıyla (tahmin) bileşik içecekler
+  F('ayran', 'Ayran', 'ayran', 'sut', [['icecek', null, null]], { recipe: [['01116', 60], ['14411', 39.5, 'inert'], ['02047', 0.5, 'inert']], allergens: ['sut'], note: "Ölçüm değil, tarif hesabı (tahmin): %60 tam yağlı yoğurt + %39,5 su + %0,5 tuz (USDA kayıtlarından). Markaya ve ev tarifine göre yoğurt, su ve tuz oranı değişir; kendi oranınla Tarif oluştur’da hesaplayabilirsin." }),
+  F('kaju_ayrani', 'Kaju ayranı (bitkisel)', 'cashew ayran', 'icecek', [['icecek', null, null]], { recipe: [['12087', 20], ['14411', 79.5, 'inert'], ['02047', 0.5, 'inert']], allergens: ['sertkabuklu'], note: "Ölçüm değil, tarif hesabı (tahmin): %20 çiğ kaju + %79,5 su + %0,5 tuz (USDA kayıtlarından), süzülmeden. Fermantasyonla şekerin bir kısmı azalır ve probiyotik içerik oluşur; bunlar hesaba katılmadı." }),
 ];

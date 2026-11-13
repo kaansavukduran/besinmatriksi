@@ -10,9 +10,9 @@ import { nutrientLabel } from './i18n-nutrients.js';
 
 const nl = nutrientLabel;
 
-const SRC_LABEL = { u: 'USDA', N: 'USDA FNDDS', F: 'USDA FDC', f: 'USDA Flavonoid', y: 'USDA İzoflavon', i: 'IFCT', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
+const SRC_LABEL = { r: 'Tahmin (tarif)', u: 'USDA', N: 'USDA FNDDS', F: 'USDA FDC', f: 'USDA Flavonoid', y: 'USDA İzoflavon', i: 'IFCT', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
 const SRC_TITLE = {
-  u: SOURCES.u.long, N: SOURCES.N.long, F: SOURCES.F.long, f: SOURCES.f.long, y: SOURCES.y.long, i: SOURCES.i.long, e: SOURCES.e.long,
+  r: SOURCES.r.long, u: SOURCES.u.long, N: SOURCES.N.long, F: SOURCES.F.long, f: SOURCES.f.long, y: SOURCES.y.long, i: SOURCES.i.long, e: SOURCES.e.long,
   d: 'Diğer ölçülmüş değerlerden hesaplandı (ör. tuz = sodyum × 2,5)', m: 'Tarifteki malzemeler farklı kaynaklardan', k: 'Kullanıcının ürün etiketinden girdiği değer',
 };
 
@@ -221,8 +221,9 @@ function identityCard(item, r, cfg, ctx) {
       let part = L('Yenebilir kısım');
       if (item.usda.refuse) part += ' · ' + L("satın alınan ağırlığın %{p}'i atılır", { p: item.usda.refuse }) + (item.usda.refDesc ? ` (${esc(item.usda.refDesc)})` : '');
       rows.push(['İncelenen kısım', part]);
-      rows.push(['USDA kaydı', `${esc(item.usda.desc)} <span class="muted">· NDB ${esc(item.usda.ndb)}</span>`]);
+      rows.push(['USDA kaydı', `${esc(item.usda.desc)} <span class="muted">· ${item.usda.ndb ? 'NDB ' + esc(item.usda.ndb) : item.usda.fndds ? 'FNDDS ' + esc(item.usda.fndds) : 'FDC ' + esc(item.usda.fdc)}</span>`]);
     }
+    if (item.recipeOf) rows.push(['Tahmin (tarif)', L("Ölçüm değil; USDA malzemelerinden şu oranla hesaplandı:") + ' ' + item.recipeOf.map((x) => `${pctText(fmtNum(x.pct))} ${esc(x.desc)}`).join(' + ')]);
     if (item.ifct) rows.push(['IFCT kaydı', `${esc(item.ifct.name)} <span class="muted">· ${esc(item.ifct.code)}${item.ifct.regions ? ' · ' + L("{n} bölge örneği", { n: item.ifct.regions }) : ''}</span>`]);
     if (item.estFrom) rows.push(['Tahmin', L("Amino asit ve yağ asidi profilleri aynı besinin çiğ/kuru IFCT ölçümünden bu formun protein/yağ değerine oranlandı (“Tahmin” etiketi).")]);
     rows.push(['Değişkenler', L("Çeşit, olgunluk, mevsim, toprak, saklama ve laboratuvar yöntemi değerleri değiştirir; iki kaynak arasındaki fark doğal aralığı gösterir.")]);
@@ -294,10 +295,6 @@ export function renderMatrix(r, cfg, ctx = {}) {
   // Hesaplanan göstergeler temel değer + pasta kartının hemen altında (gizlenmediyse)
   const hesapFirst = cfg.sectionOrder.includes('hesap') && !cfg.hiddenSections.includes('hesap');
   if (hesapFirst) d.push(derivedCard(r, cfg, open('hesap')));
-  // Lifler kutusu hesaplanan göstergelerin hemen altında (Kaan: lif türleri ayrı ve görünür olsun)
-  const lifSec = SECTIONS.find((x) => x.id === 'lif');
-  const lifFirst = lifSec && !cfg.hiddenSections.includes('lif');
-  if (lifFirst) d.push(section(lifSec, r, cfg, open('lif')));
   const tail = [identityCard(item, r, cfg, ctx), coverage(r, cfg), `<p class="hint reference-label">${esc(referenceLabel(cfg))}</p>`];
   if (cfg.hiddenSections.length) d.push(`<p class="hint">${L("{n} bölüm ayarlarda gizlendi. Kapsam özeti ve CSV tüm bileşenleri içerir.", { n: cfg.hiddenSections.length })}</p>`);
   if (cfg.pinnedNutrients.length) {
@@ -312,7 +309,7 @@ export function renderMatrix(r, cfg, ctx = {}) {
     if (cfg.hiddenSections.includes(id)) continue;
     const sec = SECTIONS.find(s => s.id === id);
     // Kalori temel değer kartında gösterilir; ayrı Kalori kutusu yok (Kaan, 2026-11-12)
-    if (sec) { if (sec.id !== 'enerji' && !(sec.id === 'lif' && lifFirst)) d.push(section(sec, r, cfg, open(id))); }
+    if (sec) { if (sec.id !== 'enerji') d.push(section(sec, r, cfg, open(id))); }
     else if (id === 'hesap' && !hesapFirst) d.push(derivedCard(r, cfg, open(id)));
     else if (id === 'tolerans') d.push(toleranceCard(r, item, cfg, open(id)));
     else if (id === 'kalinti') d.push(safetyExtra(cfg, open(id)));

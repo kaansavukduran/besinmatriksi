@@ -608,3 +608,16 @@
 - Tarayıcı uyumu CI (run 43337769454; Firefox, Safari/WebKit, iPhone, iPad; 256 testten 250 PASS): 2 ayrı neden. (1) `page.pdf` yalnız Chromium'da var → A4 testi diğer tarayıcılarda baskı ortamı öykünmesiyle çalışır (ürün hatası değil). (2) WebKit'te periyodik tablo karesi 5 px uzuyordu (aspect-ratio + min-height:auto) → `.pt { min-height: 0; overflow: hidden }`; B112 testi proje adına değil ekran genişliğine bakar (iPhone'da sağ panel gizli).
 - Kişisel profilin Günlük'te en üstte olduğu doğrulandı (B122, commit 26c5930).
 - Kanıt: `npm test` 94/94; Playwright (Chromium masaüstü+telefon) 128/128. Firefox/WebKit sonucu: CI'da yeniden koşacak (NOT_RUN yerel).
+
+## B124 · 2026-11-13 · Ayran, kaju ayranı (tarif hesabı), Ekmek ve Hazır yemekler kategorileri
+- Kaan: ayran, kaju ayranı, ekmek türleri, et/tavuk döner. USDA'da ayran ve kaju ayranı yok → yeni "tarif hesabı" türü: `recipe: [[ndb, gram, 'inert'?], …]`, USDA malzeme değerlerinden ağırlık oranıyla HESAPLANAN TAHMİN, kaynak etiketi `r` "Tahmin (tarif)", kimlik kartında oran ve malzemeler. Bir bileşen yalnız tüm malzemelerde ölçülmüşse yazılır; içme suyu ve sofra tuzu "inert" (ölçülmemiş organik bileşenleri kimyasal olarak yoktur → 0; mineraller USDA'dan).
+  - Ayran: %60 tam yağlı yoğurt (01116) + %39,5 su (14411) + %0,5 tuz (02047) → 36,6 kcal, 2,08 g protein /100 g. Kaju ayranı: %20 çiğ kaju (12087) + %79,5 su + %0,5 tuz → 110,6 kcal; fermantasyon etkisi hesaba katılmadı (notta).
+- Yeni kategoriler: "🍞 Ekmek ve unlu mamuller" (beyaz/tam buğday/çavdar ekmeği, pide/lavaş buraya taşındı) ve "🍲 Hazır yemekler ve mezeler" (döner vb. USDA FNDDS kayıtları sonraki Forge'da; aday araştırması alt ajan kotası dolduğu için yarım).
+- Kanıt: `npm test` 95/95 (B124: oranlar, r etiketi, protein = 0,6 × yoğurt); Playwright B124.
+
+## B125 · 2026-11-13 · Bölüm sırası; gecikmeli selam hatası
+- Kaan: "Protein ve amino asitler kutusu Lifler kutusunun üstünde, Lifler Vitaminler kutusunun altında olmalı." → SECTIONS sırası: Kalori, Protein, Karbonhidrat, Yağlar, Vitaminler, **Lifler**, Mineraller…; B120'deki "Lifler en üstte" zorlaması kaldırıldı. Kayıtlı sırası eski varsayılanla birebir aynı olan kullanıcılar yeni sıraya geçer; elle değiştirilmiş sıra korunur. Kıyasla tablosu da aynı bölüm sırasını izler.
+- Hata: tur kaldırılınca ilk açılış "Merhaba" selamı 600 ms gecikmeyle, o arada çıkan hedef kutlamasının üzerine yazıyordu (B094 testi aralıklı düşüyordu) → `aionSay(..., { ifIdle: true })`: gecikmeli selam balon boşsa gösterilir.
+- Kanıt: `npm test` 96/96; Playwright 130/130 (B094 3 ardışık koşu PASS).
+- Alt ajanlar (kod denetimi, besin adayları, eksik veri kaynakları) 5 saatlik kota sınırında yarıda kaldı; kota yenilenince sürdürülecek.
+- Sonraki: **B126** FNDDS'ten döner/kebap/mezeler ve ekmek türleri (ekşi mayalı, çok tahıllı…) + beta.24.

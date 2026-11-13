@@ -761,7 +761,7 @@ test('kategorilerde yaygın besinler önce; az bilinenler gizli ama aranabilir (
 
 test('yaygın eklenen besinler: ekmek, su, taze soğan, tavuk but listede ve çizimli (B088)', async ({ page }) => {
   await page.goto('/');
-  await page.locator('.cat[data-cat="tahil"]').click();
+  await page.locator('.cat[data-cat="ekmek"]').click();
   const ids = await page.locator('#foodlist .food').evaluateAll((els) => els.map((e) => e.dataset.id));
   expect(ids[0]).toBe('beyaz_ekmek');
   await expect(page.locator('#foodlist [data-id="beyaz_ekmek"] svg.fart')).toBeVisible();
@@ -842,6 +842,8 @@ test('Aion Günlük hedefine ulaşınca bir kez kutlar (B094)', async ({ page })
   await page.locator('[data-action="ex-add-day"]').click();
   await tab(page, 'gunluk');
   await expect(page.locator('.basic-tile.goal.done[data-basic="protein"]')).toHaveCount(1);
+  await expect(page.locator('#aion .aion-bubble')).toContainText('protein');
+  await page.waitForTimeout(900); // gecikmeli ilk selam (600 ms) kutlamanın üzerine yazmamalı
   await expect(page.locator('#aion .aion-bubble')).toContainText('protein');
   const seen = await page.evaluate(() => JSON.parse(localStorage.getItem('bm.aion.goals')));
   expect(seen.keys).toContain('protein');
@@ -1033,7 +1035,8 @@ test('Lifler kutusu temel kart ve hesaplanan göstergelerin altında; malzeme �
   await page.goto('/');
   await page.locator('#q').fill('shiitake'); await page.locator('#foodlist [data-id="shiitake"]').click();
   const order = await page.locator('#matrix > *').evaluateAll((els) => els.map((e) => e.dataset.sec || e.className));
-  expect(order.slice(0, 3)).toEqual([expect.stringContaining('basic-card'), 'hesap', 'lif']);
+  expect(order.slice(0, 3)).toEqual([expect.stringContaining('basic-card'), 'hesap', 'protein']);
+  expect(order.indexOf('lif')).toBe(order.indexOf('vitamin') + 1); // B125: Lifler, Vitaminler'in hemen altında
   await expect(page.locator('[data-sec="lif"]')).toContainText('Beta-glukan');
   await page.locator('[data-action="ex-add-recipe"]').click();
   if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
@@ -1042,4 +1045,16 @@ test('Lifler kutusu temel kart ve hesaplanan göstergelerin altında; malzeme �
   const pos = await page.locator('.ing').evaluateAll((els) => els.map((e) => { const c = e.getBoundingClientRect(), x = e.querySelector('[data-action="rc-del-item"]').getBoundingClientRect(); return [Math.round(c.right - x.right), Math.round(x.top - c.top)]; }));
   expect(new Set(pos.map(String)).size).toBe(1); // her kartta aynı konum
   expect(pos[0][0]).toBeLessThan(30); expect(pos[0][1]).toBeLessThan(30);
+});
+
+test('ayran tarif hesabı olarak görünür: Tahmin (tarif) etiketi ve oran; Ekmek kategorisi (B124)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('ayran'); await page.locator('#foodlist [data-id="ayran"]').click();
+  await expect(page.locator('#matrix [data-basic="protein"]')).toContainText('2,08');
+  await expect(page.locator('#matrix .src-r').first()).toContainText('Tahmin (tarif)');
+  await expect(page.locator('#matrix .idcard')).toContainText('%60');
+  if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
+  await page.locator('#q').fill('');
+  await expect(page.locator('.cat[data-cat="ekmek"]')).toContainText('Ekmek');
+  await expect(page.locator('.cat[data-cat="yemek"]')).toHaveCount(1);
 });

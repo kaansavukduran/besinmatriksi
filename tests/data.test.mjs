@@ -19,7 +19,7 @@ test('her formun doğrulanmış değerleri veya açık kaynak boşluğu var', ()
       else if (fm.computed) assert.ok(Object.values(fm.s).every((x) => x === 'd'), `${f.id}/${fm.key}`);
       else assert.ok(fm.v.energy != null && fm.v.protein != null, `${f.id}/${fm.key}`);
       for (const k of Object.keys(fm.v)) assert.ok(keys.has(k), `bilinmeyen anahtar ${k}`);
-      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F', 'N', 'd'].includes(s), `${f.id} ${k} ${s}`);
+      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F', 'N', 'd', 'r'].includes(s), `${f.id} ${k} ${s}`);
     }
   }
 });
@@ -94,7 +94,7 @@ test('dağıtımda IFCT değerleri, alternatifleri ve bunlardan tahminler bulunm
   for (const food of DB.foods) for (const f of food.forms) {
     assert.equal(f.ifct, null); assert.equal(f.estFrom, null);
     assert.deepEqual(f.alt || {}, {}); assert.deepEqual(f.sd || {}, {});
-    assert.ok(Object.values(f.s).every(s => ['u', 'f', 'y', 'F', 'N', 'd'].includes(s)));
+    assert.ok(Object.values(f.s).every(s => ['u', 'f', 'y', 'F', 'N', 'd', 'r'].includes(s)));
   }
   assert.equal(fs.existsSync(new URL('../data/raw/IFCT2017.csv', import.meta.url)), false);
 });
@@ -131,7 +131,7 @@ test('USDA flavonoid/izoflavon verisi aynı NDB kaydından gelir, etiketlidir ve
   const orange = form('portakal', 'cig');
   assert.ok(orange.v.hesperetin > 20); assert.equal(orange.s.hesperetin, 'f');
   assert.ok(!('cyanidin' in orange.v), 'portakalda ölçülmeyen antosiyanidin yazılmaz');
-  for (const food of DB.foods) for (const f of food.forms) for (const [k, s] of Object.entries(f.s)) if (s !== 'u' && s !== 'd') assert.ok(f.usda?.ndb || f.usda?.fndds || f.usda?.fdc, `${food.id}/${f.key}/${k}: NDB olmadan flavonoid yok`);
+  for (const food of DB.foods) for (const f of food.forms) for (const [k, s] of Object.entries(f.s)) if (s !== 'u' && s !== 'd' && s !== 'r') assert.ok(f.usda?.ndb || f.usda?.fndds || f.usda?.fdc, `${food.id}/${f.key}/${k}: NDB olmadan flavonoid yok`);
   const src = JSON.parse(fs.readFileSync(new URL('../data/raw/USDA_FLAVONOID_SOURCES.json', import.meta.url)));
   assert.equal(src.datasets.length, 2); assert.match(src.datasets[0].license, /CC0/);
 });
@@ -176,4 +176,15 @@ test('lif türleri: beta-glukan, dirençli nişasta, HMWDF/LMWDF, çözünür li
   const v = (id, k) => DB.foods.find((f) => f.id === id).forms[0];
   const ms = v('shiitake'); assert.ok(ms.v.beta_glucan > 0); assert.equal(ms.s.beta_glucan, 'F');
   assert.ok(DB.foods.some((f) => f.forms.some((fm) => fm.v.fiber_hmw != null && fm.v.fiber_lmw != null)));
+});
+
+test('ayran ve kaju ayranı tarif hesabıdır: r etiketli, oranlı, ölçüm gibi sunulmaz (B124)', () => {
+  const a = DB.foods.find((f) => f.id === 'ayran').forms[0];
+  assert.deepEqual(a.recipeOf.map((x) => [x.ndb, x.pct]), [['01116', 60], ['14411', 39.5], ['02047', 0.5]]);
+  assert.ok(Object.values(a.s).every((x) => x === 'r'));
+  const y = DB.foods.find((f) => f.id === 'yogurt').forms[0];
+  assert.ok(Math.abs(a.v.protein - y.v.protein * 0.6) < 0.01);
+  assert.ok(a.v.na > 190 && a.v.na < 260, String(a.v.na)); // ≈ 0,5 g tuz + yoğurdun sodyumu; tuz (Na × 2,5) çalışma anında türetilir
+  assert.equal(DB.foods.find((f) => f.id === 'ayran').animal, true);
+  const k = DB.foods.find((f) => f.id === 'kaju_ayrani'); assert.equal(k.animal, false); assert.ok(k.forms[0].v.energy > 100 && k.forms[0].v.energy < 125);
 });

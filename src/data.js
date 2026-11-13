@@ -45,7 +45,7 @@ export function resolve(ref) {
       v: form.v, s: form.s, alt: form.alt || {}, sd: form.sd || {},
       portions: form.portions || [],
       allergens: food.allergens, note: [food.note, form.unavailable].filter(Boolean).map((x) => L(x)).join(' ') || null, sci: food.sci,
-      usda: form.usda, ifct: form.ifct, estFrom: form.estFrom,
+      usda: form.usda, ifct: form.ifct, estFrom: form.estFrom, recipeOf: form.recipeOf || null,
     };
   }
   if (ref.t === 'x') {

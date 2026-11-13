@@ -541,7 +541,9 @@ function renderCompare() {
       rows.push(`<tr class="secrow basic"><th colspan="${items.length + 1}">${L("Temel besin değerleri")}${S.settings.showNrv ? ` <small class="muted">${pr.sex || S.settings.referenceMode === 'custom' ? L("% günlük referans") : L("% günlük referans · K: ortalama kadın, E: ortalama erkek")}</small>` : ''}</th></tr>`);
       for (const k of BASIC_KEYS) { const n = NUTRIENTS.find((x) => x.key === k); if (n) rows.push(cmpRow(n, rs.map((r) => r.v[k]), true)); }
     }
-    for (const n of S.cmpSection === 'temel' ? [] : NUTRIENTS) {
+    const secIdx = new Map(SECTIONS.map((x, i) => [x.id, i]));
+    const cmpNutrients = NUTRIENTS.slice().sort((a, b) => secIdx.get(a.section) - secIdx.get(b.section)); // bölüm sırası matrisle aynı
+    for (const n of S.cmpSection === 'temel' ? [] : cmpNutrients) {
       // Kalori kutusu yalnız kaloriyi gösterir (su, kül, ayrıca kJ satırı yok; kJ seçiliyse kcal yerine kJ)
       if (['ash', 'water'].includes(n.key)) continue;
       if (n.section === 'enerji') continue; // kalori Temel besin değerleri satırında
@@ -1452,12 +1454,12 @@ export function start() {
   // İlk açılış selamı; depolama yoksa (gizli pencere, about:blank) sessizce atla
   let greeted = true;
   try { greeted = !!localStorage.getItem('bm.aion.greeted'); if (!greeted) localStorage.setItem('bm.aion.greeted', '1'); } catch {}
-  if (S.settings.aionTips && !greeted) setTimeout(() => aionSay(tr('aionHello'), 7000), 600);
+  if (S.settings.aionTips && !greeted) setTimeout(() => aionSay(tr('aionHello'), 7000, { ifIdle: true }), 600);
   else if (S.settings.aionTips) {
     // Günde bir kez, saate göre selam
     const today = new Date().toDateString();
     let last = null; try { last = localStorage.getItem('bm.aion.greetDay'); localStorage.setItem('bm.aion.greetDay', today); } catch {}
-    if (last !== today) setTimeout(() => aionSay(greetingFor(new Date().getHours()), 6000), 600);
+    if (last !== today) setTimeout(() => aionSay(greetingFor(new Date().getHours()), 6000, { ifIdle: true }), 600);
   }
   document.addEventListener('click', onClick);
   document.addEventListener('input', onInput);
