@@ -691,3 +691,10 @@
 - Sürüm 1.1.2-beta.27 (B132 Pürin + B133).
 - Sonraki: **B134** denetimin kalan performans maddeleri (#11 telefonda gizli periyodik tabloyu kurmamak, #13 NUTRIENT_BY_KEY) ya da pide/gözleme/börek tarifleri.
 - Yayın kanıtı: v1.1.2-beta.27 pre-release 2026-11-13T11:32:50Z (release.yml run 43416455204 success); ci.yml run 43416442462 (73c47e2) success → çapraz tarayıcı RUNTIME_TESTED.
+
+## B134 · 2026-11-13 · Performans: gizli periyodik tablo kurulmaz; bileşen araması sabit zamanlı
+- Denetim #11: ≤700 px'te seçim yokken `.detail` CSS ile gizliydi ama karşılama kartı + periyodik tablo (yüzlerce karo) her render ve aramada yine kuruluyordu → dar ekranda hiç kurulmaz (`matchMedia`); ekran genişleyince `change` olayıyla kurulur; arama sonrası 150 ms'lik tazeleme de dar ekranda atlanır.
+- Denetim #13: 9 `NUTRIENTS.find(...)` (Kıyasla, matris sabitlenenler, Günlük ve tarif kaynak dökümü) → `NUTRIENT_BY_KEY[...]`.
+- Test: B112 karşılama kartı denetimi yalnız geniş ekranda (telefonda zaten görünmüyordu); yeni B134 (390 px'te `.periodic` yok, 1280 px'e genişleyince karolar görünür).
+- Kanıt: `npm test` 106/106; build + build:single; Playwright 150/150.
+- Sonraki: **B135** pide/gözleme/ıspanaklı börek tarifleri (pişme verimi modeliyle) ya da kalan temizlik (#17-20).

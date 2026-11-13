@@ -1,5 +1,5 @@
 import { scaleItem } from './calc.js';
-import { NUTRIENTS } from './nutrients.js';
+import { NUTRIENTS, NUTRIENT_BY_KEY } from './nutrients.js';
 import { esc, fmtNum, fmtAmount } from './util.js';
 import { L } from './i18n.js';
 import { nutrientLabel } from './i18n-nutrients.js';
@@ -38,7 +38,7 @@ function amount(value, unit, precision) {
 }
 
 export function renderRecipeSourceRows(recipe, resolve, key, factor, precision) {
-  const nutrient = NUTRIENTS.find(n => n.key === key);
+  const nutrient = NUTRIENT_BY_KEY[key];
   if (!nutrient) return '';
   const rows = recipeContributions(recipe, resolve, key, factor);
   const known = rows.filter(row => row.value != null);
@@ -53,7 +53,7 @@ export function renderRecipeSourceRows(recipe, resolve, key, factor, precision) 
         <p>${esc(row.form)} · ${fmtNum(row.grams)} g ${L('malzeme')}${factor !== 1 ? ` × ${fmtNum(factor, 'high')} ${L('hesap payı')}` : ''}</p>
         <p>${row.value == null ? row.missingRecord ? L("Kayıt bulunamadı; katkı bilinmiyor.") : L("Bu malzemede bu bileşen için veri yok.") : `${esc(source)}${record}${row.value === 0 ? ' · ' + L("kaynak/hesap sonucu 0") : ''}`}</p>
         ${row.formula ? `<p>${esc(row.formula)}</p><ul>${row.inputs.map(input => {
-          const n = NUTRIENTS.find(n => n.key === input.key);
+          const n = NUTRIENT_BY_KEY[input.key];
           return `<li>${esc(n ? nutrientLabel(n) : input.key)}: ${amount(input.value, n?.unit || '', precision)} · ${esc(L(LABELS[input.source] || 'Kaynak belirtilmemiş'))}</li>`;
         }).join('')}</ul>` : ''}</li>`;
     }).join('')}</ul>`;

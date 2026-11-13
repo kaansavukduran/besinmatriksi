@@ -977,9 +977,9 @@ test('Kıyasla tablosu kendi içinde dikey kaydırmaz; sayfa boyunca açık (B10
 
 test('Keşfet: karşılama kartı üstte; seçili kategorinin besinleri sağda kare ızgara (B112)', async ({ page }, info) => {
   await page.goto('/');
-  await expect(page.locator('.welcome')).toHaveCount(1);
   await expect(page.locator('#aion')).toBeHidden(); // Aion varsayılan kapalı (B113)
-  if (page.viewportSize().width <= 700) return; // dar ekranda (telefon) orta liste kullanılır
+  if (page.viewportSize().width <= 700) return; // dar ekranda (telefon) orta liste kullanılır; gizli karşılama/tablo kurulmaz (B134)
+  await expect(page.locator('.welcome')).toHaveCount(1);
   await expect(page.locator('.detail .periodic .pt').first()).toBeVisible();
   await page.locator('.cat[data-cat="meyve"]').click();
   const tiles = page.locator('.detail .periodic .pt');
@@ -1161,4 +1161,13 @@ test('macOS Option+3 (e.key "£") Kıyasla sekmesini açar (B133)', async ({ pag
   await page.goto('/');
   await page.evaluate(() => document.body.dispatchEvent(new KeyboardEvent('keydown', { key: '£', code: 'Digit3', altKey: true, bubbles: true })));
   await expect(page.locator('[data-tab="karsilastir"]')).toHaveAttribute('aria-current', 'page');
+});
+
+test('dar ekranda gizli periyodik tablo kurulmaz; genişleyince kurulur (B134)', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 800 });
+  await page.goto('/');
+  await expect(page.locator('#foodlist [data-id]').first()).toBeVisible();
+  await expect(page.locator('.periodic')).toHaveCount(0);
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await expect(page.locator('.detail .periodic .pt').first()).toBeVisible();
 });

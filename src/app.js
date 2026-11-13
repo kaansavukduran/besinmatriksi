@@ -1,5 +1,5 @@
 import { setNicheVisible, extAnimalGroup, setAnimalVisible, visibleFoods, ANIMAL_CATS, foodName, categoryName, formName, CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, extGroups, extFoods, setCustomFoods, customFoods } from './data.js';
-import { NUTRIENTS, SECTIONS, SOURCES } from './nutrients.js';
+import { NUTRIENTS, NUTRIENT_BY_KEY, SECTIONS, SOURCES } from './nutrients.js';
 import { scaleItem, aggregate, scaleAggregate } from './calc.js';
 import { renderMatrix, basicCard, BASIC_KEYS, macroPie } from './matrix.js';
 import NOTICES from './data/notices.json';
@@ -345,7 +345,7 @@ function renderExplore() {
       ${item.food && !Object.keys(item.v || {}).length ? `<div class="card unavail"><p>${esc(item.note || '')}</p><button class="btn primary" data-action="cu-new" data-name="${esc(item.name)}">＋ ${L("Etiketten kendi besinim olarak ekle")}</button></div>` : ''}
       ${similarRow(item)}
       <div id="matrix" class="matrix">${matrixForExplore(item)}</div>`
-    : welcome() + periodicGrid();
+    : (narrowExplore() ? '' : welcome() + periodicGrid()); // ≤700 px seçimsizken .detail gizli: periyodik tablo hiç kurulmaz
   return `<div class="explore ${item ? 'has-sel' : ''}">
     <nav class="cats ${S.settings.catGrid ? 'cats-grid' : ''}" aria-label="${L("Kategoriler")}">${categoryNav('ex', S.cat, S.settings.showExt)}</nav>
     <section class="list" aria-label="${L("Besinler")}">
@@ -372,6 +372,8 @@ function welcome() {
   </div>`;
 }
 
+const narrowMQ = typeof matchMedia === 'function' ? matchMedia('(max-width: 700px)') : null;
+const narrowExplore = () => !!narrowMQ?.matches;
 function periodicGrid() {
   const special = S.cat && (S.cat.startsWith('col:') || S.cat === 'custom' || S.cat === 'ext');
   const res = search(S.q, { cat: special ? null : S.cat });
@@ -539,7 +541,7 @@ function renderCompare() {
     const showBasic = S.cmpSection === 'all' || S.cmpSection === 'temel';
     if (showBasic) {
       rows.push(`<tr class="secrow basic"><th colspan="${items.length + 1}">${L("Temel besin değerleri")}${S.settings.showNrv ? ` <small class="muted">${pr.sex || S.settings.referenceMode === 'custom' ? L("% günlük referans") : L("% günlük referans · K: ortalama kadın, E: ortalama erkek")}</small>` : ''}</th></tr>`);
-      for (const k of BASIC_KEYS) { const key = k === 'energy' && S.settings.energyUnit === 'kj' ? 'energy_kj' : k; const n = NUTRIENTS.find((x) => x.key === key); if (n) rows.push(cmpRow(n, rs.map((r) => r.v[key]), key !== 'energy_kj')); }
+      for (const k of BASIC_KEYS) { const key = k === 'energy' && S.settings.energyUnit === 'kj' ? 'energy_kj' : k; const n = NUTRIENT_BY_KEY[key]; if (n) rows.push(cmpRow(n, rs.map((r) => r.v[key]), key !== 'energy_kj')); }
     }
     const secIdx = new Map(SECTIONS.map((x, i) => [x.id, i]));
     const cmpNutrients = NUTRIENTS.slice().sort((a, b) => secIdx.get(a.section) - secIdx.get(b.section)); // bölüm sırası matrisle aynı
@@ -646,7 +648,7 @@ function renderSettings() {
       </div>`).join('')}</div>
       <h3>${L("Sabitlenen besin öğeleri")}</h3><p class="hint">${L("En fazla 24 öğeyi matriksin en üstünde izle.")}</p>
       <label class="field"><span>${L("Öğe sabitle")}</span><select id="pin-nutrient"><option value="">${L("Bir bileşen seç")}</option>${NUTRIENTS.filter(n => !['energy', 'energy_kj'].includes(n.key) && !s.pinnedNutrients.includes(n.key)).map(n => `<option value="${n.key}">${esc(nutrientLabel(n))} (${esc(n.unit)})</option>`).join('')}</select></label>
-      <div class="presets">${s.pinnedNutrients.map(k => `<button class="pchip on" data-action="unpin" data-key="${k}" aria-label="${L("{n} sabitlemesini kaldır", { n: esc(nutrientLabel(NUTRIENTS.find(n => n.key === k))) })}">${esc(nutrientLabel(NUTRIENTS.find(n => n.key === k)))} ×</button>`).join('')}</div>
+      <div class="presets">${s.pinnedNutrients.map(k => `<button class="pchip on" data-action="unpin" data-key="${k}" aria-label="${L("{n} sabitlemesini kaldır", { n: esc(nutrientLabel(NUTRIENT_BY_KEY[k])) })}">${esc(nutrientLabel(NUTRIENT_BY_KEY[k]))} ×</button>`).join('')}</div>
     </section>
     <section class="card"><h2>${L("Birim ve sayı tercihleri")}</h2>
       <div class="kv"><span>${L("Enerji (matriks)")}</span><div class="presets">${opt('energyUnit', 'both', 'kcal + kJ')}${opt('energyUnit', 'kcal', 'kcal')}${opt('energyUnit', 'kj', 'kJ')}</div></div>
@@ -661,7 +663,7 @@ function renderSettings() {
       <p class="hint">${L("AB 1169/2011 (2011) yetişkin etiket referansıdır. Kişisel hedeflerin elle girilir; yaşa veya sağlık durumuna göre otomatik öneri yapılmaz. Eksik hedefe BRD değeri atanmaz.")}</p>
       ${s.referenceMode === 'efsa' ? renderEfsaSettings(s, S.efsaTableOpen) : ''}
       ${s.referenceMode === 'custom' ? `<label class="field"><span>${L("Hedef eklenecek bileşen")}</span><select id="target-nutrient"><option value="">${L("Bileşen seç")}</option>${NUTRIENTS.filter(n => n.key !== 'energy_kj' && s.targets[n.key] == null).map(n => `<option value="${n.key}">${esc(nutrientLabel(n))} (${esc(n.unit)})</option>`).join('')}</select></label><label class="field"><span>${L("Yeni hedef miktarı (seçili bileşenin biriminde)")}</span><input type="number" min="0" step="any" id="target-new-value"></label><button class="btn" data-action="target-add">${L("Hedef ekle")}</button>
-      ${Object.entries(s.targets).map(([k, value]) => { const n = NUTRIENTS.find(n => n.key === k); return `<label class="field"><span>${L("{n} hedefi ({u})", { n: esc(nutrientLabel(n)), u: esc(n.unit) })}</span><input type="number" min="0" step="any" data-target-value="${k}" value="${value}"></label><button class="btn ghost" data-action="target-remove" data-key="${k}">${L("{n} hedefini kaldır", { n: esc(nutrientLabel(n)) })}</button>`; }).join('')}` : ''}
+      ${Object.entries(s.targets).map(([k, value]) => { const n = NUTRIENT_BY_KEY[k]; return `<label class="field"><span>${L("{n} hedefi ({u})", { n: esc(nutrientLabel(n)), u: esc(n.unit) })}</span><input type="number" min="0" step="any" data-target-value="${k}" value="${value}"></label><button class="btn ghost" data-action="target-remove" data-key="${k}">${L("{n} hedefini kaldır", { n: esc(nutrientLabel(n)) })}</button>`; }).join('')}` : ''}
     </section>
     <section class="card"><h2>${tr('customTheme')}</h2>
       <div class="cu-grid">${Object.entries(COLOR_LABELS).map(([k, label]) => `<button class="btn color-field" data-action="theme-color-open" data-key="${k}" aria-label="${tr('colorOpen', { name: tr('color_' + k) })}"><span class="color-dot" style="background:${s.customTheme[k]}" aria-hidden="true"></span><span>${tr('color_' + k)}<small>${s.customTheme[k]}</small></span></button>`).join('')}</div>
@@ -1411,7 +1413,7 @@ function onInput(e) {
   if (t.dataset.slider) { setAmount(t.dataset.slider, Number(t.value), { fromSlider: true }); return; }
   if (t.id === 'q') {
     S.q = t.value; $('#foodlist').innerHTML = foodList('ex', S.cat, S.q, S.extGroup);
-    clearTimeout(qTimer); qTimer = setTimeout(() => { if (!S.sel && S.tab === 'kesfet') { const d = $('.detail'); if (d) d.innerHTML = welcome() + periodicGrid(); } }, 150);
+    clearTimeout(qTimer); qTimer = setTimeout(() => { if (!S.sel && S.tab === 'kesfet' && !narrowExplore()) { const d = $('.detail'); if (d) d.innerHTML = welcome() + periodicGrid(); } }, 150);
     return;
   }
   if (t.id === 'pq') { S.picker.q = t.value; $('.pk-list').innerHTML = foodList('pk', S.picker.cat, S.picker.q, S.picker.extGroup); return; }
@@ -1508,6 +1510,7 @@ export function start() {
     }
     if (!printController.active && d.matches?.('details.sec')) { if (d.open) S.closed.delete(d.dataset.sec); else S.closed.add(d.dataset.sec); }
   }, true);
+  narrowMQ?.addEventListener?.('change', () => { if (S.tab === 'kesfet' && !S.sel) render(); });
   document.addEventListener('keydown', (e) => {
     if (!document.querySelector('.modal') && !e.target.closest('input, textarea, select, [contenteditable="true"]') && e.altKey && !e.ctrlKey && !e.metaKey) {
       const key = shortcutKey(e); const target = Object.keys(SHORTCUT_ACTIONS).find(id => S.settings.shortcuts[id] === `Alt+${key}`);

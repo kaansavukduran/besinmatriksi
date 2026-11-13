@@ -1,5 +1,5 @@
 // Besin matriksi görünümü (HTML üretimi)
-import { NUTRIENTS, SECTIONS, SOURCES, ALLERGENS } from './nutrients.js';
+import { NUTRIENTS, NUTRIENT_BY_KEY, SECTIONS, SOURCES, ALLERGENS } from './nutrients.js';
 import { derive } from './calc.js';
 import { esc, fmtNum, fmtAmount, fmtPct, pctText } from './util.js';
 import { normalizeSettings, referenceFor } from './settings.js';
@@ -253,7 +253,7 @@ export function basicCard(r, cfg, title = null, opts = {}) {
   const persona = { ...(opts.persona || {}), custom: cfg.referenceMode === 'custom' ? cfg.targets : null };
   if (opts.energyTarget > 0 && !(persona.energy > 0)) persona.energy = opts.energyTarget;
   const tiles = BASIC_KEYS.map((k) => {
-    const n = NUTRIENTS.find((x) => x.key === k);
+    const n = NUTRIENT_BY_KEY[k];
     if (!n) return '';
     const x = r.v[k];
     const partial = x != null && r.n > 1 && (r.cov?.[k] || 0) < r.n;
@@ -299,7 +299,7 @@ export function renderMatrix(r, cfg, ctx = {}) {
   const tail = [identityCard(item, r, cfg, ctx), coverage(r, cfg), `<p class="hint reference-label">${esc(referenceLabel(cfg))}</p>`];
   if (cfg.hiddenSections.length) d.push(`<p class="hint">${L("{n} bölüm ayarlarda gizlendi. Kapsam özeti ve CSV tüm bileşenleri içerir.", { n: cfg.hiddenSections.length })}</p>`);
   if (cfg.pinnedNutrients.length) {
-    const rows = cfg.pinnedNutrients.map(k => NUTRIENTS.find(n => n.key === k)).map(n => {
+    const rows = cfg.pinnedNutrients.map(k => NUTRIENT_BY_KEY[k]).map(n => {
       const result = row(n, r, cfg);
       return result.missing ? `<div class="row miss" role="row"><span class="lbl" role="cell">${esc(nl(n))}</span><span class="val" role="cell">${L("veri yok")}</span></div>` : result.html;
     }).join('');

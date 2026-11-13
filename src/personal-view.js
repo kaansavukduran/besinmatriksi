@@ -1,4 +1,4 @@
-import { NUTRIENTS, SECTIONS } from './nutrients.js';
+import { NUTRIENTS, NUTRIENT_BY_KEY, SECTIONS } from './nutrients.js';
 import { EN_NUTRIENTS } from './i18n-nutrients.js';
 import { t, getLanguage, locale, L } from './i18n.js';
 import { esc, fmtNum, fmtAmount } from './util.js';
@@ -32,12 +32,12 @@ function profileForm(profile) {
   </section>`;
 }
 export function renderDaySources(entries, resolve, key) {
-  const n = NUTRIENTS.find(n => n.key === key);
+  const n = NUTRIENT_BY_KEY[key];
   const rows = recipeContributions({ items: entries }, resolve, key);
   return `<p class="hint">${t('sourceHint')}</p><ul class="source-ingredients">${rows.map((row, i) => {
     const item = resolve(entries[i].ref);
     const code = row.source ? L(SRC_LABELS[row.source] || 'Kaynak belirtilmemiş') : '';
-    return `<li><b>${item ? esc(foodName(item)) : t('missingRecord')}</b> · ${fmtNum(row.grams)} g · ${amount(row.value, n.unit)}<p>${esc(code)} ${row.usda && row.value != null ? `${esc(usdaRecord(row.usda))} · ${esc(row.usda.desc)}` : ''}</p>${row.inputs.length ? `<ul>${row.inputs.map(input => { const nn = NUTRIENTS.find(n => n.key === input.key); return `<li>${esc(label(nn))}: ${amount(input.value, nn.unit)}</li>`; }).join('')}</ul>` : ''}</li>`;
+    return `<li><b>${item ? esc(foodName(item)) : t('missingRecord')}</b> · ${fmtNum(row.grams)} g · ${amount(row.value, n.unit)}<p>${esc(code)} ${row.usda && row.value != null ? `${esc(usdaRecord(row.usda))} · ${esc(row.usda.desc)}` : ''}</p>${row.inputs.length ? `<ul>${row.inputs.map(input => { const nn = NUTRIENT_BY_KEY[input.key]; return `<li>${esc(label(nn))}: ${amount(input.value, nn.unit)}</li>`; }).join('')}</ul>` : ''}</li>`;
   }).join('')}</ul>`;
 }
 function renderNutrients(result, settings, energyTarget) {
