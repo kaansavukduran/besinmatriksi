@@ -352,6 +352,6 @@
     "prerelease": true,
     "release_run": 43386967105,
     "cross_browser_run": 43386956118,
-    "cross_browser": "NOT_RUN yet (in progress at 07:52 UTC); b751bcf (B128) run 43385609289 PASS"
+    "cross_browser": "PASS (Firefox, WebKit, iPhone 13, iPad; run 43386956118)"
   }
 }
