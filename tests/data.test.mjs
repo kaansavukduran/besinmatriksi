@@ -16,9 +16,10 @@ test('her formun doğrulanmış değerleri veya açık kaynak boşluğu var', ()
     assert.ok(f.forms.length > 0, f.id);
     for (const fm of f.forms) {
       if (fm.unavailable) assert.deepEqual(fm.v, {});
+      else if (fm.computed) assert.ok(Object.values(fm.s).every((x) => x === 'd'), `${f.id}/${fm.key}`);
       else assert.ok(fm.v.energy != null && fm.v.protein != null, `${f.id}/${fm.key}`);
       for (const k of Object.keys(fm.v)) assert.ok(keys.has(k), `bilinmeyen anahtar ${k}`);
-      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F', 'N'].includes(s), `${f.id} ${k} ${s}`);
+      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F', 'N', 'd'].includes(s), `${f.id} ${k} ${s}`);
     }
   }
 });
@@ -93,7 +94,7 @@ test('dağıtımda IFCT değerleri, alternatifleri ve bunlardan tahminler bulunm
   for (const food of DB.foods) for (const f of food.forms) {
     assert.equal(f.ifct, null); assert.equal(f.estFrom, null);
     assert.deepEqual(f.alt || {}, {}); assert.deepEqual(f.sd || {}, {});
-    assert.ok(Object.values(f.s).every(s => ['u', 'f', 'y', 'F', 'N'].includes(s)));
+    assert.ok(Object.values(f.s).every(s => ['u', 'f', 'y', 'F', 'N', 'd'].includes(s)));
   }
   assert.equal(fs.existsSync(new URL('../data/raw/IFCT2017.csv', import.meta.url)), false);
 });
@@ -130,7 +131,7 @@ test('USDA flavonoid/izoflavon verisi aynı NDB kaydından gelir, etiketlidir ve
   const orange = form('portakal', 'cig');
   assert.ok(orange.v.hesperetin > 20); assert.equal(orange.s.hesperetin, 'f');
   assert.ok(!('cyanidin' in orange.v), 'portakalda ölçülmeyen antosiyanidin yazılmaz');
-  for (const food of DB.foods) for (const f of food.forms) for (const [k, s] of Object.entries(f.s)) if (s !== 'u') assert.ok(f.usda?.ndb || f.usda?.fndds, `${food.id}/${f.key}/${k}: NDB olmadan flavonoid yok`);
+  for (const food of DB.foods) for (const f of food.forms) for (const [k, s] of Object.entries(f.s)) if (s !== 'u' && s !== 'd') assert.ok(f.usda?.ndb || f.usda?.fndds || f.usda?.fdc, `${food.id}/${f.key}/${k}: NDB olmadan flavonoid yok`);
   const src = JSON.parse(fs.readFileSync(new URL('../data/raw/USDA_FLAVONOID_SOURCES.json', import.meta.url)));
   assert.equal(src.datasets.length, 2); assert.match(src.datasets[0].license, /CC0/);
 });
@@ -150,4 +151,29 @@ test('USDA FNDDS hazır içecekler: Türk kahvesi ve bitkisel sütlü latte N et
   assert.equal(tk.usda.fndds, '92101600'); assert.equal(tk.s.energy, 'N'); assert.equal(tk.v.energy, 27);
   const am = DB.foods.find((f) => f.id === 'americano').forms[0];
   assert.deepEqual(am.v, {}); assert.match(am.unavailable, /espresso/);
+});
+
+test("yalnız FDC Foundation'da olan mantarlar (aslan yelesi vb.) F etiketli; Türkiye'ye özgü ölçümsüz besinler açık notla (B119)", () => {
+  const lm = DB.foods.find((f) => f.id === 'aslan_yelesi').forms[0];
+  assert.ok(lm.v.energy > 0 && lm.v.protein > 0); assert.equal(lm.s.protein, 'F'); assert.ok(lm.usda.fdc);
+  for (const id of ['gemlik_zeytini', 'taflan', 'seylan_tarcini', 'kanlica', 'reishi']) {
+    const f = DB.foods.find((x) => x.id === id); assert.ok(f, id); assert.deepEqual(f.forms[0].v, {}); assert.ok(f.forms[0].unavailable);
+  }
+  const pk = DB.foods.find((f) => f.id === 'patates_kizartmasi');
+  assert.deepEqual(pk.forms.map((x) => x.key), ['pismis', 'firin', 'tava']);
+  assert.ok(DB.foods.filter((f) => f.cat === 'balik').length >= 31);
+});
+
+test('protein tozları: whey izolat, soya tozu USDA; bitkisel/kazein/beef etiketten; kreatin formülden (B119)', () => {
+  const get = (id) => DB.foods.find((f) => f.id === id);
+  assert.ok(get('whey_izolat').forms[0].v.protein > 50); // USDA SR28 14058: 58,1 g assert.equal(get('whey_izolat').animal, true);
+  assert.equal(get('soya_protein_tozu').cat, 'takviye'); assert.equal(get('soya_protein_tozu').animal, false);
+  for (const id of ['bezelye_proteini', 'pirinc_proteini', 'kenevir_proteini', 'kazein', 'sigir_proteini']) assert.ok(get(id).forms[0].unavailable, id);
+  assert.equal(get('sigir_proteini').animal, true); assert.equal(get('kazein').animal, true);
+  const k = get('kreatin').forms[0]; assert.equal(k.v.creatine, 87.92); assert.equal(k.s.creatine, 'd'); assert.equal(k.v.energy, undefined);
+});
+test('lif türleri: beta-glukan, dirençli nişasta, HMWDF/LMWDF, çözünür lif FDC Foundation\'dan (B119)', () => {
+  const v = (id, k) => DB.foods.find((f) => f.id === id).forms[0];
+  const ms = v('shiitake'); assert.ok(ms.v.beta_glucan > 0); assert.equal(ms.s.beta_glucan, 'F');
+  assert.ok(DB.foods.some((f) => f.forms.some((fm) => fm.v.fiber_hmw != null && fm.v.fiber_lmw != null)));
 });

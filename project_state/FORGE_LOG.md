@@ -577,3 +577,14 @@
 ## B116 · 2026-11-13 · beta.22 yayın kanıtı
 - v1.1.2-beta.22 pre-release 2026-11-12T23:59:08Z (commit 782e188). Cihaz kurulumu NOT_RUN.
 - B118: beta.23 (B117) release.yml tetiklendi.
+
+## B119 · 2026-11-13 · Kapsam genişletme: deniz ürünleri, mantarlar, hayvansal, Türkiye besinleri, protein tozları, kreatin, lif türleri
+- Kaan'ın istekleri (art arda): Gemlik zeytini, taflan, Seylan tarçını, Türkiye'ye özgü besinler; daha çok deniz ürünü; kanlıca, aslan yelesi, reishi; tavada patates kızartması; hayvansal kategorileri zenginleştir; protein tozları (whey, bitkisel, beef…) ve kreatin monohidrat; lif türleri (beta-glukan…).
+- USDA SR28 (yeni 21 deniz ürünü: lüfer, istavrit, kefal, kalkan, dil, kılıç, sazan, mezgit, orfoz, yayın, mersin, yılan, balık yumurtası, kalamar, ahtapot, mürekkep, istiridye, deniz tarağı, yengeç, ıstakoz, kerevit; 28 hayvansal: keçi/koyun sütü, kefir, yayık ayranı, keçi peyniri, yağsız yoğurt, cottage, peynir altı suyu, bıldırcın/ördek/kaz yumurtası, kuzu/dana kıyma, keçi eti, kuzu ciğer/böbrek, dana yürek/dil/beyin, işkembe, kurutulmuş dana, tavuk kanat/kıyma/ciğer/taşlık, ördek, kaz, bıldırcın; kuşburnu, ısırgan, kırmızı frenk üzümü, üzüm sirkesi, dereotu tohumu; whey izolat, whey tozu, yumurta akı tozu, jelatin, soya protein tozu). Patates kızartmasına "yağda (restoran)" ve "tavada (rendelenmiş, ev)" biçimleri.
+- FDC Foundation'a özgü kayıtlar (`F<ndb>` biçimi; 957 Atwater enerjisi): aslan yelesi, kral istiridye, kayın (shimeji), kavak mantarı (pioppino).
+- Yeni kategori "Protein tozları ve takviyeler" (bitkisel); hayvansal tozlar süt/yumurta/et kategorilerinde etiketli.
+- Ölçülmüş açık veri yok → açık notla, değer uydurmadan (etiketten ekle): Gemlik zeytini, taflan, Seylan tarçını (kumarin notu), üzüm pekmezi, nar ekşisi, sumak, çörek otu, isot; kanlıca, yumurta mantarı (zehirli benzer uyarısı), reishi (ilaç etkileşimi notu); bezelye/pirinç/kenevir/kabak çekirdeği/karışık bitkisel protein, kazein, sığır proteini, kolajen peptit. TürKomp açık lisanslı değil.
+- Kreatin monohidrat: yeni bileşen "Kreatin"; %87,92 kimyasal formülden (149,15 / 131,13 g/mol), kaynak `d` (hesap); enerji yazılmaz.
+- Lif türleri: yeni bileşenler beta-glukan, dirençli nişasta, HMWDF, LMWDF; FDC'den çözünür/çözünmez lif de eşlendi (beta-glukan 12 besinde, ör. mantarlar, karabuğday, darı).
+- İlk hatalar: kırmızı frenk üzümü/kiraz ve kuzu/dana ciğer çizimleri aynıydı → renk; yeni biçim adlarının EN karşılığı; "kanlıca" EN adında Türkçe harf (B051); test başlığında tırnak.
+- Kanıt: `npm run data` (418 besin); `npm test` 95/95; Playwright 126/126.

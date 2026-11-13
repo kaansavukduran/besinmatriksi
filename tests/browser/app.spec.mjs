@@ -1028,3 +1028,16 @@ test('içecekler ve tahıllar: Türk kahvesi (FNDDS), hibiskus; Americano ve siy
   if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
   await page.locator('#q').fill('siyez'); await expect(page.locator('#foodlist [data-id="siyez_bulguru"]')).toHaveCount(1);
 });
+
+test('kapsam: deniz ürünleri, mantarlar, Türkiye besinleri, protein tozları ve kreatin aranabilir (B119)', async ({ page }) => {
+  await page.goto('/');
+  for (const [q, id] of [['lüfer', 'lufer'], ['ahtapot', 'ahtapot'], ['aslan yelesi', 'aslan_yelesi'], ['kanlıca', 'kanlica'], ['gemlik', 'gemlik_zeytini'], ['taflan', 'taflan'], ['seylan', 'seylan_tarcini'], ['whey', 'whey_izolat'], ['bezelye proteini', 'bezelye_proteini'], ['kreatin', 'kreatin'], ['kuşburnu', 'kusburnu']]) {
+    await page.locator('#q').fill(q);
+    await expect(page.locator(`#foodlist [data-id="${id}"]`), q).toHaveCount(1);
+  }
+  await page.locator('#foodlist [data-id="kusburnu"]').click();
+  await expect(page.locator('#matrix [data-basic="energy"]')).not.toContainText('veri yok');
+  if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
+  await page.locator('#q').fill('patates kızartması'); await page.locator('#foodlist [data-id="patates_kizartmasi"]').click();
+  await expect(page.locator('.fchip, [data-action="ex-form"]').filter({ hasText: 'Tavada' })).toHaveCount(1);
+});

@@ -88,7 +88,8 @@ for (const r of readCsvGz('USDA_ISOFLAV_R2.1_ISFL_DAT.csv.gz')) if (ISFL_MAP[r.N
 // ---------- USDA FoodData Central Foundation Foods (2026-10-29, CC0) ----------
 // Yalnız SR28'de ölçümü olmayan bileşenleri aynı NDB kaydının daha yeni analiziyle doldurur (SR28'i asla ezmez); etiket 'F'.
 const FF_EXTRA = { '416': 'biotin', '316': 'mo', '314': 'iodine', '269.3': 'sugars', '526': 'cys', '236': 'citric', '243': 'malic',
-  '248': 'quinic', '245': 'oxalate', '338.1': 'lutein', '338.2': 'zeaxanthin', '332': 'gcarotene', '288': 'raffinose', '289': 'stachyose' };
+  '248': 'quinic', '245': 'oxalate', '295': 'fiber_sol', '297': 'fiber_insol', '283': 'resistant_starch', '293.3': 'fiber_hmw', '293.4': 'fiber_lmw', '338.1': 'lutein', '338.2': 'zeaxanthin', '332': 'gcarotene', '288': 'raffinose', '289': 'stachyose' };
+const FF_NAME = { 'Beta-glucan': 'beta_glucan', Verbascose: 'verbascose' }; // FDC'de numarasız bileşenler
 const FF_UNIT = { G: 'g', MG: 'mg', UG: 'µg', 'µg': 'µg', g: 'g', mg: 'mg' };
 const ffByNdb = new Map();
 {
@@ -98,13 +99,15 @@ const ffByNdb = new Map();
   const ff = JSON.parse(gunzipSync(fs.readFileSync(path.join(root, 'data/raw/USDA_FDC_FOUNDATION_2026-10-29.min.json.gz'))).toString('utf8'));
   for (const f of ff) {
     const v = {};
-    for (const [num, , unit, amount] of f.n) {
-      const key = numToKey.get(num);
+    for (const [num, name, unit, amount] of f.n) {
+      const key = numToKey.get(num) || FF_NAME[name];
       if (!key || !unitOf.has(key) || !Number.isFinite(amount) || amount < 0) continue;
       const u = FF_UNIT[unit]; if (!u) continue;
       v[key] = Number((amount * unitFactor(u, unitOf.get(key))).toPrecision(8));
     }
-    if (Object.keys(v).length) ffByNdb.set(f.ndb, { v, fdcId: f.fdcId });
+    // Enerji: 208 yoksa Atwater genel faktörleri (957), o da yoksa özgül faktörler (958)
+    if (v.energy == null) { for (const num of ['957', '958']) { const e = f.n.find((x) => x[0] === num && Number.isFinite(x[3])); if (e) { v.energy = e[3]; break; } } }
+    if (Object.keys(v).length) ffByNdb.set(f.ndb, { v, fdcId: f.fdcId, desc: f.desc });
   }
 }
 // ---------- USDA FNDDS 2021-2023 (CC0): SR28'de kaydı olmayan hazır içecekler (Türk kahvesi, bitkisel sütlü latte...) ----------
@@ -273,6 +276,13 @@ for (const food of FOODS) {
     if (!FORM_LABELS[key]) throw new Error('Bilinmeyen form: ' + key);
     const v = {}, s = {}, alt = {}, sd = {};
     let usda = null, ic = null;
+    if (ndb && ndb.startsWith('F')) {
+      // Yalnız FDC Foundation'da olan besin (ör. aslan yelesi mantarı): tüm değerler FDC'den, etiket 'F'
+      const ff = ffByNdb.get(ndb.slice(1));
+      if (!ff) throw new Error('FDC Foundation kaydı yok: ' + ndb);
+      const fs2 = Object.fromEntries(Object.keys(ff.v).map((k) => [k, 'F']));
+      return { key, label: custom || FORM_LABELS[key], usda: { fdc: ff.fdcId, ffNdb: ndb.slice(1), desc: ff.desc }, ifct: null, estFrom: null, portions: [], v: { ...ff.v }, s: fs2 };
+    }
     if (ndb && ndb.startsWith('N')) {
       const r = fnddsForm(ndb.slice(1));
       return { key, label: custom || FORM_LABELS[key], usda: r.usda, ifct: null, estFrom: null, portions: r.portions, v: r.v, s: r.s };
@@ -286,6 +296,11 @@ for (const food of FOODS) {
       if (fl) { Object.assign(v, fl.v); Object.assign(s, fl.s); }
       const ffId = fillFromFoundation(ndb, v, s);
       usda = { ndb, desc: d.long, refuse: d.refuse, refDesc: d.refDesc || null, sci: d.sci || null, ...(ffId ? { fdc: ffId } : {}) };
+    }
+    if (!ndb && food.fixed) {
+      // Kimyasal formülden hesaplanan değer (ör. kreatin monohidrattaki kreatin); kaynak 'd' (hesap)
+      const v = { ...food.fixed.v }, s = Object.fromEntries(Object.keys(v).map((k) => [k, 'd']));
+      return { key, label: custom || FORM_LABELS[key], usda: null, ifct: null, estFrom: null, computed: true, portions: [{ g: 5, label: '1 ölçek (5 g)', en: '1 scoop (5 g)' }], v, s };
     }
     const unavailable = !ndb ? food.unavailable || 'Bu besin için dağıtıma uygun doğrulanmış bileşim kaydı henüz yok. Önceki IFCT verileri NIN yazılı izni doğrulanmadığı için bu sürüme dahil edilmedi.' : null;
     const portions = ndb ? usdaPortions(ndb) : [];

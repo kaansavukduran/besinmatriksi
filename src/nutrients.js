@@ -46,6 +46,7 @@ const DEFINITIONS = [
   N('asp', 'Aspartik asit', 'mg', 'protein', 'Koşullu esansiyel ve diğerleri', null, 'asp', { aa: true }),
   N('glu', 'Glutamik asit', 'mg', 'protein', 'Koşullu esansiyel ve diğerleri', null, 'glu', { aa: true }),
   N('ser', 'Serin', 'mg', 'protein', 'Koşullu esansiyel ve diğerleri', null, 'ser', { aa: true }),
+  N('creatine', 'Kreatin', 'g', 'protein', 'Diğer azotlu bileşikler', null, null),
 
   // --- Karbonhidrat ve şekerler
   N('carb', 'Toplam karbonhidrat (farktan, lif dahil)', 'g', 'karb', null, 7, null),
@@ -67,6 +68,10 @@ const DEFINITIONS = [
   N('fiber', 'Diyet lifi (toplam)', 'g', 'lif', null, 8, 'fibtg'),
   N('fiber_sol', 'Çözünür lif', 'g', 'lif', null, null, 'fibsol'),
   N('fiber_insol', 'Çözünmez lif', 'g', 'lif', null, null, 'fibins'),
+  N('beta_glucan', 'Beta-glukan', 'g', 'lif', 'Lif türleri', null, null),
+  N('resistant_starch', 'Dirençli nişasta', 'g', 'lif', 'Lif türleri', null, null),
+  N('fiber_hmw', 'Yüksek molekül ağırlıklı lif (HMWDF)', 'g', 'lif', 'Lif türleri', null, null),
+  N('fiber_lmw', 'Düşük molekül ağırlıklı lif (LMWDF; inülin, oligosakkaritler…)', 'g', 'lif', 'Lif türleri', null, null),
 
   // --- Yağlar
   N('fat', 'Toplam yağ', 'g', 'yag', null, 5, 'fatce', { nrv: 70 }),
