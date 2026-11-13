@@ -1156,3 +1156,9 @@ test('kurutulmuş shiitakede pürinler USDA Pürin etiketiyle (B132)', async ({ 
   await expect(page.locator('#matrix')).toContainText('Pürinler (4 bazın toplamı)');
   await expect(page.locator('#matrix .src-U').first()).toContainText('USDA Pürin');
 });
+
+test('macOS Option+3 (e.key "£") Kıyasla sekmesini açar (B133)', async ({ page }) => {
+  await page.goto('/');
+  await page.evaluate(() => document.body.dispatchEvent(new KeyboardEvent('keydown', { key: '£', code: 'Digit3', altKey: true, bubbles: true })));
+  await expect(page.locator('[data-tab="karsilastir"]')).toHaveAttribute('aria-current', 'page');
+});

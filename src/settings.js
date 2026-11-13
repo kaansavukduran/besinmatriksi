@@ -121,3 +121,10 @@ export function migrateAionOff(settings, storage) {
   } catch {}
   return settings;
 }
+
+// Klavye kısayolu tuşu: macOS'ta Option+rakam özel karakter verir (Option+1 → "¡"), bu yüzden
+// fiziksel tuş kodundan (Digit1 / Numpad1) rakam alınır; yoksa e.key kullanılır.
+export function shortcutKey(e) {
+  const m = /^(?:Digit|Numpad)(\d)$/.exec(e.code || '');
+  return m ? m[1] : e.key;
+}

@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 26 · Simit, lahmacun, mercimek köftesi, çiğ köfte
+# 🫐 Besin Matriksi 1.1.2 Beta 27 · Pürinler, kopyasız yedek, macOS kısayolları
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -21,6 +21,9 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
+- **Pürinler:** USDA Pürin veri tabanından (2026) adenin, guanin, hipoksantin, ksantin ve toplam; 40 besinde (ör. kurutulmuş shiitake, maydanoz, brokoli). Gut/ürik asit açısından Antinutrientler bölümünde. Adla eşlenen kayıtlar tek tek incelendi; bir kısmı Japonya örnekleri (kaynakta yazılı).
+- **Yedek iki kez içe aktarılırsa kopya oluşmaz:** Aynı tarif, kendi besin, profil ve koleksiyonlar atlanır; yeni olanlar eklenir.
+- **macOS'ta Option+rakam kısayolları** artık sekmeleri açar.
 - **Türk mutfağı (tarif hesabı):** Simit, lahmacun, mercimek köftesi ve etsiz çiğ köfte; USDA'da kayıtları olmadığı için malzeme oranlarından hesaplanır, “Tahmin (tarif)” etiketli, ikameler notta yazılı.
 - **Pişme verimi:** Fırın ürünlerinde kaybolan ağırlık su sayılır; yalnız ısıya dayanıklı değerler (kalori, makrolar, lif, mineraller) hesaplanır, vitaminler “veri yok” kalır.
 - **613 besin (+150):** Mercimek çorbası, şehriyeli/mercimekli pilav, menemen, musakka, sütlaç, lokma, tahin helvası; badem, kaju ve ayçiçeği ezmesi; yulaf sütü, kombucha, soya/badem/hindistancevizi yoğurdu, TVP; tam buğday makarna, yulaf lapası; kurutulmuş ve konserve domates, çarliston biber; pişmiş yumurta, kuzu pirzola, hindi göğsü, konserve ton ve füme somon… (USDA SR28/FNDDS/FDC; hayvansallar etiketli ve gizlenebilir).

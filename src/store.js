@@ -92,6 +92,39 @@ export function parseImport(text) {
   return { recipes, settings: o.settings && typeof o.settings === 'object' ? normalizeSettings(o.settings) : null, custom, profiles, collections };
 }
 
+// Aynı yedeği ikinci kez içe aktarınca kopya oluşmasın: kimlik ve zaman damgaları dışında içerik olarak aynı olan
+// kendi besin, tarif, profil ve koleksiyonlar atlanır; atlanan kendi besine verilen bağlar mevcut kayda yönlendirilir.
+const omit = (o, keys) => Object.fromEntries(Object.entries(o).filter(([k]) => !keys.includes(k)));
+const recipeSig = (r) => JSON.stringify({ ...omit(r, ['id', 'created', 'updated']), items: r.items.map((it) => omit(it, ['id'])) });
+export function mergeImport(cur, imp) {
+  const customSig = (f) => JSON.stringify(omit(f, ['id']));
+  const haveCustom = new Map(cur.custom.map((f) => [customSig(f), f.id]));
+  const idMap = {}; const custom = [];
+  for (const f of imp.custom) { const hit = haveCustom.get(customSig(f)); if (hit) idMap[f.id] = hit; else { custom.push(f); haveCustom.set(customSig(f), f.id); } }
+  const remapItem = (it) => (it.ref.t === 'u' && idMap[it.ref.id] ? { ...it, ref: { ...it.ref, id: idMap[it.ref.id] } } : it);
+  const haveRecipe = new Set(cur.recipes.map(recipeSig)); const recipes = [];
+  for (const r0 of imp.recipes) { const r = { ...r0, items: r0.items.map(remapItem) }; const k = recipeSig(r); if (!haveRecipe.has(k)) { recipes.push(r); haveRecipe.add(k); } }
+  const profileSig = (p) => JSON.stringify(omit(p, ['id']));
+  const haveProfile = new Set(cur.profiles.map(profileSig)); const profiles = [];
+  for (const p of imp.profiles) { const k = profileSig(p); if (!haveProfile.has(k)) { profiles.push(p); haveProfile.add(k); } }
+  // Koleksiyon: üst koleksiyonu da eşleşen (aynı yolda) aynı ad + aynı öğeler kopya sayılır
+  const colMap = {}; const curById = new Map(cur.collections.map((c) => [c.id, c]));
+  const colSig = (c, parentSig) => JSON.stringify({ ...omit(c, ['id', 'parent']), parent: parentSig });
+  const curSig = new Map(); const sigOf = (c) => colSig(c, c.parent ? sigOf(curById.get(c.parent) || {}) : null);
+  for (const c of cur.collections) curSig.set(sigOf(c), c.id);
+  const remapped = remapCustomRefs(imp.collections, idMap);
+  const impById = new Map(remapped.map((c) => [c.id, c])); const impSigCache = new Map();
+  const impSig = (c) => { if (impSigCache.has(c.id)) return impSigCache.get(c.id); const x = colSig(c, c.parent && impById.get(c.parent) ? impSig(impById.get(c.parent)) : null); impSigCache.set(c.id, x); return x; };
+  const collections = [];
+  for (const c0 of remapped) {
+    const hit = curSig.get(impSig(c0));
+    if (hit) colMap[c0.id] = hit; else collections.push(c0);
+  }
+  for (const c of collections) if (c.parent && colMap[c.parent]) c.parent = colMap[c.parent];
+  const skipped = imp.custom.length - custom.length + imp.recipes.length - recipes.length + imp.profiles.length - profiles.length + imp.collections.length - collections.length;
+  return { custom, recipes, profiles, collections, skipped };
+}
+
 // Son bakılan katalog besinleri (yalnız cihazda, en fazla 8)
 export const MAX_RECENT = 8;
 export function normalizeRecent(list, known = () => true) {

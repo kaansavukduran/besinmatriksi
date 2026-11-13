@@ -34,3 +34,24 @@ test('bulunamayan malzemenin ağırlığı ve eksik kapsamı korunur; kısmi ora
   assert.equal(agg.v.energy, 100); assert.deepEqual(derive(agg), {});
   assert.ok(derive(known).energySplit);
 });
+
+test('aynı yedek iki kez içe aktarılınca kopya oluşmaz; yeni kayıtlar eklenir (B133)', async () => {
+  const { exportPayload, parseImport, mergeImport } = await import('../src/store.js');
+  const custom = [{ id: 'c1', name: 'Ev ekmeğim', liquid: false, portion: null, note: '', v: { energy: 250, protein: 9 } }];
+  const recipes = [{ id: 'r1', name: 'Kahvaltı', servings: 1, cookedWeight: null, created: 1, updated: 1, items: [{ id: 'i1', ref: { t: 'u', id: 'c1' }, g: 50, pricePerKg: null }, { id: 'i2', ref: { t: 'c', id: 'nohut', f: 0 }, g: 100, pricePerKg: null }] }];
+  const collections = [{ id: 'k1', name: 'Favoriler', parent: null, items: [{ t: 'u', id: 'c1' }] }];
+  const text = exportPayload(recipes, {}, custom, [], collections);
+  // 1. içe aktarma (boş cihaz): her şey eklenir
+  const first = mergeImport({ recipes: [], custom: [], profiles: [], collections: [] }, parseImport(text));
+  assert.equal(first.recipes.length, 1); assert.equal(first.custom.length, 1); assert.equal(first.collections.length, 1); assert.equal(first.skipped, 0);
+  // 2. aynı dosya: hiçbir şey eklenmez, bağlar mevcut kendi besine yönlenir
+  const cur = { recipes: first.recipes, custom: first.custom, profiles: first.profiles, collections: first.collections };
+  const second = mergeImport(cur, parseImport(text));
+  assert.deepEqual([second.recipes.length, second.custom.length, second.collections.length], [0, 0, 0]);
+  assert.equal(second.skipped, 3);
+  // Farklı bir tarif içeren yedek: yalnız yeni tarif eklenir ve mevcut kendi besine bağlanır
+  const text2 = exportPayload([...recipes, { ...recipes[0], id: 'r2', name: 'Öğle' }], {}, custom, [], collections);
+  const third = mergeImport(cur, parseImport(text2));
+  assert.equal(third.recipes.length, 1); assert.equal(third.recipes[0].name, 'Öğle');
+  assert.equal(third.recipes[0].items[0].ref.id, first.custom[0].id);
+});

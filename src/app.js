@@ -5,7 +5,7 @@ import { renderMatrix, basicCard, BASIC_KEYS, macroPie } from './matrix.js';
 import NOTICES from './data/notices.json';
 import { createPrintController } from './print.js';
 import { FONTS, fontStack, ensureFont } from './fonts.js';
-import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles, loadCollections, saveCollections, loadRecent, saveRecent, pushRecent } from './store.js';
+import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, mergeImport, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles, loadCollections, saveCollections, loadRecent, saveRecent, pushRecent } from './store.js';
 import { esc, fmtNum, fmtAmount, clamp, download, uid, configureFormatting, norm, pctText, fmtPct } from './util.js';
 import { matrixCSV } from './export.js';
 import { contrastRatio, accentText, exportTheme, parseTheme, COLOR_LABELS, validColor, themeTextContrast } from './theme.js';
@@ -29,7 +29,7 @@ import { recipeGaps } from './gaps.js';
 import { similarFoods } from './similar.js';
 import { FOOD_ICONS } from './food-icons.js';
 import { foodArt } from './food-art.js';
-import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS, migrateFontV2, migrateAionOff } from './settings.js';
+import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS, shortcutKey, migrateFontV2, migrateAionOff } from './settings.js';
 
 const PRESETS = [1, 5, 10, 25, 50, 100, 150, 200, 250, 500, 750, 1000];
 const MAX_G = 1000;
@@ -1316,19 +1316,17 @@ async function onClick(e) {
 
 async function importText(t) {
   try {
-    const { recipes, settings, custom, profiles, collections } = parseImport(t);
+    const parsed = parseImport(t);
+    const { recipes, custom, profiles, collections, skipped } = mergeImport({ recipes: S.recipes, custom: customFoods(), profiles: S.profiles, collections: S.collections }, parsed);
+    const { settings } = parsed;
     S.recipes.push(...recipes);
     if (collections.length) { S.collections = normalizeCollections([...S.collections, ...collections]); persistCollections(); }
     if (profiles.length) { S.profiles = [...S.profiles, ...profiles].slice(0, 12); saveProfiles(S.profiles); }
-    if (custom.length) {
-      const have = new Set(customFoods().map((f) => f.id));
-      const merged = [...customFoods(), ...custom.filter((f) => !have.has(f.id))];
-      setCustomFoods(merged); saveCustom(merged);
-    }
+    if (custom.length) { const merged = [...customFoods(), ...custom]; setCustomFoods(merged); saveCustom(merged); }
     if (S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) await loadExt();
     if (settings && (await uiDialog(L("Yedekteki ayarlar da uygulansın mı?"), { ok: L("Evet"), cancel: L("Hayır") }))) { S.settings = normalizeSettings(settings); saveSettings(S.settings); applySettings(); }
     persistRecipes();
-    toast(L("{n} tarif içe aktarıldı", { n: recipes.length }));
+    toast(L("{n} tarif içe aktarıldı", { n: recipes.length }) + (skipped ? ' · ' + L("{n} kopya atlandı", { n: skipped }) : ''));
     render();
   } catch (err) {
     uiDialog(L("İçe aktarılamadı:") + ' ' + L(err.message), { ok: L("Tamam") });
@@ -1512,7 +1510,7 @@ export function start() {
   }, true);
   document.addEventListener('keydown', (e) => {
     if (!document.querySelector('.modal') && !e.target.closest('input, textarea, select, [contenteditable="true"]') && e.altKey && !e.ctrlKey && !e.metaKey) {
-      const target = Object.keys(SHORTCUT_ACTIONS).find(id => S.settings.shortcuts[id] === `Alt+${e.key}`);
+      const key = shortcutKey(e); const target = Object.keys(SHORTCUT_ACTIONS).find(id => S.settings.shortcuts[id] === `Alt+${key}`);
       if (target) { e.preventDefault(); S.tab = target; render(); window.scrollTo(0, 0); document.querySelector(`[data-tab="${target}"]`)?.focus(); return; }
     }
     trapModalTab(e); if (!e.defaultPrevented && e.key === 'Escape' && (S.picker || S.customEdit || S.themeEditor || S.colPicker)) { if (S.themeEditor) S.themeEditor = null; else if (S.customEdit) S.customEdit = null; else if (S.colPicker) S.colPicker = false; else S.picker = null; render(); } });

@@ -683,3 +683,10 @@
 - Bulunan eski hata: B128'de tarif kaynak dökümündeki kayıt numarası listesine L/I/C/P eklenmemişti (dize boşluk farkıyla eşleşmemişti) → düzeltildi, test eklendi.
 - Kanıt: `npm run data`; `npm test` 104/104; build + build:single; Playwright 146/146 (B132 dahil).
 - Sonraki: **B133** diğer fırın tarifleri (pide, gözleme, ıspanaklı/peynirli börek) ya da denetimin kalan maddeleri (#6 macOS Alt kısayolları, #10 yedeğin iki kez içe aktarılması).
+
+## B133 · 2026-11-13 · Kopyasız yedek içe aktarma; macOS Alt kısayolları; 1.1.2-beta.27
+- Denetim #10: içe aktarma her kendi besine yeni kimlik verdiği için aynı yedek ikinci kez kopya üretiyordu → `mergeImport` (store.js): kimlik/zaman damgası dışında içerikçe aynı kendi besin, tarif, profil ve koleksiyon (üst koleksiyon yoluyla) atlanır; atlanan kendi besine bağlı tarif/koleksiyon öğeleri mevcut kayda yönlenir; bildirimde "{n} kopya atlandı".
+- Denetim #6: macOS'ta Option+1 `e.key = "¡"` verdiği için Alt kısayolları çalışmıyordu → `shortcutKey(e)` fiziksel tuş kodundan (Digit/Numpad) okur.
+- Kanıt: `npm test` 106/106 (B133 birim: 3 aşamalı içe aktarma, shortcutKey); build + build:single; Playwright 148/148 (B133: e.key "£" + Digit3 → Kıyasla).
+- Sürüm 1.1.2-beta.27 (B132 Pürin + B133).
+- Sonraki: **B134** denetimin kalan performans maddeleri (#11 telefonda gizli periyodik tabloyu kurmamak, #13 NUTRIENT_BY_KEY) ya da pide/gözleme/börek tarifleri.

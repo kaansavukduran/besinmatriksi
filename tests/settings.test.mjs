@@ -88,3 +88,11 @@ test("bölüm sırası: Protein Lifler'in üstünde, Lifler Vitaminler'in altın
   const custom = ['mineral', ...o.filter((x) => x !== 'mineral')];
   assert.deepEqual(normalizeSettings({ sectionOrder: custom }).sectionOrder, custom);
 });
+
+test('kısayol tuşu macOS Option+rakamda fiziksel tuştan okunur (B133)', async () => {
+  const { shortcutKey } = await import('../src/settings.js');
+  assert.equal(shortcutKey({ key: '¡', code: 'Digit1' }), '1');
+  assert.equal(shortcutKey({ key: '™', code: 'Digit2' }), '2');
+  assert.equal(shortcutKey({ key: '3', code: 'Numpad3' }), '3');
+  assert.equal(shortcutKey({ key: '4' }), '4');
+});
