@@ -399,8 +399,6 @@ table.cmp td.miss { color: var(--muted); font-style: italic; }
 button:disabled { opacity: .4; cursor: default; }
 select { max-width: 100%; background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: .5rem; }
 
-.price-field { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin: .5rem 0; font-size: .85rem; }
-.price-field input { width: 8rem; border: 1px solid var(--line); border-radius: 6px; padding: .4rem; background: var(--card); }
 .nutrition-label { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: .5rem; }
 .nutrition-label > div { display: flex; flex-direction: column; border-top: 1px solid var(--line); padding: .5rem; }
 .nutrition-label small { color: var(--muted); }
