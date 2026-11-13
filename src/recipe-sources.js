@@ -10,7 +10,7 @@ const CALCULATIONS = {
   carb_avail: { keys: ['carb', 'fiber'], label: 'Lif hariç karbonhidrat = en az 0 olacak şekilde toplam karbonhidrat − lif' },
   carb: { keys: ['carb_avail', 'fiber'], label: 'Toplam karbonhidrat = etiket karbonhidratı + lif' },
 };
-export const LABELS = { u: 'USDA SR28 (2015)', N: 'USDA FNDDS', F: 'USDA FDC', f: 'USDA Flavonoid', y: 'USDA İzoflavon', r: 'Tahmin (tarif)', k: 'Kullanıcının ürün etiketi', d: 'Hesaplanan değer', i: 'IFCT 2017', e: 'Tahmin' };
+export const LABELS = { u: 'USDA SR28 (2015)', N: 'USDA FNDDS', F: 'USDA FDC', f: 'USDA Flavonoid', y: 'USDA İzoflavon', L: 'USDA SR Legacy', I: 'USDA İyot', C: 'USDA Kolin', P: 'USDA Proantosiyanidin', r: 'Tahmin (tarif)', k: 'Kullanıcının ürün etiketi', d: 'Hesaplanan değer', i: 'IFCT 2017', e: 'Tahmin' };
 export const usdaRecord = (u) => (!u ? '' : u.ndb ? `NDB ${u.ndb}` : u.fndds ? `FNDDS ${u.fndds}` : u.fdc ? `FDC ${u.fdc}` : '');
 
 // Kaydı bulunamayan malzeme ve ölçülmüş sıfır da ayrı satır olarak korunur.

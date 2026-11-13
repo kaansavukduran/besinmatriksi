@@ -641,3 +641,13 @@
 - Kanıt: `npm test` 97/97; `npm run build && npm run build:single`; Playwright 136/136.
 - Sonraki: **B128** eksik veri paketleri (iyot, kolin, proantosiyanidin, SR Legacy) + yeni besin adayları (150 doğrulanmış aday hazır).
 - Yayın kanıtı: v1.1.2-beta.24 pre-release 2026-11-13T06:42:14Z (release.yml run 43379363604 success). ci.yml run 43379343063 (commit ddc0b34): "Tarayıcı uyumu (Firefox, Safari/WebKit, iPhone, iPad)" success ve "test" success → çapraz tarayıcı RUNTIME_TESTED.
+
+## B128 · 2026-11-13 · USDA özel veri tabanları: iyot, kolin türleri, proantosiyanidinler, SR Legacy
+- 4 kamu malı/CC0 USDA veri tabanı `data/raw/` altına (kaynak, SHA-256, lisans: USDA_SPECIAL_DB_SOURCES.json). `fillFromExtra` FDC'den sonra 4 yerde (SR formları, yalnız-FDC formları, tarif malzemeleri, genişletilmiş katalog); öncelik SR28 > Flavonoid/İzoflavon > FDC > L > I > C > P; yalnız boş hücre. Birim ya da bilinmeyen anahtar uyuşmazlığında derleme durur.
+- Yeni 10 bileşen: kolin türleri (serbest, GPC, fosfokolin, fosfatidilkolin, sfingomiyelin) ve proantosiyanidin fraksiyonları (dimer, trimer, 4–6, 7–10, polimer; toplam yazılmaz). Yeni kaynak etiketleri L/I/C/P, Hakkında'da açıklamalarıyla, 4 yeni lisans bildirimi.
+- Kazanç (küratörlü 463 besin): iyot +64, kolin türleri/betain +605, proantosiyanidin +578, SR Legacy +119 hücre; genişletilmiş katalogda da.
+- Tarif hesabı: iyot organik değil → inert su/tuzda ölçülmemiş iyot 0 sayılmaz. Ayranda iyot ölçülmüş iyotlu sofra tuzundan hesaplandı (Türkiye'de sofra tuzu iyotlu); notta yazılı. Kaju ayranında iyot "veri yok" (kaju ölçülmemiş).
+- Purin DB alınmadı (ad eşlemesi, insan incelemesi gerekli).
+- İlk hata: testteki varsayım (ayranda iyot yok) yanlıştı; tuz kaydı İyot DB'de ölçülü → test hesaba göre düzeltildi.
+- Kanıt: `npm run data`; `npm test` 99/99; `npm run build && npm run build:single`; Playwright 136/136 + B128 2/2 (kakao: "USDA Proantosiyanidin", yumurta: "USDA Kolin" etiketleri).
+- Sonraki: **B129** yeni besin adayları (150 doğrulanmış USDA kaydı) + beta.25.

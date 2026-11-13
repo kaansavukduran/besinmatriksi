@@ -1,0 +1,229 @@
+{
+  "sr_legacy": {
+    "name": "USDA FoodData Central - SR Legacy (April 2018), CSV",
+    "url": "https://fdc.nal.usda.gov/fdc-datasets/FoodData_Central_sr_legacy_food_csv_2018-04.zip",
+    "sha256": "b80817294b8850530aaedf2e515c02593b1824f763a0ff356e5c2081643e6fd0",
+    "license": "CC0 1.0 Universal - \"USDA FoodData Central data are in the public domain ... published under CC0 1.0\" (https://fdc.nal.usda.gov/api-guide, Licensing section)",
+    "join": "sr_legacy_food.csv NDB_number (zero-padded to 5) -> catalog usda.ndb; nutrient.nutrient_nbr mapped with data/usda-nutrients.mjs + FF_EXTRA",
+    "notes": "Only cells EMPTY in current foods.json / foods-ext.json. Kept only food_nutrient rows whose derivation source_id is 1, 4, 9 or 10 (= food_nutrient_source codes 1 analytical, 6 aggregated analytical, 12 manufacturer analytical, 13 literature analytical). Skipped 76 imputed/calculated/assumed-zero rows (codes NC, BFSN, FLC, FLA, BFFN, Z, LC). Gains come from 10 curated forms whose SR records were re-analysed between SR28 (2015) and SR Legacy (2018) - kuru_bezelye 16085, italyan_ekmegi 18033, karalahana 11233/11234, plantain 09277, kuru_uzum 09298, zeytin_siyah 09193, badem_sutu 14091, humus 16158, ricotta 01036. NOTE: SR Legacy also changed some values that exist in SR28 for these foods; this file does not override them (decide separately).",
+    "checked_on": "2026-11-13",
+    "normalized_rows": 355,
+    "measured_gain_vs_foods_json_2026-11-13": {
+      "curated": {
+        "forms_matched": 10,
+        "cells_gained": 119,
+        "by_key": {
+          "f22d0": 4,
+          "f14d1_total": 7,
+          "f24d0": 5,
+          "f15d0": 4,
+          "f20d2": 4,
+          "aa_fa": 1,
+          "f20d0": 4,
+          "f24d1_c": 4,
+          "f18d1_c": 4,
+          "la": 4,
+          "f22d1_c": 4,
+          "ala_fa": 4,
+          "galactose": 4,
+          "f16d1_c": 4,
+          "f20d3": 4,
+          "f18d1_trans": 4,
+          "d3": 1,
+          "glu": 1,
+          "gly": 1,
+          "pro": 1,
+          "trp": 1,
+          "thr": 1,
+          "met": 1,
+          "phe": 1,
+          "tyr": 1,
+          "ala": 1,
+          "asp": 1,
+          "ser": 1,
+          "ile": 1,
+          "leu": 1,
+          "lys": 1,
+          "cys": 1,
+          "val": 1,
+          "arg": 1,
+          "his": 1,
+          "sucrose": 3,
+          "glucose": 3,
+          "maltose": 3,
+          "mk4": 4,
+          "toc_b": 1,
+          "toc_g": 1,
+          "t3_a": 2,
+          "t3_b": 2,
+          "toc_d": 1,
+          "t3_g": 2,
+          "t3_d": 2,
+          "fructose": 3,
+          "lactose": 3,
+          "f20d1_total": 1,
+          "betaine": 2,
+          "starch": 2
+        }
+      },
+      "ext": {
+        "forms_matched": 18,
+        "cells_gained": 236,
+        "by_key": {
+          "sucrose": 9,
+          "glucose": 9,
+          "maltose": 9,
+          "toc_b": 5,
+          "toc_g": 5,
+          "t3_a": 5,
+          "t3_b": 5,
+          "toc_d": 5,
+          "t3_g": 5,
+          "t3_d": 5,
+          "galactose": 8,
+          "fructose": 9,
+          "lactose": 9,
+          "mk4": 5,
+          "betaine": 3,
+          "d3": 4,
+          "f22d0": 7,
+          "f14d1_total": 7,
+          "f24d0": 7,
+          "f24d1_c": 8,
+          "f18d1_c": 8,
+          "la": 8,
+          "f22d1_c": 9,
+          "ala_fa": 8,
+          "f20d0": 7,
+          "f15d0": 8,
+          "f18d1_trans": 8,
+          "f20d2": 8,
+          "f16d1_c": 8,
+          "f20d3": 9,
+          "panto": 1,
+          "mn": 2,
+          "vitk": 1,
+          "d2": 2,
+          "starch": 3,
+          "f4d0": 1,
+          "f6d0": 1,
+          "f10d0": 1,
+          "vite": 1,
+          "lutzea": 1,
+          "f18d0": 1,
+          "f20d1_total": 1,
+          "f8d0": 1,
+          "f12d0": 1,
+          "f14d0": 1,
+          "dha": 1,
+          "epa": 1,
+          "dpa": 1,
+          "bcrypto": 1,
+          "lycopene": 1,
+          "bcarotene": 1,
+          "acarotene": 1
+        }
+      }
+    },
+    "file": "USDA_SR_LEGACY_2018_FILL.csv.gz",
+    "tag": "L"
+  },
+  "iodine": {
+    "name": "USDA, FDA and ODS-NIH Database for the Iodine Content of Common Foods, Release 4.0 (October 2024)",
+    "url": "https://www.ars.usda.gov/ARSUserFiles/80400535/Data/Iodine/IODINE_RELEASE_4.zip",
+    "doc_url": "https://www.ars.usda.gov/ARSUserFiles/80400535/Data/Iodine/IODINE_DATABASE_RELEASE_4_DOCUMENTATION.pdf",
+    "sha256": "bf8eab1cc7b152f4be035ff9fb53a1741a272182f8fa867eab06067f2177c2eb",
+    "sha256_inner_xlsx": "4627a296ff495ba8fc1dc1512aa071b719d8d6ecf7129d149b96de3c0c9a0035",
+    "license": "US Government work (USDA ARS / FDA / NIH-ODS), public domain; no restriction stated on the MAFCL Iodine page.",
+    "join": "Column \"Standard Reference (Foundation Foods) FDC NDB No.\" : 5-digit SR NDB; a 6-digit number in parentheses is a Foundation Foods ndb, written here as F<6 digits> (catalog convention for F-forms).",
+    "notes": "Used the \"Per 100g\" workbook only (the \"Per Serving\" workbook is per serving - not used). Values are analytical means of n samples (FDA TDS + USDA). 4 rows with \"*\" (bread / bun with iodate dough conditioner) skipped: they differ from the generic NDB. 95 rows have no NDB (free text); one exact SR28 name match (Mushrooms, canned, drained solids 11264, ext only) not included - human review. 18 values are 0 = below LOD/RL per source footnote B (measured, not assumed). source_record_id = IOD4:<DB_ID>. Iodine in foods varies strongly with iodized salt/iodophors/dough conditioners - show the n and year range in tooltip if possible.",
+    "checked_on": "2026-11-13",
+    "normalized_rows": 386,
+    "measured_gain_vs_foods_json_2026-11-13": {
+      "curated": {
+        "forms_matched": 78,
+        "cells_gained": 64,
+        "by_key": {
+          "iodine": 64
+        }
+      },
+      "ext": {
+        "forms_matched": 135,
+        "cells_gained": 120,
+        "by_key": {
+          "iodine": 120
+        }
+      }
+    },
+    "file": "USDA_IODINE_R4.csv.gz",
+    "tag": "I"
+  },
+  "choline": {
+    "name": "USDA Database for the Choline Content of Common Foods, Release 2 (January 2008)",
+    "url": "https://www.ars.usda.gov/ARSUserFiles/80400535/Data/Choline/Choln02.zip",
+    "url_access": "https://www.ars.usda.gov/ARSUserFiles/80400535/Data/Choline/Choln02-DB.zip",
+    "doc_url": "https://www.ars.usda.gov/ARSUserFiles/80400535/Data/Choline/Choln02.pdf",
+    "sha256": "84bc4ebff4b1fe5b7825c986279f46d40a43cb1bda749a699c1097811487cb8d",
+    "license": "US Government work (USDA ARS), public domain.",
+    "join": "NDB_No (SR 5-digit). Temporary 98xxx numbers (504 values) skipped: documentation says they are not unique SR numbers.",
+    "notes": "ASCII NUT_DATA parsed. Ground-beef records (77 values) skipped: documentation says those were estimated with regression equations. Zero = analysed, not detected (documentation p.4). Nutrients: 421 total choline -> choline, 454 betaine -> betaine (existing keys; SR28 already contains most of these, gain only 5 curated cells); 450/451/452/453/455 -> NEW keys choline_free, choline_pc, choline_ptdcho, choline_gpc, choline_sm (mg choline moiety per 100 g). CC (A/B/C) refers to total choline only. Values may differ from SR28 total choline (more samples) - fill only empty cells, never override SR28.",
+    "checked_on": "2026-11-13",
+    "normalized_rows": 3857,
+    "measured_gain_vs_foods_json_2026-11-13": {
+      "curated": {
+        "forms_matched": 121,
+        "cells_gained": 5,
+        "by_key": {
+          "betaine": 5
+        }
+      },
+      "ext": {
+        "forms_matched": 179,
+        "cells_gained": 31,
+        "by_key": {
+          "choline": 12,
+          "betaine": 19
+        }
+      }
+    },
+    "file": "USDA_CHOLINE_R2.csv.gz",
+    "tag": "C"
+  },
+  "proanthocyanidins": {
+    "name": "USDA Database for the Proanthocyanidin Content of Selected Foods, Release 2.1 (2018)",
+    "url": "https://www.ars.usda.gov/ARSUserFiles/80400535/Data/PA/PA02-1.accdb",
+    "doc_url": "https://www.ars.usda.gov/ARSUserFiles/80400535/Data/PA/PA02-1.pdf",
+    "sha256": "153117375741555dfacc40d8c7fddc3a21828208385a55400f9ba29643092d13",
+    "license": "US Government work (17 U.S.C. 105), public domain; USDA ARS publication. No licence restriction stated on the MAFCL page; the same ARS special-interest DBs (e.g. Flavonoid 3.3) are catalogued CC0 on data.gov.",
+    "join": "NDB No (SR28 5-digit) -> catalog form usda.ndb / foods-ext n",
+    "notes": "Table PA_DAT exported with mdb-export. All 1254 values kept (all carry a confidence code A-D = evaluated analytical literature/USDA data). Zeros (679) = PAs not detected OR trace without LOQ (documentation p.4); trace values with known LOQ were reported as 0.71*LOQ (cannot be identified per record) - say so in tooltip. Monomers removed in R2.1 (they are in Flavonoid DB as catechin/epicatechin). Requires NEW keys pa_dimer, pa_trimer, pa_4_6mer, pa_7_10mer, pa_polymer (mg/100 g fresh edible portion).",
+    "checked_on": "2026-11-13",
+    "normalized_rows": 1254,
+    "measured_gain_vs_foods_json_2026-11-13": {
+      "curated": {
+        "forms_matched": 122,
+        "cells_gained": 578,
+        "by_key": {
+          "pa_dimer": 121,
+          "pa_trimer": 122,
+          "pa_4_6mer": 114,
+          "pa_7_10mer": 111,
+          "pa_polymer": 110
+        }
+      },
+      "ext": {
+        "forms_matched": 54,
+        "cells_gained": 243,
+        "by_key": {
+          "pa_dimer": 54,
+          "pa_trimer": 51,
+          "pa_4_6mer": 47,
+          "pa_7_10mer": 47,
+          "pa_polymer": 44
+        }
+      }
+    },
+    "file": "USDA_PA_R2.1.csv.gz",
+    "tag": "P"
+  }
+}

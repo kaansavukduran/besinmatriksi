@@ -19,7 +19,7 @@ test('her formun doğrulanmış değerleri veya açık kaynak boşluğu var', ()
       else if (fm.computed) assert.ok(Object.values(fm.s).every((x) => x === 'd'), `${f.id}/${fm.key}`);
       else assert.ok(fm.v.energy != null && fm.v.protein != null, `${f.id}/${fm.key}`);
       for (const k of Object.keys(fm.v)) assert.ok(keys.has(k), `bilinmeyen anahtar ${k}`);
-      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F', 'N', 'd', 'r'].includes(s), `${f.id} ${k} ${s}`);
+      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P'].includes(s), `${f.id} ${k} ${s}`);
     }
   }
 });
@@ -94,7 +94,7 @@ test('dağıtımda IFCT değerleri, alternatifleri ve bunlardan tahminler bulunm
   for (const food of DB.foods) for (const f of food.forms) {
     assert.equal(f.ifct, null); assert.equal(f.estFrom, null);
     assert.deepEqual(f.alt || {}, {}); assert.deepEqual(f.sd || {}, {});
-    assert.ok(Object.values(f.s).every(s => ['u', 'f', 'y', 'F', 'N', 'd', 'r'].includes(s)));
+    assert.ok(Object.values(f.s).every(s => ['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P'].includes(s)));
   }
   assert.equal(fs.existsSync(new URL('../data/raw/IFCT2017.csv', import.meta.url)), false);
 });
@@ -187,4 +187,26 @@ test('ayran ve kaju ayranı tarif hesabıdır: r etiketli, oranlı, ölçüm gib
   assert.ok(a.v.na > 190 && a.v.na < 260, String(a.v.na)); // ≈ 0,5 g tuz + yoğurdun sodyumu; tuz (Na × 2,5) çalışma anında türetilir
   assert.equal(DB.foods.find((f) => f.id === 'ayran').animal, true);
   const k = DB.foods.find((f) => f.id === 'kaju_ayrani'); assert.equal(k.animal, false); assert.ok(k.forms[0].v.energy > 100 && k.forms[0].v.energy < 125);
+});
+
+test('USDA özel veri tabanları yalnız boş hücreyi doldurur, SR28 değişmez (B128)', () => {
+  const egg = DB.foods.find((x) => x.id === 'yumurta').forms.find((f) => f.key === 'cig');
+  assert.equal(egg.s.choline, 'u'); assert.equal(egg.v.choline, 293.8); // SR28 toplam kolin korunur
+  assert.equal(egg.s.choline_ptdcho, 'C'); assert.equal(egg.v.choline_ptdcho, 240);
+  const cocoa = DB.foods.find((x) => x.id === 'kakao').forms[0];
+  assert.equal(cocoa.s.pa_polymer, 'P'); assert.ok(cocoa.v.pa_polymer > 1000);
+  const boiled = DB.foods.find((x) => x.id === 'yumurta').forms.find((f) => f.key === 'haslanmis');
+  assert.equal(boiled.s.iodine, 'I'); assert.equal(boiled.v.iodine, 61);
+  const n = { L: 0, I: 0, C: 0, P: 0 };
+  for (const f of DB.foods) for (const fm of f.forms) for (const t of Object.values(fm.s)) if (t in n) n[t]++;
+  assert.ok(n.I >= 60 && n.C >= 600 && n.P >= 570 && n.L >= 100, JSON.stringify(n));
+});
+
+test('Tarif hesabında iyot inert malzemede 0 sayılmaz, yalnız tüm malzemeler ölçülmüşse yazılır (B128)', () => {
+  // Kajunun iyodu ölçülmemiş → kaju ayranında iyot "veri yok" (su/tuz inert olsa da)
+  assert.equal(DB.foods.find((x) => x.id === 'kaju_ayrani').forms[0].v.iodine, undefined);
+  // Ayran: yoğurt, su ve iyotlu tuz ölçülmüş → hesap; tuz katkısı %0,5 × 5213,1 µg ≈ 26 µg
+  const ay = DB.foods.find((x) => x.id === 'ayran').forms[0];
+  assert.equal(ay.s.iodine, 'r'); assert.ok(ay.v.iodine > 40 && ay.v.iodine < 50, String(ay.v.iodine));
+  assert.match(DB.foods.find((x) => x.id === 'ayran').note, /iyotlu sofra tuzu/);
 });

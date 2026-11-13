@@ -757,5 +757,19 @@ export const UI_EN = {
  "En fazla 12 profil kaydedilebilir": "Up to 12 profiles can be saved",
  "Bu dosya Besin Matriksi yedeği değil.": "This file is not a Besin Matriksi backup.",
  "Bu yedek sürümü desteklenmiyor.": "This backup version is not supported.",
- "Bu dosya desteklenen bir Besin Matriksi ayar dosyası değil.": "This file is not a supported Besin Matriksi settings file."
+ "Bu dosya desteklenen bir Besin Matriksi ayar dosyası değil.": "This file is not a supported Besin Matriksi settings file.",
+ "Proantosiyanidinler": "Proanthocyanidins",
+ "USDA İyot": "USDA Iodine",
+ "USDA Kolin": "USDA Choline",
+ "USDA Proantosiyanidin": "USDA Proanthocyanidin",
+ "USDA FoodData Central, SR Legacy (2018, CC0); aynı USDA kaydının 2016-18 analitik verisi, yalnız boş hücreler için": "USDA FoodData Central, SR Legacy (2018, CC0); 2016-18 analytical data for the same USDA record, empty cells only",
+ "USDA, FDA ve NIH-ODS, Database for the Iodine Content of Common Foods, Release 4.0 (2024, kamu malı)": "USDA, FDA and NIH-ODS, Database for the Iodine Content of Common Foods, Release 4.0 (2024, public domain)",
+ "USDA ARS, Database for the Choline Content of Common Foods, Release 2 (2008, kamu malı)": "USDA ARS, Database for the Choline Content of Common Foods, Release 2 (2008, public domain)",
+ "USDA ARS, Database for the Proanthocyanidin Content of Selected Foods, Release 2.1 (2018, kamu malı)": "USDA ARS, Database for the Proanthocyanidin Content of Selected Foods, Release 2.1 (2018, public domain)",
+ "Bazı besinlerde yağ asitleri, şeker türleri ve tokoferoller.": "Fatty acids, individual sugars and tocopherols for some foods.",
+ "İyot; analitik ortalamalar (0 = ölçüldü, saptanmadı).": "Iodine; analytical means (0 = measured, not detected).",
+ "Kolin türleri (serbest kolin, fosfatidilkolin…) ve betain; SR28 toplam kolini değiştirilmez.": "Choline forms (free choline, phosphatidylcholine…) and betaine; SR28 total choline is never replaced.",
+ "Proantosiyanidin (yoğunlaşmış tanen) fraksiyonları; 0 = saptanmadı, bazı iz değerler tespit sınırından tahmin edilmiştir.": "Proanthocyanidin (condensed tannin) fractions; 0 = not detected, some trace values are estimated from the detection limit.",
+ "USDA SR28 (2015) tam ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015); USDA SR Legacy (2018); USDA İyot 4.0 (2024); USDA Kolin 2 (2008); USDA Proantosiyanidin 2.1 (2018)": "USDA SR28 (2015) full ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA Isoflavone 2.1 (2015); USDA SR Legacy (2018); USDA Iodine 4.0 (2024); USDA Choline 2 (2008); USDA Proanthocyanidin 2.1 (2018)",
+ "Ölçüm değil, tarif hesabı (tahmin): %60 tam yağlı yoğurt + %39,5 su + %0,5 tuz (USDA kayıtlarından). Markaya ve ev tarifine göre yoğurt, su ve tuz oranı değişir; kendi oranınla Tarif oluştur’da hesaplayabilirsin. İyot, iyotlu sofra tuzu varsayımıyla (USDA İyot veri tabanı) hesaplandı; iyotsuz tuzla daha düşüktür.": "Not a measurement but a recipe calculation (estimate): 60% whole-milk yogurt + 39.5% water + 0.5% salt (from USDA records). The yogurt, water and salt ratio varies by brand and home recipe; you can calculate your own ratio in Create recipe. Iodine was calculated assuming iodised table salt (USDA Iodine database); it is lower with non-iodised salt."
 };

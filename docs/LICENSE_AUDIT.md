@@ -93,3 +93,13 @@ Yalnız resmî web JSON'undaki bir sayısal PRI/AI alt kümesi dönüştürülü
 PDF/şekilleri, EFSA logosu ve üçüncü taraf fotoğraflar içe alınmaz. Kaynak/bildirim
 SHA'ları ve erişim anı EFSA_SOURCE.json'dadır. Kaynak dosyaları checkout sırasında
 satır sonu dönüşümüyle değişmesin diye `.gitattributes` bu dosyaları byte olarak korur.
+
+## USDA özel veri tabanları (B128)
+
+SR Legacy 2018 (FoodData Central, CC0 1.0), İyot 4.0 (USDA/FDA/NIH-ODS, 2024), Kolin
+Release 2 (USDA ARS, 2008) ve Proantosiyanidin 2.1 (USDA ARS, 2018): ABD federal
+hükümet eseri (17 U.S.C. 105), kamu malı. İndirme URL'leri, özgün dosya SHA-256'ları,
+eşleme kuralları ve ayıklanan (tahmini/geçici) satırlar `data/raw/USDA_SPECIAL_DB_SOURCES.json`
+içindedir. Yalnız analitik satırlar alınır; değerler yalnız boş hücreleri doldurur,
+SR28 ölçümü asla değiştirilmez. Atıf metinleri THIRD_PARTY_NOTICES'e gömülüdür.
+Purin veri tabanı (2026) ad eşlemesiyle eşleştiği için insan incelemesine kadar alınmadı.

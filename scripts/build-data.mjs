@@ -129,6 +129,28 @@ function fnddsForm(code) {
   return { v, s, portions: [...turkishMeasures(base), ...base], usda: { fndds: code, fdc: f.fdcId, desc: f.desc, ingredients: f.in } };
 }
 
+// ---------- USDA özel veri tabanları (kamu malı / CC0): SR Legacy 2018, İyot 4.0, Kolin 2, Proantosiyanidin 2.1 ----------
+// Kaynak/lisans: data/raw/USDA_SPECIAL_DB_SOURCES.json. Yalnız boş hücreleri doldurur (SR28 > Flavonoid/İzoflavon > FDC > bunlar).
+// Sıra önceliktir: L (SR Legacy, aynı kaydın 2016-18 analitik verisi) > I > C > P. Satırlar analitik ölçümdür; 0 = ölçüldü, saptanmadı.
+const INERT_NOT_ZERO = new Set(['iodine']);
+const EXTRA_DBS = [['USDA_SR_LEGACY_2018_FILL.csv.gz', 'L'], ['USDA_IODINE_R4.csv.gz', 'I'], ['USDA_CHOLINE_R2.csv.gz', 'C'], ['USDA_PA_R2.1.csv.gz', 'P']];
+const extraByNdb = new Map(); // ndb ('F'+6 hane = yalnız Foundation) -> [[key, value, tag]]
+{
+  const unitOf = new Map(NUTRIENTS.map((n) => [n.key, n.unit]));
+  for (const [file, tag] of EXTRA_DBS) for (const r of readCsvGz(file)) {
+    if (!unitOf.has(r.nutrient_key)) throw new Error(`${file}: bilinmeyen bileşen ${r.nutrient_key}`);
+    if (unitOf.get(r.nutrient_key) !== r.unit) throw new Error(`${file}: birim uyuşmuyor ${r.nutrient_key} ${r.unit}`);
+    const x = Number(r.amount_per_100g); if (r.amount_per_100g === '' || !Number.isFinite(x) || x < 0) continue;
+    if (!extraByNdb.has(r.ndb)) extraByNdb.set(r.ndb, []);
+    extraByNdb.get(r.ndb).push([r.nutrient_key, Number(x.toPrecision(6)), tag]);
+  }
+}
+function fillFromExtra(ndb, v, s) {
+  let n = 0;
+  for (const [k, x, tag] of extraByNdb.get(ndb) || []) if (v[k] == null) { v[k] = x; if (s) s[k] = tag; n++; }
+  return n;
+}
+
 function fillFromFoundation(ndb, v, s) {
   const ff = ffByNdb.get(ndb);
   if (!ff) return null;
@@ -281,7 +303,8 @@ for (const food of FOODS) {
       const ff = ffByNdb.get(ndb.slice(1));
       if (!ff) throw new Error('FDC Foundation kaydı yok: ' + ndb);
       const fs2 = Object.fromEntries(Object.keys(ff.v).map((k) => [k, 'F']));
-      return { key, label: custom || FORM_LABELS[key], usda: { fdc: ff.fdcId, ffNdb: ndb.slice(1), desc: ff.desc }, ifct: null, estFrom: null, portions: [], v: { ...ff.v }, s: fs2 };
+      const fv = { ...ff.v }; fillFromExtra(ndb, fv, fs2);
+      return { key, label: custom || FORM_LABELS[key], usda: { fdc: ff.fdcId, ffNdb: ndb.slice(1), desc: ff.desc }, ifct: null, estFrom: null, portions: [], v: fv, s: fs2 };
     }
     if (ndb && ndb.startsWith('N')) {
       const r = fnddsForm(ndb.slice(1));
@@ -295,6 +318,7 @@ for (const food of FOODS) {
       const fl = flavValues.get(ndb);
       if (fl) { Object.assign(v, fl.v); Object.assign(s, fl.s); }
       const ffId = fillFromFoundation(ndb, v, s);
+      fillFromExtra(ndb, v, s);
       usda = { ndb, desc: d.long, refuse: d.refuse, refDesc: d.refDesc || null, sci: d.sci || null, ...(ffId ? { fdc: ffId } : {}) };
     }
     if (!ndb && food.recipe) {
@@ -303,13 +327,14 @@ for (const food of FOODS) {
       // organik bileşenler kimyasal olarak bulunmadığından 0 alınır; mineralleri USDA ölçümünden gelir.
       const parts = food.recipe.map(([code, g, inert]) => {
         const d = des.get(code); if (!d) throw new Error('Tarif malzemesi yok: ' + code);
-        const pv = usdaValues(code); const fl = flavValues.get(code); if (fl) Object.assign(pv, fl.v); fillFromFoundation(code, pv, null);
+        const pv = usdaValues(code); const fl = flavValues.get(code); if (fl) Object.assign(pv, fl.v); fillFromFoundation(code, pv, null); fillFromExtra(code, pv, null);
         return { code, g, inert: !!inert, v: pv, desc: d.long };
       });
       const total = parts.reduce((a, x) => a + x.g, 0);
       const v = {}, s = {};
       for (const n of NUTRIENTS) {
-        if (!parts.every((x) => x.v[n.key] != null || x.inert) || !parts.some((x) => x.v[n.key] != null)) continue;
+        // İyot organik değil: sofra tuzu iyotlu olabilir, inert malzemede ölçülmemiş iyot 0 sayılmaz
+        if (!parts.every((x) => x.v[n.key] != null || (x.inert && !INERT_NOT_ZERO.has(n.key))) || !parts.some((x) => x.v[n.key] != null)) continue;
         v[n.key] = round(parts.reduce((a, x) => a + (x.v[n.key] ?? 0) * x.g, 0) / total); s[n.key] = 'r';
       }
       return { key, label: custom || FORM_LABELS[key], usda: null, ifct: null, estFrom: null,
@@ -386,6 +411,7 @@ for (const [ndb, d] of des) {
   if (fl) Object.assign(v, fl.v);
   const fsTags = fl ? { ...fl.s } : {};
   fillFromFoundation(ndb, v, fsTags);
+  fillFromExtra(ndb, v, fsTags);
   // fs: SR28 dışı kaynak etiketleri (f: USDA Flavonoid, y: USDA İzoflavon)
   ext.push({ n: ndb, g: d.grp, en: name, sci: d.sci || null, r: d.refuse, rd: d.refDesc || null, p: usdaPortions(ndb), v, ...(Object.keys(fsTags).length ? { fs: fsTags } : {}), ...(animalGroup ? { a: 1 } : {}) });
 }
@@ -394,7 +420,7 @@ ext.sort((a, b) => a.en.localeCompare(b.en));
 const outDir = path.join(root, 'src/data');
 fs.mkdirSync(outDir, { recursive: true });
 const meta = {
-  sources: 'USDA SR28 (2015) tam ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015)',
+  sources: 'USDA SR28 (2015) tam ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015); USDA SR Legacy (2018); USDA İyot 4.0 (2024); USDA Kolin 2 (2008); USDA Proantosiyanidin 2.1 (2018)',
   dataPolicy: 'USDA public domain / CC0; IFCT ve IFCT tabanlı tahminler dağıtıma dahil değil',
   unavailableForms: foods.flatMap(f => f.forms).filter(f => f.unavailable).length,
   curated: foods.length,

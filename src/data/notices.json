@@ -119,6 +119,34 @@
     "text": "Source: Bhagwat S, Haytowitz DB, Wasswa-Kintu SI, Holden JM. USDA Database for the Isoflavone Content of Selected Foods, Release 2.1 (2015). U.S. Department of Agriculture, Agricultural Research Service.\nhttps://www.ars.usda.gov/ARSUserFiles/80400535/Data/isoflav/Isoflav_R2-1.pdf"
   },
   {
+    "id": "usda-srlegacy",
+    "name": "USDA FoodData Central — SR Legacy (2018-04)",
+    "version": "SR Legacy CSV 2018-04",
+    "license": "CC0 1.0",
+    "text": "Source: U.S. Department of Agriculture, Agricultural Research Service. FoodData Central, SR Legacy (April 2018). Public domain (CC0 1.0). https://fdc.nal.usda.gov/api-guide/"
+  },
+  {
+    "id": "usda-iodine",
+    "name": "USDA, FDA and ODS-NIH Iodine Database, Release 4.0 (2024)",
+    "version": "Iodine R4.0",
+    "license": "Public domain (US Government work)",
+    "text": "Source: USDA, FDA and ODS-NIH Database for the Iodine Content of Common Foods, Release 4.0 (October 2024). U.S. Department of Agriculture, Agricultural Research Service.\nhttps://www.ars.usda.gov/ARSUserFiles/80400535/Data/Iodine/IODINE_DATABASE_RELEASE_4_DOCUMENTATION.pdf"
+  },
+  {
+    "id": "usda-choline",
+    "name": "USDA Choline Database, Release 2 (2008)",
+    "version": "Choln02",
+    "license": "Public domain (US Government work)",
+    "text": "Source: Patterson KY, Bhagwat SA, Williams JR, Howe JC, Holden JM. USDA Database for the Choline Content of Common Foods, Release 2 (2008). U.S. Department of Agriculture, Agricultural Research Service.\nhttps://www.ars.usda.gov/ARSUserFiles/80400535/Data/Choline/Choln02.pdf"
+  },
+  {
+    "id": "usda-pa",
+    "name": "USDA Proanthocyanidin Database, Release 2.1 (2018)",
+    "version": "PA02-1",
+    "license": "Public domain (US Government work)",
+    "text": "Source: Haytowitz DB, Wu X, Bhagwat S. USDA Database for the Proanthocyanidin Content of Selected Foods, Release 2.1 (2018). U.S. Department of Agriculture, Agricultural Research Service.\nhttps://www.ars.usda.gov/ARSUserFiles/80400535/Data/PA/PA02-1.pdf"
+  },
+  {
     "id": "efsa",
     "name": "EFSA DRV Finder",
     "version": "2026-11-09 snapshot",

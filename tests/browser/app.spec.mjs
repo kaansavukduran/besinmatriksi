@@ -1106,3 +1106,16 @@ test('İngilizce modda ekranda görünen İngilizce adla arama bulur (B127)', as
     await expect(page.locator(`#foodlist [data-id="${id}"]`), q).toHaveCount(1);
   }
 });
+
+test('USDA özel veri tabanları: kakaoda proantosiyanidin, yumurtada kolin türleri kaynak etiketiyle (B128)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('kakao');
+  await page.locator('#foodlist [data-id="kakao"]').click();
+  await expect(page.locator('#matrix')).toContainText('Proantosiyanidin polimerleri');
+  await expect(page.locator('#matrix .src-P').first()).toContainText('USDA Proantosiyanidin');
+  if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
+  await page.locator('#q').fill('yumurta');
+  await page.locator('#foodlist [data-id="yumurta"]').first().click();
+  await expect(page.locator('#matrix')).toContainText('Kolin – fosfatidilkolinden');
+  await expect(page.locator('#matrix .src-C').first()).toContainText('USDA Kolin');
+});

@@ -709,6 +709,10 @@ function renderAbout() {
       <li><b>${esc(SOURCES.N.short)}</b>: ${esc(L(SOURCES.N.long))}. ${L("Türk kahvesi, bitkisel sütlü latte ve cappuccino gibi SR28'de olmayan hazır içecekler.")}</li>
       <li><b>${esc(SOURCES.f.short)}</b>: ${esc(L(SOURCES.f.long))}. ${L("Flavonoller (kuersetin, kaempferol…), flavonlar, flavanonlar (hesperetin, naringenin), flavan-3-oller (kateşinler, EGCG) ve antosiyanidinler; aynı USDA kayıt numarasıyla eşleşen besinlerde.")}</li>
       <li><b>${esc(L(SOURCES.y.short))}</b>: ${esc(L(SOURCES.y.long))}. ${L("Daidzein, genistein, glisitein.")}</li>
+      <li><b>${esc(SOURCES.L.short)}</b>: ${esc(L(SOURCES.L.long))}. ${L("Bazı besinlerde yağ asitleri, şeker türleri ve tokoferoller.")}</li>
+      <li><b>${esc(L(SOURCES.I.short))}</b>: ${esc(L(SOURCES.I.long))}. ${L("İyot; analitik ortalamalar (0 = ölçüldü, saptanmadı).")}</li>
+      <li><b>${esc(L(SOURCES.C.short))}</b>: ${esc(L(SOURCES.C.long))}. ${L("Kolin türleri (serbest kolin, fosfatidilkolin…) ve betain; SR28 toplam kolini değiştirilmez.")}</li>
+      <li><b>${esc(SOURCES.P.short)}</b>: ${esc(L(SOURCES.P.long))}. ${L("Proantosiyanidin (yoğunlaşmış tanen) fraksiyonları; 0 = saptanmadı, bazı iz değerler tespit sınırından tahmin edilmiştir.")}</li>
       <li><b>IFCT 2017:</b> ${L("NIN ürün kullanım izni doğrulanmadığı için veri ve bu veriye dayanan tahminler bu sürümde dağıtılmıyor.")}</li>
     </ul>
     <h3>${L("Veri dürüstlüğü")}</h3>
