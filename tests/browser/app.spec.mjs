@@ -1189,3 +1189,10 @@ test('kısır ve ezogelin aranır, tarif hesabı etiketiyle açılır (B136)', a
   await page.locator('#q').fill('kısır');
   await expect(page.locator('#foodlist [data-id="kisir"]')).toHaveCount(1);
 });
+
+test('imam bayıldı aranır ve açılır (B137)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('imam bayıldı');
+  await page.locator('#foodlist [data-id="imam_bayildi"]').click();
+  await expect(page.locator('#matrix .src-r').first()).toContainText('Tahmin (tarif)');
+});

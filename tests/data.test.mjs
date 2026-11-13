@@ -273,3 +273,13 @@ test('vegan Türk tarifleri: kısır, piyaz, fava, ezogelin; bitkisel, tarif hes
   }
   assert.match(DB.foods.find((x) => x.id === 'fava').note, /Favizm/);
 });
+
+test('zeytinyağlılar ve bulgur pilavı: bitkisel tarif hesabı (B137)', () => {
+  for (const [id, lo, hi] of [['zeytinyagli_fasulye_domatesli', 60, 120], ['imam_bayildi', 90, 160], ['zeytinyagli_enginar', 90, 160], ['bulgur_pilavi', 90, 160]]) {
+    const f = DB.foods.find((x) => x.id === id); const fm = f.forms[0];
+    assert.equal(f.animal, false, id);
+    assert.ok(Object.values(fm.s).every((s) => s === 'r'), id);
+    assert.ok(fm.v.energy > lo && fm.v.energy < hi, `${id} ${fm.v.energy}`);
+  }
+  assert.match(DB.foods.find((x) => x.id === 'imam_bayildi').note, /yağ emişi/);
+});

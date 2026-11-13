@@ -711,3 +711,9 @@
 - Kaan: "var mı geliştirecek bir şey". Tarif hesabı (`r`), Hazır yemekler'de, bitkisel: kısır (pişirilmez; 153,6 kcal), piyaz (haşlanmış fasulye + çiğ sebze; 150,9), fava (pişmiş ağırlıkla; 189,8; favizm notu), ezogelin (pişmiş mercimek/bulgur + su; 68,2). Isıyla değişen bileşen tahmini yok: pişmiş malzemelerin USDA ölçümleri kullanıldı. Nar ekşisi, biber salçası, nane USDA'da yok → notta.
 - Kanıt: `npm run data` (623 besin); `npm test` 108/108; build + build:single; Playwright 154/154.
 - Sonraki: **B137** zeytinyağlılar (taze fasulye, imam bayıldı, enginar) ve bulgur pilavı ya da beta.29.
+
+## B137 · 2026-11-13 · Zeytinyağlılar ve bulgur pilavı; 1.1.2-beta.29
+- Tarif hesabı, pişmiş ağırlıkla, USDA haşlanmış/pişmiş ölçümleri: zeytinyağlı taze fasulye domatesli (84,4 kcal), imam bayıldı (120,8; geleneksel kızartmanın yağ emişi dahil değil, notta), zeytinyağlı enginar (120,5), bulgur pilavı domatesli (119,0). Hepsi bitkisel.
+- Kanıt: `npm run data` (627 besin); `npm test` 109/109; build + build:single; Playwright 156/156.
+- Sürüm 1.1.2-beta.29 (B136 + B137).
+- Sonraki: **B138** kalan temizlik (#17-20) ya da kullanıcı önceliği (2) sade UI/UX gözden geçirmesi.
