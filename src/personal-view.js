@@ -77,6 +77,7 @@ export function renderPersonal(state, draft, day, consumedOnly, settings, resolv
   return `<div class="personal"><header><h1>${t('dailyTitle')}</h1><p class="hint">${t('privacy')}</p></header>
     ${readError ? `<p role="alert">${t('corruptPersonal')} <button class="btn" data-action="personal-raw">${t('rawBackup')}</button></p>` : ''}
     ${settings.progressEnabled ? `<section class="card exploration-progress ${settings.progressAnimations ? 'progress-animated' : ''}" aria-label="${t('progressTitle')}"><h2>${t('progressTitle')}</h2><progress value="${done}" max="3" aria-label="${t('progressCount', { done })}"></progress><p>${t('progressCount', { done })}</p><p class="hint">${t('progressHint')}</p></section>` : ''}
+    ${profileForm(draft)}
     <section class="card"><h2>${t('date')}: ${esc(dateText(day))}</h2><label class="field"><span>${t('date')}</span><input id="personal-day" type="date" value="${day}"></label><div class="presets"><button class="pchip ${!consumedOnly ? 'on' : ''}" data-action="personal-mode" data-mode="plan">${t('plan')}</button><button class="pchip ${consumedOnly ? 'on' : ''}" data-action="personal-mode" data-mode="consumed">${t('consumed')}</button><button class="btn primary" data-action="tab" data-tab="kesfet">${t('browseFood')}</button></div>
     ${entries.length ? basicCard(result, settings, L("Günün temel besin değerleri"), { goals: true, pie: true, energyTarget: target, persona: { sex: ['female', 'male'].includes(state.profile?.sex) ? state.profile.sex : null } }) : ''}
     <p>${t('loggedEnergy')}: <b>${amount(result.v.energy, 'kcal')}</b> · ${t('coverage', { known: result.cov.energy || 0, total: result.n })}</p><p>${t('dailyEnergy')}: <b>${target == null ? t('unknown') : amount(target, 'kcal')}</b> · ${t('energyGap')}: <b>${difference == null ? t(target == null ? 'noReference' : 'partial') : (difference > 0 ? '+' : '') + amount(difference, 'kcal')}</b></p><p class="hint">${t(manual ? 'manualEnergyHint' : state.profile.energySource === 'device' ? 'deviceEstimateHint' : 'estimateHint')}</p>
@@ -87,7 +88,6 @@ export function renderPersonal(state, draft, day, consumedOnly, settings, resolv
     <details class="personal-sources" ${sourceOpen ? 'open' : ''}><summary>${t('source')}</summary><label class="field"><span>${t('nutrient')}</span><select id="personal-source-key">${NUTRIENTS.map(n => `<option value="${n.key}" ${n.key === sourceKey ? 'selected' : ''}>${esc(label(n))}</option>`).join('')}</select></label><div id="personal-sources-content">${renderDaySources(entries, resolve, sourceKey)}</div></details>
     ${renderNutrients(result, settings, target > 0 ? { value: target, kind: manual ? 'manual' : 'estimate' } : null)}
     </section>
-    ${profileForm(draft)}
     <section class="card"><div class="presets"><button class="btn" data-action="personal-export">${t('exportPersonal')}</button><button class="btn" data-action="open-file" data-id="personal-file">${t('importPersonal')}</button><input type="file" accept="application/json,.json" id="personal-file" hidden></div><p class="hint">${t('privacy')}</p></section>
   </div>`;
 }

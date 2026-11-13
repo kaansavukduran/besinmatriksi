@@ -598,3 +598,7 @@
 ## B118 · 2026-11-13 · beta.23 yayın kanıtı
 - v1.1.2-beta.23 pre-release 2026-11-13T00:18:58Z (commit 98986d6). Cihaz kurulumu NOT_RUN.
 - Sonraki: **B121** tarayıcı uyumu CI (Firefox/WebKit/iPhone/iPad) sonucu → düzeltmeler → beta.24 (B119+B120).
+
+## B122 · 2026-11-13 · Günlük: kişisel profil yeniden en üstte
+- Kaan (ekran görüntüsüyle): "Kişisel profil bulunduğu sekmede en üstte olmalı, en altta değil." B104'teki sıra tersine çevrildi: profil → gün kartı (tarih, temel değerler + pasta) → kayıtlar → 7 gün → matriks → yedek.
+- Kanıt: `npm test` 95/95; Playwright ilgili 18 test PASS (B122: profil kartı tarih seçicinin, o da temel kartın üstünde).

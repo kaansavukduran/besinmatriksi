@@ -926,14 +926,14 @@ test('pasta grafiği Keşfet, Tarif ve Kıyasla sekmelerinde (B102)', async ({ p
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
 });
 
-test('Günlük: gün kartı ve temel değerler profilin üstünde (B104)', async ({ page }) => {
+test('Günlük: kişisel profil en üstte, ardından gün kartı (B122; B104 tersine çevrildi)', async ({ page }) => {
   await page.goto('/');
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
   await page.locator('[data-action="ex-add-day"]').click();
   await tab(page, 'gunluk');
   const y = async (sel) => (await page.locator(sel).first().boundingBox()).y;
-  expect(await y('.personal .basic-card')).toBeLessThan(await y('.personal-profile'));
-  expect(await y('#personal-day')).toBeLessThan(await y('.personal-profile'));
+  expect(await y('.personal-profile')).toBeLessThan(await y('#personal-day'));
+  expect(await y('#personal-day')).toBeLessThan(await y('.personal .basic-card'));
 });
 
 test('Günlük: günün kalori pasta grafiği temel değerlerin altında (B105)', async ({ page }) => {
