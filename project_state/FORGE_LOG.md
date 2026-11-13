@@ -676,3 +676,10 @@
 - Sürüm 1.1.2-beta.26; release.yml publish+prerelease.
 - Sonraki: **B132** purin DB ad eşlemelerinin incelenmesi (name_matches_for_review.csv) ya da pide/gözleme/börek gibi diğer fırın tarifleri.
 - Yayın kanıtı: v1.1.2-beta.26 pre-release 2026-11-13T09:31:54Z (release.yml run 43400383119 success); ci.yml run 43400364758 (15df88e) success → çapraz tarayıcı RUNTIME_TESTED.
+
+## B132 · 2026-11-13 · USDA Pürin veri tabanı (ad eşlemesi incelendi)
+- 53 ad eşlemesi tek tek incelendi (data/raw/USDA_PURINE_R3_NAME_MATCHES.csv): 40 "ok" satır tam ve tekil SR28 ad eşleşmesi → alındı; yinelenen adlar, katalogda olmayan NDB'ler ve T1'de zaten eşleşenlerin T2 tekrarları alınmadı. Tablo 2 değerleri Japonya örnekleri (Kaneko 2014) → kaynak açıklamasında yazılı.
+- Yeni 5 bileşen Antinutrientler > "Pürinler": toplam (kaynağın "4 bazın toplamı" sütunu), adenin, guanin, hipoksantin, ksantin. Kaynak etiketi U "USDA Pürin", Hakkında + lisans bildirimi (23). Küratörlü katalogda 145 hücre.
+- Bulunan eski hata: B128'de tarif kaynak dökümündeki kayıt numarası listesine L/I/C/P eklenmemişti (dize boşluk farkıyla eşleşmemişti) → düzeltildi, test eklendi.
+- Kanıt: `npm run data`; `npm test` 104/104; build + build:single; Playwright 146/146 (B132 dahil).
+- Sonraki: **B133** diğer fırın tarifleri (pide, gözleme, ıspanaklı/peynirli börek) ya da denetimin kalan maddeleri (#6 macOS Alt kısayolları, #10 yedeğin iki kez içe aktarılması).

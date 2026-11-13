@@ -225,5 +225,43 @@
     },
     "file": "USDA_PA_R2.1.csv.gz",
     "tag": "P"
+  },
+  "purines": {
+    "name": "USDA and ODS-NIH Database for the Purine Content of Foods, Release 3 (September 2026)",
+    "url": "https://www.ars.usda.gov/ARSUserFiles/80400535/Data/Purine/PURINEDATABASEANDDATASOURCES2026.xlsx",
+    "doc_url": "https://www.ars.usda.gov/ARSUserFiles/80400535/Data/Purine/PURINEDATABASEDOCUMENTATION2026.pdf",
+    "sha256": "6b0275c17274bd04e19c5a0489963891a673214c550414792912911e923ed3d1",
+    "license": "US Government work (USDA ARS / NIH-ODS), public domain. Table 2 and part of Table 1 are values compiled from published journal articles (sources a-n in sheet Table7); numeric facts, but cite the original papers.",
+    "join": "FREE TEXT ONLY (no NDB). Exact, case-insensitive, whitespace-normalised match of the food description to SR28 FOOD_DES Long_Desc (trailing footnote digits/symbols stripped); kept only when the description occurs once in the sheet and exactly one SR28 record matches; Table 1 (USDA analytical / North America) preferred over Table 2 (Japan etc.) for the same NDB. NEEDS HUMAN REVIEW: see name_matches_for_review.csv (53 rows).",
+    "notes": "Sheets Table1 and Table2 only (mg/100 g wet weight edible portion per footnote *). Table3 (alcohol, per 100 mL) and Tables 4-6 (supplements per serving) not used. \"ND\" cells skipped (not written as 0). Total = source column \"Total of 4 Purine Bases\". Most curated matches come from Table 2 (Kaneko 2014, Japanese samples) matched to US SR descriptions by name only. Requires NEW keys purine_adenine, purine_guanine, purine_hypoxanthine, purine_xanthine, purines_total (mg).",
+    "checked_on": "2026-11-13",
+    "normalized_rows": 200,
+    "measured_gain_vs_foods_json_2026-11-13": {
+      "curated": {
+        "forms_matched": 27,
+        "cells_gained": 135,
+        "by_key": {
+          "purine_adenine": 27,
+          "purine_guanine": 27,
+          "purine_hypoxanthine": 27,
+          "purine_xanthine": 27,
+          "purines_total": 27
+        }
+      },
+      "ext": {
+        "forms_matched": 13,
+        "cells_gained": 65,
+        "by_key": {
+          "purine_adenine": 13,
+          "purine_guanine": 13,
+          "purine_hypoxanthine": 13,
+          "purine_xanthine": 13,
+          "purines_total": 13
+        }
+      }
+    },
+    "file": "USDA_PURINE_R3.csv.gz",
+    "tag": "U",
+    "review": "2026-11-13 B132: 53 ad eşlemesi tek tek incelendi (USDA_PURINE_R3_NAME_MATCHES.csv); \"ok\" olan 40 satır tam ve tekil SR28 ad eşleşmesi, alındı; yinelenen ve katalogda olmayanlar alınmadı. Tablo 2 değerleri Japonya örnekleri (Kaneko 2014 vb.), ABD kaydına adla eşlendi."
   }
 }

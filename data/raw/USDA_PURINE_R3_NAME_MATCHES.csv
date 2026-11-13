@@ -1,0 +1,54 @@
+table,source_description,sr28_ndb_exact_match,catalog,catalog_food,data_source,year,n,purines_total_mg100g,status
+T1,"Beef, ground, 80% lean meat / 20% fat, raw",23572,ext,"Beef, ground, 80% lean meat / 20% fat, raw",USDA,2024,6,160.9,ok
+T1,"Beef, ground, 93% lean meat / 7% fat, raw",23472,ext,"Beef, ground, 93% lean meat / 7% fat, raw",USDA,2024,8,188.89999999999998,ok
+T1,"Cheese, Provolone",01035,ext,"Cheese, provolone",USDA,2024,8,12.55,ok
+T1,"Blackberries, raw",09042,curated,bogurtlen,USDA,2025,3,3.7,ok
+T1,"Blueberries, raw",09050,curated,yabanmersini,USDA,2025,3,2.9,ok
+T1,"Lamb, ground, raw",17224,curated,kuzu_kiyma,USDA,2025,4,88.4,ok
+T1,"Pork, cured, bacon, unprepared",10123,ext,"Pork, cured, bacon, unprepared",USDA,2024,6,140.7,ok
+T1,"Chicken, ground, raw",05332,curated,tavuk_kiyma,g,1985,1,158.7,skip: name repeated in source sheet
+T1,"Chicken, ground, raw",05332,curated,tavuk_kiyma,USDA,2024,6,235.6,skip: name repeated in source sheet
+T1,"Poultry, mechanically deboned, from backs and necks with skin, raw",05301,ext,"Poultry, mechanically deboned, from backs and necks with skin, raw",i,1980,10,93.60000000000001,skip: name repeated in source sheet
+T1,"Poultry, mechanically deboned, from backs and necks with skin, raw",05301,ext,"Poultry, mechanically deboned, from backs and necks with skin, raw",g,1985,2,72.89999999999999,skip: name repeated in source sheet
+T1,"Poultry, mechanically deboned, from mature hens, raw",05303,ext,"Poultry, mechanically deboned, from mature hens, raw",g,1985,3,79.81,ok
+T1,"Turkey, mechanically deboned, from turkey frames, raw",05304,ext,"Turkey, mechanically deboned, from turkey frames, raw",g,1985,1,79.08,ok
+T1,"Frankfurter, beef, unheated",07022,,,USDA,2024,6,114.9,skip: NDB not in app catalog
+T1,"Frankfurter, beef, heated⧗",07945,,,USDA,2024,6,115.2,skip: NDB not in app catalog
+T1,"Salami, dry or hard, pork, beef",07072,,,USDA,2024,3,215.10000000000002,skip: NDB not in app catalog
+T1,"Asparagus, raw",11011,curated,kuskonmaz,USDA,2025,3,30.7,ok
+T1,"Brussels sprouts, raw",11098,curated,brokselahanasi,USDA,2024,8,38.8,ok
+T1,"Cauliflower, raw",11135,curated,karnabahar,USDA,2024,8,33,ok
+T1,"Collards, raw",11161,curated,collard,USDA,2024,8,26.099999999999998,ok
+T1,"Squash, winter, butternut, raw",11485,ext,"Squash, winter, butternut, raw",USDA,2024,8,9.2,ok
+T2,Rice crackers,25071,,,b,2014,1,14.2,skip: NDB not in app catalog
+T2,"Bananas, raw",09040,curated,muz,b,2014,1,3,ok
+T2,"Strawberries, raw",09316,curated,cilek,b,2014,1,2.2,ok
+T2,Miso,16112,curated,miso,b,2014,2,56.129999999999995,ok
+T2,"Soy protein concentrate, produced by acid wash",16420,ext,"Soy protein concentrate, produced by acid wash",f,2010,1,192.41,ok
+T2,Soy sauce made from soy and wheat (shoyu),16123,ext,Soy sauce made from soy and wheat (shoyu),b,2014,2,50.25,ok
+T2,"Tofu, dried-frozen (koyadofu)",16128,ext,"Tofu, dried-frozen (koyadofu)",b,2014,1,292.3,ok
+T2,"Sauce, barbecue",06150,,,b,2014,1,14.899999999999999,skip: NDB not in app catalog
+T2,Wasabi,27064,,,n,2020,1,0.7000000000000001,skip: NDB not in app catalog
+T2,Honey,19296,curated,bal,b,2014,1,0.7999999999999999,ok
+T2,"Asparagus, raw6",11011,curated,kuskonmaz,b,2014,2,32.85,skip: NDB already matched from T1
+T2,"Bamboo shoots, raw6",11026,ext,"Bamboo shoots, raw",b,2014,2,47.150000000000006,ok
+T2,"Broccoli, raw",11090,curated,brokoli,b,2014,1,70,ok
+T2,"Cabbage, chinese (pak-choi), raw",11116,curated,pak_choi,b,2014,1,7,ok
+T2,"Cabbage, raw",11109,curated,lahana,b,2014,1,3.2,ok
+T2,"Carrots, raw",11124,curated,havuc,b,2014,1,2.0999999999999996,ok
+T2,"Cauliflower, raw",11135,curated,karnabahar,b,2014,1,57.2,skip: NDB already matched from T1
+T2,"Eggplant, raw",11209,curated,patlican,b,2014,1,50.800000000000004,ok
+T2,"Garlic, raw",11215,curated,sarimsak,b,2014,1,17,ok
+T2,"Ginger root, raw",11216,curated,zencefil,b,2014,1,2.3,ok
+T2,"Mushrooms, enoki, raw",11950,curated,enoki,b,2014,1,49.3,ok
+T2,"Mushrooms, maitake, raw",11993,curated,maitake,b,2014,1,98.59,ok
+T2,"Mushrooms, shiitake, dried",11268,curated,shiitake,b,2014,2,311.55,ok
+T2,"Mushrooms, shiitake, raw",11238,curated,shiitake,b,2014,4,23.099999999999998,ok
+T2,"Okra, raw",11278,curated,bamya,b,2014,1,39.51,ok
+T2,"Onions, raw",11282,curated,sogan,b,2014,1,2.2,ok
+T2,"Parsley, fresh",11297,curated,maydanoz,b,2014,1,289.3,ok
+T2,"Pumpkin, raw",11422,curated,balkabagi,b,2014,1,56.699999999999996,ok
+T2,"Seaweed, wakame, raw",11669,curated,wakame,b,2014,1,262.3,ok
+T2,"Soybeans, green, raw",11450,ext,"Soybeans, green, raw",b,2014,1,48,ok
+T2,"Luncheon slices, meatless",43131,,,f,2010,2,97.8,skip: NDB not in app catalog
+T2,"Veggie burgers or soyburgers, unprepared",16147,ext,"Veggie burgers or soyburgers, unprepared",f,2010,7,65.49000000000001,ok

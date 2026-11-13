@@ -1146,3 +1146,13 @@ test('simit: pişme verimi satırı ve vitaminler veri yok (B131)', async ({ pag
   await expect(page.locator('#matrix')).toContainText('Pişme verimi');
   await expect(page.locator('#matrix')).toContainText('%82');
 });
+
+test('kurutulmuş shiitakede pürinler USDA Pürin etiketiyle (B132)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('shiitake');
+  await page.locator('#foodlist [data-id="shiitake"]').click();
+  const forms = page.locator('[data-action="form"]');
+  if (await forms.count()) await page.locator('[data-action="form"]', { hasText: /Kurutulmuş/ }).first().click();
+  await expect(page.locator('#matrix')).toContainText('Pürinler (4 bazın toplamı)');
+  await expect(page.locator('#matrix .src-U').first()).toContainText('USDA Pürin');
+});

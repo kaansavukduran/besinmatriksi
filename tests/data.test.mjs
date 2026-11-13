@@ -19,7 +19,7 @@ test('her formun doğrulanmış değerleri veya açık kaynak boşluğu var', ()
       else if (fm.computed) assert.ok(Object.values(fm.s).every((x) => x === 'd'), `${f.id}/${fm.key}`);
       else assert.ok(fm.v.energy != null && fm.v.protein != null, `${f.id}/${fm.key}`);
       for (const k of Object.keys(fm.v)) assert.ok(keys.has(k), `bilinmeyen anahtar ${k}`);
-      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P'].includes(s), `${f.id} ${k} ${s}`);
+      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P', 'U'].includes(s), `${f.id} ${k} ${s}`);
     }
   }
 });
@@ -94,7 +94,7 @@ test('dağıtımda IFCT değerleri, alternatifleri ve bunlardan tahminler bulunm
   for (const food of DB.foods) for (const f of food.forms) {
     assert.equal(f.ifct, null); assert.equal(f.estFrom, null);
     assert.deepEqual(f.alt || {}, {}); assert.deepEqual(f.sd || {}, {});
-    assert.ok(Object.values(f.s).every(s => ['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P'].includes(s)));
+    assert.ok(Object.values(f.s).every(s => ['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P', 'U'].includes(s)));
   }
   assert.equal(fs.existsSync(new URL('../data/raw/IFCT2017.csv', import.meta.url)), false);
 });
@@ -244,4 +244,13 @@ test('pişme verimli tarif: kütle dengesi 100 g, yalnız ısıya dayanıklı bi
   assert.equal(DB.foods.find((x) => x.id === 'lahmacun').animal, true);
   // Pişme verimi olmayan tariflerde (ayran) vitaminler hesaplanmaya devam eder
   assert.ok(DB.foods.find((x) => x.id === 'ayran').forms[0].v.riboflavin > 0);
+});
+
+test('Pürin DB (ad eşlemesi, incelenmiş): kurutulmuş shiitake, maydanoz; toplam = kaynak sütunu (B132)', () => {
+  const sh = DB.foods.find((x) => x.id === 'shiitake').forms.find((f) => f.key === 'kurutulmus');
+  assert.equal(sh.s.purines_total, 'U'); assert.equal(sh.v.purines_total, 311.55);
+  const pa = DB.foods.find((x) => x.id === 'maydanoz').forms[0];
+  assert.equal(pa.s.purine_guanine, 'U');
+  // Pişmiş shiitake ölçülmemiş → veri yok (0 değil)
+  assert.equal(DB.foods.find((x) => x.id === 'shiitake').forms.find((f) => f.key === 'pismis').v.purines_total, undefined);
 });

@@ -58,3 +58,13 @@ test('kaynak görünümü kullanıcı metnini kaçırır, tamamı eksik veriyi s
   assert.match(missing, /veri yok<\/b> · 0\/4/);
   assert.ok(!missing.includes('0 mg</b>'));
 });
+
+test('USDA özel veri tabanı katkıları kaynak adı ve kayıt numarasıyla gösterilir (B132)', async () => {
+  const { renderRecipeSourceRows } = await import('../src/recipe-sources.js');
+  const db = { e: { name: 'Yumurta', formLabel: 'Çiğ', v: { choline_ptdcho: 240, purines_total: 5 }, s: { choline_ptdcho: 'C', purines_total: 'U' }, usda: { ndb: '01123', desc: 'Egg, whole, raw' } } };
+  const r = { items: [{ ref: { id: 'e' }, g: 50 }] };
+  for (const [k, label] of [['choline_ptdcho', 'USDA Kolin'], ['purines_total', 'USDA Pürin']]) {
+    const html = renderRecipeSourceRows(r, (ref) => db[ref.id], k, 1);
+    assert.match(html, new RegExp(label)); assert.match(html, /NDB 01123/);
+  }
+});

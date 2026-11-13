@@ -102,4 +102,4 @@ hükümet eseri (17 U.S.C. 105), kamu malı. İndirme URL'leri, özgün dosya SH
 eşleme kuralları ve ayıklanan (tahmini/geçici) satırlar `data/raw/USDA_SPECIAL_DB_SOURCES.json`
 içindedir. Yalnız analitik satırlar alınır; değerler yalnız boş hücreleri doldurur,
 SR28 ölçümü asla değiştirilmez. Atıf metinleri THIRD_PARTY_NOTICES'e gömülüdür.
-Purin veri tabanı (2026) ad eşlemesiyle eşleştiği için insan incelemesine kadar alınmadı.
+Purin veri tabanı Release 3 (2026, kamu malı; Tablo 2 yayımlanmış çalışmalardan derlenmiştir) B132'de alındı: 53 ad eşlemesi tek tek incelendi (`data/raw/USDA_PURINE_R3_NAME_MATCHES.csv`), yalnız tam ve tekil eşleşen 40 kayıt kullanıldı.

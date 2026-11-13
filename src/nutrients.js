@@ -275,6 +275,11 @@ const DEFINITIONS = [
   N('oxalate', 'Oksalat (toplam)', 'mg', 'anti', null, null, 'oxalt'),
   N('oxalate_sol', 'Oksalat (çözünür)', 'mg', 'anti', null, null, 'oxals'),
   N('oxalate_insol', 'Oksalat (çözünmez)', 'mg', 'anti', null, null, 'oxali'),
+  N('purines_total', 'Pürinler (4 bazın toplamı)', 'mg', 'anti', 'Pürinler', null, null),
+  N('purine_adenine', 'Adenin', 'mg', 'anti', 'Pürinler', null, null),
+  N('purine_guanine', 'Guanin', 'mg', 'anti', 'Pürinler', null, null),
+  N('purine_hypoxanthine', 'Hipoksantin', 'mg', 'anti', 'Pürinler', null, null),
+  N('purine_xanthine', 'Ksantin', 'mg', 'anti', 'Pürinler', null, null),
 
   // --- Toksik mineraller
   N('al', 'Alüminyum (Al)', 'mg', 'toksik', null, null, 'al'),
@@ -318,6 +323,7 @@ export const SOURCES = {
   I: { short: 'USDA İyot', long: 'USDA, FDA ve NIH-ODS, Database for the Iodine Content of Common Foods, Release 4.0 (2024, kamu malı)' },
   C: { short: 'USDA Kolin', long: 'USDA ARS, Database for the Choline Content of Common Foods, Release 2 (2008, kamu malı)' },
   P: { short: 'USDA Proantosiyanidin', long: 'USDA ARS, Database for the Proanthocyanidin Content of Selected Foods, Release 2.1 (2018, kamu malı)' },
+  U: { short: 'USDA Pürin', long: 'USDA ve NIH-ODS, Database for the Purine Content of Foods, Release 3 (2026, kamu malı); adla eşlendi, bir kısmı Japonya örnekleri' },
   r: { short: 'Tahmin (tarif)', long: 'USDA malzemelerinden tarif oranıyla hesaplanan tahmin; ölçüm değildir' },
   e: { short: 'Tahmin', long: 'IFCT 2017 profil oranı × USDA formunun toplam protein/yağ değeri (aynı besinin çiğ/kuru ölçümünden ölçeklenmiş tahmin)' },
 };

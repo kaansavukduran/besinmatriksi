@@ -147,6 +147,13 @@
     "text": "Source: Haytowitz DB, Wu X, Bhagwat S. USDA Database for the Proanthocyanidin Content of Selected Foods, Release 2.1 (2018). U.S. Department of Agriculture, Agricultural Research Service.\nhttps://www.ars.usda.gov/ARSUserFiles/80400535/Data/PA/PA02-1.pdf"
   },
   {
+    "id": "usda-purine",
+    "name": "USDA and ODS-NIH Purine Database, Release 3 (2026)",
+    "version": "Purine R3 (Sept 2026)",
+    "license": "Public domain (US Government work); compiled values cite original papers",
+    "text": "Source: USDA and ODS-NIH Database for the Purine Content of Foods, Release 3 (September 2026). U.S. Department of Agriculture, Agricultural Research Service. Table 2 values are compiled from published studies (e.g. Kaneko K, et al. Biol Pharm Bull. 2014;37(5):709-721).\nhttps://www.ars.usda.gov/ARSUserFiles/80400535/Data/Purine/PURINEDATABASEDOCUMENTATION2026.pdf"
+  },
+  {
     "id": "efsa",
     "name": "EFSA DRV Finder",
     "version": "2026-11-09 snapshot",

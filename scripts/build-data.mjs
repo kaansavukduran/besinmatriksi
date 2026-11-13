@@ -131,11 +131,11 @@ function fnddsForm(code) {
 
 // ---------- USDA özel veri tabanları (kamu malı / CC0): SR Legacy 2018, İyot 4.0, Kolin 2, Proantosiyanidin 2.1 ----------
 // Kaynak/lisans: data/raw/USDA_SPECIAL_DB_SOURCES.json. Yalnız boş hücreleri doldurur (SR28 > Flavonoid/İzoflavon > FDC > bunlar).
-// Sıra önceliktir: L (SR Legacy, aynı kaydın 2016-18 analitik verisi) > I > C > P. Satırlar analitik ölçümdür; 0 = ölçüldü, saptanmadı.
+// Sıra önceliktir: L (SR Legacy, aynı kaydın 2016-18 analitik verisi) > I > C > P > U (Pürin; ad eşlemesi, incelendi). Satırlar analitik ölçümdür; 0 = ölçüldü, saptanmadı.
 const INERT_NOT_ZERO = new Set(['iodine']);
 // Fırınlamada korunduğu kabul edilen bileşenler (kütle korunumu; Maillard/oksidasyonla değişenler hariç)
 const HEAT_STABLE = new Set(['energy', 'energy_kj', 'ash', 'protein', 'fat', 'sfa', 'mufa', 'pufa', 'carb', 'fiber', 'na', 'salt', 'k', 'ca', 'p', 'mg', 'fe', 'zn', 'cu', 'mn', 'se']);
-const EXTRA_DBS = [['USDA_SR_LEGACY_2018_FILL.csv.gz', 'L'], ['USDA_IODINE_R4.csv.gz', 'I'], ['USDA_CHOLINE_R2.csv.gz', 'C'], ['USDA_PA_R2.1.csv.gz', 'P']];
+const EXTRA_DBS = [['USDA_SR_LEGACY_2018_FILL.csv.gz', 'L'], ['USDA_IODINE_R4.csv.gz', 'I'], ['USDA_CHOLINE_R2.csv.gz', 'C'], ['USDA_PA_R2.1.csv.gz', 'P'], ['USDA_PURINE_R3.csv.gz', 'U']];
 const extraByNdb = new Map(); // ndb ('F'+6 hane = yalnız Foundation) -> [[key, value, tag]]
 {
   const unitOf = new Map(NUTRIENTS.map((n) => [n.key, n.unit]));
@@ -430,7 +430,7 @@ ext.sort((a, b) => a.en.localeCompare(b.en));
 const outDir = path.join(root, 'src/data');
 fs.mkdirSync(outDir, { recursive: true });
 const meta = {
-  sources: 'USDA SR28 (2015) tam ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015); USDA SR Legacy (2018); USDA İyot 4.0 (2024); USDA Kolin 2 (2008); USDA Proantosiyanidin 2.1 (2018)',
+  sources: 'USDA SR28 (2015) tam ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015); USDA SR Legacy (2018); USDA İyot 4.0 (2024); USDA Kolin 2 (2008); USDA Proantosiyanidin 2.1 (2018); USDA Pürin 3 (2026)',
   dataPolicy: 'USDA public domain / CC0; IFCT ve IFCT tabanlı tahminler dağıtıma dahil değil',
   unavailableForms: foods.flatMap(f => f.forms).filter(f => f.unavailable).length,
   curated: foods.length,

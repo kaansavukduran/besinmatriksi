@@ -991,6 +991,15 @@ https://www.ars.usda.gov/ARSUserFiles/80400535/Data/PA/PA02-1.pdf
 
 ========================================
 
+USDA and ODS-NIH Purine Database, Release 3 (2026)
+Version: Purine R3 (Sept 2026)
+License: Public domain (US Government work); compiled values cite original papers
+
+Source: USDA and ODS-NIH Database for the Purine Content of Foods, Release 3 (September 2026). U.S. Department of Agriculture, Agricultural Research Service. Table 2 values are compiled from published studies (e.g. Kaneko K, et al. Biol Pharm Bull. 2014;37(5):709-721).
+https://www.ars.usda.gov/ARSUserFiles/80400535/Data/Purine/PURINEDATABASEDOCUMENTATION2026.pdf
+
+========================================
+
 EFSA DRV Finder
 Version: 2026-11-09 snapshot
 License: Re-use with EFSA source acknowledgement

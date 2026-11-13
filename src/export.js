@@ -6,7 +6,7 @@ import { referenceLabel, percentColumnLabel } from './references.js';
 import { L } from './i18n.js';
 import { nutrientLabel } from './i18n-nutrients.js';
 
-export const SRC = { u: 'USDA SR28', N: 'USDA FNDDS', F: 'USDA FDC', f: 'USDA Flavonoid', y: 'USDA İzoflavon', L: 'USDA SR Legacy', I: 'USDA İyot', C: 'USDA Kolin', P: 'USDA Proantosiyanidin', r: 'Tahmin (tarif)', i: 'IFCT 2017', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
+export const SRC = { u: 'USDA SR28', N: 'USDA FNDDS', F: 'USDA FDC', f: 'USDA Flavonoid', y: 'USDA İzoflavon', L: 'USDA SR Legacy', I: 'USDA İyot', C: 'USDA Kolin', P: 'USDA Proantosiyanidin', U: 'USDA Pürin', r: 'Tahmin (tarif)', i: 'IFCT 2017', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
 // CSV formül enjeksiyonunu önle (=, +, -, @ ile başlayan metin hücreleri)
 const text = (s) => (/^[=+\-@\t\r]/.test(String(s)) ? "'" + s : s);
 const num = (x) => (x == null ? '' : String(Number(x.toPrecision(6))).replace('.', ','));
