@@ -667,3 +667,11 @@
 - Simit ve lahmacun bilinçli olarak eklenmedi: fırınlama su kaybı ve ısıyla değişen vitaminler tarif oranıyla dürüst hesaplanamaz (CLAUDE.md: ısıyla değişen bileşenler tahmin edilmez). Pişme verimi + yalnız ısıya dayanıklı bileşenler modeli ayrı Forge ister.
 - Kanıt: `npm run data` (615 besin); `npm test` 101/101; build + build:single; Playwright 142/142 (B130 dahil).
 - Sonraki: **B131** fırın ürünleri için pişme verimi modeli (yalnız ısıya dayanıklı bileşenler: makrolar, lif, mineraller) → simit, lahmacun, pide; ya da purin DB ad eşleme incelemesi.
+
+## B131 · 2026-11-13 · Pişme verimi modeli; simit ve lahmacun; 1.1.2-beta.26
+- `recipeYield` (pişmiş/çiğ ağırlık %): kayıp yalnız su; yalnız HEAT_STABLE bileşenler (enerji, kül, protein, yağ + SFA/MUFA/PUFA, karbonhidrat, lif, Na/K/Ca/P/Mg/Fe/Zn/Cu/Mn/Se) yazılır; vitaminler, şeker türleri, amino asitler, yağ asidi ayrıntısı, iyot "veri yok". Kimlik kartında "Pişme verimi" satırı.
+- Simit (%82 verim): 324,2 kcal, su 24,4 g; lahmacun (%75, hayvansal): 258,6 kcal. Pekmez yerine USDA melası (notta).
+- İlk hata: su formülünde birim karışıklığı (g/100 g × g ile g) → su + makrolar 100 g'ı aşıyordu (lahmacun su 76,9 g). Düzeltildi; kütle dengesi testi eklendi (her iki besinde 100,0 g).
+- Kanıt: `npm run data` (617 besin); `npm test` 102/102; build + build:single; Playwright 144/144.
+- Sürüm 1.1.2-beta.26; release.yml publish+prerelease.
+- Sonraki: **B132** purin DB ad eşlemelerinin incelenmesi (name_matches_for_review.csv) ya da pide/gözleme/börek gibi diğer fırın tarifleri.

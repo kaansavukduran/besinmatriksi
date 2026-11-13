@@ -133,6 +133,8 @@ function fnddsForm(code) {
 // Kaynak/lisans: data/raw/USDA_SPECIAL_DB_SOURCES.json. Yalnız boş hücreleri doldurur (SR28 > Flavonoid/İzoflavon > FDC > bunlar).
 // Sıra önceliktir: L (SR Legacy, aynı kaydın 2016-18 analitik verisi) > I > C > P. Satırlar analitik ölçümdür; 0 = ölçüldü, saptanmadı.
 const INERT_NOT_ZERO = new Set(['iodine']);
+// Fırınlamada korunduğu kabul edilen bileşenler (kütle korunumu; Maillard/oksidasyonla değişenler hariç)
+const HEAT_STABLE = new Set(['energy', 'energy_kj', 'ash', 'protein', 'fat', 'sfa', 'mufa', 'pufa', 'carb', 'fiber', 'na', 'salt', 'k', 'ca', 'p', 'mg', 'fe', 'zn', 'cu', 'mn', 'se']);
 const EXTRA_DBS = [['USDA_SR_LEGACY_2018_FILL.csv.gz', 'L'], ['USDA_IODINE_R4.csv.gz', 'I'], ['USDA_CHOLINE_R2.csv.gz', 'C'], ['USDA_PA_R2.1.csv.gz', 'P']];
 const extraByNdb = new Map(); // ndb ('F'+6 hane = yalnız Foundation) -> [[key, value, tag]]
 {
@@ -332,13 +334,21 @@ for (const food of FOODS) {
       });
       const total = parts.reduce((a, x) => a + x.g, 0);
       const v = {}, s = {};
+      // Pişme verimi (ör. fırın): kayıp yalnız su sayılır; yalnız ısıya dayanıklı bileşenler yazılır (vitaminler, şeker türleri,
+      // amino asitler, yağ asidi ayrıntısı ısıyla değişir → "veri yok"). yld = pişmiş ağırlık / çiğ toplam.
+      const yld = food.recipeYield ? food.recipeYield / 100 : 1;
+      if (!(yld > 0.3 && yld <= 1)) throw new Error('Geçersiz pişme verimi: ' + food.id);
       for (const n of NUTRIENTS) {
+        if (yld < 1 && !HEAT_STABLE.has(n.key) && n.key !== 'water') continue;
         // İyot organik değil: sofra tuzu iyotlu olabilir, inert malzemede ölçülmemiş iyot 0 sayılmaz
         if (!parts.every((x) => x.v[n.key] != null || (x.inert && !INERT_NOT_ZERO.has(n.key))) || !parts.some((x) => x.v[n.key] != null)) continue;
-        v[n.key] = round(parts.reduce((a, x) => a + (x.v[n.key] ?? 0) * x.g, 0) / total); s[n.key] = 'r';
+        const sum = parts.reduce((a, x) => a + (x.v[n.key] ?? 0) * x.g, 0);
+        const val = n.key === 'water' ? (sum - 100 * total * (1 - yld)) / (total * yld) : sum / (total * yld);
+        if (val < 0) throw new Error('Pişme verimi suyu aşıyor: ' + food.id);
+        v[n.key] = round(val); s[n.key] = 'r';
       }
       return { key, label: custom || FORM_LABELS[key], usda: null, ifct: null, estFrom: null,
-        recipeOf: parts.map((x) => ({ ndb: x.code, desc: x.desc, pct: Math.round((x.g / total) * 1000) / 10 })),
+        recipeOf: parts.map((x) => ({ ndb: x.code, desc: x.desc, pct: Math.round((x.g / total) * 1000) / 10 })), ...(yld < 1 ? { recipeYield: food.recipeYield } : {}),
         portions: key === 'icecek' ? [{ g: 200, label: '1 su bardağı (≈200 g)', en: '1 glass (≈200 g)' }] : [], v, s };
     }
     if (!ndb && food.fixed) {

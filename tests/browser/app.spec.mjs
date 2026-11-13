@@ -1137,3 +1137,12 @@ test('mercimek köftesi tarif hesabı etiketiyle açılır (B130)', async ({ pag
   await expect(page.locator('#matrix .src-r').first()).toContainText('Tahmin (tarif)');
   await expect(page.locator('#matrix .idcard')).toContainText('Bulgur, cooked');
 });
+
+test('simit: pişme verimi satırı ve vitaminler veri yok (B131)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('simit');
+  await page.locator('#foodlist [data-id="simit"]').click();
+  await expect(page.locator('#matrix .src-r').first()).toContainText('Tahmin (tarif)');
+  await expect(page.locator('#matrix')).toContainText('Pişme verimi');
+  await expect(page.locator('#matrix')).toContainText('%82');
+});

@@ -231,3 +231,17 @@ test('Türk tarif hesapları: mercimek köftesi ve etsiz çiğ köfte, "Tahmin (
     assert.match(f.note, /Ölçüm değil/);
   }
 });
+
+test('pişme verimli tarif: kütle dengesi 100 g, yalnız ısıya dayanıklı bileşenler (B131)', () => {
+  for (const id of ['simit', 'lahmacun']) {
+    const f = DB.foods.find((x) => x.id === id); const fm = f.forms[0]; const v = fm.v;
+    assert.ok(fm.recipeYield > 0 && fm.recipeYield < 100, id);
+    const sum = v.water + v.protein + v.fat + v.carb + v.ash;
+    assert.ok(Math.abs(sum - 100) < 0.5, `${id} kütle ${sum}`);
+    for (const k of ['vitc', 'thiamin', 'folate', 'sugars', 'lys', 'la']) assert.equal(v[k], undefined, `${id} ${k}`);
+    assert.ok(v.fe > 0 && v.fiber > 0, id);
+  }
+  assert.equal(DB.foods.find((x) => x.id === 'lahmacun').animal, true);
+  // Pişme verimi olmayan tariflerde (ayran) vitaminler hesaplanmaya devam eder
+  assert.ok(DB.foods.find((x) => x.id === 'ayran').forms[0].v.riboflavin > 0);
+});

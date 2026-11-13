@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 25 · 613 besin, iyot, kolin ve proantosiyanidinler
+# 🫐 Besin Matriksi 1.1.2 Beta 26 · Simit, lahmacun, mercimek köftesi, çiğ köfte
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -21,6 +21,8 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
+- **Türk mutfağı (tarif hesabı):** Simit, lahmacun, mercimek köftesi ve etsiz çiğ köfte; USDA'da kayıtları olmadığı için malzeme oranlarından hesaplanır, “Tahmin (tarif)” etiketli, ikameler notta yazılı.
+- **Pişme verimi:** Fırın ürünlerinde kaybolan ağırlık su sayılır; yalnız ısıya dayanıklı değerler (kalori, makrolar, lif, mineraller) hesaplanır, vitaminler “veri yok” kalır.
 - **613 besin (+150):** Mercimek çorbası, şehriyeli/mercimekli pilav, menemen, musakka, sütlaç, lokma, tahin helvası; badem, kaju ve ayçiçeği ezmesi; yulaf sütü, kombucha, soya/badem/hindistancevizi yoğurdu, TVP; tam buğday makarna, yulaf lapası; kurutulmuş ve konserve domates, çarliston biber; pişmiş yumurta, kuzu pirzola, hindi göğsü, konserve ton ve füme somon… (USDA SR28/FNDDS/FDC; hayvansallar etiketli ve gizlenebilir).
 - **Daha az “veri yok”:** USDA İyot 4.0, Kolin 2, Proantosiyanidin 2.1 ve SR Legacy veri tabanlarıyla yaklaşık 1.370 boş hücre ölçümle doldu. Yeni: kolin türleri (fosfatidilkolin…) ve proantosiyanidin fraksiyonları (kakao, tarçın, fındık…). Ölçülmeyen yine “veri yok”, 0 değil.
 - **Hata düzeltmeleri:** Kıyasla'da süzülmüş listede ✕ artık doğru besini siler; İngilizce modda İngilizce adla arama; Günlük tarihi gece yarısı kendiliğinden bugüne geçer; CSV/Excel dışa aktarmada formül güvenliği; daha akıcı yenileme.

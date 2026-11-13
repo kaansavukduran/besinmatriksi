@@ -224,6 +224,7 @@ function identityCard(item, r, cfg, ctx) {
       rows.push(['USDA kaydı', `${esc(item.usda.desc)} <span class="muted">· ${item.usda.ndb ? 'NDB ' + esc(item.usda.ndb) : item.usda.fndds ? 'FNDDS ' + esc(item.usda.fndds) : 'FDC ' + esc(item.usda.fdc)}</span>`]);
     }
     if (item.recipeOf) rows.push(['Tahmin (tarif)', L("Ölçüm değil; USDA malzemelerinden şu oranla hesaplandı:") + ' ' + item.recipeOf.map((x) => `${pctText(fmtNum(x.pct))} ${esc(x.desc)}`).join(' + ')]);
+    if (item.recipeYield) rows.push([L('Pişme verimi'), L("Pişmiş ağırlık / çiğ malzeme ağırlığı: %{n}; kayıp su sayıldı. Vitaminler, şeker türleri, amino asitler ve yağ asidi ayrıntısı ısıyla değiştiği için hesaplanmadı (veri yok).", { n: fmtNum(item.recipeYield) })]);
     if (item.ifct) rows.push(['IFCT kaydı', `${esc(item.ifct.name)} <span class="muted">· ${esc(item.ifct.code)}${item.ifct.regions ? ' · ' + L("{n} bölge örneği", { n: item.ifct.regions }) : ''}</span>`]);
     if (item.estFrom) rows.push(['Tahmin', L("Amino asit ve yağ asidi profilleri aynı besinin çiğ/kuru IFCT ölçümünden bu formun protein/yağ değerine oranlandı (“Tahmin” etiketi).")]);
     rows.push(['Değişkenler', L("Çeşit, olgunluk, mevsim, toprak, saklama ve laboratuvar yöntemi değerleri değiştirir; iki kaynak arasındaki fark doğal aralığı gösterir.")]);
