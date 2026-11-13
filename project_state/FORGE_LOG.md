@@ -690,3 +690,4 @@
 - Kanıt: `npm test` 106/106 (B133 birim: 3 aşamalı içe aktarma, shortcutKey); build + build:single; Playwright 148/148 (B133: e.key "£" + Digit3 → Kıyasla).
 - Sürüm 1.1.2-beta.27 (B132 Pürin + B133).
 - Sonraki: **B134** denetimin kalan performans maddeleri (#11 telefonda gizli periyodik tabloyu kurmamak, #13 NUTRIENT_BY_KEY) ya da pide/gözleme/börek tarifleri.
+- Yayın kanıtı: v1.1.2-beta.27 pre-release 2026-11-13T11:32:50Z (release.yml run 43416455204 success); ci.yml run 43416442462 (73c47e2) success → çapraz tarayıcı RUNTIME_TESTED.
