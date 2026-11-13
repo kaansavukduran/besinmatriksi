@@ -594,3 +594,7 @@
 - "Nişasta ve lif" → "🌾 Lifler (diyet lifi ve türleri)"; nişasta karbonhidrat bölümüne alındı. Lif türleri alt başlığı: beta-glukan, dirençli nişasta, HMWDF, LMWDF + yeni tanımlar pektin, inülin/fruktanlar, arabinoksilan, selüloz, hemiselüloz, lignin (açık kaynaklarda besin bazında ölçüm yok → veri yok; uydurma yok). Lifler kutusu matrikste temel kart ve Hesaplanan göstergelerin hemen altında; Tarif, Günlük ve Kıyasla'da (bölüm çipi "Lifler") aynı.
 - Tarif malzeme kartı ve Kıyasla kartında ↑/↓ ve ✕ kartın sağ üst köşesine sabit (mutlak konum); ad uzasa da yer değiştirmez.
 - Kanıt: `npm test` 95/95; Playwright 128/128 (B120: matriks sırası temel→hesap→lif; ✕ her kartta aynı konum, sağ üstte).
+
+## B118 · 2026-11-13 · beta.23 yayın kanıtı
+- v1.1.2-beta.23 pre-release 2026-11-13T00:18:58Z (commit 98986d6). Cihaz kurulumu NOT_RUN.
+- Sonraki: **B121** tarayıcı uyumu CI (Firefox/WebKit/iPhone/iPad) sonucu → düzeltmeler → beta.24 (B119+B120).
