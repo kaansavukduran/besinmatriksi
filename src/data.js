@@ -13,7 +13,7 @@ export const META = DB.meta;
 export const CATEGORIES = DB.categories.map(([id, name, icon]) => ({ id, name, icon }));
 export const FOODS = DB.foods;
 const byId = new Map(FOODS.map((f) => [f.id, f]));
-for (const f of FOODS) f._k = searchKey(f);
+for (const f of FOODS) f._k = searchKey(f) + ' ' + norm(EN_FOODS[f.id] || ''); // ekranda görünen İngilizce adla da bulunur
 
 let EXT = null; // geniş katalog tembel yüklenir
 const extByNdb = new Map();

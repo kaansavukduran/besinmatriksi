@@ -66,7 +66,8 @@ export const AA_REF = [
 export function derive(r) {
   // Kısmi tarif toplamları oranlara ve skorlara tam ölçüm gibi giremez.
   const v = Object.fromEntries(Object.entries(r.v).filter(([k]) => !r.cov || r.n <= 1 || r.cov[k] === r.n || k === '_aaProtein'));
-  if (r.cov && r.n > 1 && AA_KEYS.some(k => r.cov[k] !== r.n)) delete v._aaProtein;
+  // Skor yalnız AA_REF amino asitlerini kullanır; esansiyel olmayan bir amino asidin eksikliği skoru gizlemez
+  if (r.cov && r.n > 1 && AA_REF.flatMap((x) => x[2]).some(k => r.cov[k] !== r.n)) delete v._aaProtein;
   const out = {};
   // Enerji dağılımı (Atwater genel faktörleri, yaklaşık)
   const p = v.protein, f = v.fat, fib = v.fiber;

@@ -62,3 +62,14 @@ test('kalori kutusunun üstünde makro pasta grafiği; eksik makroda çizilmez (
   const m = renderMatrix(r, {}, { item: { name: 'Ürün', formLabel: 'Çiğ', custom: true, allergens: [] } });
   assert.ok(m.indexOf('macro-pie') > 0 && m.indexOf('macro-pie') < m.indexOf('basic-tiles'), 'pasta temel değer kartında, karoların solunda');
 });
+test('denetim düzeltmeleri: CSV ve döküm her kaynak etiketini taşır; tahmin "Tahmin (tarif)"; CSV formül enjeksiyonu yok (B127)', async () => {
+  const fs = await import('node:fs');
+  const { SRC } = await import('../src/export.js');
+  const { LABELS } = await import('../src/recipe-sources.js');
+  const db = JSON.parse(fs.readFileSync(new URL('../src/data/foods.json', import.meta.url)));
+  const tags = new Set(db.foods.flatMap((f) => f.forms.flatMap((fm) => Object.values(fm.s))));
+  for (const t of tags) { assert.ok(SRC[t], 'CSV: ' + t); assert.ok(LABELS[t], 'döküm: ' + t); }
+  const csv = matrixCSV({ v: { protein: 2 }, s: { protein: 'r' }, n: 1 }, '=HYPERLINK("x")');
+  assert.match(csv, /Tahmin \(tarif\)/);
+  assert.ok(csv.startsWith("﻿'=HYPERLINK") || csv.startsWith('﻿"\'=HYPERLINK'), csv.slice(0, 30));
+});

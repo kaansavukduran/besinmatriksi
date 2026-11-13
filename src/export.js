@@ -6,14 +6,16 @@ import { referenceLabel, percentColumnLabel } from './references.js';
 import { L } from './i18n.js';
 import { nutrientLabel } from './i18n-nutrients.js';
 
-const SRC = { u: 'USDA SR28', i: 'IFCT 2017', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
+export const SRC = { u: 'USDA SR28', N: 'USDA FNDDS', F: 'USDA FDC', f: 'USDA Flavonoid', y: 'USDA İzoflavon', r: 'Tahmin (tarif)', i: 'IFCT 2017', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
+// CSV formül enjeksiyonunu önle (=, +, -, @ ile başlayan metin hücreleri)
+const text = (s) => (/^[=+\-@\t\r]/.test(String(s)) ? "'" + s : s);
 const num = (x) => (x == null ? '' : String(Number(x.toPrecision(6))).replace('.', ','));
 const cell = (s) => (/[;"\n]/.test(s) ? `"${String(s).replace(/"/g, '""')}"` : String(s));
 
 export function matrixCSV(r, title, settings = {}) {
   settings = normalizeSettings(settings);
   const efsa = settings.referenceMode === 'efsa';
-  const rows = [[title], [], [L('Bölüm'), L('Bileşen'), L('Miktar'), L('Birim'), percentColumnLabel(settings), L('Kaynak'), L('Kapsam'), ...(efsa ? [L('Referans türü'), L('Referans miktarı'), L('Referans birimi'), L('Referans yılı'), L('Referans kaynak/grup')] : [])]];
+  const rows = [[text(title)], [], [L('Bölüm'), L('Bileşen'), L('Miktar'), L('Birim'), percentColumnLabel(settings), L('Kaynak'), L('Kapsam'), ...(efsa ? [L('Referans türü'), L('Referans miktarı'), L('Referans birimi'), L('Referans yılı'), L('Referans kaynak/grup')] : [])]];
   for (const sec of SECTIONS) {
     for (const n of NUTRIENTS.filter((x) => x.section === sec.id)) {
       const x = r.v[n.key];

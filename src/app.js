@@ -57,7 +57,7 @@ const S = {
   customEdit: null, // { id?, name, liquid, portion, v: {} }
   themeEditor: null,
   efsaTableOpen: false,
-  personal: null, personalDraft: null, personalReadError: false, personalDay: localDay(), consumedOnly: false, personalSource: 'energy', personalSourceOpen: false, personalUndo: null,
+  personal: null, personalDraft: null, personalReadError: false, personalDay: localDay(), personalDayAuto: true, consumedOnly: false, personalSource: 'energy', personalSourceOpen: false, personalUndo: null,
 };
 const personalLoaded = loadPersonal();
 S.personal = personalLoaded.state; S.personalDraft = structuredClone(S.personal.profile); S.personalReadError = personalLoaded.error;
@@ -511,8 +511,8 @@ function renderRecipeGaps(r) {
 
 // ---------------------------------------------------------------- KARŞILAŞTIR
 function renderCompare() {
-  const items = S.compare.map((c) => ({ c, item: resolve(c.ref) })).filter((x) => x.item);
-  const cols = items.map(({ c, item }, i) => `<div class="cmp-col">
+  const items = S.compare.map((c, i) => ({ c, i, item: resolve(c.ref) })).filter((x) => x.item); // i: S.compare'deki gerçek konum
+  const cols = items.map(({ c, i, item }) => `<div class="cmp-col">
       <div class="cmp-h"><b>${esc(item.name)}</b><span class="muted">${esc(item.formLabel)}</span>
       <button class="btn ghost danger" data-action="cmp-del" data-i="${i}" aria-label="${L("Çıkar")}">✕</button></div>
       ${S.ingOpen.has('cmp:' + i) ? `${amountControls('cmp:' + i, c.g, item.portions || [], { compact: true, liquid: item.liquid })}<button class="btn ghost" data-action="ing-open" data-id="cmp:${i}" aria-expanded="true">${L("Kapat")}</button>` : miniAmount('cmp:' + i, c.g, 1, 'cmp:' + i, item.name)}
@@ -539,7 +539,7 @@ function renderCompare() {
     const showBasic = S.cmpSection === 'all' || S.cmpSection === 'temel';
     if (showBasic) {
       rows.push(`<tr class="secrow basic"><th colspan="${items.length + 1}">${L("Temel besin değerleri")}${S.settings.showNrv ? ` <small class="muted">${pr.sex || S.settings.referenceMode === 'custom' ? L("% günlük referans") : L("% günlük referans · K: ortalama kadın, E: ortalama erkek")}</small>` : ''}</th></tr>`);
-      for (const k of BASIC_KEYS) { const n = NUTRIENTS.find((x) => x.key === k); if (n) rows.push(cmpRow(n, rs.map((r) => r.v[k]), true)); }
+      for (const k of BASIC_KEYS) { const key = k === 'energy' && S.settings.energyUnit === 'kj' ? 'energy_kj' : k; const n = NUTRIENTS.find((x) => x.key === key); if (n) rows.push(cmpRow(n, rs.map((r) => r.v[key]), key !== 'energy_kj')); }
     }
     const secIdx = new Map(SECTIONS.map((x, i) => [x.id, i]));
     const cmpNutrients = NUTRIENTS.slice().sort((a, b) => secIdx.get(a.section) - secIdx.get(b.section)); // bölüm sırası matrisle aynı
@@ -565,7 +565,7 @@ function renderCompare() {
   } else {
     table = `<p class="empty">${L("İki ile dört besini yan yana koy. Keşfet'te “Karşılaştır”a tıklayarak da ekleyebilirsin.")}</p>`;
   }
-  return `<div class="compare"><div class="cmp-cols">${cols}${addBtn}</div>${table}</div>`;
+  return `<div class="compare"><div class="cmp-cols">${cols}${addBtn}</div><div id="cmp-table">${table}</div></div>`;
 }
 
 // ---------------------------------------------------------------- AYARLAR
@@ -810,6 +810,7 @@ const TAB_SHORT = { kesfet: () => L("Keşfet"), tarif: () => L("Tarif"), gunluk:
 const TABS = [['kesfet', '🔎'], ['tarif', '🥣'], ['gunluk', '📒'], ['karsilastir', '⚖️'], ['hakkinda', 'ℹ️'], ['ayarlar', '🎨']];
 
 export function render() {
+  if (S.personalDayAuto && S.personalDay !== localDay()) S.personalDay = localDay();
   const keep = {};
   document.querySelectorAll('[data-keep-scroll]').forEach((el) => (keep[el.dataset.keepScroll] = el.scrollTop));
   const winY = window.scrollY;
@@ -866,6 +867,11 @@ function refreshMatrix() {
 }
 
 // ---------------------------------------------------------------- miktar
+// Kaydırıcı her adımda localStorage'a yazmasın ve matrisi kare başına en çok bir kez yenilesin
+let rafId = 0, saveT = 0, qTimer = 0;
+function scheduleRefresh() { if (!rafId) rafId = requestAnimationFrame(() => { rafId = 0; refreshMatrix(); }); }
+function scheduleSave() { clearTimeout(saveT); saveT = setTimeout(() => { saveT = 0; persistRecipes(); }, 300); }
+function flushSave() { if (saveT) { clearTimeout(saveT); saveT = 0; persistRecipes(); } }
 function getAmount(target) {
   if (target === 'ex') return S.amount;
   if (target === 'pk') return S.picker?.amount;
@@ -877,7 +883,7 @@ function setAmount(target, g, { fromSlider = false } = {}) {
   g = clamp(Math.round(g * 100) / 100, 1, MAX_G);
   if (target === 'ex') S.amount = g;
   else if (target === 'pk') S.picker.amount = g;
-  else if (target.startsWith('rc:')) { const it = activeRecipe().items.find((i) => i.id === target.slice(3)); if (it) it.g = g; persistRecipes(); }
+  else if (target.startsWith('rc:')) { const it = activeRecipe().items.find((i) => i.id === target.slice(3)); if (it) it.g = g; scheduleSave(); }
   else if (target.startsWith('cmp:')) { const c = S.compare[+target.slice(4)]; if (c) c.g = g; }
   // Yerinde güncelle (kaydırıcı sürüklenirken odak kaybolmasın)
   const box = document.querySelector(`[data-amount="${CSS.escape(target)}"]`);
@@ -895,9 +901,12 @@ function setAmount(target, g, { fromSlider = false } = {}) {
   if (target === 'pk') {
     const item = resolve(S.picker.sel);
     const pv = $('.pk-prev');
-    if (pv && item) pv.textContent = [item.v.energy != null ? `${fmtNum((item.v.energy * g) / 100)} kcal` : null, item.v.protein != null ? `${fmtNum((item.v.protein * g) / 100)} g protein` : null, item.v.fiber != null ? `${fmtNum((item.v.fiber * g) / 100)} g lif` : null].filter(Boolean).join(' · ');
-  } else if (target.startsWith('cmp:')) render();
-  else refreshMatrix();
+    if (pv && item) pv.textContent = [item.v.energy != null ? `${fmtNum((item.v.energy * g) / 100)} kcal` : null, item.v.protein != null ? `${fmtNum((item.v.protein * g) / 100)} g protein` : null, item.v.fiber != null ? `${fmtNum((item.v.fiber * g) / 100)} g ${L("lif")}` : null].filter(Boolean).join(' · ');
+  } else if (target.startsWith('cmp:')) {
+    // Sürüklenen kaydırıcı DOM'dan silinmesin: yalnız pasta + tablo bölümü yenilenir
+    const t = $('#cmp-table');
+    if (t) { const tmp = document.createElement('div'); tmp.innerHTML = renderCompare(); t.replaceWith(tmp.querySelector('#cmp-table')); } else render();
+  } else scheduleRefresh();
 }
 
 // Uygulama içi diyalog (masaüstü/mobil web görünümlerinde alert/confirm/prompt güvenilir değil)
@@ -1028,7 +1037,7 @@ async function onClick(e) {
   if (!document.querySelector('.modal')) modalOpener = focusSelector(b);
   switch (a) {
     case 'aion-demo': aionPlay(b.dataset.anim || 'celebrate'); aionSay(tr('aionHello'), 4000); break;
-    case 'personal-goto-day': if (validDay(b.dataset.day)) { S.personalDay = b.dataset.day; render(); } break;
+    case 'personal-goto-day': if (validDay(b.dataset.day)) { S.personalDay = b.dataset.day; S.personalDayAuto = b.dataset.day === localDay(); render(); } break;
     case 'personal-to-recipe': {
       const { items, capped } = dayToRecipeItems(S.personal.entries, S.personalDay, { consumedOnly: S.consumedOnly, maxG: MAX_G });
       if (!items.length) break;
@@ -1052,6 +1061,7 @@ async function onClick(e) {
     }
     case 'ex-add-day': {
       if (!S.sel || !resolve(S.sel)) break;
+      if (S.personalDayAuto) S.personalDay = localDay(); // uygulama gece yarısını açık geçirdiyse bugüne yaz
       S.personal.entries.push({ id: uid(), day: S.personalDay, ref: { ...S.sel }, g: S.amount, consumed: false });
       S.personal.milestones.food = true; persistPersonal(); toast(tr('dayAdded')); aionPlay('celebrate'); break;
     }
@@ -1182,14 +1192,14 @@ async function onClick(e) {
     case 'amt': setAmount(b.dataset.target, Number(b.dataset.val)); break;
     case 'nudge': if (b.dataset.target) setAmount(b.dataset.target, (getAmount(b.dataset.target) || 0) + Number(b.dataset.delta)); break;
     // tarif
-    case 'rc-new': { const r = newRecipe(`Tarif ${S.recipes.length + 1}`); S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); render(); break; }
+    case 'rc-new': { const r = newRecipe(L("Tarif {n}", { n: S.recipes.length + 1 })); S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); render(); break; }
     case 'rc-open': S.activeRecipe = b.dataset.id; render(); break;
-    case 'rc-dup': { const src = activeRecipe(); const r = { ...JSON.parse(JSON.stringify(src)), id: Math.random().toString(36).slice(2, 10), name: src.name + ' (kopya)' }; S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); render(); break; }
+    case 'rc-dup': { const src = activeRecipe(); const r = { ...JSON.parse(JSON.stringify(src)), id: Math.random().toString(36).slice(2, 10), name: L("{n} (kopya)", { n: src.name }) }; S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); render(); break; }
     case 'rc-delete': {
       const rc = activeRecipe();
       if (!(await uiDialog(L("“{n}” silinsin mi?", { n: rc.name }), { ok: L("Sil"), cancel: L("Vazgeç") }))) break;
       S.recipes = S.recipes.filter((r) => r.id !== rc.id);
-      if (!S.recipes.length) S.recipes.push(newRecipe('Yeni tarif'));
+      if (!S.recipes.length) S.recipes.push(newRecipe(L("Yeni tarif")));
       S.activeRecipe = S.recipes[0].id; persistRecipes(); render(); break;
     }
     case 'rc-del-item': { const rc = activeRecipe(); rc.items = rc.items.filter((i) => i.id !== b.dataset.id); persistRecipes(); render(); break; }
@@ -1243,7 +1253,7 @@ async function onClick(e) {
     case 'profile-save': {
       const name = $('#profile-name')?.value.trim();
       if (!name) { toast(L("Bir profil adı gir")); break; }
-      if (S.profiles.length >= 12) { toast('En fazla 12 profil kaydedilebilir'); break; }
+      if (S.profiles.length >= 12) { toast(L("En fazla 12 profil kaydedilebilir")); break; }
       S.profiles.push({ id: uid(), name: name.slice(0, 40), settings: normalizeSettings(S.settings) });
       if (!saveProfiles(S.profiles)) toast(L("Profil cihaz depolamasına yazılamadı")); else toast(L("Görünüm kaydedildi")); render(); break;
     }
@@ -1316,7 +1326,7 @@ async function importText(t) {
     toast(L("{n} tarif içe aktarıldı", { n: recipes.length }));
     render();
   } catch (err) {
-    uiDialog(L("İçe aktarılamadı:") + ' ' + err.message, { ok: L("Tamam") });
+    uiDialog(L("İçe aktarılamadı:") + ' ' + L(err.message), { ok: L("Tamam") });
   }
 }
 
@@ -1396,7 +1406,11 @@ function onInput(e) {
   if (t.id === 'cu-name' && S.customEdit) { S.customEdit.name = t.value; return; }
   if (t.id === 'cu-portion' && S.customEdit) { S.customEdit.portion = t.value === '' ? null : Number(t.value); return; }
   if (t.dataset.slider) { setAmount(t.dataset.slider, Number(t.value), { fromSlider: true }); return; }
-  if (t.id === 'q') { S.q = t.value; $('#foodlist').innerHTML = foodList('ex', S.cat, S.q, S.extGroup); return; }
+  if (t.id === 'q') {
+    S.q = t.value; $('#foodlist').innerHTML = foodList('ex', S.cat, S.q, S.extGroup);
+    clearTimeout(qTimer); qTimer = setTimeout(() => { if (!S.sel && S.tab === 'kesfet') { const d = $('.detail'); if (d) d.innerHTML = welcome() + periodicGrid(); } }, 150);
+    return;
+  }
   if (t.id === 'pq') { S.picker.q = t.value; $('.pk-list').innerHTML = foodList('pk', S.picker.cat, S.picker.q, S.picker.extGroup); return; }
   if (t.id === 'rc-name') { activeRecipe().name = t.value.slice(0, 80) || L("Adsız tarif"); persistRecipes(); return; }
 }
@@ -1404,7 +1418,7 @@ function onChange(e) {
   const t = e.target;
   if (t.dataset.personalField) { updatePersonalDraft(t); return; }
   if (t.dataset.settingNumber) { if (!t.checkValidity()) toast(tr('settingInvalid')); return; }
-  if (t.id === 'personal-day') { if (validDay(t.value)) { S.personalDay = t.value; render(); } else { toast(tr('dateInvalid')); t.value = S.personalDay; } return; }
+  if (t.id === 'personal-day') { if (validDay(t.value)) { S.personalDay = t.value; S.personalDayAuto = t.value === localDay(); render(); } else { toast(tr('dateInvalid')); t.value = S.personalDay; } return; }
   if (t.id === 'personal-source-key' && NUTRIENTS.some(n => n.key === t.value)) {
     S.personalSource = t.value; const data = dayResult(S.personal, S.personalDay, resolve, S.consumedOnly);
     $('#personal-sources-content').innerHTML = renderDaySources(data.entries, resolve, t.value); return;
@@ -1434,7 +1448,7 @@ function onChange(e) {
       S.settings = parseSettings(text); saveSettings(S.settings); applySettings();
       if (S.settings.showExt || S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) loadExt().then(render);
       render(); toast(L("Ayarlar içe aktarıldı"));
-    }).catch((err) => uiDialog(L("Ayarlar içe aktarılamadı:") + ' ' + err.message));
+    }).catch((err) => uiDialog(L("Ayarlar içe aktarılamadı:") + ' ' + L(err.message)));
     return;
   }
   if (t.id === 'imp-file' && t.files?.[0]) { t.files[0].text().then(importText); return; }
@@ -1461,6 +1475,18 @@ export function start() {
     let last = null; try { last = localStorage.getItem('bm.aion.greetDay'); localStorage.setItem('bm.aion.greetDay', today); } catch {}
     if (last !== today) setTimeout(() => aionSay(greetingFor(new Date().getHours()), 6000, { ifIdle: true }), 600);
   }
+  // Başka sekmede yapılan değişiklikler: üzerine yazmamak için yeniden yükle (localStorage 'storage' olayı)
+  window.addEventListener('storage', (e) => {
+    if (!e.key || !e.key.startsWith('bm.') || e.key.startsWith('bm.aion')) return;
+    flushSave();
+    S.recipes = loadRecipes(); if (!S.recipes.length) S.recipes = [newRecipe(L("İlk tarifim"))];
+    if (!S.recipes.some((r) => r.id === S.activeRecipe)) S.activeRecipe = S.recipes[0].id;
+    setCustomFoods(loadCustom()); S.collections = loadCollections(); S.profiles = loadProfiles();
+    const p = loadPersonal(); S.personal = p.state; S.personalReadError = p.error;
+    render();
+  });
+  window.addEventListener('pagehide', flushSave);
+  document.addEventListener('visibilitychange', () => { if (document.hidden) flushSave(); });
   document.addEventListener('click', onClick);
   document.addEventListener('input', onInput);
   document.addEventListener('change', onChange);

@@ -751,5 +751,11 @@ export const UI_EN = {
  "USDA FNDDS tarifi: kuzu eti, mantar, soğan, biber, sarımsak, soya sosu; patatessiz.": "USDA FNDDS recipe: lamb, mushrooms, onion, pepper, garlic, soy sauce; no potatoes.",
  "USDA FNDDS tarifi: tavuk/hindi, biber, mantar, maydanoz, limon, yağ; patatessiz.": "USDA FNDDS recipe: chicken/turkey, peppers, mushrooms, parsley, lime, oil; no potatoes.",
  "Tavuk döner için ölçülmüş kayıt yok; değerler en yakın USDA ölçümünden: şişte (rotisserie) kızarmış tavuk but eti, derisiz. Döner marinesi ve yağı farklıdır.": "There is no measured record for chicken doner; values come from the closest USDA measurement: rotisserie chicken thigh meat, skinless. Doner marinade and fat differ.",
- "Ölçüm değil, tarif hesabı (tahmin): USDA FNDDS gyro tarifindeki gibi %49,6 ızgara kuzu kıyma + %49,6 ızgara dana kıyma (%80 yağsız) + %0,8 tuz; ekmeksiz. Döner yaprağının baharat, yoğurt/süt ve yağ oranı işletmeye göre değişir.": "Not a measurement but a recipe calculation (estimate): as in the USDA FNDDS gyro recipe, 49.6% broiled ground lamb + 49.6% broiled ground beef (80% lean) + 0.8% salt; no bread. Doner spices, yogurt/milk and fat vary by shop."
+ "Ölçüm değil, tarif hesabı (tahmin): USDA FNDDS gyro tarifindeki gibi %49,6 ızgara kuzu kıyma + %49,6 ızgara dana kıyma (%80 yağsız) + %0,8 tuz; ekmeksiz. Döner yaprağının baharat, yoğurt/süt ve yağ oranı işletmeye göre değişir.": "Not a measurement but a recipe calculation (estimate): as in the USDA FNDDS gyro recipe, 49.6% broiled ground lamb + 49.6% broiled ground beef (80% lean) + 0.8% salt; no bread. Doner spices, yogurt/milk and fat vary by shop.",
+ "Tarif {n}": "Recipe {n}",
+ "{n} (kopya)": "{n} (copy)",
+ "En fazla 12 profil kaydedilebilir": "Up to 12 profiles can be saved",
+ "Bu dosya Besin Matriksi yedeği değil.": "This file is not a Besin Matriksi backup.",
+ "Bu yedek sürümü desteklenmiyor.": "This backup version is not supported.",
+ "Bu dosya desteklenen bir Besin Matriksi ayar dosyası değil.": "This file is not a supported Besin Matriksi settings file."
 };

@@ -3,12 +3,12 @@ import { EN_NUTRIENTS } from './i18n-nutrients.js';
 import { t, getLanguage, locale, L } from './i18n.js';
 import { esc, fmtNum, fmtAmount } from './util.js';
 import { PROFILE_RANGES, bodyMetrics, energyEstimate, dayResult, nutrientComparison, weekSeries, localDay, shiftDay } from './personal.js';
-import { recipeContributions } from './recipe-sources.js';
+import { recipeContributions, LABELS as SRC_LABELS, usdaRecord } from './recipe-sources.js';
 import { basicCard } from './matrix.js';
 const label = n => getLanguage() === 'en' ? EN_NUTRIENTS[n.key] : n.label;
 const amount = (value, unit) => { if (value == null) return t('unknown'); const a = fmtAmount(value, unit); return `${a.n} ${esc(a.u)}`; };
 const dateText = day => new Intl.DateTimeFormat(locale(), { dateStyle: 'long' }).format(new Date(day + 'T12:00:00'));
-const foodName = item => getLanguage() === 'en' && item.food?.en ? item.food.en : item.name;
+const foodName = item => item.name; // resolve() adı zaten dile göre verir
 export function renderEnergy(profile, preview = false) {
   let energy, metrics;
   try { energy = energyEstimate(profile); metrics = bodyMetrics(profile); } catch { return `<p role="status">${t('profile.invalid')}</p>`; }
@@ -36,8 +36,8 @@ export function renderDaySources(entries, resolve, key) {
   const rows = recipeContributions({ items: entries }, resolve, key);
   return `<p class="hint">${t('sourceHint')}</p><ul class="source-ingredients">${rows.map((row, i) => {
     const item = resolve(entries[i].ref);
-    const code = row.source === 'u' ? 'USDA SR28 (2015)' : row.source === 'k' ? (getLanguage() === 'en' ? 'User label' : 'Kullanıcı etiketi') : row.source === 'd' ? (getLanguage() === 'en' ? 'Calculated' : 'Hesap') : '';
-    return `<li><b>${item ? esc(foodName(item)) : t('missingRecord')}</b> · ${fmtNum(row.grams)} g · ${amount(row.value, n.unit)}<p>${esc(code)} ${row.usda && row.value != null ? `NDB ${esc(row.usda.ndb)} · ${esc(row.usda.desc)}` : ''}</p>${row.inputs.length ? `<ul>${row.inputs.map(input => { const nn = NUTRIENTS.find(n => n.key === input.key); return `<li>${esc(label(nn))}: ${amount(input.value, nn.unit)}</li>`; }).join('')}</ul>` : ''}</li>`;
+    const code = row.source ? L(SRC_LABELS[row.source] || 'Kaynak belirtilmemiş') : '';
+    return `<li><b>${item ? esc(foodName(item)) : t('missingRecord')}</b> · ${fmtNum(row.grams)} g · ${amount(row.value, n.unit)}<p>${esc(code)} ${row.usda && row.value != null ? `${esc(usdaRecord(row.usda))} · ${esc(row.usda.desc)}` : ''}</p>${row.inputs.length ? `<ul>${row.inputs.map(input => { const nn = NUTRIENTS.find(n => n.key === input.key); return `<li>${esc(label(nn))}: ${amount(input.value, nn.unit)}</li>`; }).join('')}</ul>` : ''}</li>`;
   }).join('')}</ul>`;
 }
 function renderNutrients(result, settings, energyTarget) {

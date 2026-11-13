@@ -10,7 +10,8 @@ const CALCULATIONS = {
   carb_avail: { keys: ['carb', 'fiber'], label: 'Lif hariç karbonhidrat = en az 0 olacak şekilde toplam karbonhidrat − lif' },
   carb: { keys: ['carb_avail', 'fiber'], label: 'Toplam karbonhidrat = etiket karbonhidratı + lif' },
 };
-const LABELS = { u: 'USDA SR28 (2015)', k: 'Kullanıcının ürün etiketi', d: 'Hesaplanan değer', i: 'IFCT 2017', e: 'Tahmin' };
+export const LABELS = { u: 'USDA SR28 (2015)', N: 'USDA FNDDS', F: 'USDA FDC', f: 'USDA Flavonoid', y: 'USDA İzoflavon', r: 'Tahmin (tarif)', k: 'Kullanıcının ürün etiketi', d: 'Hesaplanan değer', i: 'IFCT 2017', e: 'Tahmin' };
+export const usdaRecord = (u) => (!u ? '' : u.ndb ? `NDB ${u.ndb}` : u.fndds ? `FNDDS ${u.fndds}` : u.fdc ? `FDC ${u.fdc}` : '');
 
 // Kaydı bulunamayan malzeme ve ölçülmüş sıfır da ayrı satır olarak korunur.
 export function recipeContributions(recipe, resolve, key, factor = 1) {
@@ -46,8 +47,8 @@ export function renderRecipeSourceRows(recipe, resolve, key, factor, precision) 
     <p class="hint">${L("Eksik veri sıfır sayılmaz. Katkılar yuvarlanmadan toplanır; gösterimde yuvarlama farkı olabilir. Bu döküm pişirme kayıplarını veya emilimi ölçmez.")}</p>
     <ul class="source-ingredients">${rows.map(row => {
       const source = L(LABELS[row.source] || 'Kaynak belirtilmemiş');
-      const record = row.usda && (row.source === 'u' || row.inputs.some(input => input.source === 'u'))
-        ? ` · NDB ${esc(row.usda.ndb)} · ${esc(row.usda.desc)}` : '';
+      const record = row.usda && (['u', 'N', 'F', 'f', 'y'].includes(row.source) || row.inputs.some(input => input.source === 'u'))
+        ? ` · ${esc(usdaRecord(row.usda))} · ${esc(row.usda.desc)}` : '';
       return `<li><div class="source-contribution"><b>${esc(row.name)}</b><strong>${amount(row.value, nutrient.unit, precision)}</strong></div>
         <p>${esc(row.form)} · ${fmtNum(row.grams)} g ${L('malzeme')}${factor !== 1 ? ` × ${fmtNum(factor, 'high')} ${L('hesap payı')}` : ''}</p>
         <p>${row.value == null ? row.missingRecord ? L("Kayıt bulunamadı; katkı bilinmiyor.") : L("Bu malzemede bu bileşen için veri yok.") : `${esc(source)}${record}${row.value === 0 ? ' · ' + L("kaynak/hesap sonucu 0") : ''}`}</p>

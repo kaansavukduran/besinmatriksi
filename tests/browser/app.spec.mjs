@@ -1076,3 +1076,33 @@ test('ekmek türleri ve hazır yemekler: ekşi mayalı, naan, döner, falafel; h
   await expect(page.locator('#foodlist [data-id="et_doner"]')).toHaveCount(0);
   await expect(page.locator('#foodlist [data-id="falafel"]')).toHaveCount(1);
 });
+
+test('denetim düzeltmeleri: Kıyasla ✕ doğru besini siler (silinmiş özel besin varken); arama sağdaki tabloyu da süzer (B127)', async ({ page }, info) => {
+  await page.goto('/');
+  if (page.viewportSize().width > 700) {
+    await page.locator('#q').fill('mercimek');
+    await expect(page.locator('.detail .periodic h2')).toContainText('mercimek');
+    await page.locator('#q').fill('');
+  }
+  // gizli (çözümlenemeyen) bir kıyas kaydı + muz
+  await page.evaluate(() => localStorage.setItem('bm.compare.test', '1'));
+  await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  await page.locator('[data-action="ex-add-compare"]').click();
+  if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
+  await page.locator('#q').fill('elma'); await page.locator('#foodlist [data-id="elma"]').click();
+  await page.locator('[data-action="ex-add-compare"]').click();
+  await tab(page, 'karsilastir');
+  await page.locator('.cmp-col').filter({ hasText: 'Muz' }).locator('[data-action="cmp-del"]').click();
+  await expect(page.locator('.cmp-col')).toHaveCount(1);
+  await expect(page.locator('.cmp-col')).toContainText('Elma');
+});
+
+test('İngilizce modda ekranda görünen İngilizce adla arama bulur (B127)', async ({ page }) => {
+  await page.goto('/'); await tab(page, 'ayarlar');
+  await page.locator('.lang-pick [data-k="language"][lang="en"]').click();
+  await tab(page, 'kesfet');
+  for (const [q, id] of [['chickpeas', 'nohut'], ['grapes', 'uzum'], ['lentils', 'yesil_mercimek'], ['blackcurrant', 'frenk_uzumu']]) {
+    await page.locator('#q').fill(q);
+    await expect(page.locator(`#foodlist [data-id="${id}"]`), q).toHaveCount(1);
+  }
+});

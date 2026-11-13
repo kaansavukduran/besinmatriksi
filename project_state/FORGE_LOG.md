@@ -630,3 +630,13 @@
 - İlk hatalar: "Tzatziki (cacık)" EN adında Türkçe harf (B051); telefonda test detaydan listeye dönmeden kategori tıklıyordu.
 - Kanıt: `npm run data` (463 besin); `npm test` 96/96; Playwright 129/132 → düzeltme sonrası B051+B126 4/4 PASS.
 - Sonraki: **B127** beta.24 yayını; ardından alt ajan bulguları (kod denetimi, ek besin adayları, eksik veri kaynakları — kota yenilenince).
+
+## B127 · 2026-11-13 · Kod denetimi düzeltmeleri
+- Kıyasla: filtrelenmiş listede ✕ yanlış besini siliyordu (indeks kayması) → özgün konum korunur; miktar değişince yalnız tablo yenilenir; kJ seçiliyse kJ gösterilir; bölüm sırası SECTIONS'ı izler.
+- Performans: matris yenilemesi rAF ile birleştirildi; tarif kaydı 300 ms gecikmeli (pagehide/visibilitychange'te hemen yazılır); başka sekmede değişen veriler `storage` olayıyla yüklenir.
+- Arama: İngilizce modda ekranda görünen İngilizce adla bulur; aramada periyodik tablo da süzülür.
+- Günlük: tarih gece yarısı kendiliğinden bugüne geçer (elle başka güne gidilince durur).
+- Dışa aktarma: CSV/XLSX formül enjeksiyonu önlendi; yeni kaynak etiketleri (r, N, F, f, y) her yerde adıyla gösterilir; NDB/FNDDS/FDC kayıt numarası doğru.
+- i18n: kalan sabit Türkçe metinler L() ile.
+- Kanıt: `npm test` 97/97; `npm run build && npm run build:single`; Playwright 136/136.
+- Sonraki: **B128** eksik veri paketleri (iyot, kolin, proantosiyanidin, SR Legacy) + yeni besin adayları (150 doğrulanmış aday hazır).
