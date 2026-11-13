@@ -675,3 +675,4 @@
 - Kanıt: `npm run data` (617 besin); `npm test` 102/102; build + build:single; Playwright 144/144.
 - Sürüm 1.1.2-beta.26; release.yml publish+prerelease.
 - Sonraki: **B132** purin DB ad eşlemelerinin incelenmesi (name_matches_for_review.csv) ya da pide/gözleme/börek gibi diğer fırın tarifleri.
+- Yayın kanıtı: v1.1.2-beta.26 pre-release 2026-11-13T09:31:54Z (release.yml run 43400383119 success); ci.yml run 43400364758 (15df88e) success → çapraz tarayıcı RUNTIME_TESTED.

@@ -346,12 +346,12 @@
     "B127"
   ],
   "latest_release": {
-    "tag": "v1.1.2-beta.25",
-    "commit": "53246fc",
-    "published_at": "2026-11-13T07:46:49Z",
+    "tag": "v1.1.2-beta.26",
+    "commit": "15df88e",
+    "published_at": "2026-11-13T09:31:54Z",
     "prerelease": true,
-    "release_run": 43386967105,
-    "cross_browser_run": 43386956118,
-    "cross_browser": "PASS (Firefox, WebKit, iPhone 13, iPad; run 43386956118)"
+    "release_run": 43400383119,
+    "cross_browser_run": 43400364758,
+    "cross_browser": "PASS (ci.yml run success: Firefox, WebKit, iPhone 13, iPad + Chromium)"
   }
 }
