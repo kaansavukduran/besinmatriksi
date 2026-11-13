@@ -739,5 +739,6 @@ export const UI_EN = {
  "Bu protein tozu türü için USDA SR28 / FoodData Central'da (Foundation, FNDDS) ölçülmüş genel kayıt yok; içerik markaya göre çok değişir. Ürün etiketindeki 100 g değerleriyle “Kendi besinlerim”den ekle.": "There is no general measured record for this protein-powder type in USDA SR28 / FoodData Central (Foundation, FNDDS); content varies a lot by brand. Add it from the product label (per 100 g) under “My foods”.",
  "Kreatin monohidrat (C4H9N3O2·H2O, 149,15 g/mol) içinde kütlece %87,92 kreatin (131,13 g/mol) bulunur; bu değer kimyasal formülden hesaplanır. Etiketlerde enerji genellikle 0 kcal yazılır ama USDA ölçümü yok. Takviye; yaygın kullanım günde 3–5 g. Böbrek hastalığı olanlar hekime danışmalı.": "Creatine monohydrate (C4H9N3O2·H2O, 149.15 g/mol) contains 87.92% creatine by mass (131.13 g/mol); this value is calculated from the chemical formula. Labels usually state 0 kcal, but there is no USDA measurement. Supplement; typical use is 3–5 g a day. People with kidney disease should ask their doctor.",
  "Hayvansal kolajenden elde edilir; protein içeriği yüksek ama triptofan içermez (eksik protein).": "Made from animal collagen; high in protein but contains no tryptophan (incomplete protein).",
- "Lif türleri": "Fibre types"
+ "Lif türleri": "Fibre types",
+ "Lifler (diyet lifi ve türleri)": "Fibre (dietary fibre and types)"
 };

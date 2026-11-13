@@ -7,7 +7,7 @@ export const SECTIONS = [
   { id: 'enerji', title: 'Kalori', icon: '🔥' },
   { id: 'protein', title: 'Protein ve amino asitler', icon: '🧬' },
   { id: 'karb', title: 'Karbonhidrat ve şekerler', icon: '🍯' },
-  { id: 'lif', title: 'Nişasta ve lif', icon: '🌾' },
+  { id: 'lif', title: 'Lifler (diyet lifi ve türleri)', icon: '🌾' },
   { id: 'yag', title: 'Yağlar, yağ asitleri ve steroller', icon: '🫒' },
   { id: 'vitamin', title: 'Vitaminler ve kimyasal biçimleri', icon: '🍊' },
   { id: 'mineral', title: 'Mineraller, elektrolitler ve iz elementler', icon: '⚙️' },
@@ -64,12 +64,18 @@ const DEFINITIONS = [
   N('ajugose', 'Ajugoz', 'g', 'karb', 'Rafinoz ailesi (GOS)', null, 'ajgs'),
 
   // --- Nişasta ve lif
-  N('starch', 'Nişasta (toplam)', 'g', 'lif', null, null, 'starch'),
+  N('starch', 'Nişasta (toplam)', 'g', 'karb', 'Nişasta', null, 'starch'),
   N('fiber', 'Diyet lifi (toplam)', 'g', 'lif', null, 8, 'fibtg'),
   N('fiber_sol', 'Çözünür lif', 'g', 'lif', null, null, 'fibsol'),
   N('fiber_insol', 'Çözünmez lif', 'g', 'lif', null, null, 'fibins'),
   N('beta_glucan', 'Beta-glukan', 'g', 'lif', 'Lif türleri', null, null),
   N('resistant_starch', 'Dirençli nişasta', 'g', 'lif', 'Lif türleri', null, null),
+  N('pectin', 'Pektin', 'g', 'lif', 'Lif türleri', null, null),
+  N('inulin', 'İnülin / fruktanlar', 'g', 'lif', 'Lif türleri', null, null),
+  N('arabinoxylan', 'Arabinoksilan', 'g', 'lif', 'Lif türleri', null, null),
+  N('cellulose', 'Selüloz', 'g', 'lif', 'Lif türleri', null, null),
+  N('hemicellulose', 'Hemiselüloz', 'g', 'lif', 'Lif türleri', null, null),
+  N('lignin', 'Lignin', 'g', 'lif', 'Lif türleri', null, null),
   N('fiber_hmw', 'Yüksek molekül ağırlıklı lif (HMWDF)', 'g', 'lif', 'Lif türleri', null, null),
   N('fiber_lmw', 'Düşük molekül ağırlıklı lif (LMWDF; inülin, oligosakkaritler…)', 'g', 'lif', 'Lif türleri', null, null),
 

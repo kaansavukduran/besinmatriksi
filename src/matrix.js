@@ -294,6 +294,10 @@ export function renderMatrix(r, cfg, ctx = {}) {
   // Hesaplanan göstergeler temel değer + pasta kartının hemen altında (gizlenmediyse)
   const hesapFirst = cfg.sectionOrder.includes('hesap') && !cfg.hiddenSections.includes('hesap');
   if (hesapFirst) d.push(derivedCard(r, cfg, open('hesap')));
+  // Lifler kutusu hesaplanan göstergelerin hemen altında (Kaan: lif türleri ayrı ve görünür olsun)
+  const lifSec = SECTIONS.find((x) => x.id === 'lif');
+  const lifFirst = lifSec && !cfg.hiddenSections.includes('lif');
+  if (lifFirst) d.push(section(lifSec, r, cfg, open('lif')));
   const tail = [identityCard(item, r, cfg, ctx), coverage(r, cfg), `<p class="hint reference-label">${esc(referenceLabel(cfg))}</p>`];
   if (cfg.hiddenSections.length) d.push(`<p class="hint">${L("{n} bölüm ayarlarda gizlendi. Kapsam özeti ve CSV tüm bileşenleri içerir.", { n: cfg.hiddenSections.length })}</p>`);
   if (cfg.pinnedNutrients.length) {
@@ -308,7 +312,7 @@ export function renderMatrix(r, cfg, ctx = {}) {
     if (cfg.hiddenSections.includes(id)) continue;
     const sec = SECTIONS.find(s => s.id === id);
     // Kalori temel değer kartında gösterilir; ayrı Kalori kutusu yok (Kaan, 2026-11-12)
-    if (sec) { if (sec.id !== 'enerji') d.push(section(sec, r, cfg, open(id))); }
+    if (sec) { if (sec.id !== 'enerji' && !(sec.id === 'lif' && lifFirst)) d.push(section(sec, r, cfg, open(id))); }
     else if (id === 'hesap' && !hesapFirst) d.push(derivedCard(r, cfg, open(id)));
     else if (id === 'tolerans') d.push(toleranceCard(r, item, cfg, open(id)));
     else if (id === 'kalinti') d.push(safetyExtra(cfg, open(id)));

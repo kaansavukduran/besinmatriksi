@@ -588,3 +588,9 @@
 - Lif türleri: yeni bileşenler beta-glukan, dirençli nişasta, HMWDF, LMWDF; FDC'den çözünür/çözünmez lif de eşlendi (beta-glukan 12 besinde, ör. mantarlar, karabuğday, darı).
 - İlk hatalar: kırmızı frenk üzümü/kiraz ve kuzu/dana ciğer çizimleri aynıydı → renk; yeni biçim adlarının EN karşılığı; "kanlıca" EN adında Türkçe harf (B051); test başlığında tırnak.
 - Kanıt: `npm run data` (418 besin); `npm test` 95/95; Playwright 126/126.
+
+## B120 · 2026-11-13 · Lifler kutusu; malzeme/kıyas kartında sabit ✕
+- (Düzeltme: B119 sonrası katalog 434 besin; B119 kaydındaki 418 sayısı ara derlemeye aitti.)
+- "Nişasta ve lif" → "🌾 Lifler (diyet lifi ve türleri)"; nişasta karbonhidrat bölümüne alındı. Lif türleri alt başlığı: beta-glukan, dirençli nişasta, HMWDF, LMWDF + yeni tanımlar pektin, inülin/fruktanlar, arabinoksilan, selüloz, hemiselüloz, lignin (açık kaynaklarda besin bazında ölçüm yok → veri yok; uydurma yok). Lifler kutusu matrikste temel kart ve Hesaplanan göstergelerin hemen altında; Tarif, Günlük ve Kıyasla'da (bölüm çipi "Lifler") aynı.
+- Tarif malzeme kartı ve Kıyasla kartında ↑/↓ ve ✕ kartın sağ üst köşesine sabit (mutlak konum); ad uzasa da yer değiştirmez.
+- Kanıt: `npm test` 95/95; Playwright 128/128 (B120: matriks sırası temel→hesap→lif; ✕ her kartta aynı konum, sağ üstte).

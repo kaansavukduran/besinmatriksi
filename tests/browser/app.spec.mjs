@@ -1041,3 +1041,18 @@ test('kapsam: deniz ürünleri, mantarlar, Türkiye besinleri, protein tozları 
   await page.locator('#q').fill('patates kızartması'); await page.locator('#foodlist [data-id="patates_kizartmasi"]').click();
   await expect(page.locator('.fchip, [data-action="ex-form"]').filter({ hasText: 'Tavada' })).toHaveCount(1);
 });
+
+test('Lifler kutusu temel kart ve hesaplanan göstergelerin altında; malzeme ✕ düğmesi sağ üstte sabit (B120)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('shiitake'); await page.locator('#foodlist [data-id="shiitake"]').click();
+  const order = await page.locator('#matrix > *').evaluateAll((els) => els.map((e) => e.dataset.sec || e.className));
+  expect(order.slice(0, 3)).toEqual([expect.stringContaining('basic-card'), 'hesap', 'lif']);
+  await expect(page.locator('[data-sec="lif"]')).toContainText('Beta-glukan');
+  await page.locator('[data-action="ex-add-recipe"]').click();
+  if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
+  await page.locator('#q').fill('ıspanak'); await page.locator('#foodlist [data-id="ispanak"]').click(); await page.locator('[data-action="ex-add-recipe"]').click();
+  await page.locator('[data-action="tab"][data-tab="tarif"]').click();
+  const pos = await page.locator('.ing').evaluateAll((els) => els.map((e) => { const c = e.getBoundingClientRect(), x = e.querySelector('[data-action="rc-del-item"]').getBoundingClientRect(); return [Math.round(c.right - x.right), Math.round(x.top - c.top)]; }));
+  expect(new Set(pos.map(String)).size).toBe(1); // her kartta aynı konum
+  expect(pos[0][0]).toBeLessThan(30); expect(pos[0][1]).toBeLessThan(30);
+});

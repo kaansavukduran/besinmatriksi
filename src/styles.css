@@ -779,3 +779,10 @@ table.cmp .cpct { display: block; font-size: .72rem; color: var(--muted); font-w
 .welcome-steps { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .25rem 1.6rem; margin: .2rem 0 .4rem; }
 @media (max-width: 1100px) { .welcome-steps { grid-template-columns: 1fr; } }
 .detail .welcome .hint { margin: 0; }
+/* Tarif malzemesi ve Kıyasla kartı: ↑/↓ ve ✕ her zaman kartın sağ üst köşesinde sabit; ad uzun olsa da yer oynamaz */
+.ing, .cmp-col { position: relative; }
+.ing-h { padding-right: 7.6rem; min-height: 2.4rem; }
+.ing-h .move { position: absolute; top: calc(var(--pad) - 2px); right: calc(var(--pad) + 2.5rem); margin: 0; display: flex; gap: 4px; }
+.ing-h > [data-action="rc-del-item"] { position: absolute; top: calc(var(--pad) - 2px); right: calc(var(--pad) - 2px); margin: 0; }
+.cmp-h { padding-right: 2.6rem; min-height: 2.2rem; }
+.cmp-h > [data-action="cmp-del"] { position: absolute; top: calc(var(--pad) - 2px); right: calc(var(--pad) - 2px); margin: 0; }
