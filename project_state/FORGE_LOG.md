@@ -698,3 +698,10 @@
 - Test: B112 karşılama kartı denetimi yalnız geniş ekranda (telefonda zaten görünmüyordu); yeni B134 (390 px'te `.periodic` yok, 1280 px'e genişleyince karolar görünür).
 - Kanıt: `npm test` 106/106; build + build:single; Playwright 150/150.
 - Sonraki: **B135** pide/gözleme/ıspanaklı börek tarifleri (pişme verimi modeliyle) ya da kalan temizlik (#17-20).
+
+## B135 · 2026-11-13 · Gözleme (ıspanaklı, patatesli; peynirsiz); 1.1.2-beta.28
+- Pişme verimi modeliyle (%85, sac): ıspanaklı 224,9 kcal, patatesli 244,3 kcal /100 g; kütle dengesi 100,0 g; bitkisel. Pide zaten Ekmek kategorisinde (USDA kaydı) olduğu için tekrar eklenmedi.
+- İlk hata: yeni "Sacda" form etiketinin İngilizcesi form sözlüğünde yoktu (i18n testi) → eklendi.
+- Kanıt: `npm run data` (619 besin); `npm test` 107/107; build + build:single; Playwright 152/152.
+- Sürüm 1.1.2-beta.28 (B134 + B135).
+- Sonraki: **B136** kalan temizlik (#17-20: matrix.js ölü dallar, .quick/.split CSS, kullanılmayan dışa aktarımlar) ya da kullanıcı önceliklerinden (3) koleksiyon/alt kategori deneyimi.

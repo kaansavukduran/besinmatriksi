@@ -1171,3 +1171,11 @@ test('dar ekranda gizli periyodik tablo kurulmaz; genişleyince kurulur (B134)',
   await page.setViewportSize({ width: 1280, height: 800 });
   await expect(page.locator('.detail .periodic .pt').first()).toBeVisible();
 });
+
+test('gözleme aranır, pişme verimi %85 gösterilir (B135)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('gözleme');
+  await expect(page.locator('#foodlist [data-id="gozleme_patatesli"]')).toHaveCount(1);
+  await page.locator('#foodlist [data-id="gozleme_ispanakli"]').click();
+  await expect(page.locator('#matrix')).toContainText('%85');
+});

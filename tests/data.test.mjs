@@ -233,7 +233,7 @@ test('Türk tarif hesapları: mercimek köftesi ve etsiz çiğ köfte, "Tahmin (
 });
 
 test('pişme verimli tarif: kütle dengesi 100 g, yalnız ısıya dayanıklı bileşenler (B131)', () => {
-  for (const id of ['simit', 'lahmacun']) {
+  for (const id of ['simit', 'lahmacun', 'gozleme_ispanakli', 'gozleme_patatesli']) {
     const f = DB.foods.find((x) => x.id === id); const fm = f.forms[0]; const v = fm.v;
     assert.ok(fm.recipeYield > 0 && fm.recipeYield < 100, id);
     const sum = v.water + v.protein + v.fat + v.carb + v.ash;
@@ -253,4 +253,12 @@ test('Pürin DB (ad eşlemesi, incelenmiş): kurutulmuş shiitake, maydanoz; top
   assert.equal(pa.s.purine_guanine, 'U');
   // Pişmiş shiitake ölçülmemiş → veri yok (0 değil)
   assert.equal(DB.foods.find((x) => x.id === 'shiitake').forms.find((f) => f.key === 'pismis').v.purines_total, undefined);
+});
+
+test('gözlemeler bitkisel, peynirsiz, 200-260 kcal (B135)', () => {
+  for (const id of ['gozleme_ispanakli', 'gozleme_patatesli']) {
+    const f = DB.foods.find((x) => x.id === id);
+    assert.equal(f.animal, false); assert.equal(f.forms[0].recipeYield, 85);
+    assert.ok(f.forms[0].v.energy > 200 && f.forms[0].v.energy < 260, id);
+  }
 });

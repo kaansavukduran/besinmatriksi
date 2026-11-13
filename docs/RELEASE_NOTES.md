@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 27 · Pürinler, kopyasız yedek, macOS kısayolları
+# 🫐 Besin Matriksi 1.1.2 Beta 28 · Gözleme ve telefonda daha hafif Keşfet
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -21,6 +21,8 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
+- **Gözleme (ıspanaklı ve patatesli, peynirsiz):** Tarif hesabı, sacda pişme verimiyle; yalnız ısıya dayanıklı değerler.
+- **Telefonda daha hafif:** Keşfet'te görünmeyen periyodik tablo artık arka planda kurulmuyor; bileşen aramaları hızlandı.
 - **Pürinler:** USDA Pürin veri tabanından (2026) adenin, guanin, hipoksantin, ksantin ve toplam; 40 besinde (ör. kurutulmuş shiitake, maydanoz, brokoli). Gut/ürik asit açısından Antinutrientler bölümünde. Adla eşlenen kayıtlar tek tek incelendi; bir kısmı Japonya örnekleri (kaynakta yazılı).
 - **Yedek iki kez içe aktarılırsa kopya oluşmaz:** Aynı tarif, kendi besin, profil ve koleksiyonlar atlanır; yeni olanlar eklenir.
 - **macOS'ta Option+rakam kısayolları** artık sekmeleri açar.

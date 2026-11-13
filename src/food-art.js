@@ -460,6 +460,8 @@ export const FOOD_ART = {
   cig_kofte: ["legume", "#b23a2a", "#43a047", "round"],
   simit: ["bread", "#b5651d", "#f3d9a4", "flat"],
   lahmacun: ["bread", "#e8c58a", "#c0392b", "flat"],
+  gozleme_ispanakli: ["bread", "#f0d9a8", "#4caf50", "flat"],
+  gozleme_patatesli: ["bread", "#f0d9a8", "#f2c14e", "flat"],
   eksi_mayali_ekmek: ["bread", "#d7a86e", "#fff3e0", "loaf"],
   cok_tahilli_ekmek: ["bread", "#a1887f", "#efebe9", "loaf"],
   yulaf_ekmegi: ["bread", "#e0c48c", "#fffde7", "loaf"],
