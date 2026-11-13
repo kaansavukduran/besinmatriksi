@@ -717,3 +717,8 @@
 - Kanıt: `npm run data` (627 besin); `npm test` 109/109; build + build:single; Playwright 156/156.
 - Sürüm 1.1.2-beta.29 (B136 + B137).
 - Sonraki: **B138** kalan temizlik (#17-20) ya da kullanıcı önceliği (2) sade UI/UX gözden geçirmesi.
+
+## B138 · 2026-11-13 · Kullanılmayan CSS temizliği (denetim #17-20 kısmen)
+- Hiçbir şablonda üretilmeyen `.quick`, `.split`, `.splitbar`, `.legend` kuralları ve `.nav-h` seçici parçası silindi (629 bayt). Dinamik üretilen `.src-*` ve `.sp-*` korundu (tarama `src-${s}` / `sp-${k}` şablonlarını doğruladı).
+- Kanıt: `npm test` 109/109; build + build:single; Playwright 156/156.
+- Sonraki: **B139** kapsamlı kod + veri denetimi (Kaan: "aynı mantıkla denetle, hata varsa döngüsel geliştir, dataları araştır").
