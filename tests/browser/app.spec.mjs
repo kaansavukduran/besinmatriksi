@@ -1034,7 +1034,7 @@ test('kapsam: deniz ürünleri, mantarlar, Türkiye besinleri, protein tozları 
 test('Lifler kutusu temel kart ve hesaplanan göstergelerin altında; malzeme ✕ düğmesi sağ üstte sabit (B120)', async ({ page }) => {
   await page.goto('/');
   await page.locator('#q').fill('shiitake'); await page.locator('#foodlist [data-id="shiitake"]').click();
-  const order = await page.locator('#matrix > *').evaluateAll((els) => els.map((e) => e.dataset.sec || e.className));
+  const order = await page.locator('#matrix > *:not(.src-base)').evaluateAll((els) => els.map((e) => e.dataset.sec || e.className)); // B139: tek kaynak notu bölüm değildir
   expect(order.slice(0, 3)).toEqual([expect.stringContaining('basic-card'), 'hesap', 'protein']);
   expect(order.indexOf('lif')).toBe(order.indexOf('vitamin') + 1); // B125: Lifler, Vitaminler'in hemen altında
   await expect(page.locator('[data-sec="lif"]')).toContainText('Beta-glukan');
@@ -1195,4 +1195,22 @@ test('imam bayıldı aranır ve açılır (B137)', async ({ page }) => {
   await page.locator('#q').fill('imam bayıldı');
   await page.locator('#foodlist [data-id="imam_bayildi"]').click();
   await expect(page.locator('#matrix .src-r').first()).toContainText('Tahmin (tarif)');
+});
+
+test('tekrarlanan kaynak etiketi satırlarda yok, bir kez üstte; farklı kaynak etiketli; karşılama sayısı listeyle aynı (B139)', async ({ page }) => {
+  await page.goto('/');
+  if (page.viewportSize().width > 700) {
+    const all = await page.locator('.cat[data-cat=""] .cnt, .cat.on .cnt').first().innerText();
+    await expect(page.locator('.welcome')).toContainText(`${all} besin`);
+    await expect(page.locator('.pt-n')).toHaveCount(0); // periyodik tabloda süs sıra numarası yok
+  }
+  await page.locator('#q').fill('nohut');
+  await page.locator('#foodlist [data-id="nohut"]').first().click();
+  await expect(page.locator('#matrix .src-base .src-u')).toHaveCount(1);
+  const rowChips = await page.locator('#matrix .row .meta .src-u').count();
+  expect(rowChips).toBe(0); // USDA SR28 her satırda tekrar edilmez
+  if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
+  await page.locator('#q').fill('kakao');
+  await page.locator('#foodlist [data-id="kakao"]').click();
+  await expect(page.locator('#matrix .row .meta .src-P').first()).toBeVisible(); // farklı kaynak (Proantosiyanidin DB) yine satırda etiketli
 });

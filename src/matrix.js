@@ -16,6 +16,13 @@ const SRC_TITLE = {
   d: 'Diğer ölçülmüş değerlerden hesaplandı (ör. tuz = sodyum × 2,5)', m: 'Tarifteki malzemeler farklı kaynaklardan', k: 'Kullanıcının ürün etiketinden girdiği değer',
 };
 
+export function dominantSource(sources) {
+  const counts = {}; let total = 0;
+  for (const t of Object.values(sources || {})) { counts[t] = (counts[t] || 0) + 1; total++; }
+  const [best, n] = Object.entries(counts).sort((a, b) => b[1] - a[1])[0] || [];
+  return total >= 4 && n / total >= 0.5 ? best : null;
+}
+
 function srcChip(s, item) {
   if (!s) return '';
   const record = s === 'N' && item?.usda?.fndds ? ` · FNDDS ${item.usda.fndds} · ${item.usda.desc}` : s === 'F' && item?.usda?.fdc ? ` · FDC ${item.usda.fdc} (NDB ${item.usda.ndb})` : (s === 'u' || s === 'f' || s === 'y') && item?.usda ? (s === 'u' ? ' · USDA SR28 (2015), NDB ' : ' · NDB ') + `${item.usda.ndb} · ${item.usda.desc}` : s === 'i' && item?.ifct ? ` · IFCT 2017, ${item.ifct.code} · ${item.ifct.name}` : s === 'e' && item?.estFrom ? ' · ' + L("IFCT 2017 çiğ kaynak kaydı: {r}; protein/yağ oranı ile tahmin", { r: item.estFrom }) : '';
@@ -55,7 +62,7 @@ function row(n, r, cfg) {
       <span class="lbl" role="cell">${esc(nl(n))}</span>
       <span class="val" role="cell">${valueCell(n, x, cfg)}</span>
       ${pct ? `<span class="pctc" role="cell">${pct}</span>` : '<span class="pctc" role="cell"></span>'}
-      <span class="meta" role="cell">${cfg.showSource ? srcChip(s, cfg.sourceItem) : ''}${extra.join('')}</span>
+      <span class="meta" role="cell">${cfg.showSource && s !== cfg.baseSrc ? srcChip(s, cfg.sourceItem) : ''}${extra.join('')}</span>
     </div>`,
   };
 }
@@ -75,7 +82,7 @@ function section(sec, r, cfg, open) {
       html += `<div class="row" role="row"><span class="lbl" role="cell">${L("Kalori")}</span>
         <span class="val" role="cell"><span class="num">${amount}</span></span>
         <span class="pctc" role="cell">${cfg.showNrv && p != null ? `<span class="nrv" title="${esc(ref.title)}; ${ref.label} ${fmtNum(ref.value)} kcal"><span class="bar"><i style="width:${Math.min(100, p).toFixed(1)}%"></i></span><span class="pct">${fmtPct(p)}</span></span>` : ''}</span>
-        <span class="meta" role="cell">${cfg.showSource ? srcChip(r.s.energy, cfg.sourceItem) : ''}${r.cov && r.cov.energy < r.n ? `<span class="flag partial">${L("kısmi {a}/{b}", { a: r.cov.energy, b: r.n })}</span>` : ''}</span></div>`;
+        <span class="meta" role="cell">${cfg.showSource && r.s.energy !== cfg.baseSrc ? srcChip(r.s.energy, cfg.sourceItem) : ''}${r.cov && r.cov.energy < r.n ? `<span class="flag partial">${L("kısmi {a}/{b}", { a: r.cov.energy, b: r.n })}</span>` : ''}</span></div>`;
       continue;
     }
     const rr = row(n, r, cfg);
@@ -291,11 +298,15 @@ export function renderMatrix(r, cfg, ctx = {}) {
   cfg = normalizeSettings(cfg);
   const item = ctx.item || null;
   cfg.sourceItem = item;
+  // Değerlerin çoğu tek kaynaktan geliyorsa o kaynağın etiketi her satırda tekrarlanmaz; bir kez üstte yazılır,
+  // satırlarda yalnız farklı kaynaklar (FDC, Flavonoid, tahmin…) etiketlenir.
+  cfg.baseSrc = dominantSource(r.s);
   const open = (id) => !ctx.closed?.has(id);
   const d = [ctx.recipe ? '' : basicCard(r, cfg, null, { persona: ctx.persona, pie: true })];
   // Hesaplanan göstergeler temel değer + pasta kartının hemen altında (gizlenmediyse)
   const hesapFirst = cfg.sectionOrder.includes('hesap') && !cfg.hiddenSections.includes('hesap');
   if (hesapFirst) d.push(derivedCard(r, cfg, open('hesap')));
+  if (cfg.showSource && cfg.baseSrc) d.push(`<p class="hint src-base">${L("Etiketsiz değerlerin kaynağı:")} ${srcChip(cfg.baseSrc, item)}</p>`);
   const tail = [identityCard(item, r, cfg, ctx), coverage(r, cfg), `<p class="hint reference-label">${esc(referenceLabel(cfg))}</p>`];
   if (cfg.hiddenSections.length) d.push(`<p class="hint">${L("{n} bölüm ayarlarda gizlendi. Kapsam özeti ve CSV tüm bileşenleri içerir.", { n: cfg.hiddenSections.length })}</p>`);
   if (cfg.pinnedNutrients.length) {

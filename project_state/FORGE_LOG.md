@@ -722,3 +722,13 @@
 - Hiçbir şablonda üretilmeyen `.quick`, `.split`, `.splitbar`, `.legend` kuralları ve `.nav-h` seçici parçası silindi (629 bayt). Dinamik üretilen `.src-*` ve `.sp-*` korundu (tarama `src-${s}` / `sp-${k}` şablonlarını doğruladı).
 - Kanıt: `npm test` 109/109; build + build:single; Playwright 156/156.
 - Sonraki: **B139** kapsamlı kod + veri denetimi (Kaan: "aynı mantıkla denetle, hata varsa döngüsel geliştir, dataları araştır").
+
+## B139 · 2026-11-13 · Unslop arayüz denetimi (Kaan: "denetle, daha estetik/klas, kullanıcı dostu")
+- Yöntem: `git fetch` (dış dallarda yeni commit yok: codex/forge-devam ve ccr-fc2d7af1 tamamen bizde); `npm run build` + yerel önizleme (127.0.0.1); Chromium 1280×800 ve 390×844, Keşfet/besin/Tarif/Kıyasla/Günlük/Ayarlar/Hakkında; konsol hatası, yatay taşma, kesilen metin, iç içe kaydırma ölçümü + ekran görüntüsü.
+- PASS: konsol hatası yok; sayfa yatay taşması yok; iç içe gereksiz kaydırma yok; Günlük tablosunun yatay kaydırması bilinçli (`.personal-table-scroll`); "Tarif adı" kesilmesi ekran okuyucu metni (`.sr`), hata değil.
+- FAIL → düzeltildi:
+  1. Her bileşen satırında aynı "USDA" etiketi tekrarlanıyordu (telefonda her satırı iki satıra çıkarıyordu): değerlerin ≥%50'si tek kaynaktansa o kaynak bir kez üstte ("Etiketsiz değerlerin kaynağı: USDA"), satırlarda yalnız farklı kaynaklar (Proantosiyanidin, FDC, Flavonoid, tahmin…). Nohut Protein bölümü telefonda ~1500 → ~1060 px.
+  2. Karşılama kartı "627 besin" diyordu, kategori listesi "590" gösteriyordu (gizli niş besinler) → görünen besin ve biçim sayısı.
+  3. Periyodik tablo karolarında anlamı olmayan sıra numaraları (1, 2, 3…) kaldırıldı.
+- Test: yeni B139 tarayıcı testi (satırlarda `.src-u` 0, üstte 1; kakaoda `.src-P` satırda; karşılama sayısı = "Tümü" sayısı; `.pt-n` yok). B120 sıra testi kaynak notunu atlar.
+- Kanıt: `npm test` 109/109; build + build:single; Playwright tam koşu 156 PASS + 2 B120 (beklenen sıra değişikliği) → düzeltme sonrası B120+B139 4/4 PASS.

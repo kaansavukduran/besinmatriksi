@@ -368,12 +368,14 @@ function welcome() {
       <li>${L("Biçimi (çiğ / haşlanmış…) seç, kaydırıcıyı sağa sola çekerek miktarı (1 g – 1 kg) ayarla.")}</li>
       <li>${L("“Tarife ekle” ile birden çok besinin toplam matriksini gör.")}</li>
     </ol>
-    <p class="hint">${L("{foods} besin, {forms} biçim, USDA tam bileşim tablosu · tamamen çevrimdışı · klavye gerekmez.", { foods: META.curated, forms: META.forms })}</p>
+    <p class="hint">${L("{foods} besin, {forms} biçim, USDA tam bileşim tablosu · tamamen çevrimdışı · klavye gerekmez.", { foods: visibleCurated().length, forms: visibleCurated().reduce((a, f) => a + f.forms.length, 0) })}</p>
   </div>`;
 }
 
 const narrowMQ = typeof matchMedia === 'function' ? matchMedia('(max-width: 700px)') : null;
 const narrowExplore = () => !!narrowMQ?.matches;
+// Karşılama kartındaki sayı, kategori listesinde gerçekten görünen besinlerle aynı olsun (gizlenen niş/hayvansal hariç)
+const visibleCurated = () => search('', { cat: null }).curated;
 function periodicGrid() {
   const special = S.cat && (S.cat.startsWith('col:') || S.cat === 'custom' || S.cat === 'ext');
   const res = search(S.q, { cat: special ? null : S.cat });
@@ -382,7 +384,7 @@ function periodicGrid() {
   const tile = (f, i) => {
     const v = f.forms[0].v;
     return `<button class="pt" data-action="ex-pick" data-id="${esc(f.id)}" title="${esc(foodName(f))}">
-      <span class="pt-n">${i + 1}</span><span class="pt-k">${v.energy != null ? fmtNum(v.energy) : '–'}<small>kcal</small></span>
+      <span class="pt-k">${v.energy != null ? fmtNum(v.energy) : '–'}<small>kcal</small></span>
       <span class="pt-i" aria-hidden="true">${foodIcon(f, 40)}</span>
       <b class="pt-name">${esc(foodName(f))}</b>
       <span class="pt-m">${v.protein != null ? `P ${fmtNum(v.protein)}` : ''}${v.fiber != null ? ` · ${L("Lif")} ${fmtNum(v.fiber)}` : ''}</span></button>`;
