@@ -72,4 +72,6 @@ export const FOOD_ICONS = {
   keci_sutu: '🐐', koyun_sutu: '🐑', kefir: '🥛', ayran_yayik: '🥛', keci_peyniri: '🧀', yogurt_yagsiz: '🥣', lor_cottage: '🧀', peynir_alti: '🥛', bildircin_yumurtasi: '🥚', ordek_yumurtasi: '🥚', kaz_yumurtasi: '🥚', kuzu_kiyma: '🥩', keci_eti: '🥩', dana_kiyma_genc: '🥩', kuzu_ciger: '🥩', kuzu_bobrek: '🥩', dana_yurek: '🥩', dana_dil: '🥩', iskembe: '🥩', dana_beyin: '🥩', kurutulmus_dana: '🥩', tavuk_kanat: '🍗', tavuk_kiyma: '🍗', tavuk_ciger: '🍗', tavuk_taslik: '🍗', ordek: '🦆', kaz: '🪿', bildircin: '🐦',
   whey_izolat: '💪', whey_tozu: '💪', yumurta_aki_tozu: '🥚', jelatin: '🦴', soya_protein_tozu: '🌱', bezelye_proteini: '🟢', pirinc_proteini: '🍚', kenevir_proteini: '🌿', kabak_cek_proteini: '🎃', karisik_bitkisel_protein: '🌱', kazein: '💪', sigir_proteini: '🥩', kolajen_peptit: '🦴', kreatin: '⚗️',
   ayran: '🥛', kaju_ayrani: '🥛',
+  eksi_mayali_ekmek: "🥖", cok_tahilli_ekmek: "🍞", yulaf_ekmegi: "🍞", kepekli_ekmek: "🍞", pumpernickel: "🍞", italyan_ekmegi: "🥖", bagel: "🥯", naan: "🫓", chapati: "🫓", misir_tortilla: "🌮", un_tortilla: "🌯", grissini: "🥖", yufka: "🫓", galeta_unu: "🍞", tam_bugday_kraker: "🍘", kruvasan: "🥐", falafel: "🧆", tabule: "🥗", zeytinyagli_sarma: "🫔", etli_sarma: "🫔", cacik: "🥣", baklava: "🍯", ispanakli_borek: "🥧", kuzu_sis: "🍢", tavuk_sis: "🍢", tavuk_doner: "🥙",
+  et_doner: '🥙',
 };

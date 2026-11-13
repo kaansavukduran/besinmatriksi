@@ -1058,3 +1058,21 @@ test('ayran tarif hesabı olarak görünür: Tahmin (tarif) etiketi ve oran; Ekm
   await expect(page.locator('.cat[data-cat="ekmek"]')).toContainText('Ekmek');
   await expect(page.locator('.cat[data-cat="yemek"]')).toHaveCount(1);
 });
+
+test('ekmek türleri ve hazır yemekler: ekşi mayalı, naan, döner, falafel; hayvansal yemekler gizlenebilir (B126)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('.cat[data-cat="ekmek"]').click();
+  for (const id of ['eksi_mayali_ekmek', 'cok_tahilli_ekmek', 'naan', 'bagel']) await expect(page.locator(`#foodlist [data-id="${id}"]`)).toHaveCount(1);
+  await page.locator('.cat[data-cat="yemek"]').click();
+  for (const id of ['et_doner', 'tavuk_doner', 'falafel', 'zeytinyagli_sarma']) await expect(page.locator(`#foodlist [data-id="${id}"]`)).toHaveCount(1);
+  await page.locator('#foodlist [data-id="et_doner"]').click();
+  await expect(page.locator('#matrix .src-r').first()).toContainText('Tahmin (tarif)');
+  await expect(page.locator('#matrix .idcard')).toContainText('Lamb, ground');
+  if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
+  await tab(page, 'ayarlar');
+  await page.locator('label.toggle:has(input[data-setbool="showAnimal"])').click();
+  await tab(page, 'kesfet');
+  await page.locator('.cat[data-cat="yemek"]').click();
+  await expect(page.locator('#foodlist [data-id="et_doner"]')).toHaveCount(0);
+  await expect(page.locator('#foodlist [data-id="falafel"]')).toHaveCount(1);
+});

@@ -314,7 +314,7 @@ for (const food of FOODS) {
       }
       return { key, label: custom || FORM_LABELS[key], usda: null, ifct: null, estFrom: null,
         recipeOf: parts.map((x) => ({ ndb: x.code, desc: x.desc, pct: Math.round((x.g / total) * 1000) / 10 })),
-        portions: [{ g: 200, label: '1 su bardağı (≈200 g)', en: '1 glass (≈200 g)' }], v, s };
+        portions: key === 'icecek' ? [{ g: 200, label: '1 su bardağı (≈200 g)', en: '1 glass (≈200 g)' }] : [], v, s };
     }
     if (!ndb && food.fixed) {
       // Kimyasal formülden hesaplanan değer (ör. kreatin monohidrattaki kreatin); kaynak 'd' (hesap)

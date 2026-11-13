@@ -621,3 +621,12 @@
 - Kanıt: `npm test` 96/96; Playwright 130/130 (B094 3 ardışık koşu PASS).
 - Alt ajanlar (kod denetimi, besin adayları, eksik veri kaynakları) 5 saatlik kota sınırında yarıda kaldı; kota yenilenince sürdürülecek.
 - Sonraki: **B126** FNDDS'ten döner/kebap/mezeler ve ekmek türleri (ekşi mayalı, çok tahıllı…) + beta.24.
+
+## B126 · 2026-11-13 · Ekmek türleri, döner ve mezeler
+- Ekmek ve unlu mamuller (USDA SR28): ekşi mayalı/Fransız (18029), yulaf (18039), kepekli (18066), pumpernickel (18044), İtalyan (18033), bagel (18001), mısır ve buğday tortillası (18363, 18364), grissini (18080), yufka/filo (18338), galeta unu (18079), tam buğday kraker (18235), tereyağlı kruvasan (18239, hayvansal); USDA FNDDS: çok tahıllı ekmek (51601020), naan (51108100), çapati/roti (51300175).
+- Hazır yemekler ve mezeler (FNDDS tarifleri, `N` etiketli, notta ana malzemeler): falafel, tabule, zeytinyağlı sarma (bitkisel); etli sarma, cacık/tzatziki, cevizli baklava, ıspanaklı börek, kuzu şiş, tavuk şiş (hayvansal, `animal: true`; Ayarlar'dan gizlenince listeden çıkar).
+- Döner: USDA'da ölçülmüş döner yok. Et döner (ekmeksiz) = USDA FNDDS gyro tarifindeki oranla %49,6 ızgara kuzu kıyma (17225) + %49,6 ızgara dana kıyma %80 yağsız (23573) + %0,8 tuz → "Tahmin (tarif)". Tavuk döner = en yakın ölçüm, rotisserie tavuk but eti derisiz (05345); adında "yakın USDA kaydı" ve notta açıklama.
+- Tarif hesabı porsiyonu yalnız içeceklerde "1 su bardağı".
+- İlk hatalar: "Tzatziki (cacık)" EN adında Türkçe harf (B051); telefonda test detaydan listeye dönmeden kategori tıklıyordu.
+- Kanıt: `npm run data` (463 besin); `npm test` 96/96; Playwright 129/132 → düzeltme sonrası B051+B126 4/4 PASS.
+- Sonraki: **B127** beta.24 yayını; ardından alt ajan bulguları (kod denetimi, ek besin adayları, eksik veri kaynakları — kota yenilenince).

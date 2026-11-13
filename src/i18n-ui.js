@@ -738,5 +738,18 @@ export const UI_EN = {
  "Tahmin (tarif)": "Estimate (recipe)",
  "Ölçüm değil, tarif hesabı (tahmin): %60 tam yağlı yoğurt + %39,5 su + %0,5 tuz (USDA kayıtlarından). Markaya ve ev tarifine göre yoğurt, su ve tuz oranı değişir; kendi oranınla Tarif oluştur’da hesaplayabilirsin.": "Not a measurement but a recipe calculation (estimate): 60% whole-milk yogurt + 39.5% water + 0.5% salt (from USDA records). The yogurt, water and salt ratio varies by brand and home recipe; you can calculate your own ratio in Create recipe.",
  "Ölçüm değil, tarif hesabı (tahmin): %20 çiğ kaju + %79,5 su + %0,5 tuz (USDA kayıtlarından), süzülmeden. Fermantasyonla şekerin bir kısmı azalır ve probiyotik içerik oluşur; bunlar hesaba katılmadı.": "Not a measurement but a recipe calculation (estimate): 20% raw cashews + 79.5% water + 0.5% salt (from USDA records), unstrained. Fermentation lowers some of the sugar and creates probiotic content; these are not accounted for.",
- "1 su bardağı (≈200 g)": "1 glass (≈200 g)"
+ "1 su bardağı (≈200 g)": "1 glass (≈200 g)",
+ "USDA kaydı Fransız/Viyana ekmeğini ekşi mayalılarla birlikte verir.": "The USDA record groups French/Vienna bread with sourdough.",
+ "USDA FNDDS: tam buğdaylı hazır naan; tarifte süt ürünü bulunabilir, etikete bak.": "USDA FNDDS: whole-wheat commercial naan; recipes may contain dairy, check the label.",
+ "USDA FNDDS tarifi: nohut, un, soğan, kimyon; yağda kızartılmış.": "USDA FNDDS recipe: chickpeas, flour, onion, cumin; deep-fried.",
+ "USDA FNDDS tarifi: maydanoz, zeytinyağı, domates, soğan, limon; bulgursuz/az bulgurlu.": "USDA FNDDS recipe: parsley, olive oil, tomato, onion, lemon; little or no bulgur.",
+ "USDA FNDDS tarifi: asma yaprağı, pirinç, zeytinyağı, soğan, maydanoz, limon.": "USDA FNDDS recipe: grape leaves, rice, olive oil, onion, parsley, lemon.",
+ "USDA FNDDS tarifi: asma yaprağı, dana kıyma, pirinç, zeytinyağı.": "USDA FNDDS recipe: grape leaves, ground beef, rice, olive oil.",
+ "USDA FNDDS tarifi: süzme yoğurt, salatalık, zeytinyağı, sarımsak, limon, tuz.": "USDA FNDDS recipe: strained yogurt, cucumber, olive oil, garlic, lemon, salt.",
+ "USDA FNDDS tarifi: yufka, ceviz, badem, tereyağı, şeker şurubu.": "USDA FNDDS recipe: phyllo, walnuts, almonds, butter, sugar syrup.",
+ "USDA FNDDS tarifi: yufka, ıspanak, beyaz peynir, lor/ricotta, tereyağı.": "USDA FNDDS recipe: phyllo, spinach, feta, ricotta, butter.",
+ "USDA FNDDS tarifi: kuzu eti, mantar, soğan, biber, sarımsak, soya sosu; patatessiz.": "USDA FNDDS recipe: lamb, mushrooms, onion, pepper, garlic, soy sauce; no potatoes.",
+ "USDA FNDDS tarifi: tavuk/hindi, biber, mantar, maydanoz, limon, yağ; patatessiz.": "USDA FNDDS recipe: chicken/turkey, peppers, mushrooms, parsley, lime, oil; no potatoes.",
+ "Tavuk döner için ölçülmüş kayıt yok; değerler en yakın USDA ölçümünden: şişte (rotisserie) kızarmış tavuk but eti, derisiz. Döner marinesi ve yağı farklıdır.": "There is no measured record for chicken doner; values come from the closest USDA measurement: rotisserie chicken thigh meat, skinless. Doner marinade and fat differ.",
+ "Ölçüm değil, tarif hesabı (tahmin): USDA FNDDS gyro tarifindeki gibi %49,6 ızgara kuzu kıyma + %49,6 ızgara dana kıyma (%80 yağsız) + %0,8 tuz; ekmeksiz. Döner yaprağının baharat, yoğurt/süt ve yağ oranı işletmeye göre değişir.": "Not a measurement but a recipe calculation (estimate): as in the USDA FNDDS gyro recipe, 49.6% broiled ground lamb + 49.6% broiled ground beef (80% lean) + 0.8% salt; no bread. Doner spices, yogurt/milk and fat vary by shop."
 };
