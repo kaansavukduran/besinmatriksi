@@ -1129,3 +1129,11 @@ test('yeni besinler aranabilir: mercimek çorbası, yulaf sütü (B129)', async 
   await page.locator('#foodlist [data-id="badem_ezmesi"]').click();
   await expect(page.locator('#matrix')).toContainText('Protein');
 });
+
+test('mercimek köftesi tarif hesabı etiketiyle açılır (B130)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('mercimek köftesi');
+  await page.locator('#foodlist [data-id="mercimek_koftesi"]').click();
+  await expect(page.locator('#matrix .src-r').first()).toContainText('Tahmin (tarif)');
+  await expect(page.locator('#matrix .idcard')).toContainText('Bulgur, cooked');
+});

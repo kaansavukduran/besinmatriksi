@@ -220,3 +220,14 @@ test('B129 yeni USDA besinleri: çorba, ezmeler, bitkisel sütler; hayvansallar 
   for (const id of ['menemen', 'musakka', 'sutlac', 'sade_yag']) assert.equal(g(id).animal, true, id);
   assert.equal(g('sutlu_cikolata').cat, 'sut');
 });
+
+test('Türk tarif hesapları: mercimek köftesi ve etsiz çiğ köfte, "Tahmin (tarif)" (B130)', () => {
+  for (const [id, lo, hi] of [['mercimek_koftesi', 100, 160], ['cig_kofte', 170, 240]]) {
+    const f = DB.foods.find((x) => x.id === id); const fm = f.forms[0];
+    assert.equal(f.animal, false, id);
+    assert.ok(Object.values(fm.s).every((s) => s === 'r'), id);
+    assert.ok(fm.v.energy > lo && fm.v.energy < hi, `${id} ${fm.v.energy}`);
+    assert.ok(fm.recipeOf.length >= 8 && Math.abs(fm.recipeOf.reduce((a, x) => a + x.pct, 0) - 100) < 0.5, id);
+    assert.match(f.note, /Ölçüm değil/);
+  }
+});

@@ -661,3 +661,9 @@
 - Sonraki: **B130** purin DB ad eşlemelerinin incelenmesi ya da Türkiye'ye özgü tarif hesapları (simit, lahmacun, mercimek köftesi) — beta.25 yayın doğrulamasından sonra.
 - Yayın kanıtı: v1.1.2-beta.25 pre-release 2026-11-13T07:46:49Z (release.yml run 43386967105 success). ci.yml: b751bcf (B128 dahil) run 43385609289 success; 53246fc run 43386956118 07:52'de sürüyordu.
 - ci.yml run 43386956118 (53246fc, beta.25): "Tarayıcı uyumu (Firefox, Safari/WebKit, iPhone, iPad)" success, "test" success → RUNTIME_TESTED çapraz tarayıcı.
+
+## B130 · 2026-11-13 · Türk tarif hesapları: mercimek köftesi, etsiz çiğ köfte
+- USDA'da kaydı yok → tarif hesabı (`r`, "Tahmin (tarif)"), malzeme oranları ve ikameler notta. Mercimek köftesi pişmiş ağırlıkla (haşlanmış mercimek 16070, pişmiş bulgur 20013, haşlanmış soğan 11283…): ısıyla değişen bileşenler tahmin edilmesin diye pişmiş USDA kayıtları kullanıldı → 126,6 kcal/100 g. Çiğ köfte pişirilmez (kuru bulgur + su + salça + soğan + zeytinyağı + maydanoz + limon + biber + kimyon + tuz) → 206,3 kcal/100 g. İsot ve biber salçası USDA'da yok (cayenne ve domates salçası ikame; notta).
+- Simit ve lahmacun bilinçli olarak eklenmedi: fırınlama su kaybı ve ısıyla değişen vitaminler tarif oranıyla dürüst hesaplanamaz (CLAUDE.md: ısıyla değişen bileşenler tahmin edilmez). Pişme verimi + yalnız ısıya dayanıklı bileşenler modeli ayrı Forge ister.
+- Kanıt: `npm run data` (615 besin); `npm test` 101/101; build + build:single; Playwright 142/142 (B130 dahil).
+- Sonraki: **B131** fırın ürünleri için pişme verimi modeli (yalnız ısıya dayanıklı bileşenler: makrolar, lif, mineraller) → simit, lahmacun, pide; ya da purin DB ad eşleme incelemesi.
