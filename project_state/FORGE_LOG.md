@@ -732,3 +732,9 @@
   3. Periyodik tablo karolarında anlamı olmayan sıra numaraları (1, 2, 3…) kaldırıldı.
 - Test: yeni B139 tarayıcı testi (satırlarda `.src-u` 0, üstte 1; kakaoda `.src-P` satırda; karşılama sayısı = "Tümü" sayısı; `.pt-n` yok). B120 sıra testi kaynak notunu atlar.
 - Kanıt: `npm test` 109/109; build + build:single; Playwright tam koşu 156 PASS + 2 B120 (beklenen sıra değişikliği) → düzeltme sonrası B120+B139 4/4 PASS.
+
+## B140 · 2026-11-13 · Kod denetimi: kritik kimlik hatası, kopyasız içe aktarma gerçek veride
+- Kaynak: alt ajan kod denetimi (scratchpad/audit/CODE_AUDIT.md, node ile yeniden üretimli).
+- KRİTİK #1: `kudret_narı` kimliği (ASCII dışı ı) kayıt kuralına uymuyordu → tarife eklenince yeniden açılışta sessizce siliniyor; günlüğe eklenince `normalizePersonal` hata verip tüm günlük/profil kaydını kilitliyordu. Kimlik `kudret_nari`; `LEGACY_IDS` ile eski kayıtlar (tarif, günlük, koleksiyon, yedek) taşınır; her katalog kimliğinin kurala uyduğunu sınayan test.
+- ORTA #2: B133 `mergeImport` gerçek uygulama belleğinde eşleşmiyordu (`setCustomFoods` `_k` ekliyor; oturumda eklenen tarif öğelerinde `pricePerKg` yok) → imzalar `_` alanlarını atar, tarif imzası normalize alanlarla kurulur; testte bellek biçimi.
+- Kanıt: `npm run data`; `npm test` 111/111; build + build:single; Playwright 158/158.

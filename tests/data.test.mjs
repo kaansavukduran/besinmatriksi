@@ -283,3 +283,13 @@ test('zeytinyağlılar ve bulgur pilavı: bitkisel tarif hesabı (B137)', () => 
   }
   assert.match(DB.foods.find((x) => x.id === 'imam_bayildi').note, /yağ emişi/);
 });
+
+test('her katalog kimliği kayıt kimliği kuralına uyar; eski "kudret_narı" kayıtları taşınır (B140)', async () => {
+  const { validRef } = await import('../src/records.js');
+  const bad = DB.foods.filter((f) => !/^[a-zA-Z0-9_-]{1,100}$/.test(f.id)).map((f) => f.id);
+  assert.deepEqual(bad, []);
+  assert.deepEqual(validRef({ t: 'c', id: 'kudret_narı', f: 0 }), { t: 'c', id: 'kudret_nari', f: 0 });
+  const { normalizePersonal } = await import('../src/personal.js');
+  const st = normalizePersonal({ schema: 1, entries: [{ id: 'e1', day: '2026-11-13', ref: { t: 'c', id: 'kudret_narı', f: 0 }, g: 100 }] });
+  assert.equal(st.entries[0].ref.id, 'kudret_nari');
+});

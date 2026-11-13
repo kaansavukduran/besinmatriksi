@@ -55,3 +55,15 @@ test('aynı yedek iki kez içe aktarılınca kopya oluşmaz; yeni kayıtlar ekle
   assert.equal(third.recipes.length, 1); assert.equal(third.recipes[0].name, 'Öğle');
   assert.equal(third.recipes[0].items[0].ref.id, first.custom[0].id);
 });
+
+test('kopyasız içe aktarma bellekteki gerçek kayıtlarla da çalışır: _k anahtarı, pricePerKg eksik (B140)', async () => {
+  const { exportPayload, parseImport, mergeImport } = await import('../src/store.js');
+  const custom = [{ id: 'c1', name: 'Ev ekmeğim', liquid: false, portion: null, note: '', v: { energy: 250 } }];
+  const recipes = [{ id: 'r1', name: 'Kahvaltı', servings: 1, cookedWeight: null, created: 1, updated: 1, items: [{ id: 'i1', ref: { t: 'u', id: 'c1' }, g: 50 }] }];
+  const text = exportPayload(recipes, {}, custom, [], []);
+  const first = mergeImport({ recipes: [], custom: [], profiles: [], collections: [] }, parseImport(text));
+  // Uygulama belleği: kendi besinde arama anahtarı, tarif öğesinde pricePerKg yok
+  const cur = { recipes: first.recipes.map((r) => ({ ...r, items: r.items.map(({ pricePerKg, ...it }) => it) })), custom: first.custom.map((f) => ({ ...f, _k: 'ev ekmegim' })), profiles: [], collections: [] };
+  const again = mergeImport(cur, parseImport(text));
+  assert.deepEqual([again.recipes.length, again.custom.length, again.skipped], [0, 0, 2]);
+});

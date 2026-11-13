@@ -246,7 +246,7 @@ export const FOOD_ART = {
   misir: ['long', '#fdd835', '#9ccc65', 'corn'], enginar: ['leafy', '#7cb342', '#33691e', 'vine'], kuskonmaz: ['long', '#7cb342', '#4a148c', 'spear'],
   sogan: ['bulb', '#d4a373', '#7cb342', 'onion'], sarimsak: ['bulb', '#f5f5f5', '#9ccc65', 'garlic'], pirasa: ['long', '#e8f5e9', '#2e7d32', 'leek'],
   kereviz_sap: ['leafy', '#a5d6a7', '#7cb342', 'stalk'], rezene: ['bulb', '#e6ee9c', '#7cb342', 'onion'], alabas: ['bulb', '#ce93d8', '#8bc34a', 'onion'],
-  'kudret_narı': ['long', '#689f38', '#ff7043', 'cuke'], fasulye_filizi: ['herb', '#c0ca33', '#9e9d24', 'feather'], yonca_filizi: ['herb', '#8bc34a', '#689f38', 'round'],
+  kudret_nari: ['long', '#689f38', '#ff7043', 'cuke'], fasulye_filizi: ['herb', '#c0ca33', '#9e9d24', 'feather'], yonca_filizi: ['herb', '#8bc34a', '#689f38', 'round'],
   mercimek_filizi: ['herb', '#afb42b', '#827717', 'sprig'],
   // ---- yeşil yapraklılar
   ispanak: ['leafy', '#2e7d32', '#a5d6a7'], karalahana: ['leafy', '#1b5e20', '#66bb6a', 'curly'], collard: ['leafy', '#388e3c', '#c8e6c9'],

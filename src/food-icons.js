@@ -14,7 +14,7 @@ export const FOOD_ICONS = {
   domates: '🍅', domates_salcasi: '🥫', salatalik: '🥒', biber_yesil: '🫑', biber_kirmizi: '🫑', aci_biber: '🌶️', patlican: '🍆', kabak: '🥒',
   balkabagi: '🎃', brokoli: '🥦', karnabahar: '🥦', brokselahanasi: '🥬', lahana: '🥬', kirmizi_lahana: '🥬', lahana_tursusu: '🫙', salatalik_tursusu: '🥒',
   bamya: '🌶️', taze_fasulye: '🫘', bezelye: '🟢', taze_bakla: '🫘', edamame: '🫘', misir: '🌽', enginar: '🌿', kuskonmaz: '🌱', sogan: '🧅', sarimsak: '🧄',
-  pirasa: '🧅', kereviz_sap: '🌿', rezene: '🌿', alabas: '🥬', 'kudret_narı': '🥒', fasulye_filizi: '🌱', yonca_filizi: '🌱', mercimek_filizi: '🌱',
+  pirasa: '🧅', kereviz_sap: '🌿', rezene: '🌿', alabas: '🥬', kudret_nari: '🥒', fasulye_filizi: '🌱', yonca_filizi: '🌱', mercimek_filizi: '🌱',
   // yeşil yapraklılar
   ispanak: '🥬', karalahana: '🥬', collard: '🥬', pazi: '🥬', pancar_yapragi: '🥬', roka: '🌿', marul: '🥬', aysberg: '🥬', semizotu: '🌿', tere: '🌱',
   su_teresi: '🌿', hardal_yesili: '🥬', karahindiba: '🌼', asma_yapragi: '🍃', pak_choi: '🥬', moringa: '🍃', amarant_yapragi: '🍃',

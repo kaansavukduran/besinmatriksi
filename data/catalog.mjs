@@ -146,7 +146,7 @@ export const FOODS = [
   F('kereviz_sap', 'Kereviz sapı', 'celery', 'sebze', [['cig', '11143', null]], { allergens: ['kereviz'] }),
   F('rezene', 'Rezene (baş)', 'fennel bulb', 'sebze', [['cig', '11957', null]]),
   F('alabas', 'Alabaş (kohlrabi)', 'kohlrabi', 'sebze', [['cig', '11241', null]]),
-  F('kudret_narı', 'Kudret narı (acı kavun)', 'bitter gourd', 'sebze', [['cig', '11024', null]]),
+  F('kudret_nari', 'Kudret narı (acı kavun)', 'bitter gourd', 'sebze', [['cig', '11024', null]]),
   F('fasulye_filizi', 'Maş fasulyesi filizi', 'mung bean sprouts', 'sebze', [['filiz', '11043', null]]),
   F('yonca_filizi', 'Yonca (alfalfa) filizi', 'alfalfa sprouts', 'sebze', [['filiz', '11001', null]]),
   F('mercimek_filizi', 'Mercimek filizi', 'lentil sprouts', 'sebze', [['filiz', '11248', null]]),

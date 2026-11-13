@@ -8,7 +8,7 @@ export const POPULAR = {
   kurumeyve: ['kuru_kayisi', 'kuru_uzum', 'kuru_incir', 'hurma', 'kuru_erik', 'hurma_medjool', 'goji', 'kuru_muz'],
   sebze: ['domates', 'salatalik', 'sogan', 'sarimsak', 'taze_sogan', 'biber_yesil', 'biber_kirmizi', 'patlican', 'kabak', 'domates_salcasi', 'aci_biber', 'taze_fasulye', 'bezelye',
     'lahana', 'brokoli', 'karnabahar', 'pirasa', 'misir', 'bamya', 'balkabagi', 'kereviz_sap', 'enginar', 'salatalik_tursusu', 'taze_bakla', 'kirmizi_lahana',
-    'brokselahanasi', 'kuskonmaz', 'rezene', 'lahana_tursusu', 'edamame', 'alabas', 'fasulye_filizi', 'mercimek_filizi', 'yonca_filizi', 'kudret_narı'],
+    'brokselahanasi', 'kuskonmaz', 'rezene', 'lahana_tursusu', 'edamame', 'alabas', 'fasulye_filizi', 'mercimek_filizi', 'yonca_filizi', 'kudret_nari'],
   yaprak: ['ispanak', 'marul', 'roka', 'semizotu', 'asma_yapragi', 'aysberg', 'tere', 'pazi', 'karalahana', 'su_teresi', 'pancar_yapragi', 'karahindiba',
     'hardal_yesili', 'collard', 'pak_choi', 'amarant_yapragi', 'moringa'],
   kok: ['patates', 'havuc', 'patates_kizartmasi', 'pancar', 'turp', 'tatli_patates', 'kereviz_kok', 'zencefil', 'salgam', 'yer_elmasi', 'bayir_turpu', 'yaban_havucu', 'manyok', 'taro', 'yam'],
@@ -39,7 +39,7 @@ export const POPULAR = {
 };
 
 export const NICHE = new Set(['jackfruit', 'demirhindi', 'plantain', 'guava', 'carkifelek', 'lici', 'papaya', 'murver', 'bektasi', 'frenk_uzumu',
-  'kudret_narı', 'yonca_filizi', 'collard', 'pak_choi', 'amarant_yapragi', 'manyok', 'taro', 'yam', 'yaban_havucu', 'urad',
+  'kudret_nari', 'yonca_filizi', 'collard', 'pak_choi', 'amarant_yapragi', 'manyok', 'taro', 'yam', 'yaban_havucu', 'urad',
   'guvercin_bezelyesi', 'pinto', 'hardal_tohumu',
   'cemen', 'kereviz_tohumu', 'karaman_kimyonu', 'aspir_yagi', 'pirinc_kepegi_yagi', 'hardal_yagi', 'palm_yagi', 'jaggery', 'akcaagac', 'maya_ozu', 'kuru_muz',
   'nane_pepermint', 'hindistancevizi_sutu', 'pirinc_sutu']);

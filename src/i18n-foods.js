@@ -103,7 +103,7 @@ export const EN_FOODS = {
   brokselahanasi: 'Brussels sprouts', lahana: 'White cabbage', kirmizi_lahana: 'Red cabbage', lahana_tursusu: 'Sauerkraut', salatalik_tursusu: 'Sour pickled cucumber',
   bamya: 'Okra', taze_fasulye: 'Green beans', bezelye: 'Green peas (fresh)', taze_bakla: 'Broad beans in pod', edamame: 'Edamame', misir: 'Sweet corn (fresh)',
   enginar: 'Globe artichoke', kuskonmaz: 'Asparagus', sogan: 'Onion', sarimsak: 'Garlic', pirasa: 'Leek', kereviz_sap: 'Celery stalk', rezene: 'Fennel bulb',
-  alabas: 'Kohlrabi', 'kudret_narı': 'Bitter gourd', fasulye_filizi: 'Mung bean sprouts', yonca_filizi: 'Alfalfa sprouts', mercimek_filizi: 'Lentil sprouts',
+  alabas: 'Kohlrabi', kudret_nari: 'Bitter gourd', fasulye_filizi: 'Mung bean sprouts', yonca_filizi: 'Alfalfa sprouts', mercimek_filizi: 'Lentil sprouts',
   ispanak: 'Spinach', karalahana: 'Kale', collard: 'Collard greens', pazi: 'Swiss chard', pancar_yapragi: 'Beet greens', roka: 'Rocket (arugula)',
   marul: 'Romaine lettuce', aysberg: 'Iceberg lettuce', semizotu: 'Purslane', tere: 'Garden cress', su_teresi: 'Watercress', hardal_yesili: 'Mustard greens',
   karahindiba: 'Dandelion greens', asma_yapragi: 'Grape leaves', pak_choi: 'Pak choi', moringa: 'Moringa leaves', amarant_yapragi: 'Amaranth leaves',

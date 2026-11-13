@@ -3,8 +3,11 @@ import { uid, clamp } from './util.js';
 const object = v => v && typeof v === 'object' && !Array.isArray(v);
 const id = v => typeof v === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(v);
 const finite = v => typeof v === 'number' && Number.isFinite(v);
+// Eski sürümlerde ASCII dışı harf taşıyan katalog kimlikleri (kayıtlar bunlarla saklanmış olabilir)
+export const LEGACY_IDS = { 'kudret_narı': 'kudret_nari' };
 export function validRef(ref) {
   if (!object(ref)) return null;
+  if ((ref.t === 'c') && LEGACY_IDS[ref.id]) ref = { ...ref, id: LEGACY_IDS[ref.id] };
   if (ref.t === 'c' && id(ref.id) && Number.isInteger(ref.f) && ref.f >= 0) return { t: 'c', id: ref.id, f: ref.f };
   if (ref.t === 'u' && id(ref.id)) return { t: 'u', id: ref.id };
   if (ref.t === 'x' && typeof ref.n === 'string' && /^\d{4,6}$/.test(ref.n)) return { t: 'x', n: ref.n };

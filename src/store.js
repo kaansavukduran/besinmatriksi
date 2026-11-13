@@ -95,9 +95,11 @@ export function parseImport(text) {
 // Aynı yedeği ikinci kez içe aktarınca kopya oluşmasın: kimlik ve zaman damgaları dışında içerik olarak aynı olan
 // kendi besin, tarif, profil ve koleksiyonlar atlanır; atlanan kendi besine verilen bağlar mevcut kayda yönlendirilir.
 const omit = (o, keys) => Object.fromEntries(Object.entries(o).filter(([k]) => !keys.includes(k)));
-const recipeSig = (r) => JSON.stringify({ ...omit(r, ['id', 'created', 'updated']), items: r.items.map((it) => omit(it, ['id'])) });
+// Bellekteki kayıtlar normalize edilmemiş alanlar taşıyabilir (`_k` arama anahtarı, eksik pricePerKg): imzadan önce eşitle
+const plain = (o) => Object.fromEntries(Object.entries(o).filter(([k]) => !k.startsWith('_')));
+const recipeSig = (r) => JSON.stringify({ name: r.name, servings: r.servings ?? 1, cookedWeight: r.cookedWeight ?? null, items: r.items.map((it) => ({ ref: it.ref, g: it.g, pricePerKg: it.pricePerKg ?? null })) });
 export function mergeImport(cur, imp) {
-  const customSig = (f) => JSON.stringify(omit(f, ['id']));
+  const customSig = (f) => JSON.stringify(omit(plain(f), ['id']));
   const haveCustom = new Map(cur.custom.map((f) => [customSig(f), f.id]));
   const idMap = {}; const custom = [];
   for (const f of imp.custom) { const hit = haveCustom.get(customSig(f)); if (hit) idMap[f.id] = hit; else { custom.push(f); haveCustom.set(customSig(f), f.id); } }
