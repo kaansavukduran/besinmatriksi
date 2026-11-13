@@ -573,3 +573,7 @@
 - Kırmızı/yeşil mercimek zaten vardı. USDA SR28: hibiskus çayı (14649), papatya dışı bitki çayı (14381), oolong (14185). USDA FNDDS 2021-2023 (CC0; yeni `N` kaynak etiketi, `data/raw/USDA_FNDDS_*`): Türk kahvesi (92101600; FNDDS tarifi demleme kahve + şeker, notla), latte ve cappuccino bitkisel sütle (92101903, 92161002). Derleme `N<kod>` biçimli formları FNDDS'ten okur; porsiyonlar ve Türk ölçüleri dahil.
 - Siyez (einkorn), siyah pirinç, siyah (beluga) mercimek ve Americano: SR28, FDC Foundation ve FNDDS'te ölçülmüş kayıt yok (arandı) → açık notla katalogda; değer uydurulmadı; etiketten ekleme / Americano için tarif (espresso + su) yolu.
 - Kanıt: `npm run data` (351 besin); `npm test` 92/92; Playwright 124/124.
+
+## B116 · 2026-11-13 · beta.22 yayın kanıtı
+- v1.1.2-beta.22 pre-release 2026-11-12T23:59:08Z (commit 782e188). Cihaz kurulumu NOT_RUN.
+- B118: beta.23 (B117) release.yml tetiklendi.
