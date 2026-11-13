@@ -659,3 +659,4 @@
 - Kanıt: `npm run data` (613 besin, ext 2985); `npm test` 100/100; `npm run build && npm run build:single`; Playwright 138/138 + B129 2/2.
 - Sürüm 1.1.2-beta.25 (7 dosya + bildirimler), RELEASE_NOTES güncel; release.yml publish+prerelease.
 - Sonraki: **B130** purin DB ad eşlemelerinin incelenmesi ya da Türkiye'ye özgü tarif hesapları (simit, lahmacun, mercimek köftesi) — beta.25 yayın doğrulamasından sonra.
+- Yayın kanıtı: v1.1.2-beta.25 pre-release 2026-11-13T07:46:49Z (release.yml run 43386967105 success). ci.yml: b751bcf (B128 dahil) run 43385609289 success; 53246fc run 43386956118 07:52'de sürüyordu.
