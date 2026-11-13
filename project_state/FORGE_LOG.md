@@ -651,3 +651,11 @@
 - İlk hata: testteki varsayım (ayranda iyot yok) yanlıştı; tuz kaydı İyot DB'de ölçülü → test hesaba göre düzeltildi.
 - Kanıt: `npm run data`; `npm test` 99/99; `npm run build && npm run build:single`; Playwright 136/136 + B128 2/2 (kakao: "USDA Proantosiyanidin", yumurta: "USDA Kolin" etiketleri).
 - Sonraki: **B129** yeni besin adayları (150 doğrulanmış USDA kaydı) + beta.25.
+
+## B129 · 2026-11-13 · 150 yeni USDA besini + 1.1.2-beta.25
+- Alt ajan araştırması (candidates.json, validate.py: 0 hata) + çizim/simge/EN meta (alt ajan; 150 benzersiz SVG, render denetimi). integrate.py ile katalog, food-art, food-icons, i18n eklendi; FNDDS alt kümesine 21 yeni tarif kodu (surveyDownload.json 2024-10-31'den; SOURCE extracted_codes güncel). 463 → 613 besin.
+- Sütlü çikolata (hayvansal) Tatlılar yerine Süt ürünleri'ne alındı. Hayvansal yemekler (menemen, musakka, sütlaç…) `animal: true`.
+- İlk hata: bitkisel ezme/süt/yoğurt adlarındaki "butter/milk/yogurt" hayvansal denetim testinde yanlış alarm → bitkisel istisna listesi genişletildi (kayıtların içerikleri tek tek kontrol edildi).
+- Kanıt: `npm run data` (613 besin, ext 2985); `npm test` 100/100; `npm run build && npm run build:single`; Playwright 138/138 + B129 2/2.
+- Sürüm 1.1.2-beta.25 (7 dosya + bildirimler), RELEASE_NOTES güncel; release.yml publish+prerelease.
+- Sonraki: **B130** purin DB ad eşlemelerinin incelenmesi ya da Türkiye'ye özgü tarif hesapları (simit, lahmacun, mercimek köftesi) — beta.25 yayın doğrulamasından sonra.

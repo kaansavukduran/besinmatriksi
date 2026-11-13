@@ -82,7 +82,7 @@ test('hayvansal kayıtlar yalnız hayvansal kategorilerde ve işaretli; bitkisel
   for (const f of DB.foods) {
     if (animalCats.has(f.cat)) assert.equal(f.animal, true, f.id);
     if (f.animal) { animals++; continue; }
-    for (const fm of f.forms) if (fm.usda) assert.ok(!bad.test(fm.usda.desc.replace(/peanut butter|sesame butter|soymilk|almond milk|rice milk|coconut milk|coconut cream|cocoa butter|butternut|butterhead|non-dairy milk/gi, '')), fm.usda.desc);
+    for (const fm of f.forms) if (fm.usda) assert.ok(!bad.test(fm.usda.desc.replace(/peanut butter|sesame butter|soymilk|almond milk|rice milk|coconut milk|coconut cream|cocoa butter|butternut|butterhead|non-dairy milk|almond butter|cashew butter|sunflower seed butter|oat milk|yogurt, soy|yogurt, coconut milk|yogurt, almond milk/gi, '')), fm.usda.desc);
   }
   assert.ok(animals >= 30);
   assert.equal(DB.foods.find((f) => f.id === 'bal').animal, true);
@@ -209,4 +209,14 @@ test('Tarif hesabında iyot inert malzemede 0 sayılmaz, yalnız tüm malzemeler
   const ay = DB.foods.find((x) => x.id === 'ayran').forms[0];
   assert.equal(ay.s.iodine, 'r'); assert.ok(ay.v.iodine > 40 && ay.v.iodine < 50, String(ay.v.iodine));
   assert.match(DB.foods.find((x) => x.id === 'ayran').note, /iyotlu sofra tuzu/);
+});
+
+test('B129 yeni USDA besinleri: çorba, ezmeler, bitkisel sütler; hayvansallar işaretli', () => {
+  const g = (id) => DB.foods.find((x) => x.id === id);
+  assert.ok(DB.foods.length >= 613);
+  const soup = g('mercimek_corbasi'); assert.equal(soup.cat, 'yemek'); assert.equal(soup.animal, false);
+  assert.ok(Object.values(soup.forms[0].s).every((s) => s === 'N' || s === 'L' || s === 'I' || s === 'C' || s === 'P'));
+  for (const id of ['badem_ezmesi', 'kaju_ezmesi', 'yulaf_sutu', 'soya_yogurdu', 'tahin_helvasi']) assert.equal(g(id).animal, false, id);
+  for (const id of ['menemen', 'musakka', 'sutlac', 'sade_yag']) assert.equal(g(id).animal, true, id);
+  assert.equal(g('sutlu_cikolata').cat, 'sut');
 });

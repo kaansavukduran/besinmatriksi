@@ -1119,3 +1119,13 @@ test('USDA özel veri tabanları: kakaoda proantosiyanidin, yumurtada kolin tür
   await expect(page.locator('#matrix')).toContainText('Kolin – fosfatidilkolinden');
   await expect(page.locator('#matrix .src-C').first()).toContainText('USDA Kolin');
 });
+
+test('yeni besinler aranabilir: mercimek çorbası, yulaf sütü (B129)', async ({ page }) => {
+  await page.goto('/');
+  for (const [q, id] of [['mercimek çorbası', 'mercimek_corbasi'], ['yulaf sütü', 'yulaf_sutu'], ['badem ezmesi', 'badem_ezmesi']]) {
+    await page.locator('#q').fill(q);
+    await expect(page.locator(`#foodlist [data-id="${id}"]`), q).toHaveCount(1);
+  }
+  await page.locator('#foodlist [data-id="badem_ezmesi"]').click();
+  await expect(page.locator('#matrix')).toContainText('Protein');
+});
