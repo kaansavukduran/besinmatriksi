@@ -1,5 +1,15 @@
 // B142–B144: katalog erişimi, veri kapsamı ve ölçü birimi açıklamaları.
 export const FORGE_EN = {
+  "Çizgi = referans (%100). Çubuklar toplam proteinin amino asit örüntüsünü gösterir; günlük ihtiyaç yüzdesi değildir.": "Line = reference (100%). Bars show the amino acid pattern of total protein, not the percentage of daily requirements.",
+  "Amino asit skoru hesaplanamıyor": "Amino acid score cannot be calculated",
+  "Toplam protein ölçümü eksik; amino asit/protein oranı hesaplanamaz.": "Total protein measurements are incomplete; the amino acid/protein ratio cannot be calculated.",
+  "Toplam protein 0; amino asit/protein oranı tanımsız.": "Total protein is 0; the amino acid/protein ratio is undefined.",
+  "Ölçümler kısmi. ≥ bilinen toplamın alt sınırıdır; eksik ölçüm, besin yetersizliği demek değildir.": "Measurements are partial. ≥ is a lower bound from the known total; missing measurements do not mean nutrient deficiency.",
+  "Sınırlayıcı amino asit belirlenemiyor": "The limiting amino acid cannot be determined",
+  "Bilinen miktar: {a} mg": "Known amount: {a} mg",
+  "Eksik ölçümler: {n} malzeme": "Missing measurements: {n} ingredients",
+  "Malzeme {n}": "Ingredient {n}",
+
   "Metiyonin + sistein ortak hedefine katkı": "Contribution to the shared methionine + cysteine target",
   "Fenilalanin + tirozin ortak hedefine katkı": "Contribution to the shared phenylalanine + tyrosine target",
   "WHO/FAO/UNU 2007 · yetişkin ortalama ihtiyacı · {w} kg × {r} mg/kg/gün": "WHO/FAO/UNU 2007 · average adult requirement · {w} kg × {r} mg/kg/day",

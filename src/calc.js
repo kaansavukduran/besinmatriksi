@@ -1,7 +1,4 @@
 // Miktar ölçekleme, tarif toplamı ve hesaplanan göstergeler
-import { NUTRIENTS } from './nutrients.js';
-
-const AA_KEYS = NUTRIENTS.filter((n) => n.aa).map((n) => n.key);
 
 // Tek besin, g gram için. Döner: { v, s, alt, sd, cov } (cov: tek besinde hep 1/1)
 export function scaleItem(item, grams) {
@@ -16,7 +13,7 @@ export function scaleItem(item, grams) {
     const basis = s.lys === 'i' && alt.protein != null ? alt.protein : v.protein;
     v._aaProtein = basis;
   }
-  return { v, s, alt, sd, grams, n: 1 };
+  return { v, s, alt, sd, grams, n: 1, name: item.name };
 }
 
 function addDerived(v, s) {
@@ -41,7 +38,11 @@ export function aggregate(scaledItems) {
     if (it.v._aaProtein != null) { aaProt += it.v._aaProtein; aaHas = true; }
   }
   if (aaHas) v._aaProtein = aaProt;
-  return { v, s, alt: {}, sd: {}, cov, grams, n: scaledItems.length };
+  const aaGaps = scaledItems.flatMap((it, index) => {
+    const keys = ['protein', ...new Set(AA_REF.flatMap(row => row[2]))].filter(k => it.v[k] == null);
+    return keys.length ? [{ name: it.name, index: index + 1, keys }] : [];
+  });
+  return { v, s, alt: {}, sd: {}, cov, grams, n: scaledItems.length, aaGaps };
 }
 
 export function scaleAggregate(agg, factor) {
@@ -63,11 +64,32 @@ export const AA_REF = [
   ['val', 'Valin', ['val'], 39],
 ];
 
+// Quality is a ratio to TOTAL recipe protein, never protein from only measured-AA ingredients.
+// Missing AA measurements give lower bounds; missing protein prevents a trustworthy ratio.
+export function assessAmino(r) {
+  const n = r.n || 1;
+  const covered = k => r.v[k] != null && (!r.cov || r.cov[k] === n);
+  const allAA = AA_REF.every(row => row[2].every(covered));
+  const proteinComplete = covered('protein');
+  const basis = proteinComplete ? (allAA && r.v._aaProtein > 0 ? r.v._aaProtein : r.v.protein) : null;
+  const rows = AA_REF.map(([id, label, keys, ref]) => {
+    const known = keys.filter(k => r.v[k] != null);
+    const amount = known.length ? known.reduce((sum, k) => sum + r.v[k], 0) : null;
+    const complete = keys.every(covered);
+    const mgPerG = amount != null && basis > 0 ? amount / basis : null;
+    return { id, label, ref, amount, complete, mgPerG, ratio: mgPerG == null ? null : mgPerG / ref };
+  });
+  const valid = rows.filter(row => row.ratio != null);
+  const weakest = valid.length ? valid.reduce((a, b) => a.ratio <= b.ratio ? a : b) : null;
+  const complete = allAA && basis > 0;
+  const raw = valid.length === rows.length ? weakest.ratio * 100 : null;
+  return { rows, basis, proteinComplete, complete, raw, score: raw == null ? null : Math.min(100, raw),
+    limiting: complete ? weakest.label : null, observedWeakest: weakest?.label, gaps: r.aaGaps || [] };
+}
+
 export function derive(r) {
   // Kısmi tarif toplamları oranlara ve skorlara tam ölçüm gibi giremez.
   const v = Object.fromEntries(Object.entries(r.v).filter(([k]) => !r.cov || r.n <= 1 || r.cov[k] === r.n || k === '_aaProtein'));
-  // Skor yalnız AA_REF amino asitlerini kullanır; esansiyel olmayan bir amino asidin eksikliği skoru gizlemez
-  if (r.cov && r.n > 1 && AA_REF.flatMap((x) => x[2]).some(k => r.cov[k] !== r.n)) delete v._aaProtein;
   const out = {};
   // Enerji dağılımı (Atwater genel faktörleri, yaklaşık)
   const p = v.protein, f = v.fat, fib = v.fiber;
@@ -96,19 +118,6 @@ export function derive(r) {
   }
   if (v.oxalate != null && v.ca > 0) out.oxCa = (v.oxalate / 88.02) / (v.ca / 40.078);
   // Amino asit skoru (sindirilebilirlik düzeltmesi yok)
-  const basis = v._aaProtein;
-  if (basis > 0 && AA_KEYS.some((k) => v[k] != null)) {
-    const rows = [];
-    for (const [id, label, keys, ref] of AA_REF) {
-      if (keys.some((k) => v[k] == null)) { rows.push({ id, label, ref, mgPerG: null, ratio: null }); continue; }
-      const mg = keys.reduce((a, k) => a + v[k], 0) / basis;
-      rows.push({ id, label, ref, mgPerG: mg, ratio: mg / ref });
-    }
-    const valid = rows.filter((x) => x.ratio != null);
-    if (valid.length) {
-      const lim = valid.reduce((a, b) => (b.ratio < a.ratio ? b : a));
-      out.aas = { rows, score: Math.min(1, lim.ratio) * 100, raw: lim.ratio * 100, limiting: lim.label, complete: valid.length === rows.length };
-    }
-  }
+  if (AA_REF.some(row => row[2].some(k => r.v[k] != null))) out.aas = assessAmino(r);
   return out;
 }

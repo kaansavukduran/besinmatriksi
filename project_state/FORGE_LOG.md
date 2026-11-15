@@ -784,3 +784,9 @@
 - Resmî SRLegacy2018 arşivi tekrar indirildi/öncekiSHA256eşleşti. Analitik köken ve tamNDB eşlemesiyle315yeni hücre/72kaynak kaydı;16ana/299geniş. Beta.32 karşılaştırması0eski hücre değişimi. Kaynak/inceleme docs/evidence/B146/RESEARCH.md.
 - Kanıt: npm run data; npm run notices;132/132birim;web+singlederlemeleri;26/26tarayıcıtestiPASS. Kilo80kg save/reload, miktar,9bar, toplamprotein, kısmi tarif, veri boşluğu, TR/EN320px28px/%200, eski mikro/katalog hata-kurtarma ve kişisel offline akışı. Ayrıntı docs/evidence/B146/AUDIT.md. Native/fiziksel/diğer motorlar bu turNOT_TESTED; yeniCIayrı.
 - Sonraki tek Forge B147: açık Foundation/FNDDS kapsamını doğruluk ve performans bütçesiyle büyütme.
+
+## B147 · 2026-11-15 · Tarif amino asit skoru/grafiği eşitliği
+- Kullanıcının ekranındaki kayıp grafik, derive fonksiyonunun tek kısmi AA ölçümünde bütün_aaProtein tabanını silmesinden kaynaklanıyordu. assessAmino ortak sahibi tam/kısmi/bilinmeyen durumları ayırır; dokuz grup satırı matriksten kaybolmaz.
+- Tam veride eski skor/sınırlayıcı korunur. Kısmi AA + tamprotein: bilinen AA / TÜMtarifproteini, ≥alt sınır; kesin sınırlayıcı iddia edilmez. Eksik protein: oran/skor yok, bilinenmg/neden var. Eksik malzeme ve bileşenler açılır dökümde; şema/kalıcı kayıt değişmedi. Günlük AA barları ve toplam protein korunur.
+- Kanıt:135/135birim;web+singlederlemeleri;28/28masaüstü/telefonTR/ENtarayıcıtesti;son açıklama ve ikinci tam malzeme UI kabulü eklendikten sonra8/8final tarif testi. Tekbesin↔tekmaddeli tarif birebir; karşılıklı tamamlayan profiller toplamda125% (tekbaşına50%); porsiyon/100g kaliteoranı sabit; eksik/sıfırprotein gerçekpuan uydurmaz. Daha önceki kısmi oran güvenliği testi dePASS.
+- Ayrıntı docs/evidence/B147/AUDIT.md. Native/fiziksel/diğer motorlarNOT_TESTED. Sonraki tek Forge B148: açık Foundation/FNDDS kapsamını doğruluk/performans bütçesiyle büyütme.

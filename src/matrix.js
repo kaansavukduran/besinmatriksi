@@ -1,6 +1,6 @@
 // Besin matriksi görünümü (HTML üretimi)
 import { NUTRIENTS, NUTRIENT_BY_KEY, SECTIONS, SOURCES, ALLERGENS } from './nutrients.js';
-import { derive } from './calc.js';
+import { derive, assessAmino } from './calc.js';
 import { esc, fmtNum, fmtAmount, fmtPct, pctText } from './util.js';
 import { normalizeSettings, referenceFor } from './settings.js';
 import { referenceLabel } from './references.js';
@@ -162,15 +162,19 @@ function derivedCard(r, cfg, open) {
   if (d.phyCa != null) rows.push(ratioRow('Fitat : Kalsiyum (molar)', d.phyCa, fmtNum(d.phyCa), d.phyCa > 0.24 ? ['warn', '> 0,24'] : ['ok', '≤ 0,24'], '>0,24 kalsiyum biyoyararlanımının azaldığına işaret eden eşik olarak kullanılır (Umeta ve ark. 2005).'));
   if (d.oxCa != null) rows.push(ratioRow('Oksalat : Kalsiyum (molar)', d.oxCa, fmtNum(d.oxCa), d.oxCa >= 1 ? ['warn', '≥ 1 molar oran'] : ['ok', '< 1'], 'Oksalat/kalsiyum molar oranı; bağlanmayı veya kişideki gerçek emilimi doğrudan ölçmez. Hazırlama biçimi ve oksalatın çözünürlüğü önemlidir.'));
   let aas = '';
-  if (d.aas) {
-    const a = d.aas;
-    aas = `<div class="aas"><div class="aas-head"><b>${L("Amino asit skoru: {s}", { s: pctText(fmtNum(a.raw)) })}</b>
-      <span class="chip ${a.raw >= 100 ? 'ok' : a.raw >= 75 ? 'warn' : 'bad'}">${L("Sınırlayıcı: {a}", { a: esc(L(a.limiting)) })}</span>
+  if (r.n > 0) {
+    const a = d.aas || assessAmino(r);
+    const score = a.raw == null ? L("Amino asit skoru hesaplanamıyor") : L("Amino asit skoru: {s}", { s: (a.complete ? '' : '≥') + pctText(fmtNum(a.raw)) });
+    const reason = !a.proteinComplete ? L("Toplam protein ölçümü eksik; amino asit/protein oranı hesaplanamaz.") : a.basis === 0 ? L("Toplam protein 0; amino asit/protein oranı tanımsız.") : !a.complete ? L("Ölçümler kısmi. ≥ bilinen toplamın alt sınırıdır; eksik ölçüm, besin yetersizliği demek değildir.") : '';
+    aas = `<div class="aas" data-aa-status="${a.complete ? 'complete' : a.raw == null ? 'unknown' : 'partial'}"><div class="aas-head"><b>${score}</b>
+      ${a.complete ? `<span class="chip ${a.raw >= 100 ? 'ok' : a.raw >= 75 ? 'warn' : 'bad'}">${L("Sınırlayıcı: {a}", { a: esc(L(a.limiting)) })}</span>` : `<span class="chip">${L("Sınırlayıcı amino asit belirlenemiyor")}</span>`}
       <span class="help" title="${L("WHO/FAO/UNU 2007 yetişkin referans örüntüsüne göre (mg/g protein). Sindirilebilirlik düzeltmesi YOK; PDCAAS/DIAAS değildir.")}${a.complete ? '' : ' ' + L("Bazı amino asitler ölçülmemiş.")}">?</span></div>
-      <div class="aabars">${a.rows.map((x) => `<div class="aabar" title="${esc(L(x.label))}: ${x.mgPerG == null ? L("veri yok") : fmtNum(x.mgPerG) + ' mg/g protein, ' + L("referans") + ' ' + x.ref}">
-        <span class="aal">${esc(L(x.label))}</span><span class="aat"><i class="${x.ratio == null ? 'na' : x.ratio >= 1 ? 'ok' : 'low'}" style="width:${x.ratio == null ? 0 : Math.min(150, x.ratio * 100) / 1.5}%"></i><em style="left:${100 / 1.5}%"></em></span>
-        <span class="aav">${x.ratio == null ? '–' : fmtPct(x.ratio * 100)}</span></div>`).join('')}</div>
-      <p class="hint">${L("Çizgi = referans (%100). Baklagil + tahıl birlikte tüketilince sınırlayıcı amino asitler birbirini tamamlar; tarif sekmesinde dene.")}</p></div>`;
+      ${reason ? `<p class="hint aa-reason">${reason}</p>` : ''}
+      <div class="aabars">${a.rows.map((x) => `<div class="aabar" data-aa="${x.id}" title="${esc(L(x.label))}: ${x.mgPerG == null ? L("veri yok") : (x.complete ? '' : '≥') + fmtNum(x.mgPerG) + ' mg/g protein, ' + L("referans") + ' ' + x.ref}">
+        <span class="aal">${esc(L(x.label))}${x.amount != null && x.ratio == null ? `<small class="aa-known">${L("Bilinen miktar: {a} mg", { a: fmtNum(x.amount) })}</small>` : ''}</span><span class="aat"><i class="${x.ratio == null ? 'na' : x.ratio >= 1 ? 'ok' : x.complete ? 'low' : 'partial'}" style="width:${x.ratio == null ? 0 : Math.min(150, x.ratio * 100) / 1.5}%"></i><em style="left:${100 / 1.5}%"></em></span>
+        <span class="aav">${x.ratio == null ? L("veri yok") : (x.complete ? '' : '≥') + fmtPct(x.ratio * 100)}</span></div>`).join('')}</div>
+      ${a.gaps.length ? `<details class="aa-gaps"><summary>${L("Eksik ölçümler: {n} malzeme", { n: a.gaps.length })}</summary><ul>${a.gaps.map(gap => `<li><b>${esc(gap.name || L("Malzeme {n}", { n: gap.index }))}</b>: ${gap.keys.map(k => esc(nl(NUTRIENT_BY_KEY[k]))).join(', ')}</li>`).join('')}</ul></details>` : ''}
+      <p class="hint">${L("Çizgi = referans (%100). Çubuklar toplam proteinin amino asit örüntüsünü gösterir; günlük ihtiyaç yüzdesi değildir.")}</p></div>`;
   }
   const body = (h + (rows.length ? `<div class="rows">${rows.join('')}</div>` : '') + aas) || `<p class="empty">${L("Hesaplama için gerekli veriler yok.")}</p>`;
   return `<details class="sec" data-sec="hesap" ${open ? 'open' : ''}><summary><span class="ico">${cfg.emoji ? '🧮' : ''}</span><span class="st">${L("Hesaplanan göstergeler")}</span></summary>${body}</details>`;

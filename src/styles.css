@@ -946,3 +946,10 @@ button.micro-name:hover { text-decoration-color: currentColor; }
 .food.pending-ref { grid-template-columns: minmax(0, 1fr); }
 
 .aa-joint { display: block; font-size: .7rem; color: var(--muted); line-height: 1.35; margin-top: .2rem; overflow-wrap: anywhere; }
+
+.aat i.partial { background: var(--warn); }
+.aa-known { display: block; color: var(--muted); font-size: .75em; }
+.aa-gaps { margin-top: .7rem; overflow-wrap: anywhere; }
+.aa-gaps summary { cursor: pointer; padding-block: .4rem; }
+.aa-gaps ul { padding-left: 1.2rem; }
+.aabar > * { min-width: 0; overflow-wrap: anywhere; }

@@ -431,7 +431,7 @@ function persona() {
 }
 
 function recipeResult(rc) {
-  const scaled = rc.items.map((it) => { const item = resolve(it.ref); return item ? scaleItem(item, it.g) : { v: {}, s: {}, grams: it.g }; });
+  const scaled = rc.items.map((it) => { const item = resolve(it.ref); return item ? scaleItem(item, it.g) : { v: {}, s: {}, grams: it.g, name: refKey(it.ref) }; });
   const agg = aggregate(scaled);
   let factor = 1, r = agg, basisLabel = L("Toplam tarif ({g} g malzeme)", { g: fmtNum(agg.grams) });
   if (S.basis === 'serving') { factor = 1 / rc.servings; r = scaleAggregate(agg, factor); basisLabel = L("1 porsiyon ({n} porsiyondan biri, ≈ {g} g malzeme)", { n: rc.servings, g: fmtNum(agg.grams / rc.servings) }); }

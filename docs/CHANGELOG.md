@@ -1,3 +1,9 @@
+# 1.1.2-beta.34 · 15 Kasım 2026
+
+- B147: bir malzemenin eksik amino asit ölçümü artık tarifte tüm protein kalitesi grafiğini gizlemiyor. Dokuz referans grubu her zaman görünür; tam veride skor/sınırlayıcı, kısmi veride≥alt sınır ve malzeme/bileşen dökümü.
+- Kısmi amino asit oranlarında payda tüm tarifin bilinen toplam proteinidir; yalnız amino asidi ölçülen malzemelerin proteini kullanılmaz. Toplam protein eksikse kesin skor veya sınırlayıcı uydurulmaz, bilinen miktarlar ve neden gösterilir.
+- Keşfet↔tek malzemeli tarif eşitliği; birleşen besinler, porsiyon/100g, miktar, silme ve yeniden açılış doğrulandı. Günlük ihtiyaç barları ve toplam protein korunur.
+
 # 1.1.2-beta.33 · 15 Kasım 2026
 
 - B146: dokuz esansiyel amino asit için WHO/FAO/UNU günlük ortalama ihtiyaç çubuğu. Kaydedilmiş yetişkin yaş/kilo profili veya açıkça etiketli70kg yetişkin örneği. Metiyonin/fenilalanin ortak hedefe kendi katkısı olarak etiketlenir; kısmi ölçümlerde≥. Toplam protein ve protein kalitesi hesabı değişmedi.

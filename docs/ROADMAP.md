@@ -90,6 +90,7 @@ B003b son kanıtı: `docs/evidence/B003b-packages.json`; 49 birim / 30 tarayıc�
 | B144 | Ortak mikro besin özeti, katkı dökümü, bilimsel referans uyumu ve skill güncelleme paketleri | RUNTIME_TESTED; native cloud skill yazımı araç erişimi bekler |
 | B145 | Kullanıcı revizyonu: emojisiz büyük kategori ayraçları, boşluk ve kompakt sıralama | RUNTIME_TESTED; beta.32 |
 | B146 | Günlük amino asit referansları, katalog konumu/adı, kaynaklı eksik ölçümler | RUNTIME_TESTED; beta.33 |
-| B147 | Güncel açık Foundation/FNDDS kapsamını doğruluk ve performans bütçesiyle büyütme | PLANNED; tek sonraki Forge |
+| B147 | Tarif amino asit grafiği, toplam protein paydası ve eksik ölçüm görünürlüğü | RUNTIME_TESTED; beta.34 |
+| B148 | Güncel açık Foundation/FNDDS kapsamını doğruluk ve performans bütçesiyle büyütme | PLANNED; tek sonraki Forge |
 
 Fiziksel telefon ve ekran okuyucu kabulü uygulanmadı; önceki B142 önerisi tamamlandı sayılmadan cihaz erişimi bekleyen işlere taşındı. Cronometer kapalı/lisanslı kataloglarıyla tam eşitlik doğrulanmış değildir.

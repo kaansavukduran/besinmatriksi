@@ -1,12 +1,12 @@
 {
   "schema_version": "1",
   "project": "Besin Matriksi",
-  "product_version": "1.1.2-beta.33",
+  "product_version": "1.1.2-beta.34",
   "development_state": "IN_PROGRESS",
-  "last_forge_at": "2026-11-15T13:25:26.154342+00:00",
-  "last_completed_forge": "B146",
+  "last_forge_at": "2026-11-15T15:04:58.152915+00:00",
+  "last_completed_forge": "B147",
   "active_forge": null,
-  "next_recommended_forge": "B147",
+  "next_recommended_forge": "B148",
   "branch": "ccr-1e1934aa-iv8aev",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
   "validated_code_commit": null,
@@ -14,27 +14,22 @@
   "verified_gates": [
     {
       "id": "unit",
-      "result": "PASS132/132",
+      "result": "PASS135/135",
       "level": "UNIT_TESTED"
     },
     {
-      "id": "data",
-      "result": "PASS315new cells/72records;16curated+299extended;0old value overwrites",
-      "level": "BUILT"
-    },
-    {
       "id": "web",
-      "result": "PASS beta.33 web/PWA and singleHTML",
+      "result": "PASS beta.34 web/PWA+singleHTML",
       "level": "BUILT"
     },
     {
       "id": "browser",
-      "result": "PASS26/26 desktop+phone Chromium;TR/EN,320px/28px/200percent,profiles/persistence/partial/source recovery/offline",
+      "result": "PASS28/28 affected regression; final copy/extra complementary UI case8/8 focused; desktop/phone TR/EN including320px28px200percent",
       "level": "RUNTIME_TESTED"
     },
     {
       "id": "native-runtime",
-      "result": "NOT_RUN beta.33",
+      "result": "NOT_RUN beta.34",
       "level": "NOT_RUN"
     }
   ],
@@ -83,7 +78,7 @@
     "trigger": "trig_01Ljjr3Dkp6uBiQcjFaGuzm3",
     "stop_when": "Tüm uygulanabilir yol haritası işleri ve son kapılar doğrulandığında."
   },
-  "notes": "B146: günlük amino asit barları, kayıtlı yetişkin kilo referansı; toplam protein/kalite korunur. Tam Katalog sonda. SRLegacy315yeni ölçüm/72kayıt; eski hücreler korunur.",
+  "notes": "B147: tarifte kısmi ölçüm tüm AA grafiğini gizlemez. Ortak assessAmino; tam toplam protein paydası, kısmi≥, veri boşluğunda gerekçe ve malzeme dökümü. Keşfet/tarif eşitliği doğrulandı.",
   "release_target": "v1.1.2-beta.1",
   "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission. EFSA group reference data are separate from food measurements; only verified compatible PRI/AI records, EFSA attribution required.",
   "historical_verified_gates": [
@@ -330,16 +325,16 @@
     "cross_browser": "PASS (ci.yml run success)"
   },
   "current_forge": {
-    "id": "B146",
-    "base_commit": "c2e29de9e7f62f203c624af2b3413d8d26ef6a00",
-    "local_evidence": "docs/evidence/B146/AUDIT.md",
+    "id": "B147",
+    "base_commit": "ade8e9d832619b3b7d3cc9af9ae6e1829bed85a2",
+    "local_evidence": "docs/evidence/B147/AUDIT.md",
     "level": "RUNTIME_TESTED"
   },
-  "validation_base_commit": "c2e29de9e7f62f203c624af2b3413d8d26ef6a00",
+  "validation_base_commit": "ade8e9d832619b3b7d3cc9af9ae6e1829bed85a2",
   "current_forges": [
     {
-      "id": "B146",
-      "scope": "Daily amino reference bars, catalogue position/name and measured-data fills",
+      "id": "B147",
+      "scope": "Recipe amino quality parity, partial totals and data gaps",
       "level": "RUNTIME_TESTED"
     }
   ],
