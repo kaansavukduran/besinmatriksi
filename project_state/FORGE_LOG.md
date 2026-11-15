@@ -771,3 +771,9 @@
 - Kanıt: npm run data;24lisans bildirimi; npm test ve açıkalt-test128/128; build+build:singlePASS. Üretim184/184tarayıcıPASS; soncold-sourcehelper sonrası finalpaket fonts+micro-catalog16/16PASS (2yeni+14tekrar), toplam186benzersizkontrol. Açık/koyu micro axe0ihlal. file:// iki yerelkontrol adminpolicyBLOCKED; fiziksel/native ve bu sürümün yerel Firefox/WebKit'i NOT_TESTED.
 - Ayrıntılı kabul/ilkFAIL/onarım ve görseller: docs/evidence/B142-B144/AUDIT.md. Vercel üretim aynı bağlı projeden güncellenir; Pages ilk etkinleştirme sınırı ayrı. Native Release/store yok.
 - Sonraki tek Forge: B145 — güncel açık Foundation/FNDDS kaynaklarını doğruluk ve performans bütçesiyle büyütme.
+
+## B145 · 2026-11-15 · Kategori ayraçları ve kompakt sıralama
+- Kullanıcının düzenlediği görsele göre kategori ayraçlarının emojileri kaldırıldı; 1→1,5rem başlık, 2rem üst boşluk ve 0,5rem üst/alt padding. Besin çizimleri ve gezinme simgeleri korunur.
+- Sırala kontrolleri 0,82rem, daha az yatay padding ve normal masaüstünde32px; dokunmatik hedef en az44px, ölçek/density tercihleri korunur.
+- Kanıt: 128/128 birim; web+single derlemeleri PASS. Mevcut B057/B059/B141 testleri6/6PASS. TR/EN açık/koyu,1440masaüstü,390telefon,320+28px/%200 olmak üzere6 görünümde emojisiz başlık/boşluk, sınırlar ve gerçek sıralama tıklaması PASS. Fiziksel cihaz/diğer motor/native NOT_TESTED. Ayrıntı docs/evidence/B145/AUDIT.md.
+- Önceki önerilen veri genişletmesi son açık kullanıcı isteğiyle ertelendi. Sonraki tek Forge: B146, güncel açık Foundation/FNDDS kaynak kapsamı.

@@ -1,12 +1,12 @@
 {
   "schema_version": "1",
   "project": "Besin Matriksi",
-  "product_version": "1.1.2-beta.31",
+  "product_version": "1.1.2-beta.32",
   "development_state": "IN_PROGRESS",
-  "last_forge_at": "2026-11-15T12:32:08.160206+00:00",
-  "last_completed_forge": "B144",
+  "last_forge_at": "2026-11-15T13:11:28.678332+00:00",
+  "last_completed_forge": "B145",
   "active_forge": null,
-  "next_recommended_forge": "B145",
+  "next_recommended_forge": "B146",
   "branch": "ccr-1e1934aa-iv8aev",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
   "validated_code_commit": null,
@@ -14,31 +14,23 @@
   "verified_gates": [
     {
       "id": "unit",
-      "command": "npm test; node --test --test-isolation=none tests/*.test.mjs",
-      "result": "PASS128/128 subtests",
+      "result": "PASS128/128",
       "level": "UNIT_TESTED"
-    },
-    {
-      "id": "data",
-      "command": "npm run data; node scripts/build-notices.mjs --check",
-      "result": "PASS8789/8789 SR28 source records;664curated/810forms;24notices",
-      "level": "BUILT"
     },
     {
       "id": "web",
       "command": "npm run build; npm run build:single",
-      "result": "PASS final beta.31 web/PWA/single HTML",
+      "result": "PASS beta.32",
       "level": "BUILT"
     },
     {
       "id": "browser",
-      "command": "full Chromium desktop/phone + final fonts/micro-catalog regression run",
-      "result": "PASS184/184 full run;16/16 final focused run after cold-source fix (2new+14repeat);186unique verified. Two file:// cases BLOCKED by administrator policy.",
+      "result": "PASS6/6 existing sorting/multi-select/category tests desktop+phone;6/6 manual visual/activation contexts TR/EN desktop1440/phone390/320 with28px+200percent",
       "level": "RUNTIME_TESTED"
     },
     {
       "id": "native-runtime",
-      "result": "NOT_RUN beta.31; earlier package evidence historical",
+      "result": "NOT_RUN beta.32",
       "level": "NOT_RUN"
     }
   ],
@@ -87,7 +79,7 @@
     "trigger": "trig_01Ljjr3Dkp6uBiQcjFaGuzm3",
     "stop_when": "Tüm uygulanabilir yol haritası işleri ve son kapılar doğrulandığında."
   },
-  "notes": "B142–B144: beta.31; Bricolage başlık, sade yüzeyler, SR28 8789/8789 kapsamı, 28 mikro özeti ve katkılar. Native cloud skills NOT_APPLIED; tam ZIP teslimi. Fiziksel/native kabul ayrı ve uygulanmadı.",
+  "notes": "B145: kullanıcı görseline göre emojisiz büyük kategori ayraçları ve kompakt sıralama. Veri ve tercihler korunur. Native yayın yapılmadı.",
   "release_target": "v1.1.2-beta.1",
   "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission. EFSA group reference data are separate from food measurements; only verified compatible PRI/AI records, EFSA attribution required.",
   "historical_verified_gates": [
@@ -334,27 +326,16 @@
     "cross_browser": "PASS (ci.yml run success)"
   },
   "current_forge": {
-    "id": "B144",
-    "base_commit": "34aa20f1c735a813265cf3322cfc28f6ab9c3062",
-    "local_evidence": "docs/evidence/B142-B144/AUDIT.md",
-    "level": "RUNTIME_TESTED",
-    "note": "PASS128unit;184full+16finalfocused(186unique). Source compared against validation_base_commit plus committed final tree, checked during publication. Native/package evidence remains historical."
+    "id": "B145",
+    "base_commit": "8d38ed53b95b2f707eab42ba51cc65371a7025d2",
+    "local_evidence": "docs/evidence/B145/AUDIT.md",
+    "level": "RUNTIME_TESTED"
   },
-  "validation_base_commit": "34aa20f1c735a813265cf3322cfc28f6ab9c3062",
+  "validation_base_commit": "8d38ed53b95b2f707eab42ba51cc65371a7025d2",
   "current_forges": [
     {
-      "id": "B142",
-      "scope": "Ata design feedback; Bricolage heading identity and reduced redundant surfaces",
-      "level": "RUNTIME_TESTED"
-    },
-    {
-      "id": "B143",
-      "scope": "Full SR28 source coverage, visible paginated catalogue and recovery",
-      "level": "RUNTIME_TESTED"
-    },
-    {
-      "id": "B144",
-      "scope": "Micronutrients/contributors, unit correctness and full skill-update artifacts",
+      "id": "B145",
+      "scope": "Category heading hierarchy/spacing and compact sorting",
       "level": "RUNTIME_TESTED"
     }
   ],

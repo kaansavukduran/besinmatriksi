@@ -317,7 +317,7 @@ function foodList(prefix, cat, q, extGroup) {
     for (const c of CATEGORIES) {
       const fs = res.curated.filter((f) => f.cat === c.id);
       if (!fs.length) continue;
-      html += `<h3 class="grp">${S.settings.emoji ? c.icon + ' ' : ''}${esc(categoryName(c))}</h3><div class="foods">${fs.map((f) => foodButton(f, prefix + '-pick')).join('')}</div>`;
+      html += `<h3 class="grp">${esc(categoryName(c))}</h3><div class="foods">${fs.map((f) => foodButton(f, prefix + '-pick')).join('')}</div>`;
     }
   } else {
     html += `<div class="foods">${(q ? res.curated : sortFoods(res.curated)).map((f) => foodButton(f, prefix + '-pick')).join('')}</div>`;

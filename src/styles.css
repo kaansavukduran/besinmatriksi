@@ -155,7 +155,6 @@ i.sci, .dsub i { font-style: italic; }
 .list { position: sticky; top: 94px; max-height: calc(100vh - 114px); overflow: auto; padding-right: 4px; }
 .searchbar { display: flex; gap: 6px; margin-bottom: 8px; position: sticky; top: 0; background: var(--bg); padding-bottom: 6px; z-index: 2; }
 .searchbar input { flex: 1; min-height: var(--tap); border-radius: 999px; border: 1px solid var(--line); background: var(--card); padding: 0 1rem; }
-.grp { font-size: .9rem; color: var(--muted); margin: 1em 0 .4em; }
 .foods { display: grid; grid-template-columns: 1fr; gap: 6px; }
 .food {
   display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; column-gap: .55rem; align-items: center; text-align: left;
@@ -603,6 +602,8 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 .mono-url { font-family: monospace; word-break: break-all; }
 .food .facts { color: var(--muted); font-variant-numeric: tabular-nums; }
 .sortbar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 8px; }
+.sortbar .pchip { font-size: .82rem; min-height: max(28px, calc(var(--tap) - 8px)); padding: .12rem .55rem; }
+@media (pointer: coarse) { .sortbar .pchip { min-height: max(44px, var(--tap)); } }
 @media (max-width: 700px) { .sortbar { flex-wrap: nowrap; overflow-x: auto; } .sortbar .pchip { flex-shrink: 0; } }
 .recipe-gaps .gaps { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
 .recipe-gaps .gap-h { margin-bottom: 4px; }
@@ -756,7 +757,7 @@ table.cmp .cpct { display: block; font-size: .72rem; color: var(--muted); font-w
 .food .fn, .food .ff { overflow-wrap: anywhere; }
 .food.selected { border-color: var(--acc); background: var(--card2); }
 .food:hover { background: var(--card2); transform: none; }
-.grp { margin: 1.5rem 0 .7rem; color: var(--fg); font-size: 1rem; }
+.grp { margin: 2rem 0 .75rem; padding-block: .5rem; color: var(--fg); font-size: 1.5rem; line-height: 1.25; overflow-wrap: anywhere; }
 .catalog-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .5rem; margin: 1.5rem 0 1rem; }
 .catalog-heading h2 { font-size: 1.25rem; margin: 0; }
 .catalog-heading .hint { margin: 0; }

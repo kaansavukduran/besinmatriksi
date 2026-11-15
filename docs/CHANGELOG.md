@@ -1,3 +1,8 @@
+# 1.1.2-beta.32 · 15 Kasım 2026
+
+- B145: katalog kategori ayraçları emojisiz, daha büyük başlık ve üst/alt boşlukla ayrılır. Besin çizimleri korunur.
+- Sırala satırındaki kontroller daha küçük yazı ve yatay boşlukla kompaktlaştı; dokunmatik hedefler ve büyük ölçek korunur.
+
 # 1.1.2-beta.31 · 15 Kasım 2026
 
 - B142: başlıklarda yerel/OFL Bricolage Grotesque, okunabilirlik fontu tercihinin önceliği, gereksiz hero/katalog yüzeylerinin kaldırılması ve daha ölçülü kontrol köşeleri.
