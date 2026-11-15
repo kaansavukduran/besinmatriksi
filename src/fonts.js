@@ -29,11 +29,15 @@ import mono4l from '@fontsource/noto-sans-mono/files/noto-sans-mono-latin-400-no
 import mono4e from '@fontsource/noto-sans-mono/files/noto-sans-mono-latin-ext-400-normal.woff2?url';
 import mono7l from '@fontsource/noto-sans-mono/files/noto-sans-mono-latin-700-normal.woff2?url';
 import mono7e from '@fontsource/noto-sans-mono/files/noto-sans-mono-latin-ext-700-normal.woff2?url';
+import bri7l from '@fontsource/bricolage-grotesque/files/bricolage-grotesque-latin-700-normal.woff2?url';
+import bri7e from '@fontsource/bricolage-grotesque/files/bricolage-grotesque-latin-ext-700-normal.woff2?url';
 
 const LATIN = 'U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD';
 const LATIN_EXT = 'U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF';
 
 const pair = (l, e) => [[l, LATIN], [e, LATIN_EXT]];
+const HEADING_FONT = { family: 'BM Bricolage Grotesque', files: { 700: pair(bri7l, bri7e) } };
+const READING_FONTS = new Set(['atkinson', 'opendyslexic', 'lexend', 'andika']);
 
 export const FONTS = [
   { id: 'atkinson', name: 'Atkinson Hyperlegible', family: 'BM Atkinson', note: 'Az görenler için tasarlandı; benzer harfler (I l 1, O 0) ayrışır', stack: 'sans-serif', files: { 400: pair(atk4l, atk4e), 700: pair(atk7l, atk7e) } },
@@ -54,8 +58,20 @@ export function fontStack(id) {
   return f.family ? `"${f.family}", ${f.stack}` : f.stack;
 }
 
-export async function ensureFont(id) {
-  const f = FONTS.find((x) => x.id === id);
+// Okunabilirlik için seçilen aile başlıklarda da korunur; ayarlar değiştirilmez.
+export function headingFont(bodyFont) {
+  return READING_FONTS.has(bodyFont) ? fontStack(bodyFont) : '"BM Bricolage Grotesque", sans-serif';
+}
+
+export function ensureHeadingFont(bodyFont) {
+  return READING_FONTS.has(bodyFont) ? ensureFont(bodyFont) : loadFont('heading', HEADING_FONT);
+}
+
+export function ensureFont(id) {
+  return loadFont(id, FONTS.find((x) => x.id === id));
+}
+
+async function loadFont(id, f) {
   if (!f || !f.family || loaded.has(id) || typeof FontFace === 'undefined') return;
   loaded.add(id);
   const jobs = [];

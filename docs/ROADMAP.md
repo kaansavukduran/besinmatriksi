@@ -85,4 +85,9 @@ B003b son kanıtı: `docs/evidence/B003b-packages.json`; 49 birim / 30 tarayıc�
 | ID | Forge | Durum |
 |---|---|---|
 | B141 | Yemek odaklı özgün görsel kimlik, tek katalog, kahve/fast food/atıştırmalık +37 kayıt, dar ekran ve %200 ölçek taşmalarını giderme, eski favori göçü, Pages otomatik yayın | RUNTIME_TESTED; ayrıntılar docs/evidence/B141/AUDIT.md; canlı Pages ilk etkinleştirmesi ayrı |
-| B142 | Fiziksel telefon ve ekran okuyucuyla yeni katalog/ölçek erişilebilirlik kabulü | PLANNED; bu çalışmanın tek sonraki Forge önerisi |
+| B142 | Ata revizyonu: onaylı başlık fontu, rolüne göre kutu/yuvarlaklık, sade katalog | RUNTIME_TESTED; yeni açık kullanıcı isteğiyle önceliklendirildi |
+| B143 | Tam açık SR28 kaynak kapsamı, sayfalama/filtre ve arama erişimi | RUNTIME_TESTED; 8.789/8.789 kaynak kaydı |
+| B144 | Ortak mikro besin özeti, katkı dökümü, bilimsel referans uyumu ve skill güncelleme paketleri | RUNTIME_TESTED; native cloud skill yazımı araç erişimi bekler |
+| B145 | Güncel açık USDA Foundation/FNDDS kaynaklarını kapsam/performans bütçesiyle büyütme | PLANNED; bu çalışmanın tek sonraki Forge önerisi |
+
+Fiziksel telefon ve ekran okuyucu kabulü uygulanmadı; önceki B142 önerisi tamamlandı sayılmadan cihaz erişimi bekleyen işlere taşındı. Cronometer kapalı/lisanslı kataloglarıyla tam eşitlik doğrulanmış değildir.

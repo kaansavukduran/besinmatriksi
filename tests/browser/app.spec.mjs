@@ -667,7 +667,8 @@ test('hayvansal besinler kendi kategorilerinde, etiketli; Ayarlar\'dan gizlenir 
   await expect(page.locator('.dsub .tag-animal')).toBeVisible();
   await expect(page.locator('.matrix')).toContainText('Balık');
   await tab(page, 'ayarlar');
-  await page.locator('[data-setbool="showAnimal"]').uncheck({ force: true });
+  await page.locator('label.toggle:has([data-setbool="showAnimal"])').click();
+  await expect(page.locator('[data-setbool="showAnimal"]')).not.toBeChecked();
   await tab(page, 'kesfet');
   if (await page.locator('.back').isVisible()) await page.locator('.back').click();
   await page.locator('#q').fill('somon');
@@ -691,18 +692,19 @@ test('geniş katalogda hayvansal USDA grupları; gizlenince aramadan da çıkar 
   await page.addInitScript(() => localStorage.setItem('bm.settings.v2', JSON.stringify({ version: 2, settings: { showExt: true } })));
   await page.goto('/');
   await page.locator('.cat[data-cat="ext"]').click();
-  await expect(page.locator('[data-action="ex-extgroup"][data-g="1500"]')).toContainText('Balık');
+  await expect(page.locator('#ex-extgroup option[value="1500"]')).toContainText('Balık');
   await page.locator('#q').fill('salmon atlantic wild raw');
   await expect(page.locator('#foodlist [data-action="ex-pick-ext"]').first()).toBeVisible();
   await page.locator('#foodlist [data-action="ex-pick-ext"]').first().click();
   await expect(page.locator('.dsub .tag-animal')).toBeVisible();
   await tab(page, 'ayarlar');
-  await page.locator('[data-setbool="showAnimal"]').uncheck({ force: true });
+  await page.locator('label.toggle:has([data-setbool="showAnimal"])').click();
+  await expect(page.locator('[data-setbool="showAnimal"]')).not.toBeChecked();
   await tab(page, 'kesfet');
   if (await page.locator('.back').isVisible()) await page.locator('.back').click();
   await page.locator('#q').fill('salmon atlantic wild raw');
   await expect(page.locator('#foodlist [data-action="ex-pick-ext"]')).toHaveCount(0);
-  await expect(page.locator('[data-action="ex-extgroup"][data-g="1500"]')).toHaveCount(0);
+  await expect(page.locator('#ex-extgroup option[value="1500"]')).toHaveCount(0);
 });
 
 test('"besin ekle" penceresinde kategori düğmeleri simetrik: eşit genişlik ve yükseklik (B083)', async ({ page }) => {
@@ -1037,7 +1039,7 @@ test('Lifler kutusu temel kart ve hesaplanan göstergelerin altında; malzeme �
   await page.goto('/');
   await page.locator('#q').fill('shiitake'); await page.locator('#foodlist [data-id="shiitake"]').click();
   const order = await page.locator('#matrix > *:not(.src-base)').evaluateAll((els) => els.map((e) => e.dataset.sec || e.className)); // B139: tek kaynak notu bölüm değildir
-  expect(order.slice(0, 3)).toEqual([expect.stringContaining('basic-card'), 'hesap', 'protein']);
+  expect(order.slice(0, 4)).toEqual([expect.stringContaining('basic-card'), 'hesap', 'micro', 'protein']); // B144: ortak mikro özeti bilimsel biçimlerden önce
   expect(order.indexOf('lif')).toBe(order.indexOf('vitamin') + 1); // B125: Lifler, Vitaminler'in hemen altında
   await expect(page.locator('[data-sec="lif"]')).toContainText('Beta-glukan');
   await page.locator('[data-action="ex-add-recipe"]').click();

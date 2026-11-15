@@ -15,20 +15,24 @@ export const FOODS = DB.foods;
 const byId = new Map(FOODS.map((f) => [f.id, f]));
 for (const f of FOODS) f._k = searchKey(f) + ' ' + norm(EN_FOODS[f.id] || ''); // ekranda görünen İngilizce adla da bulunur
 
-let EXT = null; // geniş katalog tembel yüklenir
+let EXT = null, EXT_REQUEST = null; // geniş katalog tembel yüklenir; eşzamanlı çağrılar aynı yüklemeyi kullanır
 const extByNdb = new Map();
 
 export async function loadExt() {
   if (EXT) return EXT;
-  const mod = await import('./data/foods-ext.json');
-  EXT = mod.default;
-  for (const f of EXT.foods) { f._k = norm(`${f.en} ${f.sci || ''} ${f.n}`); extByNdb.set(f.n, f); }
-  return EXT;
+  if (!EXT_REQUEST) EXT_REQUEST = import('./data/foods-ext.json').then((mod) => {
+    const next = mod.default;
+    for (const f of next.foods) { f._k = norm(`${f.en} ${f.sci || ''} ${f.n} ${next.groups[f.g] || ''}`); extByNdb.set(f.n, f); }
+    EXT = next;
+    return EXT;
+  }).catch((error) => { EXT_REQUEST = null; throw error; });
+  return EXT_REQUEST;
 }
 export const extLoaded = () => !!EXT;
+export const extMeta = () => EXT?.meta || {};
 export const extGroups = () => (EXT ? EXT.groups : {});
-export const extFoods = () => (EXT ? (SHOW_ANIMAL ? EXT.foods : EXT.foods.filter((f) => !f.a)) : []);
-export const extAnimalGroup = (g) => !!EXT && EXT.foods.some((f) => f.g === g && f.a);
+export const extFoods = () => (EXT ? (SHOW_ANIMAL ? EXT.foods : EXT.foods.filter((f) => !f.a && f.diet !== 'unknown')) : []);
+export const extAnimalGroup = (g) => !!EXT && !EXT.foods.some((f) => f.g === g && !f.a && f.diet !== 'unknown');
 
 // Ref: { t: 'c', id, f } küratörlü | { t: 'x', n } geniş katalog
 export function resolve(ref) {
@@ -56,7 +60,7 @@ export function resolve(ref) {
     return {
       ref, ext: f, animal: !!f.a, name: f.en, formLabel: L('USDA tanımı'), cat: 'ext:' + f.g,
       liquid: f.g === '1400', v: f.v, s, alt: {}, sd: {}, portions: f.p || [],
-      allergens: [], note: f.a ? L('Geniş katalog kaydı (hayvansal, USDA İngilizce adı).') : L('Geniş katalog kaydı: vegan uygunluğu ve içerik ürüne göre doğrulanmalı.'), sci: f.sci,
+      allergens: [], note: [L('USDA SR28 (2015) arşiv kaydı; güncel ürün etiketi değildir.'), f.a ? L('Hayvansal içerikli kayıt.') : f.diet === 'unknown' ? L('Karma içerik doğrulanmadı; vegan veya alerjensiz olduğu varsayılmaz.') : L('Kaynak grubu bitkiseldir; marka ve içerik ambalajdan doğrulanmalıdır.'), f.branded ? L('Markalı kaynak kaydı; ürünün tarifi zamanla değişmiş olabilir.') : ''].filter(Boolean).join(' '), sci: f.sci,
       usda: { ndb: f.n, desc: f.en, refuse: f.r, refDesc: f.rd, sci: f.sci }, ifct: null, estFrom: null,
     };
   }
@@ -106,7 +110,7 @@ export function search(q, { cat = null, ext = false, extGroup = null } = {}) {
     out.sort((a, b) => score(b._k, k) - score(a._k, k) || a.tr.localeCompare(b.tr, 'tr'));
   }
   let extOut = [];
-  if (ext && EXT && terms.length) extOut = EXT.foods.filter((f) => (SHOW_ANIMAL || !f.a) && (!extGroup || f.g === extGroup) && match(f._k)).slice(0, 80);
+  if (ext && EXT && terms.length) extOut = EXT.foods.filter((f) => (SHOW_ANIMAL || (!f.a && f.diet !== 'unknown')) && (!extGroup || f.g === extGroup) && match(f._k)).sort((a, b) => Number(!!a.branded) - Number(!!b.branded) || score(b._k, k) - score(a._k, k) || a.en.localeCompare(b.en));
   const custom = terms.length ? CUSTOM.filter((f) => match(f._k)) : [];
   return { curated: out, ext: extOut, custom };
 }

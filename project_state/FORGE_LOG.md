@@ -749,3 +749,25 @@
 - Kanıt: `npm run data`; `node scripts/build-notices.mjs --check` 23/23; `npm test` ve açık alt-test koşumu 116/116; `npm run build` + `npm run build:single` PASS. Dev yeni regresyonlar 10/10 PASS; Chromium desktop+phone,320/390/768/1440,normal+28px/%200. Paket tarayıcı ve yayın son sonucu docs/evidence/B141/AUDIT.md içinde.
 - Boşluklar: file:// açılışı yönetilen tarayıcı politikasıyla BLOCKED; aynı tek dosya dış isteksiz gerçek uygulama akışı PASS. Fiziksel cihaz/ekran okuyucu ve bu ortamda Firefox/WebKit/native kurulum NOT TESTED.
 - Tek sonraki Forge: B142 — fiziksel telefon ve ekran okuyucuyla yeni katalog/ölçek kabulü.
+
+## B142 · 2026-11-15 · Ata tasarım revizyonu ve başlık kimliği
+- Kullanıcının onaylı geri bildirimi: gereksiz renkli/yuvarlak kapsayıcılar azaltıldı; hero normal sayfa yüzeyine, katalog hizalı satırlara geçti. Anlamlı form, tablo ve düzenleme sınırları korundu.
+- Bricolage Grotesque5.3.0 yerel/OFL başlık fontu. Dört okunabilirlik fontunda başlık da kullanıcının tercihini izler; gövde, ölçek ve kayıtlı ayarlar bağımsız kalır.
+- Kanıt: Türkçe cmap ve WOFF2 doğrulaması; gerçek font dosyası/dış istek kontrolü; desktop+phone font kabulü4/4PASS. Normal ve28px/%200 başlık/ana eylem kontrolü. Son paket ve genel test kanıtı B144 raporunda.
+- Sonraki tek Forge: B143 (bu çalışma içinde aşağıda tamamlandı).
+
+## B143 · 2026-11-15 · Tam SR28 kaynak kapsamı ve erişim
+- 664/810 küratörlü kayıt korundu. 5.097 ek kayıt; geniş liste2.983→8.080; küratörlü709SR28id+geniş8.080=8.789/8.789 kaynak ve25/25grup.
+- Ayar açmadan kaynak kataloğu; sayfa başı80; grup/NDB/özgün İngilizce ad araması; görünür2015/arşiv/marka/içerik ayrımı. Unknown kayıtlar hayvansal gizlemede gizlenir, alerjensizlik garanti edilmez.
+- Yükleme reddinde gerçek hata ve reload kurtarma; kayıtlar korunur. Yalnız koleksiyonda saklı geniş kayıt için lazy yükleme sorunu gerçekFAIL→root ortak pendinghelper→aynıtest2/2PASS.
+- Kanıt: kaynak tamlığı/kimlik/sıfır/boşluk ve25grup testleri; katalog normal akışları, arama/sayfa/grupreset/kayıt/reload. Son web/PWA ve alt yol kabulü B144 raporunda.
+- Sonraki tek Forge: B144 (bu çalışma içinde aşağıda tamamlandı).
+
+## B144 · 2026-11-15 · Mikro özeti, kaynak katkıları ve yeniden kullanılabilir Unslop kontrolleri
+- 28 yaygın vitamin/mineral için miktar/birim/referans/kapsam; veri yok≠0; kısmi≥ toplam. Tek besin, tarif, günlük; mevcut katkı sahiplerine bağlı satır eylemleri. 244 ayrıntılı tanım/CSV korunur.
+- Bilimsel düzeltme: A-RAE otomatik EU-RE yüzdesi kaldırıldı; miktar ve aynı birim özel hedef korunur. Kaynaklar ve Cronometer karşılaştırması docs/evidence/B142-B144/CRONOMETER_RESEARCH.md.
+- Reflow, mikro kapalı durumu ve etkileşimsiz toast hit engeli düzeltildi. TR/EN320/390 ve büyük yazı/%200 gerçek tıklama+kapsam+kalıcılık testli.
+- Unslop + Fragaria Unslop tam ZIP kaynak paketleri, container/radius/fill/typography/erişilebilirlik ve10senaryoluk kontrollerle geliştirildi;16yapı/17içbağlantı/CRC PASS. Native cloud skill yazma aracı yok: paketler ayrı teslim, yüklü sürümler NOT_APPLIED. Özel skill referansları public repoya konmadı.
+- Kanıt: npm run data;24lisans bildirimi; npm test ve açıkalt-test128/128; build+build:singlePASS. Üretim184/184tarayıcıPASS; soncold-sourcehelper sonrası finalpaket fonts+micro-catalog16/16PASS (2yeni+14tekrar), toplam186benzersizkontrol. Açık/koyu micro axe0ihlal. file:// iki yerelkontrol adminpolicyBLOCKED; fiziksel/native ve bu sürümün yerel Firefox/WebKit'i NOT_TESTED.
+- Ayrıntılı kabul/ilkFAIL/onarım ve görseller: docs/evidence/B142-B144/AUDIT.md. Vercel üretim aynı bağlı projeden güncellenir; Pages ilk etkinleştirme sınırı ayrı. Native Release/store yok.
+- Sonraki tek Forge: B145 — güncel açık Foundation/FNDDS kaynaklarını doğruluk ve performans bütçesiyle büyütme.

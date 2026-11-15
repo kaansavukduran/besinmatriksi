@@ -1,10 +1,10 @@
-import { setNicheVisible, extAnimalGroup, setAnimalVisible, visibleFoods, ANIMAL_CATS, foodName, categoryName, formName, CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, extGroups, extFoods, setCustomFoods, customFoods } from './data.js';
+import { setNicheVisible, extAnimalGroup, setAnimalVisible, visibleFoods, ANIMAL_CATS, foodName, categoryName, formName, CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, extGroups, extMeta, extFoods, setCustomFoods, customFoods } from './data.js';
 import { NUTRIENTS, NUTRIENT_BY_KEY, SECTIONS, SOURCES } from './nutrients.js';
 import { scaleItem, aggregate, scaleAggregate } from './calc.js';
 import { renderMatrix, basicCard, BASIC_KEYS, macroPie } from './matrix.js';
 import NOTICES from './data/notices.json';
 import { createPrintController } from './print.js';
-import { FONTS, fontStack, ensureFont } from './fonts.js';
+import { FONTS, fontStack, ensureFont, headingFont, ensureHeadingFont } from './fonts.js';
 import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, mergeImport, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles, loadCollections, saveCollections, loadRecent, saveRecent, pushRecent } from './store.js';
 import { esc, fmtNum, fmtAmount, clamp, download, uid, configureFormatting, norm, pctText, fmtPct } from './util.js';
 import { matrixCSV } from './export.js';
@@ -42,6 +42,8 @@ const S = {
   collections: loadCollections(), colPicker: false, sort: 'default', multi: false, picked: [], ingOpen: new Set(), settingsQ: '', rcQ: '', rcSort: 'manual', recent: loadRecent((r) => !!FOODS.find((f) => f.id === r.id)?.forms[r.f]),
   cat: null,
   extGroup: null,
+  extPage: 0,
+  extError: false,
   q: '',
   sel: null, // ref
   amount: 100,
@@ -73,6 +75,7 @@ const $ = (sel, el = document) => el.querySelector(sel);
 const app = () => $('#app');
 let modalOpener = null;
 let printController;
+let extLoading = false;
 
 // ---------------------------------------------------------------- ayarlar
 function applySettings() {
@@ -101,11 +104,12 @@ function applySettings() {
   r.style.setProperty('--ws', s.wordSpacing + 'em');
   r.style.setProperty('--radius', s.radius + 'px');
   r.style.setProperty('--font', fontStack(s.font));
+  r.style.setProperty('--heading-font', headingFont(s.font));
   if (s.accent && s.accent !== 'auto') r.style.setProperty('--ac', s.accent);
   else r.style.removeProperty('--ac');
   const accent = s.accent === 'auto' ? (s.theme === 'custom' ? s.customTheme.accent : THEMES.find(t => t.id === effectiveTheme)?.ac) : s.accent;
   if (accent) r.style.setProperty('--ac-fg', accentText(accent));
-  ensureFont(s.font);
+  ensureFont(s.font); ensureHeadingFont(s.font);
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.content = getComputedStyle(r).getPropertyValue('--bg').trim() || '#ffffff';
   $('#ruler')?.classList.toggle('on', !!s.ruler);
@@ -115,7 +119,7 @@ function setSetting(k, v) {
   S.settings = normalizeSettings({ ...S.settings, [k]: v });
   if (!saveSettings(S.settings)) toast(tr('storageError'));
   applySettings();
-  if (k === 'showExt' && v) loadExt().then(render);
+  if (k === 'showExt' && v) requestExtCatalog();
 }
 
 // ---------------------------------------------------------------- yardımcı bileşenler
@@ -128,6 +132,19 @@ function toast(msg) {
   document.body.appendChild(t);
   setTimeout(() => t.classList.add('out'), 1800);
   setTimeout(() => t.remove(), 2300);
+}
+
+function requestExtCatalog() {
+  if (extLoaded() || extLoading || S.extError) return;
+  extLoading = true;
+  loadExt().then(() => { extLoading = false; render(); }).catch(() => { extLoading = false; S.extError = true; render(); });
+}
+
+function catalogPending() {
+  requestExtCatalog();
+  return S.extError
+    ? `<span class="catalog-pending" role="alert">${L("USDA kataloğu yüklenemedi. Bağlantını kontrol edip sayfayı yenile; kayıtların korunur.")} <button class="btn" data-action="ext-reload">${L("Sayfayı yenile")}</button></span>`
+    : `<span class="catalog-pending" role="status">${L("USDA kataloğu yükleniyor…")}</span>`;
 }
 
 function catName(id) {
@@ -202,18 +219,18 @@ function sortBar(prefix) {
   return multiBar + `<div class="sortbar" role="group" aria-label="${L("Sırala")}"><span class="hint">${L("Sırala:")}</span>${opts.map(([id, label]) => `<button class="pchip ${S.sort === id ? 'on' : ''}" aria-pressed="${S.sort === id}" data-action="sort" data-s="${id}">${label}</button>`).join('')}${multiBtn}</div>${S.sort === 'energy' || S.sort === 'protein' || S.sort === 'fiber' ? `<p class="hint">${L("100 g ve ilk biçime göre, en yüksekten. Veri olmayanlar sonda.")}</p>` : ''}`;
 }
 function extButton(f, action) {
-  return `<button class="food ext" data-action="${action}" data-ndb="${esc(f.n)}"><span class="fi">${S.settings.emoji ? '🇺🇸' : ''}</span><span class="fn">${esc(f.en)}</span><span class="ff">USDA ${esc(f.n)}</span></button>`;
+  return `<button class="food ext" data-action="${action}" data-ndb="${esc(f.n)}"><span class="fn">${esc(f.en)}</span><span class="ff">USDA SR28 · 2015 · NDB ${esc(f.n)}${f.a ? ` · ${L("Hayvansal")}` : f.diet === 'unknown' ? ` · ${L("İçerik doğrulanmalı")}` : ''}${f.branded ? ` · ${L("Markalı kaynak kaydı")}` : ''}</span></button>`;
 }
 
 // ---------------------------------------------------------------- KEŞFET
-function categoryNav(prefix, current, withExt) {
+function categoryNav(prefix, current) {
   const vis = visibleFoods();
   const all = `<button class="cat ${!current ? 'on' : ''}" data-action="${prefix}-cat" data-cat=""><span class="cat-i">${S.settings.emoji ? '✨' : ''}</span><span class="cat-l">${L("Tümü")}</span> <span class="cnt">${vis.length}</span></button>`;
   const cats = CATEGORIES.filter((c) => S.settings.showAnimal || !ANIMAL_CATS.has(c.id)).map((c) => {
     const n = vis.filter((f) => f.cat === c.id).length;
     return `<button class="cat ${current === c.id ? 'on' : ''}" data-action="${prefix}-cat" data-cat="${c.id}"><span class="cat-i">${S.settings.emoji ? c.icon : ''}</span><span class="cat-l">${esc(categoryName(c))}</span> <span class="cnt">${n}</span></button>`;
   }).join('');
-  const ext = withExt ? `<button class="cat ${current === 'ext' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="ext"><span class="cat-i">${S.settings.emoji ? '🗂️' : ''}</span><span class="cat-l">${L("Geniş katalog (USDA, İngilizce)")}</span></button>` : '';
+  const ext = `<button class="cat ${current === 'ext' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="ext"><span class="cat-i">${S.settings.emoji ? '🗂️' : ''}</span><span class="cat-l">${L("Tam USDA kataloğu")}</span> <span class="cnt">${fmtNum(META.ext)}</span></button>`;
   const cu = `<button class="cat ${current === 'custom' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="custom"><span class="cat-i">${S.settings.emoji ? '🏷️' : ''}</span><span class="cat-l">${L("Kendi besinlerim")}</span> <span class="cnt">${customFoods().length}</span></button>`;
   const colBtn = (c, sub) => {
     const n = sub ? c.items.length : collectionRefs(S.collections, c.id).length;
@@ -221,7 +238,7 @@ function categoryNav(prefix, current, withExt) {
   };
   const tree = collectionTree(S.collections);
   const cols = `<div class="cat-group" role="presentation">${L("Koleksiyonlarım")}</div>${tree.map((c) => colBtn(c, false) + c.children.map((ch) => colBtn(ch, true)).join('')).join('')}${prefix === 'ex' ? `<button class="cat add" data-action="col-new">＋ ${L("Yeni koleksiyon")}</button>` : ''}`;
-  return all + cats + cu + ext + cols;
+  return all + ext + cats + cu + cols;
 }
 
 function refButton(ref, prefix, colId, index = -1, count = 0) {
@@ -229,6 +246,7 @@ function refButton(ref, prefix, colId, index = -1, count = 0) {
   const nm = item ? item.name : refKey(ref);
   const moves = colId && prefix === 'ex' && index >= 0 ? `<span class="move"><button class="btn ghost" data-action="col-move" data-id="${esc(colId)}" data-i="${index}" data-d="-1" ${index === 0 ? 'disabled' : ''} aria-label="${esc(L("{n} yukarı taşı", { n: nm }))}">↑</button><button class="btn ghost" data-action="col-move" data-id="${esc(colId)}" data-i="${index}" data-d="1" ${index === count - 1 ? 'disabled' : ''} aria-label="${esc(L("{n} aşağı taşı", { n: nm }))}">↓</button></span>` : '';
   const remove = moves + (colId && prefix === 'ex' ? `<button class="btn ghost danger item-remove" data-action="col-remove-item" data-id="${esc(colId)}" data-ref="${esc(JSON.stringify(ref))}" aria-label="${esc(L("{n} koleksiyondan çıkar", { n: nm }))}">✕</button>` : '');
+  if (!item && ref.t === 'x' && !extLoaded()) return `<div class="food pending-ref"><span class="fn">USDA NDB ${esc(ref.n)}</span>${catalogPending()}${remove}</div>`;
   if (!item) return `<div class="food missing-ref"><span class="fi">❔</span><span class="fn">${L("Kayıt bulunamadı")}</span><span class="ff">${esc(refKey(ref))}</span>${remove}</div>`;
   return `<div class="food-wrap"><button class="food" data-action="${prefix}-pick-ref" data-ref="${esc(JSON.stringify(ref))}"><span class="fi" aria-hidden="true">${item.food ? foodIcon(item.food) : item.custom ? '🏷️' : '🇺🇸'}</span><span class="fn">${esc(item.name)}</span><span class="ff">${esc(item.formLabel)}</span></button>${remove}</div>`;
 }
@@ -275,21 +293,26 @@ function foodList(prefix, cat, q, extGroup) {
       <div class="foods">${list.map((f) => customButton(f, prefix + '-pick-custom')).join('') || `<p class="empty">${L("Henüz kendi besinin yok.")}</p>`}</div>`;
   }
   if (cat === 'ext') {
-    if (!extLoaded()) { loadExt().then(render); return `<p class="empty">${L("Geniş katalog yükleniyor…")}</p>`; }
-    const groups = extGroups();
-    const chips = Object.entries(groups).filter(([g]) => S.settings.showAnimal || !extAnimalGroup(g)).map(([g, n]) => `<button class="pchip ${extGroup === g ? 'on' : ''}" data-action="${prefix}-extgroup" data-g="${g}">${esc(L(n))}</button>`).join('');
-    let list = extFoods();
-    if (extGroup) list = list.filter((f) => f.g === extGroup);
-    if (q) list = search(q, { ext: true, extGroup }).ext;
-    const shown = list.slice(0, 400);
-    return `<div class="presets extgroups">${chips}</div>
-      <p class="hint">${S.settings.showAnimal ? L("USDA SR28'den bitkisel ve hayvansal gruplar (hayvansal gruplar adlarında belirtilir); marka ürünler ayıklandı. Bitkisel gruplarda vegan uygunluğu ürün bazında doğrulanmalıdır.") : L("USDA SR28'den bitkisel gruplar; hayvansal içerikli ve marka ürünler otomatik ayıklandı, yine de vegan uygunluğu ürün bazında doğrulanmalıdır.")}</p>
-      <div class="foods">${shown.map((f) => extButton(f, prefix + '-pick-ext')).join('')}</div>
-      ${list.length > shown.length ? `<p class="hint">${L("{n} kayıt daha var; aramayla daralt.", { n: list.length - shown.length })}</p>` : ''}`;
+    if (!extLoaded()) return `<div class="catalog-wait">${catalogPending()}</div>`;
+    const meta = extMeta();
+    const groups = Object.entries(extGroups()).filter(([g]) => S.settings.showAnimal || !extAnimalGroup(g));
+    const all = q ? search(q, { ext: true, extGroup }).ext : extFoods().filter((f) => !extGroup || f.g === extGroup).sort((a, b) => Number(!!a.branded) - Number(!!b.branded) || a.en.localeCompare(b.en));
+    const pageSize = 80, pageCount = Math.max(1, Math.ceil(all.length / pageSize));
+    const current = Math.min(prefix === 'ex' ? S.extPage : S.picker.extPage || 0, pageCount - 1);
+    const shown = all.slice(current * pageSize, (current + 1) * pageSize);
+    const groupLabel = L("USDA besin grubu");
+    return `<div class="catalog-heading"><h2 tabindex="-1">${L("Tam USDA kataloğu")}</h2><span class="hint">${L("{n} kayıt", { n: fmtNum(all.length) })}</span></div>
+      <p class="catalog-source">${L("USDA SR28 · 2015 kaynak arşivi. İngilizce özgün adlar; markalı ürünler güncel ambalaj etiketi değildir.")}</p>
+      <p class="hint">${L("Kaynak kapsamı: {n} / {n} SR28 kaydı. {c} kayıt ana katalogda; {x} kayıt bu listede. Gizleme tercihin sonuçları daraltabilir.", { n: fmtNum(meta.sourceRecords), c: fmtNum(meta.curatedSourceRecords), x: fmtNum(meta.extendedRecords) })}</p>
+      <label class="catalog-group"><span>${groupLabel}</span><select id="${prefix}-extgroup" data-extgroup="${prefix}"><option value="">${L("Tüm besin grupları")}</option>${groups.map(([g, name]) => `<option value="${g}" ${g === extGroup ? 'selected' : ''}>${esc(L(name))}</option>`).join('')}</select></label>
+      ${!S.settings.showAnimal ? `<p class="hint">${L("Hayvansal ve içeriği belirsiz karma kayıtlar gizli.")}</p>` : ''}
+      <p class="hint">${L("Özgün İngilizce adla veya NDB numarasıyla ara. Örneğin: soup, bagel, 18069.")}</p>
+      <div class="foods">${shown.map((f) => extButton(f, prefix + '-pick-ext')).join('') || `<p class="empty">${L("Bu grupta aramana uyan kayıt yok. Aramayı kısalt veya grubu değiştir.")}</p>`}</div>
+      ${all.length > pageSize ? `<nav class="catalog-pages" aria-label="${L("Katalog sayfaları")}"><button class="btn" data-action="${prefix}-extpage" data-page="${current - 1}" ${current === 0 ? 'disabled' : ''}>${L("Önceki")}</button><span role="status">${L("Sayfa {a} / {b}", { a: current + 1, b: pageCount })}</span><button class="btn" data-action="${prefix}-extpage" data-page="${current + 1}" ${current === pageCount - 1 ? 'disabled' : ''}>${L("Sonraki")}</button></nav>` : ''}`;
   }
   const res = search(q, { cat, ext: S.settings.showExt && extLoaded() && !!q });
-  if (!res.curated.length && !res.ext.length && !res.custom.length) return `<p class="empty">${L("Eşleşen besin yok. Aramayı kısalt veya “Tümü”ne dön.")}</p>`;
-  let html = (prefix === 'ex' ? catalogHeading(cat, q, res.curated.length) : '') + (!q && !cat ? recentRow(prefix) : '') + sortBar(prefix);
+  if (!res.curated.length && !res.ext.length && !res.custom.length) return `<p class="empty">${L("Eşleşen besin yok. Aramayı kısalt veya “Tümü”ne dön.")}</p>${q ? fullCatalogSearch(prefix) : ''}`;
+  let html = (prefix === 'ex' ? catalogHeading(cat, q, res.curated.length + res.ext.length + res.custom.length) : '') + (!q && !cat ? recentRow(prefix) : '') + sortBar(prefix);
   if (!q && !cat && S.sort === 'default') {
     for (const c of CATEGORIES) {
       const fs = res.curated.filter((f) => f.cat === c.id);
@@ -300,8 +323,13 @@ function foodList(prefix, cat, q, extGroup) {
     html += `<div class="foods">${(q ? res.curated : sortFoods(res.curated)).map((f) => foodButton(f, prefix + '-pick')).join('')}</div>`;
   }
   if (res.custom.length) html += `<h3 class="grp">${L("Kendi besinlerim")}</h3><div class="foods">${res.custom.map((f) => customButton(f, prefix + '-pick-custom')).join('')}</div>`;
-  if (res.ext.length) html += `<h3 class="grp">${L("Geniş katalog (USDA)")}</h3><div class="foods">${res.ext.map((f) => extButton(f, prefix + '-pick-ext')).join('')}</div>`;
-  return html;
+  if (res.ext.length) html += `<h3 class="grp">${L("Geniş katalog (USDA)")}</h3><div class="foods">${res.ext.slice(0, 80).map((f) => extButton(f, prefix + '-pick-ext')).join('')}</div>`;
+  if (res.ext.length > 80) html += `<p class="hint">${L("USDA sonuçlarının ilk 80 kaydı gösteriliyor. Tüm sonuçları sayfalı katalogda aç.")}</p>`;
+  return html + (q ? fullCatalogSearch(prefix) : '');
+}
+
+function fullCatalogSearch(prefix) {
+  return `<button class="linkish full-catalog-search" data-action="${prefix}-full-search">${L("Tam USDA kataloğunda da ara")}</button>`;
 }
 
 function formChips(prefix, ref) {
@@ -348,7 +376,7 @@ function renderExplore() {
       <div id="matrix" class="matrix">${matrixForExplore(item)}</div>`
     : '';
   return `<div class="explore ${item ? 'has-sel' : ''}">
-    <nav class="cats ${S.settings.catGrid ? 'cats-grid' : ''}" aria-label="${L("Kategoriler")}">${categoryNav('ex', S.cat, S.settings.showExt)}</nav>
+    <nav class="cats ${S.settings.catGrid ? 'cats-grid' : ''}" aria-label="${L("Kategoriler")}">${categoryNav('ex', S.cat)}</nav>
     <section class="list" aria-label="${L("Besinler")}">
       ${!item && !S.cat && !S.q ? welcome() : ''}
       <div class="searchbar"><input type="search" id="q" placeholder="${L("Bir besin bul: mercimek, latte, pizza…")}" value="${esc(S.q)}" autocomplete="off" aria-label="${L("Besin ara")}">
@@ -427,6 +455,7 @@ function renderRecipe() {
     </div>`; }).join('') + `<p class="hint" id="rc-none" hidden>${L("Bu aramaya uyan tarif yok.")}</p>`;
   const items = rc.items.map((it, idx) => {
     const item = resolve(it.ref);
+    if (!item && it.ref.t === 'x' && !extLoaded()) return `<div class="ing pending-ref"><span>USDA NDB ${esc(it.ref.n)} · ${fmtNum(it.g)} g</span>${catalogPending()}</div>`;
     if (!item) return `<div class="ing missing"><span>${L("Bulunamayan kayıt ({key})", { key: esc(refKey(it.ref)) })} ${it.ref.t === 'x' ? '— ' + L("geniş katalog açık olmalı") : ''}</span><button class="btn ghost" data-action="rc-del-item" data-id="${it.id}">${L("Kaldır")}</button></div>`;
     return `<div class="ing">
       <div class="ing-h"><span class="fi">${item.food ? foodIcon(item.food) : ''}</span><b>${esc(item.name)}</b> <span class="muted">${esc(item.formLabel)}</span>
@@ -730,7 +759,7 @@ function renderPicker() {
           <div class="pk-prev">${item.v.energy != null ? `${fmtNum((item.v.energy * P.amount) / 100)} kcal · ` : ''}${item.v.protein != null ? `${fmtNum((item.v.protein * P.amount) / 100)} g protein · ` : ''}${item.v.fiber != null ? `${fmtNum((item.v.fiber * P.amount) / 100)} g ${L("lif")}` : ''}</div>
           <button class="btn primary big" data-action="pk-confirm">${P.target === 'recipe' ? '＋ ' + L("Tarife ekle") : '＋ ' + L("Karşılaştırmaya ekle")}</button>
           ${P.target === 'recipe' ? `<button class="btn" data-action="pk-confirm-more">＋ ${L("Ekle ve başka seç")}</button>` : ''}</div>`
-      : `<nav class="cats cats-grid">${categoryNav('pk', P.cat, S.settings.showExt)}</nav>
+      : `<nav class="cats cats-grid">${categoryNav('pk', P.cat)}</nav>
         <div class="searchbar"><input type="search" id="pq" placeholder="${L("Ara (isteğe bağlı)")}" value="${esc(P.q)}" autocomplete="off" aria-label="${L("Besin ara")}"></div>
         <div class="pk-list">${foodList('pk', P.cat, P.q, P.extGroup)}</div>`}
     </div></div>`;
@@ -808,7 +837,7 @@ export function render() {
   const selStart = document.activeElement?.selectionStart;
   let view = '';
   if (S.tab === 'kesfet') view = renderExplore();
-  else if (S.tab === 'gunluk') view = renderPersonal(S.personal, S.personalDraft, S.personalDay, S.consumedOnly, S.settings, resolve, S.personalSource, S.personalSourceOpen, S.personalUndo, S.personalReadError);
+  else if (S.tab === 'gunluk') view = renderPersonal(S.personal, S.personalDraft, S.personalDay, S.consumedOnly, S.settings, resolve, S.personalSource, S.personalSourceOpen, S.personalUndo, S.personalReadError, !S.closed.has('micro'));
   else if (S.tab === 'tarif') view = renderRecipe();
   else if (S.tab === 'karsilastir') view = renderCompare();
   else if (S.tab === 'ayarlar') view = renderSettings();
@@ -1089,7 +1118,12 @@ async function onClick(e) {
     case 'setting-reset': if (Object.hasOwn(DEFAULT_SETTINGS, b.dataset.key)) { setSetting(b.dataset.key, DEFAULT_SETTINGS[b.dataset.key]); render(); } break;
     case 'tab': S.tab = b.dataset.tab; render(); window.scrollTo(0, 0); break;
     // keşfet
-    case 'ex-cat': S.sel = null; S.cat = b.dataset.cat || null; S.extGroup = null; render(); $('.list') && ($('.list').scrollTop = 0); break;
+    case 'ex-cat': S.sel = null; S.cat = b.dataset.cat || null; S.extGroup = null; S.extPage = 0; render(); $('.list') && ($('.list').scrollTop = 0); break;
+    case 'ext-reload': location.reload(); break;
+    case 'ex-full-search': S.sel = null; S.cat = 'ext'; S.extGroup = null; S.extPage = 0; render(); break;
+    case 'ex-extpage': S.extPage = Math.max(0, Number(b.dataset.page) || 0); render(); $('#foodlist .catalog-heading h2')?.focus(); $('#foodlist .catalog-heading')?.scrollIntoView({ block: 'start' }); break;
+    case 'pk-full-search': S.picker.cat = 'ext'; S.picker.extGroup = null; S.picker.extPage = 0; render(); break;
+    case 'pk-extpage': S.picker.extPage = Math.max(0, Number(b.dataset.page) || 0); render(); $('.pk-list .catalog-heading h2')?.focus(); $('.pk-list .catalog-heading')?.scrollIntoView({ block: 'start' }); break;
     case 'ex-extgroup': S.extGroup = S.extGroup === b.dataset.g ? null : b.dataset.g; render(); break;
     case 'ex-pick': selectFood('ex', { t: 'c', id: b.dataset.id, f: 0 }); break;
     case 'gap-open': S.tab = 'kesfet'; selectFood('ex', { t: 'c', id: b.dataset.id, f: 0 }); break;
@@ -1204,7 +1238,7 @@ async function onClick(e) {
     case 'cmp-same': S.compare.forEach((c) => (c.g = Number(b.dataset.g))); render(); break;
     // seçici
     case 'pk-close': S.picker = null; render(); break;
-    case 'pk-cat': S.picker.cat = b.dataset.cat || null; S.picker.extGroup = null; render(); break;
+    case 'pk-cat': S.picker.cat = b.dataset.cat || null; S.picker.extGroup = null; S.picker.extPage = 0; render(); break;
     case 'pk-extgroup': S.picker.extGroup = S.picker.extGroup === b.dataset.g ? null : b.dataset.g; render(); break;
     case 'pk-pick': selectFood('pk', { t: 'c', id: b.dataset.id, f: 0 }); break;
     case 'pk-pick-ext': selectFood('pk', { t: 'x', n: b.dataset.ndb }); break;
@@ -1247,7 +1281,7 @@ async function onClick(e) {
     }
     case 'profile-apply': {
       const p = S.profiles.find(p => p.id === b.dataset.id);
-      if (p) { S.settings = normalizeSettings(p.settings); saveSettings(S.settings); applySettings(); if (S.settings.showExt) loadExt().then(render); render(); toast(L("Görünüm: {n}", { n: p.name })); } break;
+      if (p) { S.settings = normalizeSettings(p.settings); saveSettings(S.settings); applySettings(); if (S.settings.showExt) requestExtCatalog(); render(); toast(L("Görünüm: {n}", { n: p.name })); } break;
     }
     case 'profile-update': {
       const p = S.profiles.find(p => p.id === b.dataset.id);
@@ -1272,6 +1306,16 @@ async function onClick(e) {
       if (b.dataset.p === 'reset') S.settings = { ...DEFAULT_SETTINGS };
       else Object.assign(S.settings, PRESETS_UI[b.dataset.p]);
       saveSettings(S.settings); applySettings(); render(); toast(L("Ön ayar uygulandı")); break;
+    }
+    case 'micro-source': {
+      const key = b.dataset.key; if (!NUTRIENT_BY_KEY[key]) break;
+      if (S.tab === 'tarif') { S.recipeSource = key; S.recipeSourcesOpen = true; }
+      else if (S.tab === 'gunluk') { S.personalSource = key; S.personalSourceOpen = true; }
+      else break;
+      render();
+      const sourceSelect = S.tab === 'tarif' ? $('#recipe-source-nutrient') : $('#personal-source-key');
+      sourceSelect?.focus(); sourceSelect?.scrollIntoView({ block: 'center' });
+      break;
     }
     case 'toggle-missing': setSetting('showMissing', true); refreshMatrix(); break;
     case 'exp-file': download(`besin-matriksi-yedek-${new Date().toISOString().slice(0, 10)}.json`, exportPayload(S.recipes, S.settings, customFoods(), S.profiles, S.collections)); toast(L("Yedek dosyası hazırlandı")); break;
@@ -1393,14 +1437,20 @@ function onInput(e) {
   if (t.id === 'cu-portion' && S.customEdit) { S.customEdit.portion = t.value === '' ? null : Number(t.value); return; }
   if (t.dataset.slider) { setAmount(t.dataset.slider, Number(t.value), { fromSlider: true }); return; }
   if (t.id === 'q') {
-    S.q = t.value; $('#foodlist').innerHTML = foodList('ex', S.cat, S.q, S.extGroup);
+    S.q = t.value; S.extPage = 0; $('#foodlist').innerHTML = foodList('ex', S.cat, S.q, S.extGroup);
     if (S.q) $('.welcome')?.remove();
     return;
   }
-  if (t.id === 'pq') { S.picker.q = t.value; $('.pk-list').innerHTML = foodList('pk', S.picker.cat, S.picker.q, S.picker.extGroup); return; }
+  if (t.id === 'pq') { S.picker.q = t.value; S.picker.extPage = 0; $('.pk-list').innerHTML = foodList('pk', S.picker.cat, S.picker.q, S.picker.extGroup); return; }
   if (t.id === 'rc-name') { activeRecipe().name = t.value.slice(0, 80) || L("Adsız tarif"); persistRecipes(); return; }
 }
 function onChange(e) {
+  const changedGroup = e.target.dataset.extgroup;
+  if (changedGroup) {
+    if (changedGroup === 'ex') { S.extGroup = e.target.value || null; S.extPage = 0; }
+    else if (S.picker) { S.picker.extGroup = e.target.value || null; S.picker.extPage = 0; }
+    render(); return;
+  }
   const t = e.target;
   if (t.dataset.personalField) { updatePersonalDraft(t); return; }
   if (t.dataset.settingNumber) { if (!t.checkValidity()) toast(tr('settingInvalid')); return; }
@@ -1432,7 +1482,7 @@ function onChange(e) {
   if (t.id === 'settings-file' && t.files?.[0]) {
     t.files[0].text().then((text) => {
       S.settings = parseSettings(text); saveSettings(S.settings); applySettings();
-      if (S.settings.showExt || S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) loadExt().then(render);
+      if (S.settings.showExt || S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) requestExtCatalog();
       render(); toast(L("Ayarlar içe aktarıldı"));
     }).catch((err) => uiDialog(L("Ayarlar içe aktarılamadı:") + ' ' + L(err.message)));
     return;
@@ -1444,8 +1494,8 @@ function onChange(e) {
 export function start() {
   printController = createPrintController(document, window);
   applySettings();
-  if (S.settings.showExt || S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) loadExt().then(render);
-  if (S.personal.entries.some(e => e.ref.t === 'x')) loadExt().then(render);
+  if (S.settings.showExt || S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) requestExtCatalog();
+  if (S.personal.entries.some(e => e.ref.t === 'x')) requestExtCatalog();
   window.addEventListener('resize', () => { document.documentElement.dataset.uiNarrow = String(window.innerWidth / (S.settings.uiScale / 100) < 900); });
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (S.settings.theme === 'system') applySettings(); });
   mountAion();
@@ -1489,7 +1539,7 @@ export function start() {
         if (progress) { progress.value = done; progress.setAttribute('aria-label', tr('progressCount', { done })); $('.exploration-progress p').textContent = tr('progressCount', { done }); }
       }
     }
-    if (!printController.active && d.matches?.('details.sec')) { if (d.open) S.closed.delete(d.dataset.sec); else S.closed.add(d.dataset.sec); }
+    if (!printController.active && d.isConnected && d.matches?.('details.sec, details.micro-overview')) { if (d.open) S.closed.delete(d.dataset.sec); else S.closed.add(d.dataset.sec); }
   }, true);
   document.addEventListener('keydown', (e) => {
     if (!document.querySelector('.modal') && !e.target.closest('input, textarea, select, [contenteditable="true"]') && e.altKey && !e.ctrlKey && !e.metaKey) {

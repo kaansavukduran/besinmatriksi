@@ -124,7 +124,7 @@ const DEFINITIONS = [
   N('stigmasterol', 'Stigmasterol', 'mg', 'yag', 'Steroller', null, 'stgstr'),
 
   // --- Vitaminler
-  N('vita_rae', 'A vitamini (RAE)', 'µg', 'vitamin', 'A vitamini', 33, null, { nrv: 800 }),
+  N('vita_rae', 'A vitamini (RAE)', 'µg', 'vitamin', 'A vitamini', 33, null, { nrvNote: 'RAE, AB etiketindeki RE ile aynı birim değildir; otomatik %BRD gösterilmez.' }),
   N('retinol', 'Retinol', 'µg', 'vitamin', 'A vitamini', 34, 'retol'),
   N('bcarotene', 'Beta-karoten', 'µg', 'vitamin', 'A vitamini', 36, 'cartb'),
   N('acarotene', 'Alfa-karoten', 'µg', 'vitamin', 'A vitamini', 35, 'carta'),

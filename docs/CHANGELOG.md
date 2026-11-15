@@ -1,3 +1,12 @@
+# 1.1.2-beta.31 · 15 Kasım 2026
+
+- B142: başlıklarda yerel/OFL Bricolage Grotesque, okunabilirlik fontu tercihinin önceliği, gereksiz hero/katalog yüzeylerinin kaldırılması ve daha ölçülü kontrol köşeleri.
+- B143: USDA SR28 kaynak kapsamı 3.692→8.789/8.789 kayıt; geniş katalog 2.983→8.080. Kaynak yılı, karma içerik ve tanınan marka bilgisi açık; her grup ve kayıt aramayla/sayfalamayla erişilebilir. Katalog yükleme hatasında kayıtları koruyan geri dönüş.
+- B144: tek besin, tarif ve günlükte 28 yaygın vitamin/mineral özeti; miktar/birim, kaynak, referans ve kısmi kapsam ayrımı. Tarif/günlük satırından katkı dökümü açılır. A vitamini RAE, RE referansına otomatik bölünmez.
+- Dar ekranda büyük başlık ve miktar çıktısı, mikro bölümünün kapalı durumunu koruma ve bildirimin tıklamayı engellemesi düzeltildi.
+- Unslop/Fragaria Unslop için tam kaynak güncelleme ZIP'leri ayrı teslim edildi; yüklü cloud skill sürümleri bu oturumdan değiştirilemedi.
+- Web/PWA ve tek dosya çıktısı doğrulandı. Native paket/Release dağıtımı bu artışa dahil değil.
+
 # 1.1.2-beta.30 · 15 Kasım 2026
 
 - B141: sıcak krem/zeytin/kil renkleri, özgün tabak ve marka çizimi, tek besin kataloğu; yeni kurulum açık tema, mevcut tercihler korunur.

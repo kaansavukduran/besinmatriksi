@@ -7,6 +7,7 @@ import { referenceLabel } from './references.js';
 import { L, getLanguage } from './i18n.js';
 import { dailyRefs, refKind } from './daily-ref.js';
 import { nutrientLabel } from './i18n-nutrients.js';
+import { renderMicronutrients } from './micronutrients.js';
 
 const nl = nutrientLabel;
 
@@ -306,6 +307,7 @@ export function renderMatrix(r, cfg, ctx = {}) {
   // Hesaplanan göstergeler temel değer + pasta kartının hemen altında (gizlenmediyse)
   const hesapFirst = cfg.sectionOrder.includes('hesap') && !cfg.hiddenSections.includes('hesap');
   if (hesapFirst) d.push(derivedCard(r, cfg, open('hesap')));
+  d.push(renderMicronutrients(r, cfg, { open: r.n > 0 && open('micro'), contributions: ctx.recipe ? 'recipe' : null }));
   if (cfg.showSource && cfg.baseSrc) d.push(`<p class="hint src-base">${L("Etiketsiz değerlerin kaynağı:")} ${srcChip(cfg.baseSrc, item)}</p>`);
   const tail = [identityCard(item, r, cfg, ctx), coverage(r, cfg), `<p class="hint reference-label">${esc(referenceLabel(cfg))}</p>`];
   if (cfg.hiddenSections.length) d.push(`<p class="hint">${L("{n} bölüm ayarlarda gizlendi. Kapsam özeti ve CSV tüm bileşenleri içerir.", { n: cfg.hiddenSections.length })}</p>`);

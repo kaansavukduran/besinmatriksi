@@ -11,7 +11,7 @@ export function collectNotices(base = root) {
   };
   return [
     { id: 'app', name: 'Besin Matriksi', version: JSON.parse(read('package.json')).version, license: 'MIT', text: read('LICENSE') },
-    ...['andika', 'atkinson-hyperlegible-next', 'inter', 'lexend', 'literata', 'noto-sans-mono', 'nunito', 'opendyslexic'].map(n => packageNotice('@fontsource/' + n)),
+    ...['andika', 'atkinson-hyperlegible-next', 'bricolage-grotesque', 'inter', 'lexend', 'literata', 'noto-sans-mono', 'nunito', 'opendyslexic'].map(n => packageNotice('@fontsource/' + n)),
     ...['core', 'android', 'ios'].map(n => packageNotice('@capacitor/' + n)),
     { id: 'usda', name: 'USDA SR28 (2015)', version: 'SR28 full ASCII', license: 'Public domain / CC0', text: 'Source: U.S. Department of Agriculture, Agricultural Research Service, National Nutrient Database for Standard Reference, Release 28.\nData are in the public domain. USDA licensing statement: https://fdc.nal.usda.gov/api-guide/\nDataset and documentation: https://www.ars.usda.gov/northeast-area/beltsville-md-bhnrc/beltsville-human-nutrition-research-center/methods-and-application-of-food-composition-laboratory/mafcl-site-pages/sr11-sr28/' },
     { id: 'usda-fdc', name: 'USDA FoodData Central — Foundation Foods (2026-10-29)', version: 'FoundationFoods JSON 2026-10-29', license: 'CC0 1.0', text: 'Source: U.S. Department of Agriculture, Agricultural Research Service. FoodData Central, Foundation Foods. fdc.nal.usda.gov\nFoodData Central data are in the public domain (CC0 1.0). https://fdc.nal.usda.gov/api-guide/' },

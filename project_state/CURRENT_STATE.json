@@ -1,44 +1,44 @@
 {
   "schema_version": "1",
   "project": "Besin Matriksi",
-  "product_version": "1.1.2-beta.30",
+  "product_version": "1.1.2-beta.31",
   "development_state": "IN_PROGRESS",
-  "last_forge_at": "2026-11-15T11:40:59.664085+00:00",
-  "last_completed_forge": "B141",
+  "last_forge_at": "2026-11-15T12:32:08.160206+00:00",
+  "last_completed_forge": "B144",
   "active_forge": null,
-  "next_recommended_forge": "B142",
+  "next_recommended_forge": "B145",
   "branch": "ccr-1e1934aa-iv8aev",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
-  "validated_code_commit": "6acd3b2",
+  "validated_code_commit": null,
   "package_source_commit": "d686224",
   "verified_gates": [
     {
       "id": "unit",
       "command": "npm test; node --test --test-isolation=none tests/*.test.mjs",
-      "result": "PASS 116/116 subtests",
+      "result": "PASS128/128 subtests",
       "level": "UNIT_TESTED"
     },
     {
       "id": "data",
       "command": "npm run data; node scripts/build-notices.mjs --check",
-      "result": "PASS; 664 curated records, 23 notices",
+      "result": "PASS8789/8789 SR28 source records;664curated/810forms;24notices",
       "level": "BUILT"
     },
     {
       "id": "web",
       "command": "npm run build; npm run build:single",
-      "result": "PASS",
+      "result": "PASS final beta.31 web/PWA/single HTML",
       "level": "BUILT"
     },
     {
       "id": "browser",
-      "command": "Playwright Chromium desktop/phone + focused B117/B141 retest",
-      "result": "PASS coverage 170/170: 168 full-run pass + 2 updated-behavior retest pass; 2 file:// cases BLOCKED by administrator policy",
+      "command": "full Chromium desktop/phone + final fonts/micro-catalog regression run",
+      "result": "PASS184/184 full run;16/16 final focused run after cold-source fix (2new+14repeat);186unique verified. Two file:// cases BLOCKED by administrator policy.",
       "level": "RUNTIME_TESTED"
     },
     {
       "id": "native-runtime",
-      "result": "NOT_RUN for this version; earlier package evidence historical",
+      "result": "NOT_RUN beta.31; earlier package evidence historical",
       "level": "NOT_RUN"
     }
   ],
@@ -87,7 +87,7 @@
     "trigger": "trig_01Ljjr3Dkp6uBiQcjFaGuzm3",
     "stop_when": "Tüm uygulanabilir yol haritası işleri ve son kapılar doğrulandığında."
   },
-  "notes": "B141: kullanıcı talebiyle özgün sıcak yemek kimliği; katalog 664 kayıt (+37), yüksek ölçek yerleşim ve eski favori göçü; web/PWA doğrulaması. Geçmiş native paket kanıtları bu sürüm için geçerli sayılmaz.",
+  "notes": "B142–B144: beta.31; Bricolage başlık, sade yüzeyler, SR28 8789/8789 kapsamı, 28 mikro özeti ve katkılar. Native cloud skills NOT_APPLIED; tam ZIP teslimi. Fiziksel/native kabul ayrı ve uygulanmadı.",
   "release_target": "v1.1.2-beta.1",
   "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission. EFSA group reference data are separate from food measurements; only verified compatible PRI/AI records, EFSA attribution required.",
   "historical_verified_gates": [
@@ -334,12 +334,43 @@
     "cross_browser": "PASS (ci.yml run success)"
   },
   "current_forge": {
-    "id": "B141",
-    "scope": "Food-focused UI, responsive repair, +37 coffee/fastfood/snack records, legacy favorites fix, Pages workflow",
-    "base_commit": "5f346c899e270a980e6d6752128a3b2fdb50e4d3",
+    "id": "B144",
+    "base_commit": "34aa20f1c735a813265cf3322cfc28f6ab9c3062",
+    "local_evidence": "docs/evidence/B142-B144/AUDIT.md",
     "level": "RUNTIME_TESTED",
-    "local_evidence": "docs/evidence/B141/AUDIT.md",
-    "note": "Local unit/build/runtime evidence applies to this working tree; older verified_gates and native package records remain historical. Final production and Pages results will be reported separately.",
-    "browser_result": "170/170 verified across full+focused final runs; 2 file:// cases BLOCKED"
+    "note": "PASS128unit;184full+16finalfocused(186unique). Source compared against validation_base_commit plus committed final tree, checked during publication. Native/package evidence remains historical."
+  },
+  "validation_base_commit": "34aa20f1c735a813265cf3322cfc28f6ab9c3062",
+  "current_forges": [
+    {
+      "id": "B142",
+      "scope": "Ata design feedback; Bricolage heading identity and reduced redundant surfaces",
+      "level": "RUNTIME_TESTED"
+    },
+    {
+      "id": "B143",
+      "scope": "Full SR28 source coverage, visible paginated catalogue and recovery",
+      "level": "RUNTIME_TESTED"
+    },
+    {
+      "id": "B144",
+      "scope": "Micronutrients/contributors, unit correctness and full skill-update artifacts",
+      "level": "RUNTIME_TESTED"
+    }
+  ],
+  "skill_updates": {
+    "result": "ARTIFACT_READY_NOT_APPLIED",
+    "reason": "Native cloud skill write tool unavailable; complete replacement packages delivered separately, not published in project repository."
+  },
+  "catalog_coverage": {
+    "dataset": "USDA SR28",
+    "source_year": 2015,
+    "total_source_records": 8789,
+    "curated_source_records": 709,
+    "extended_records": 8080,
+    "covered_source_records": 8789,
+    "curated_foods": 664,
+    "curated_forms": 810,
+    "cronometer_exact_parity": "NOT_VERIFIED"
   }
 }

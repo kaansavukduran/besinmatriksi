@@ -1,6 +1,6 @@
 # 🫐 Besin Matriksi
 
-Türkçe, çevrimdışı, özelleştirilebilir bitkisel besin matriksi, günlük ve tarif hesaplayıcı. Yeni profil/günlük/görünüm ekranlarında İngilizce seçeneği de vardır; eski ekranların çevirisi henüz tamamlanmadı.
+Türkçe ve English arayüzlü, çevrimdışı besin matriksi, günlük ve tarif hesaplayıcı. Bitkisel ağırlıklı küratörlü katalog ve hayvansal içerik filtresiyle tam USDA SR28 kaynak kataloğu.
 Windows · macOS · Linux · Android · iPhone · tarayıcı/PWA · tek HTML.
 
 **[Paketleri indir: Actions / Artifacts](https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175)** ·
@@ -32,8 +32,8 @@ Windows WebView2 gerektirir. Fiziksel cihaz kabulü henüz tamamlanmamıştır.
 ## Kullanım
 
 - **Keşfet:** kategori → besin → tüketim biçimi → 1–1000 g. Hazır miktarlar, kaydırıcı, ±1/±10 ve kaynakta varsa ev ölçüleri. İsteğe bağlı ons gösterimi.
-- **Günlük ve profil:** yaş, boy, kilo, aktivite ve isteğe bağlı Tanita fişi alanlarını kaydet. Günlük enerji ihtiyacı **tahmini**, planlanan/tüketilen besinler ve 206 bileşenin miktar/kapsam/referans farklarını incele. [Profil ve günlük rehberi](docs/PERSONAL_DAILY.md).
-- **Tarif oluştur:** malzemeleri ekle, porsiyon veya pişmiş son ağırlık seç. Toplam/1 porsiyon/son ürünün 100 g'ı, TL/kg fiyat ve porsiyon maliyeti. Eksik fiyat veya besin bilgisi kısmi kapsamla gösterilir. Malzeme ve kaynak dökümünde her bileşenin malzeme katkısı, USDA kayıt no/etiket kaynağı ve hesap girdileri incelenir.
+- **Günlük ve profil:** yaş, boy, kilo, aktivite ve isteğe bağlı Tanita fişi alanlarını kaydet. Günlük enerji ihtiyacı **tahmini**, planlanan/tüketilen besinler ve 244 bileşenin miktar/kapsam/referans farklarını incele. [Profil ve günlük rehberi](docs/PERSONAL_DAILY.md).
+- **Tarif oluştur:** malzemeleri ekle, porsiyon veya pişmiş son ağırlık seç. Toplam/1 porsiyon/son ürünün 100 g'ı. Eksik besin bilgisi kısmi kapsamla gösterilir. Malzeme ve kaynak dökümünde her bileşenin malzeme katkısı, USDA kayıt no/etiket kaynağı ve hesap girdileri incelenir.
 - **Karşılaştır:** 2–4 besini aynı miktar ve biçimde yan yana incele. En yüksek değer vurgusu sağlık açısından 'en iyi' anlamına gelmez.
 - **Ayarlar:** yeni görünüm kartında TR/EN, sistem/açık/koyu/yüksek kontrast tema, %80–200 bağımsız arayüz ölçeği (elle %135 dahil), yazı boyutu ve aralık kaydırıcıları; isteğe bağlı sakin keşif ilerlemesi. 9 tema ve yedi renk alanlı özel tema; renk seçim penceresi, hazır renkler/HEX, canlı önizleme ve metin kontrast ölçümü; 8 gömülü font ve sistem fontu; OpenDyslexic, Atkinson, Lexend; punto ve aralıklar; okuma cetveli; büyük imleç; atanabilir kısayollar; 12 görünüm profili.
 - **Kendi matriksin:** bölümleri gizle/sırala, 24 öğeye kadar sabitle. AB/TGK etiket BRD'si, elle girilen hedef veya kaynak/tür/yıl gösteren EFSA grup PRI/AI referansı. kcal/kJ ve sayı/birim tercihleri.
@@ -64,9 +64,15 @@ ve service worker göreli yollar kullanır; aynı çıktı hem kök alan adında
 
 ## Veri kapsamı ve lisanslar
 
-**Besin bileşimi USDA SR28 tam ASCII tablosundan gelir.**
+**Besin bileşimi USDA SR28 ve kayıtlarda belirtilen USDA Foundation, FNDDS ve özel bileşen kaynaklarından gelir.**
 EFSA DRV Finder ayrıca 23 bileşen / 169 PRI-AI kaydıyla isteğe bağlı grup referansıdır; besin ölçümü değildir. Ayarlar → Yüzde referansı → EFSA: yaş ve kaynak cinsiyet grubunu seç. Yetişkin çinko için fitat, yetişkin kadın demiri için menopoz grubu ayrıca seçilir. Eşleşmeyen veya kapsam dışı alanda yüzde gösterilmez. Kaynak/görüş yılı ve koşullar açılabilir tabloda, PRI/AI türü matrikste ve CSV'de korunur. Kişisel hedefler değişmez.
-285 Türkçe besin / 363 tüketim biçimi; 1672 ek bitkisel USDA kaydı.
+**664 küratörlü besin / 810 tüketim biçimi.** Tam USDA SR28 kaynağının **8.789/8.789** kaydı erişilebilir: 709 benzersiz SR28 kaydı küratörlü biçimlerde, kalan **8.080 kayıt** ayrı kaynak kataloğundadır. 664 besin adını, 8.789 ise hazırlamaya özgü kaynak kaydını sayar. Niş/hayvansal gizleme tercihleri ana ekranda görünen sayıyı değiştirir.
+
+Keşfet → **Tam USDA kataloğu** ile ayar açmadan eriş. 80 kayıtlık sayfalar, besin grubu seçimi ve özgün İngilizce ad veya NDB numarasıyla arama vardır. 2015 tarihli SR28 marka kayıtları güncel ambalaj etiketi sayılmaz; içerik ve alerjen bilgisi üründen doğrulanır. Hayvansal kayıtlar gizlenince içeriği belirsiz karma kayıtlar da gizlenir.
+
+**Vitaminler ve mineraller** özeti 28 yaygın mikro besini miktar, birim, seçili referans ve veri kapsamıyla gösterir. Tarif ve günlükte bir ada dokunmak katkı veren besinlerin kaynak dökümünü açar. Veri yok, kayıtlı sıfır ve kısmi toplam (≥) ayrıdır. A vitamini RAE değeri, farklı RE birimli AB referansına otomatik bölünmez. Bilimsel biçimlerin ayrıntılı matriksi ve CSV korunur.
+
+Başlıklarda çevrimdışı Bricolage Grotesque kullanılır. Atkinson, OpenDyslexic, Lexend veya Andika seçildiğinde başlıklar da okuma tercihini izler. Tema, yazı boyutu ve arayüz ölçeği bundan bağımsızdır.
 Kaynakta bulunan amino asitler, şekerler, yağ asitleri, vitamin biçimleri,
 fitosteroller, kafein ve betain gibi ayrıntılar dahil edilmiştir.
 

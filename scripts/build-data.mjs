@@ -1,6 +1,6 @@
 // Ham kaynaklardan (data/raw) uygulamanın çevrimdışı veri dosyalarını üretir.
 //   src/data/foods.json      küratörlü Türkçe katalog (USDA SR28 tam bileşim)
-//   src/data/foods-ext.json  geniş katalog (USDA SR28 bitkisel gruplar, İngilizce adlar)
+//   src/data/foods-ext.json  kayıpsız USDA SR28 geniş katalog (İngilizce özgün adlar)
 // Kullanım: node scripts/build-data.mjs
 import fs from 'node:fs';
 import { gunzipSync } from 'node:zlib';
@@ -392,41 +392,80 @@ for (const food of FOODS) {
   foods.sort((a, b) => catIdx[a.cat] - catIdx[b.cat] || rank(a) - rank(b));
 }
 
-// ---------- geniş katalog (USDA bitkisel gruplar) ----------
+// ---------- geniş katalog: USDA SR28'in bütün grupları ----------
+// SR28'in 8.789 kaynak kaydı, küratörlü NDB bağlantıları ve geniş katalog arasında
+// kayıpsız bölünür. Marka / kesim / hazırlama / kalite farkı başka gıdayla eşitlenmez.
+// Ürün adları kaynak yılındaki özgün tanımlardır; güncel ürün etiketi veya veganlık garantisi değildir.
 const EXT_GROUPS = {
-  '0200': 'Baharat ve otlar', '0900': 'Meyveler ve meyve suları', '1100': 'Sebzeler ve sebze ürünleri',
-  '1200': 'Kuruyemiş ve tohumlar', '1600': 'Baklagiller ve ürünleri', '2000': 'Tahıllar ve makarna',
-  '0400': 'Yağlar', '1400': 'İçecekler',
-  // Hayvansal gruplar (2026-11-12 kullanıcı kararı); kayıtlar `a: 1` taşır ve arayüzde gizlenebilir
-  '0100': 'Süt ürünleri ve yumurta (hayvansal)', '0500': 'Kümes hayvanları (hayvansal)', '1300': 'Sığır eti (hayvansal)',
-  '1700': 'Kuzu, dana ve av eti (hayvansal)', '1000': 'Domuz eti (hayvansal)', '1500': 'Balık ve kabuklular (hayvansal)',
+  '0100': 'Süt ürünleri ve yumurta (hayvansal)',
+  '0200': 'Baharat ve otlar',
+  '0300': 'Bebek ve çocuk gıdaları',
+  '0400': 'Yağlar',
+  '0500': 'Kümes hayvanları (hayvansal)',
+  '0600': 'Çorbalar, soslar ve et suları',
+  '0700': 'Sosis, salam ve işlenmiş et ürünleri',
+  '0800': 'Kahvaltılık tahıllar',
+  '0900': 'Meyveler ve meyve suları',
+  '1000': 'Domuz eti (hayvansal)',
+  '1100': 'Sebzeler ve sebze ürünleri',
+  '1200': 'Kuruyemiş ve tohumlar',
+  '1300': 'Sığır eti (hayvansal)',
+  '1400': 'İçecekler',
+  '1500': 'Balık ve kabuklular (hayvansal)',
+  '1600': 'Baklagiller ve ürünleri',
+  '1700': 'Kuzu, dana ve av eti (hayvansal)',
+  '1800': 'Ekmek, hamur işleri ve unlu mamuller',
+  '1900': 'Tatlılar ve şekerlemeler',
+  '2000': 'Tahıllar ve makarna',
+  '2100': 'Fast food',
+  '2200': 'Hazır yemekler ve garnitürler',
+  '2500': 'Atıştırmalıklar',
+  '3500': 'Yerel ve geleneksel gıdalar (ABD)',
+  '3600': 'Restoran ürünleri',
 };
 const ANIMAL_GROUPS = new Set(['0100', '0500', '1300', '1700', '1000', '1500']);
-const ANIMAL = /\b(milk|cheese|butter|eggs?|chicken|beef|pork|ham|bacon|fish|tuna|salmon|shrimp|crab|lard|tallow|gelatin|honey|whey|casein|cream|creamed|yogurt|meat|turkey|lamb|veal|anchov\w*|clam|sardine|cod|oyster|mayonnaise|ghee|sausage|frankfurter|bologna|cod liver|herring|menhaden|whale|seal|egg|mutton|goose|duck|poultry|buttermilk|lactose|nonfat dry milk|sour cream|ensure|formula|gravy|broth|chowder)\b/i;
-const PLANT_OK = /\b(soymilk|soy milk|almond milk|rice milk|coconut milk|coconut cream|oat milk|peanut butter|sesame butter|cashew butter|almond butter|nut butter|butternut|butterhead|butterbur|cocoa butter|shea|butter beans|milk substitute|coconut water|milkfish)\b/i;
+const PLANT_GROUPS = new Set(['0200', '0900', '1100', '1200', '1600', '2000', '0400']);
+const ANIMAL = /\b(milk|cheese|butter|eggs?|chicken|beef|pork|ham|bacon|fish|tuna|salmon|shrimp|crab|lard|tallow|gelatin|honey|whey|casein|cream|creamed|yogurt|meat|turkey|lamb|veal|anchov\w*|clam|sardine|cod|oyster|ghee|sausage|frankfurters?|franks|bologna|cod liver|herring|menhaden|whale|seal|mutton|goose|duck|poultry|buttermilk|lactose|nonfat dry milk|sour cream)\b/i;
+const PLANT_OK = /\b(soymilk|soy milk|almond milk|rice milk|coconut milk|coconut cream|oat milk|peanut butter|sesame butter|cashew butter|almond butter|nut butter|butternut|butterhead|butterbur|cocoa butter|shea|butter beans|milk substitute|coconut water|cream of wheat|cream of rice|cream[- ]style|vegetable broth|vegetable stock)\b/gi;
+const AMBIGUOUS = /\b(meatless|meat[- ]free|non[- ]dairy|nondairy|imitation|egg substitute|vegetarian|vegan)\b/i;
+const MIXED_PRODUCT = /\b(formula|meal replacement|whitener|souffle|pudding|pancakes?|salad|mayonnaise|margarine|dressing|veggie burgers?|prepared from recipe)\b/i;
+// SR28 2015 katalogda bilinen marka tanımları; bu bayrak tüm ticari adları tespit ettiği iddiası taşımaz.
+const KNOWN_BRAND = /\b(Clif|McDonald|Burger King|Dunkin|Red Bull|SlimFast|Slim-Fast|Carnation|Stouffer|Kellogg|Campbell|Gerber|Heinz|Kraft|Nestle|Nestlé|Quaker|Hershey|Toblerone|Subway|Wendy|Denny|Applebee|Cracker Barrel|Boston Market|Kentucky Fried|Pizza Hut|Taco Bell|Sbarro|Panera|Chick-fil-A|ZonePerfect)\b/i;
+const isBranded = (name) => /[A-Z]{4,}/.test(name.replace(/\bUSDA(?: Commodity)?\b/g, '')) || KNOWN_BRAND.test(name);
+function dietOf(group, name, branded, values) {
+  if (ANIMAL_GROUPS.has(group)) return 'animal';
+  if (AMBIGUOUS.test(name)) return 'unknown';
+  if (ANIMAL.test(name.replace(PLANT_OK, ''))) return 'animal';
+  // İz veya pozitif kolesterol bitkisel uygunluğu kanıtlamaz; içerik belirsizliğini koru.
+  if (values.cholesterol > 0 || MIXED_PRODUCT.test(name) || /pasta.*fresh|fresh.*pasta/i.test(name)) return 'unknown';
+  if (!branded && PLANT_GROUPS.has(group)) return 'plant';
+  if (!branded && group === '1400' && /^(Water|Beverages, (tea|coffee|coconut water|almond milk|rice milk|soy))/i.test(name)) return 'plant';
+  return 'unknown';
+}
 const curatedNdb = new Set(FOODS.flatMap((f) => f.forms.map((fm) => fm[1]).filter(Boolean)));
 const ext = [];
 for (const [ndb, d] of des) {
-  if (!EXT_GROUPS[d.grp] || curatedNdb.has(ndb)) continue;
+  if (!EXT_GROUPS[d.grp]) throw new Error('Geniş katalogda tanımsız USDA grubu: ' + d.grp);
+  if (curatedNdb.has(ndb)) continue;
   const name = d.long;
-  const animalGroup = ANIMAL_GROUPS.has(d.grp);
-  // Bitkisel gruplarda hayvansal içerikli karışık ürünler yine ayıklanır (yanlış grupta durmasınlar)
-  if (!animalGroup && ANIMAL.test(name.replace(PLANT_OK, ''))) continue;
-  // Et gruplarında aynı parçanın yağlı/kaliteli tekrarları ayıklanır: yalnız "yağsız kısım" ve tek kalite (choice/all grades) tutulur
-  if (['1300', '1700', '1000'].includes(d.grp) && (/separable lean and fat|separable fat|\b(select|prime)\b|trimmed to 1\/4"|imported|New Zealand|Australian/i.test(name))) continue;
-  // Marka ürünleri (büyük harfli marka adları) içerik doğrulanamadığı için dışarıda
-  if (/[A-Z]{4,}/.test(name) || /\bmeatless\b/i.test(name)) continue;
-  if (d.grp === '1400' && /\b(beer|wine|liqueur|whiskey|vodka|rum|gin|alcoholic|cocktail|distilled|daiquiri|martini)\b/i.test(name)) continue;
+  const branded = isBranded(name);
   const v = usdaValues(ndb);
   const fl = flavValues.get(ndb);
   if (fl) Object.assign(v, fl.v);
   const fsTags = fl ? { ...fl.s } : {};
   fillFromFoundation(ndb, v, fsTags);
   fillFromExtra(ndb, v, fsTags);
-  // fs: SR28 dışı kaynak etiketleri (f: USDA Flavonoid, y: USDA İzoflavon)
-  ext.push({ n: ndb, g: d.grp, en: name, sci: d.sci || null, r: d.refuse, rd: d.refDesc || null, p: usdaPortions(ndb), v, ...(Object.keys(fsTags).length ? { fs: fsTags } : {}), ...(animalGroup ? { a: 1 } : {}) });
+  const diet = dietOf(d.grp, name, branded, v);
+  ext.push({ n: ndb, g: d.grp, en: name, sci: d.sci || null, r: d.refuse, rd: d.refDesc || null, p: usdaPortions(ndb), v,
+    diet, ...(Object.keys(fsTags).length ? { fs: fsTags } : {}), ...(diet === 'animal' ? { a: 1 } : {}), ...(branded ? { branded: true } : {}) });
 }
-ext.sort((a, b) => a.en.localeCompare(b.en));
+ext.sort((a, b) => a.en.localeCompare(b.en, 'en'));
+const curatedSourceRecords = [...curatedNdb].filter((ndb) => des.has(ndb)).length;
+const extMeta = { dataset: 'USDA SR28', sourceYear: 2015, sourceRecords: des.size, curatedSourceRecords,
+  extendedRecords: ext.length, coveredSourceRecords: curatedSourceRecords + ext.length, excludedSourceRecords: 0,
+  groups: Object.keys(EXT_GROUPS).length, brandedRecords: ext.filter((f) => f.branded).length,
+  uncertainDietRecords: ext.filter((f) => f.diet === 'unknown').length };
+if (extMeta.coveredSourceRecords !== extMeta.sourceRecords) throw new Error('USDA SR28 katalog kapsamı eksik veya yinelenmiş');
 
 const outDir = path.join(root, 'src/data');
 fs.mkdirSync(outDir, { recursive: true });
@@ -439,5 +478,5 @@ const meta = {
   ifctLinked, estimated, ext: ext.length,
 };
 fs.writeFileSync(path.join(outDir, 'foods.json'), JSON.stringify({ meta, categories: CATEGORIES, animalCategories: ANIMAL_CATS, foods }));
-fs.writeFileSync(path.join(outDir, 'foods-ext.json'), JSON.stringify({ groups: EXT_GROUPS, foods: ext }));
+fs.writeFileSync(path.join(outDir, 'foods-ext.json'), JSON.stringify({ meta: extMeta, groups: EXT_GROUPS, foods: ext }));
 console.log(meta, 'foods.json', (fs.statSync(path.join(outDir, 'foods.json')).size / 1024).toFixed(0) + ' KB', 'ext', (fs.statSync(path.join(outDir, 'foods-ext.json')).size / 1024).toFixed(0) + ' KB');

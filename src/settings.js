@@ -10,7 +10,7 @@ export const SHORTCUT_ACTIONS = { kesfet: 'Keşfet', tarif: 'Tarif oluştur', ka
 export const DEFAULT_SETTINGS = {
   theme: 'light', accent: 'auto', font: 'inter', fontSize: 17,
   lineHeight: 1.55, letterSpacing: 0, wordSpacing: 0, density: 'comfy',
-  radius: 14, bold: false, reduceMotion: false, ruler: false,
+  radius: 6, bold: false, reduceMotion: false, ruler: false,
   showNrv: true, showSource: true, showSd: false, showAlt: true,
   showMissing: false, precision: 'normal', showExt: false, emoji: true,
   defaultAmount: 100,
@@ -73,7 +73,7 @@ export function normalizeSettings(input) {
 export function referenceFor(nutrient, settings) {
   if (settings.referenceMode === 'efsa') return efsaReference(nutrient, settings);
   const custom = settings.referenceMode === 'custom';
-  return { value: custom ? settings.targets?.[nutrient.key] : nutrient.nrv, label: custom ? L("%hedef") : L("%BRD"), title: custom ? L("Elle girilen hedef; kişisel gereksinim veya tıbbi öneri değildir") : L("AB 1169/2011 yetişkin etiket referansı (2011), TGK; kişisel ihtiyaç değildir") };
+  return { value: custom ? settings.targets?.[nutrient.key] : nutrient.nrv, label: custom ? L("%hedef") : L("%BRD"), title: custom ? L("Elle girilen hedef; kişisel gereksinim veya tıbbi öneri değildir") : nutrient.nrvNote ? L(nutrient.nrvNote) : L("AB 1169/2011 yetişkin etiket referansı (2011), TGK; kişisel ihtiyaç değildir"), reason: !custom && nutrient.nrvNote ? L(nutrient.nrvNote) : undefined };
 }
 export function moveSection(settings, id, direction) {
   const next = normalizeSettings(settings), order = next.sectionOrder;
