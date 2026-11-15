@@ -1,3 +1,9 @@
+# 1.1.2-beta.35 · 15 Kasım 2026
+
+- B148: tarif listesinin sonunda otomatik Günlük Toplam Tarif. Üstte her tarif/öğün için ayrı8temel besin değeri; altta tüm malzemelerin ortak matrisi, mikro besinler, amino asit grafikleri ve kaynak dökümü.
+- Tariflerin tamamı veya her tariften1porsiyon seçimi; seçim cihazda korunur. Tarif adları ve malzemeler değiştirilmez; özet kaydedilmiş tarif listesine eklenmez ve kendisini toplamaz.
+- Malzeme değişimleri yeniden hesaplanır; CSV seçilen toplama aittir. Kaynak satırları katkının hangi tariften geldiğini de gösterir. Eksik veri ve kısmi kapsam korunur.
+
 # 1.1.2-beta.34 · 15 Kasım 2026
 
 - B147: bir malzemenin eksik amino asit ölçümü artık tarifte tüm protein kalitesi grafiğini gizlemiyor. Dokuz referans grubu her zaman görünür; tam veride skor/sınırlayıcı, kısmi veride≥alt sınır ve malzeme/bileşen dökümü.

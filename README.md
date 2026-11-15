@@ -125,3 +125,9 @@ uygulama hazır JSON'u kullanır. Besin eklerken doğru USDA kayıt ve tüketim 
 Devam dalı `codex/forge-devam`. Önce `project_state/CURRENT_STATE.json`, sonra
 [ROADMAP](docs/ROADMAP.md) ve Forge günlüğü okunur. Saatlik görev de aynı kalıcı
 kayıtlardan ilerler; çalışma ortamı ve kullanım limitleri geçerlidir.
+
+### Günlük Toplam Tarif
+
+Tarif oluştur ekranında listenin sonundaki **Günlük Toplam Tarif** tüm mevcut tariflerden otomatik hesaplanır. Her öğünün temel değerleri üstte ayrı satırdadır; altında birleşik matris, mikro besinler, protein kalitesi ve kaynaklar bulunur. Varsayılan **Tariflerin tamamı**; **Her tariften1porsiyon** seçilebilir ve cihazda korunur. Kaydedilmiş tarifler değiştirilmez, özet kendisini toplamaz ve kişisel günlüğe tüketim eklemez.
+
+In Create recipe, **Daily Recipe Total** is the last list entry. It shows each meal separately followed by the combined nutrient matrix and sources. Choose whole recipes or one serving of each; the choice is saved locally. The view does not change recipes or create diary entries.

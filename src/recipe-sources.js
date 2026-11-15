@@ -21,7 +21,7 @@ export function recipeContributions(recipe, resolve, key, factor = 1) {
     const source = scaled?.s[key];
     const calculation = source === 'd' ? CALCULATIONS[key] : null;
     return {
-      index, name: item?.name || L('Bulunamayan kayıt'), form: item?.formLabel || '',
+      index, name: (ingredient.mealName ? ingredient.mealName + ' · ' : '') + (item?.name || L('Bulunamayan kayıt')), form: item?.formLabel || '',
       grams: ingredient.g, factor, missingRecord: !item,
       value: scaled?.v[key] == null ? null : scaled.v[key] * factor,
       source, usda: item?.usda || null,

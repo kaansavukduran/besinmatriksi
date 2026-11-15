@@ -13,7 +13,7 @@ export const DEFAULT_SETTINGS = {
   radius: 6, bold: false, reduceMotion: false, ruler: false,
   showNrv: true, showSource: true, showSd: false, showAlt: true,
   showMissing: false, precision: 'normal', showExt: false, emoji: true,
-  defaultAmount: 100,
+  defaultAmount: 100, recipeTotalBasis: 'total',
   language: 'auto', uiScale: 100, progressEnabled: false, progressAnimations: true,
   sectionOrder: MATRIX_SECTIONS.map(s => s.id), hiddenSections: [], pinnedNutrients: [],
   customTheme: DEFAULT_COLORS, referenceMode: 'eu', targets: {},
@@ -27,9 +27,10 @@ export const SETTING_GROUPS = {
   reading: ['font', 'fontSize', 'lineHeight', 'letterSpacing', 'wordSpacing', 'bold'],
   aion: ['aionEnabled', 'aionMotion', 'aionSize', 'aionSide', 'aionTips'],
   accessibility: ['density', 'ruler', 'reduceMotion', 'emoji', 'shortcuts', 'focusWidth', 'largeCursor'],
-  matrix: ['cardFacts', 'recipeGaps', 'showRecent', 'showSimilar', 'showAnimal', 'catGrid', 'showNiche', 'showNrv', 'showSource', 'showSd', 'showAlt', 'showMissing', 'precision', 'defaultAmount', 'showExt', 'sectionOrder', 'hiddenSections', 'pinnedNutrients', 'referenceMode', 'targets', 'efsaAge', 'efsaSex', 'efsaPhytate', 'efsaIronGroup', 'energyUnit', 'amountUnit', 'autoUnits', 'decimalSeparator'],
+  matrix: ['recipeTotalBasis', 'cardFacts', 'recipeGaps', 'showRecent', 'showSimilar', 'showAnimal', 'catGrid', 'showNiche', 'showNrv', 'showSource', 'showSd', 'showAlt', 'showMissing', 'precision', 'defaultAmount', 'showExt', 'sectionOrder', 'hiddenSections', 'pinnedNutrients', 'referenceMode', 'targets', 'efsaAge', 'efsaSex', 'efsaPhytate', 'efsaIronGroup', 'energyUnit', 'amountUnit', 'autoUnits', 'decimalSeparator'],
 };
 const enums = {
+  recipeTotalBasis: ['total', 'serving'],
   theme: ['light', 'dark', 'oled', 'sepia', 'pastel', 'ocean', 'forest', 'contrast', 'contrast-dark', 'custom', 'system'], language: ['auto', 'tr', 'en'],
   font: ['atkinson', 'opendyslexic', 'lexend', 'andika', 'nunito', 'inter', 'literata', 'mono', 'system'],
   density: ['comfy', 'compact', 'large'], precision: ['low', 'normal', 'high'],

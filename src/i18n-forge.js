@@ -1,5 +1,16 @@
 // B142–B144: katalog erişimi, veri kapsamı ve ölçü birimi açıklamaları.
 export const FORGE_EN = {
+  "Günlük Toplam Tarif": "Daily Recipe Total",
+  "Her tariften 1 porsiyon": "One serving of each recipe",
+  "Tariflerin tamamı": "Whole recipes",
+  "Listedeki tüm tariflerden otomatik hesaplanır. Tarif adları ve malzemeleri kendi tariflerinde düzenlenir.": "Automatically calculated from all listed recipes. Edit names and ingredients in each recipe.",
+  "Toplama dahil edilen miktar": "Amounts included in the total",
+  "Bu özet günlüğüne tüketim kaydı eklemez. ≥: bazı malzemelerde ölçüm eksik.": "This summary does not add consumption entries to your diary. ≥: some ingredients have missing measurements.",
+  "Öğünlerin besin değerleri": "Meal nutrition overview",
+  "Henüz malzeme yok": "No ingredients yet",
+  "Otomatik toplam · {n} tarif": "Automatic total · {n} recipes",
+  "CSV indir": "Download CSV",
+
   "Çizgi = referans (%100). Çubuklar toplam proteinin amino asit örüntüsünü gösterir; günlük ihtiyaç yüzdesi değildir.": "Line = reference (100%). Bars show the amino acid pattern of total protein, not the percentage of daily requirements.",
   "Amino asit skoru hesaplanamıyor": "Amino acid score cannot be calculated",
   "Toplam protein ölçümü eksik; amino asit/protein oranı hesaplanamaz.": "Total protein measurements are incomplete; the amino acid/protein ratio cannot be calculated.",

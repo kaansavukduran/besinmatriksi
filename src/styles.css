@@ -953,3 +953,17 @@ button.micro-name:hover { text-decoration-color: currentColor; }
 .aa-gaps summary { cursor: pointer; padding-block: .4rem; }
 .aa-gaps ul { padding-left: 1.2rem; }
 .aabar > * { min-width: 0; overflow-wrap: anywhere; }
+
+.daily-total-entry { margin-top: .7rem; border-top: 1px solid var(--line); padding-top: .7rem; }
+.daily-recipe-header { display: flex; gap: var(--gap); align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.daily-recipe-header h1 { margin: 0; }
+.meal-overview { max-width: 100%; overflow-x: auto; margin-block: 1.2rem; }
+.meal-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+.meal-table caption { text-align: left; font-weight: 700; padding-bottom: .6rem; }
+.meal-table th, .meal-table td { padding: .7rem .6rem; border-bottom: 1px solid var(--line); text-align: right; }
+.meal-table th:first-child { text-align: left; min-width: 9rem; }
+.meal-table td { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.meal-table small { display: block; font-weight: 400; color: var(--muted); }
+.meal-table .linkish { text-align: left; overflow-wrap: anywhere; max-width: 100%; }
+
+@media print { .daily-recipe-header .presets, .daily-recipe-total > .presets { display: none !important; } .meal-overview { overflow: visible; } .meal-table { font-size: 8pt; } .meal-table th:first-child { min-width: 0; } }

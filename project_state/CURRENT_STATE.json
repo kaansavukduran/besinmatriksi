@@ -1,12 +1,12 @@
 {
   "schema_version": "1",
   "project": "Besin Matriksi",
-  "product_version": "1.1.2-beta.34",
+  "product_version": "1.1.2-beta.35",
   "development_state": "IN_PROGRESS",
-  "last_forge_at": "2026-11-15T15:04:58.152915+00:00",
-  "last_completed_forge": "B147",
+  "last_forge_at": "2026-11-15T15:18:30.371696+00:00",
+  "last_completed_forge": "B148",
   "active_forge": null,
-  "next_recommended_forge": "B148",
+  "next_recommended_forge": "B149",
   "branch": "ccr-1e1934aa-iv8aev",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
   "validated_code_commit": null,
@@ -14,22 +14,27 @@
   "verified_gates": [
     {
       "id": "unit",
-      "result": "PASS135/135",
+      "result": "PASS138/138",
       "level": "UNIT_TESTED"
     },
     {
       "id": "web",
-      "result": "PASS beta.34 web/PWA+singleHTML",
+      "result": "PASS beta.35 web/PWA+singleHTML",
       "level": "BUILT"
     },
     {
       "id": "browser",
-      "result": "PASS28/28 affected regression; final copy/extra complementary UI case8/8 focused; desktop/phone TR/EN including320px28px200percent",
+      "result": "PASS8/8 final new-view tests;10/10 existing recipe list/amino checks in prior regression;18unique observed, not a single18-test PASS run",
+      "level": "RUNTIME_TESTED"
+    },
+    {
+      "id": "axe",
+      "result": "PASS0WCAG2.1AA violations in new daily total view",
       "level": "RUNTIME_TESTED"
     },
     {
       "id": "native-runtime",
-      "result": "NOT_RUN beta.34",
+      "result": "NOT_RUN beta.35",
       "level": "NOT_RUN"
     }
   ],
@@ -78,7 +83,7 @@
     "trigger": "trig_01Ljjr3Dkp6uBiQcjFaGuzm3",
     "stop_when": "Tüm uygulanabilir yol haritası işleri ve son kapılar doğrulandığında."
   },
-  "notes": "B147: tarifte kısmi ölçüm tüm AA grafiğini gizlemez. Ortak assessAmino; tam toplam protein paydası, kısmi≥, veri boşluğunda gerekçe ve malzeme dökümü. Keşfet/tarif eşitliği doğrulandı.",
+  "notes": "B148: Günlük Toplam Tarif otomatik salt-okunur görünümü; öğün tablosu + ortak toplam matris/kaynak. Tam tarif/1porsiyon kapsamı kaydedilir; kaynak kayıtlar ve adlar korunur, özet kendisini toplamaz.",
   "release_target": "v1.1.2-beta.1",
   "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission. EFSA group reference data are separate from food measurements; only verified compatible PRI/AI records, EFSA attribution required.",
   "historical_verified_gates": [
@@ -325,16 +330,16 @@
     "cross_browser": "PASS (ci.yml run success)"
   },
   "current_forge": {
-    "id": "B147",
-    "base_commit": "ade8e9d832619b3b7d3cc9af9ae6e1829bed85a2",
-    "local_evidence": "docs/evidence/B147/AUDIT.md",
+    "id": "B148",
+    "base_commit": "f11117e13ad8a6fb673d5037d3f7bca9e779d3d6",
+    "local_evidence": "docs/evidence/B148/AUDIT.md",
     "level": "RUNTIME_TESTED"
   },
-  "validation_base_commit": "ade8e9d832619b3b7d3cc9af9ae6e1829bed85a2",
+  "validation_base_commit": "f11117e13ad8a6fb673d5037d3f7bca9e779d3d6",
   "current_forges": [
     {
-      "id": "B147",
-      "scope": "Recipe amino quality parity, partial totals and data gaps",
+      "id": "B148",
+      "scope": "Automatic daily recipe aggregate and per-meal nutrition overview",
       "level": "RUNTIME_TESTED"
     }
   ],

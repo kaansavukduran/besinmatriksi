@@ -1,6 +1,8 @@
 import { setNicheVisible, extAnimalGroup, setAnimalVisible, visibleFoods, ANIMAL_CATS, foodName, categoryName, formName, CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, extGroups, extMeta, extFoods, setCustomFoods, customFoods } from './data.js';
 import { NUTRIENTS, NUTRIENT_BY_KEY, SECTIONS, SOURCES } from './nutrients.js';
 import { scaleItem, aggregate, scaleAggregate } from './calc.js';
+import { combineRecipes } from './recipe-total.js';
+import { renderRecipeTotal } from './recipe-total-view.js';
 import { renderMatrix, basicCard, BASIC_KEYS, macroPie } from './matrix.js';
 import NOTICES from './data/notices.json';
 import { createPrintController } from './print.js';
@@ -51,6 +53,7 @@ const S = {
   settings: loadSettings(),
   recipes: loadRecipes(),
   activeRecipe: null,
+  recipeDaily: false,
   basis: 'total',
   recipeSource: 'energy',
   recipeSourcesOpen: false,
@@ -442,6 +445,13 @@ function recipeResult(rc) {
   return { r, basisLabel, agg, factor };
 }
 
+function recipeTotalModel() { return combineRecipes(S.recipes, resolve, S.settings.recipeTotalBasis); }
+function selectedRecipeResult() {
+  if (!S.recipeDaily) return { rc: activeRecipe(), ...recipeResult(activeRecipe()) };
+  const model = recipeTotalModel();
+  return { rc: { ...model.recipe, name: L("Günlük Toplam Tarif") }, r: model.result, factor: 1, basisLabel: S.settings.recipeTotalBasis === 'serving' ? L("Her tariften 1 porsiyon") : L("Tariflerin tamamı") };
+}
+
 function renderRecipe() {
   const rc = activeRecipe();
   const kcalOf = new Map(S.recipes.map((r) => [r.id, servingKcal(r)]));
@@ -450,9 +460,14 @@ function renderRecipe() {
   const sortChip = (id, label) => `<button class="pchip ${S.rcSort === id ? 'on' : ''}" aria-pressed="${S.rcSort === id}" data-action="rc-sort" data-s="${id}">${label}</button>`;
   const tools = S.recipes.length > 3 ? `<label class="field"><span class="sr">${L("Tariflerde ara")}</span><input id="rc-q" type="search" value="${esc(S.rcQ)}" placeholder="🔎 ${L("Tariflerde ara")}" autocomplete="off"></label>
       <div class="presets" role="group" aria-label="${L("Sırala")}">${sortChip('manual', L("Eklenme"))}${sortChip('name', L("A–Z"))}${sortChip('kcal', L("kcal/porsiyon"))}</div>` : '';
-  const list = tools + ordered.map((r) => { const k = kcalOf.get(r.id); return `<div class="rlist-item ${r.id === rc.id ? 'on' : ''}" data-rname="${esc(norm(r.name))}">
+  const list = tools + ordered.map((r) => { const k = kcalOf.get(r.id); return `<div class="rlist-item ${!S.recipeDaily && r.id === rc.id ? 'on' : ''}" data-rname="${esc(norm(r.name))}">
       <button class="rname" data-action="rc-open" data-id="${r.id}">${S.settings.emoji ? '📒 ' : ''}${esc(r.name)} <span class="cnt">${r.items.length}</span>${k ? `<small class="rkcal">${k.partial ? '≥ ' : ''}${fmtNum(k.v)} kcal/${L("porsiyon")}</small>` : ''}</button>
     </div>`; }).join('') + `<p class="hint" id="rc-none" hidden>${L("Bu aramaya uyan tarif yok.")}</p>`;
+  const totalEntry = `<div class="rlist-item daily-total-entry ${S.recipeDaily ? 'on' : ''}"><button class="rname" data-action="rc-daily-total" aria-pressed="${S.recipeDaily}">${L("Günlük Toplam Tarif")}<small class="rkcal">${L("Otomatik toplam · {n} tarif", { n: S.recipes.length })}</small></button></div>`;
+  if (S.recipeDaily) {
+    const model = recipeTotalModel();
+    return `<div class="recipe"><aside class="rlist" aria-label="${L("Tarifler")}"><button class="btn primary block" data-action="rc-new">＋ ${L("Yeni tarif")}</button>${list}${totalEntry}</aside><section class="rmain daily-recipe-total">${renderRecipeTotal(model, S.settings, { resolve, persona: persona(), closed: S.closed, aminoProfile: S.personal.profile, sourceKey: S.recipeSource, sourceOpen: S.recipeSourcesOpen, gaps: renderRecipeGaps(model.result, true) })}</section></div>`;
+  }
   const items = rc.items.map((it, idx) => {
     const item = resolve(it.ref);
     if (!item && it.ref.t === 'x' && !extLoaded()) return `<div class="ing pending-ref"><span>USDA NDB ${esc(it.ref.n)} · ${fmtNum(it.g)} g</span>${catalogPending()}</div>`;
@@ -472,7 +487,7 @@ function renderRecipe() {
   return `<div class="recipe">
     <aside class="rlist" aria-label="${L("Tarifler")}">
       <button class="btn primary block" data-action="rc-new">＋ ${L("Yeni tarif")}</button>
-      ${list}
+      ${list}${totalEntry}
       <div class="rtools">
         <button class="btn" data-action="rc-dup">${L("Kopyala")}</button>
         <button class="btn danger" data-action="rc-delete">${L("Sil")}</button>
@@ -508,8 +523,8 @@ function renderRecipeSummary(rc, r) {
 }
 
 // Hedefe en uzak 3 bileşen ve onları 100 g'da en çok veren katalog besinleri (öneri değil, yön gösterir)
-function renderRecipeGaps(r) {
-  if (!S.settings.recipeGaps || S.basis === 'per100') return '';
+function renderRecipeGaps(r, daily = false) {
+  if (!S.settings.recipeGaps || (!daily && S.basis === 'per100')) return '';
   const gaps = recipeGaps(r, NUTRIENTS, visibleFoods(), (n) => referenceFor(n, S.settings));
   if (!gaps.length) return '';
   const rows = gaps.map((g) => `<li><div class="gap-h"><b>${esc(nutrientLabel(g.n))}</b> <span class="muted">${pctText(fmtNum(g.pct, 'low'))}${g.partial ? ' · ' + L("kısmi veri, gerçek değer daha yüksek olabilir") : ''}</span></div>
@@ -869,6 +884,7 @@ function refreshMatrix() {
   if (!m) return render();
   if (S.tab === 'kesfet' && S.sel) m.innerHTML = matrixForExplore(resolve(S.sel));
   else if (S.tab === 'tarif') {
+    if (S.recipeDaily) return render();
     const rc = activeRecipe();
     const { r, basisLabel, factor } = recipeResult(rc);
     m.innerHTML = renderMatrix(r, S.settings, { recipe: rc, basisLabel, closed: S.closed, aminoProfile: S.personal.profile });
@@ -992,6 +1008,7 @@ function aionMoodFor() {
 }
 
 function addToRecipe(ref, g, quiet = false) {
+  S.recipeDaily = false;
   const rc = activeRecipe();
   const existing = rc.items.find((i) => refKey(i.ref) === refKey(ref));
   if (existing) existing.g = clamp(existing.g + g, 1, MAX_G);
@@ -1059,7 +1076,7 @@ async function onClick(e) {
       const { items, capped } = dayToRecipeItems(S.personal.entries, S.personalDay, { consumedOnly: S.consumedOnly, maxG: MAX_G });
       if (!items.length) break;
       const r = newRecipe(L("Günlük {d}", { d: S.personalDay })); r.items = items;
-      S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); S.tab = 'tarif'; render();
+      S.recipeDaily = false; S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); S.tab = 'tarif'; render();
       toast(L("{n} malzemeli tarif oluşturuldu", { n: items.length }) + (capped ? ' · ' + L("{n} besin 1 kg sınırında kesildi", { n: capped }) : ''));
       aionPlay('celebrate'); break;
     }
@@ -1214,9 +1231,11 @@ async function onClick(e) {
     case 'amt': setAmount(b.dataset.target, Number(b.dataset.val)); break;
     case 'nudge': if (b.dataset.target) setAmount(b.dataset.target, (getAmount(b.dataset.target) || 0) + Number(b.dataset.delta)); break;
     // tarif
-    case 'rc-new': { const r = newRecipe(L("Tarif {n}", { n: S.recipes.length + 1 })); S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); render(); break; }
-    case 'rc-open': S.activeRecipe = b.dataset.id; render(); break;
-    case 'rc-dup': { const src = activeRecipe(); const r = { ...JSON.parse(JSON.stringify(src)), id: Math.random().toString(36).slice(2, 10), name: L("{n} (kopya)", { n: src.name }) }; S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); render(); break; }
+    case 'rc-new': { S.recipeDaily = false; const r = newRecipe(L("Tarif {n}", { n: S.recipes.length + 1 })); S.recipeDaily = false; S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); render(); break; }
+    case 'rc-daily-total': S.recipeDaily = true; render(); break;
+    case 'daily-recipe-basis': setSetting('recipeTotalBasis', b.dataset.b); render(); break;
+    case 'rc-open': S.recipeDaily = false; S.activeRecipe = b.dataset.id; render(); break;
+    case 'rc-dup': { const src = activeRecipe(); const r = { ...JSON.parse(JSON.stringify(src)), id: Math.random().toString(36).slice(2, 10), name: L("{n} (kopya)", { n: src.name }) }; S.recipeDaily = false; S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); render(); break; }
     case 'rc-delete': {
       const rc = activeRecipe();
       if (!(await uiDialog(L("“{n}” silinsin mi?", { n: rc.name }), { ok: L("Sil"), cancel: L("Vazgeç") }))) break;
@@ -1362,7 +1381,7 @@ async function importText(t) {
 
 function exportCSV() {
   let r, title;
-  if (S.tab === 'tarif') { const rc = activeRecipe(); const x = recipeResult(rc); r = x.r; title = `${rc.name} – ${x.basisLabel}`; }
+  if (S.tab === 'tarif') { const x = selectedRecipeResult(); const rc = x.rc; r = x.r; title = `${rc.name} – ${x.basisLabel}`; }
   else if (S.sel) { const item = resolve(S.sel); r = scaleItem(item, S.amount); title = `${item.name} – ${item.formLabel} – ${fmtNum(S.amount)} g`; }
   else return;
   const safe = title.replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').slice(0, 60);
@@ -1379,7 +1398,7 @@ function servingKcal(r) {
 }
 function applyRecipeFilter() {
   const q = norm(S.rcQ || '').trim(); let shown = 0;
-  document.querySelectorAll('.rlist-item').forEach((el) => { const hit = !q || el.dataset.rname.includes(q); el.hidden = !hit; if (hit) shown++; });
+  document.querySelectorAll('.rlist-item[data-rname]').forEach((el) => { const hit = !q || el.dataset.rname.includes(q); el.hidden = !hit; if (hit) shown++; });
   const none = document.getElementById('rc-none'); if (none) none.hidden = shown > 0 || !q;
 }
 
@@ -1465,7 +1484,8 @@ function onChange(e) {
   }
   if (t.id === 'recipe-source-nutrient') {
     S.recipeSource = t.value;
-    $('#recipe-source-rows').innerHTML = renderRecipeSourceRows(activeRecipe(), resolve, S.recipeSource, recipeResult(activeRecipe()).factor, S.settings.precision);
+    const current = selectedRecipeResult();
+    $('#recipe-source-rows').innerHTML = renderRecipeSourceRows(current.rc, resolve, S.recipeSource, current.factor, S.settings.precision);
     return;
   }
   if (t.dataset.shortcut) {

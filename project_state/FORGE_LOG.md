@@ -790,3 +790,10 @@
 - Tam veride eski skor/sınırlayıcı korunur. Kısmi AA + tamprotein: bilinen AA / TÜMtarifproteini, ≥alt sınır; kesin sınırlayıcı iddia edilmez. Eksik protein: oran/skor yok, bilinenmg/neden var. Eksik malzeme ve bileşenler açılır dökümde; şema/kalıcı kayıt değişmedi. Günlük AA barları ve toplam protein korunur.
 - Kanıt:135/135birim;web+singlederlemeleri;28/28masaüstü/telefonTR/ENtarayıcıtesti;son açıklama ve ikinci tam malzeme UI kabulü eklendikten sonra8/8final tarif testi. Tekbesin↔tekmaddeli tarif birebir; karşılıklı tamamlayan profiller toplamda125% (tekbaşına50%); porsiyon/100g kaliteoranı sabit; eksik/sıfırprotein gerçekpuan uydurmaz. Daha önceki kısmi oran güvenliği testi dePASS.
 - Ayrıntı docs/evidence/B147/AUDIT.md. Native/fiziksel/diğer motorlarNOT_TESTED. Sonraki tek Forge B148: açık Foundation/FNDDS kapsamını doğruluk/performans bütçesiyle büyütme.
+
+## B148 · 2026-11-15 · Otomatik Günlük Toplam Tarif
+- Son kullanıcı isteği önceki veri genişletme önerisinin önüne alındı. Listenin sonunda ayrı hesap görünümü, mevcut tarifleri/adları değiştirmez; kalıcı tarif olarak eklenmez ve kendisini içermez. Heröğün ayrı8temel değerde; altta aynı matris/mikro/AA/kaynak.
+- Varsayım: listedeki tüm tarifler, başlangıçta tam miktarları. Görünür1porsiyon alternatifi; recipeTotalBasis ayarı normalleştirme/yedek/sıfırlama sahibine bağlı. Tarih veya gerçek tüketim kaydı uydurulmadı.
+- combineRecipes malzemeleri kayıpsız açar; aynı besin farklı öğünde ayrı katkıdır. Eksik kaynak/ağırlık/kapsam, porsiyon katsayısı ve kaynak öğün adı korunur. Pişmiş ağırlık yalnız tüm dolu öğünlerde biliniyorsa toplamlanır.
+- Kanıt138/138birim;web+singlederlemeleri;final yeni görünüm8/8Chromium desktop/phone TR/EN (27,6sn), önceki regresyondaki10/10tarif listesi/AA kontrolü. Toplam18benzersiz kontrol; tek18/18koşumu iddiası yok. Axe0ihlal;3öğün masaüstü/mobil görseli incelendi.
+- İnceleme docs/evidence/B148/AUDIT.md. Native/fiziksel/diğer motorlarNOT_TESTED;Release yok. Sonraki tek ForgeB149, açık Foundation/FNDDS kapsamı.
