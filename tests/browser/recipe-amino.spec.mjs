@@ -1,6 +1,10 @@
 import {test,expect} from '@playwright/test';
 const tab=(p,id)=>p.locator(`.tabs [data-tab="${id}"]`).click();
 const chart=p=>p.locator('#matrix .aas');
+async function downloadCSV(page) {
+ const pending=page.waitForEvent('download');await page.locator('[data-action="csv"]').click();
+ const stream=await(await pending).createReadStream(),parts=[];for await(const x of stream)parts.push(x);return Buffer.concat(parts).toString();
+}
 async function pick(p,id,q=id) {
  await tab(p,'kesfet');if(await p.locator('[data-action="ex-back"]').isVisible())await p.locator('[data-action="ex-back"]').click();
  await p.locator('#q').fill(q);await p.locator(`#foodlist [data-id="${id}"]`).click();
@@ -24,6 +28,7 @@ for(const language of ['tr','en']) {
   await expect(chart(page)).toHaveAttribute('data-aa-status','partial');await expect(chart(page).locator('.aabar')).toHaveCount(9);
   await expect(chart(page).locator('.aas-head b')).toContainText('≥');
   await expect(chart(page).locator('[data-aa="lys"] .aav')).toContainText('≥');
+  expect(await downloadCSV(page)).toContain(language==='tr'?'Amino asit skoru (alt sınır, kısmi ölçüm)':'Amino acid score (lower bound, partial measurements)');
   await chart(page).locator('.aa-gaps summary').click();await expect(chart(page).locator('.aa-gaps li')).toContainText(language==='tr'?'Yaban mersini':'Blueberr');
   await expect(chart(page).locator('.aa-gaps li')).toContainText(language==='tr'?'Lizin':'Lysine');
   await page.reload();await tab(page,'tarif');await expect(chart(page)).toHaveAttribute('data-aa-status','partial');
@@ -32,6 +37,7 @@ for(const language of ['tr','en']) {
   await pick(page,'ristretto');await page.locator('[data-action="ex-add-recipe"]').click();await tab(page,'tarif');
   await expect(chart(page)).toHaveAttribute('data-aa-status','unknown');await expect(chart(page).locator('.aabar')).toHaveCount(9);
   await expect(chart(page).locator('.aa-reason')).toContainText(language==='tr'?'protein ölçümü eksik':'protein measurements are incomplete');
+  expect(await downloadCSV(page)).toContain(language==='tr'?'Amino asit skoru hesaplanamıyor;veri yok':'Amino acid score cannot be calculated;no data');
  });
  test(`B147 recipe amino layout ${language}:320px+28px/200percent`,async({page})=>{
   await page.setViewportSize({width:320,height:900});await page.addInitScript(language=>localStorage.setItem('bm.settings.v2',JSON.stringify({version:2,settings:{language,fontSize:28,uiScale:200}})),language);

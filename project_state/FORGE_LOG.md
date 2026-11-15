@@ -797,3 +797,12 @@
 - combineRecipes malzemeleri kayıpsız açar; aynı besin farklı öğünde ayrı katkıdır. Eksik kaynak/ağırlık/kapsam, porsiyon katsayısı ve kaynak öğün adı korunur. Pişmiş ağırlık yalnız tüm dolu öğünlerde biliniyorsa toplamlanır.
 - Kanıt138/138birim;web+singlederlemeleri;final yeni görünüm8/8Chromium desktop/phone TR/EN (27,6sn), önceki regresyondaki10/10tarif listesi/AA kontrolü. Toplam18benzersiz kontrol; tek18/18koşumu iddiası yok. Axe0ihlal;3öğün masaüstü/mobil görseli incelendi.
 - İnceleme docs/evidence/B148/AUDIT.md. Native/fiziksel/diğer motorlarNOT_TESTED;Release yok. Sonraki tek ForgeB149, açık Foundation/FNDDS kapsamı.
+
+## B149 · 2026-11-15 · Genel yazılım ve Unslop denetimi
+- Son kullanıcı isteğiyle Foundation/FNDDS genişletmesinin önüne alındı. Super-Unslop, Unslop, Fragaria Unslop ve Yazılım Denetle ana talimatları ile ilgili görsel/davranış/doğrulama kontrol kaynakları okundu. Oyun/mascot işi kapsam dışı; özel skill kaynakları depoya kopyalanmadı.
+- Başlangıç 9c7062988ef9f8dd085eb363556cc15eeb72937f / beta.35. İlk 138 birim ve 210 Chromium testi geçti; yeni hata enjeksiyonu kontrolleri eski kapsamın kaçırdığı CSV ve depolama sorunlarını gösterdi.
+- Sekiz bulgu grubu düzeltildi: kısmi-AA CSV çökmesi; özel besin/profil/günlükte yanlış kayıt başarısı; genel yedek çoklu grup geri alma; bozuk kişisel kayıtta kurtarma koruması; malzeme ekleme ve seçici tekrar denemesi; günlük sayacı/kalori satırı/tekrar başlık. Ayrıntı ve önem dereceleri docs/evidence/B149/AUDIT.md.
+- Kanıt: final 143/143 birim; web/PWA ve tek HTML; 24 lisans bildirimi; npm run data sonrası üç üretilmiş veri dosyasının SHA256 değeri değişmedi. 238/238 geniş Chromium koşumu son iki küçük kontrol kapısından önce; bu kapılardan sonra final kodda 54/54 hedefli TR/EN masaüstü/telefon kontrolü. Dört yeni kontrolle koşumlar arasında 242 benzersiz kabul; tek 242/242 koşumu iddiası yok.
+- Açık/koyu günlük toplamda axe WCAG2.1AA sıfır ihlal, masaüstü/mobil görseller incelendi. Yerel file:// iki vaka ortam politikası nedeniyle hariç; Firefox/WebKit, ekran okuyucu ve native/fiziksel cihaz NOT_RUN.
+- Pages ve Vercel canlı beta.35 normal girişte doğrulandı; eski Pages engeli kapatıldı. Beta.36 yayın makbuzu teslimde ayrı bildirilecek; yeni native Release/store yayını yok.
+- Sonraki tek Forge B150: açık Foundation/FNDDS kapsamını doğruluk ve performans bütçesiyle büyütme.

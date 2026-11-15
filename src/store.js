@@ -36,6 +36,29 @@ function write(key, val) {
   try { localStorage.setItem(key, JSON.stringify(val)); return true; } catch { return false; }
 }
 
+// Commit imported groups together; failed writes must not leave a half-imported backup.
+export function saveImportState(next, storage) {
+  const written = [], previous = new Map();
+  try {
+    storage ??= globalThis.localStorage;
+    const entries = [
+      [KEY_RECIPES, next.recipes], [KEY_CUSTOM, next.custom],
+      ['bm.profiles.v1', normalizeProfiles(next.profiles)], ['bm.collections.v1', normalizeCollections(next.collections)],
+      ...(next.settings ? [[KEY_SETTINGS, { version: SETTINGS_VERSION, settings: normalizeSettings(next.settings) }]] : []),
+    ].map(([key, value]) => [key, JSON.stringify(value)]);
+    for (const [key] of entries) previous.set(key, storage.getItem(key));
+    for (const [key, value] of entries) { storage.setItem(key, value); written.push(key); }
+    return { ok: true, rollbackFailed: false };
+  } catch {
+    let rollbackFailed = false;
+    for (const key of written.reverse()) {
+      try { const value = previous.get(key); if (value == null) storage.removeItem(key); else storage.setItem(key, value); }
+      catch { rollbackFailed = true; }
+    }
+    return { ok: false, rollbackFailed };
+  }
+}
+
 export function loadSettings() {
   const saved = read(KEY_SETTINGS, null);
   if (saved?.version === SETTINGS_VERSION) return normalizeSettings(saved.settings);

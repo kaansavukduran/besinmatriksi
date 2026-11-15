@@ -45,22 +45,23 @@ PWA'nın ilk çevrimiçi yüklemesi önbelleğe alınmalıdır; tek HTML dosyas�
 
 ## Web yayını
 
-Vercel adresi: **https://besinmatriksi.vercel.app/**.
+Vercel: **https://besinmatriksi.vercel.app/**.
+GitHub Pages: **https://kaansavukduran.github.io/besinmatriksi/**.
+İki adres de 15 Kasım 2026 tarihinde gerçek tarayıcı girişiyle doğrulandı.
 
-GitHub Pages için `.github/workflows/pages.yml`, üretim dalı
-`ccr-1e1934aa-iv8aev` güncellendiğinde testleri ve web derlemesini çalıştırır,
-ardından `dist` çıktısını yayımlar. İlk kurulumda bir repo yöneticisi
-**Settings → Pages → Build and deployment → Source → GitHub Actions**
-seçmelidir. Daha önce Pages etkinleştirme API'si entegrasyon yetkisi nedeniyle
-403 döndürdü; iş akışı bu yönetici ayarını değiştirmez.
+`.github/workflows/pages.yml`, üretim dalı `ccr-1e1934aa-iv8aev`
+güncellendiğinde testleri ve web derlemesini çalıştırır, ardından `dist`
+çıktısını yayımlar. Yeni bir depo kurulumunda yönetici **Settings → Pages →
+Build and deployment → Source → GitHub Actions** seçmelidir. Bu depoda
+Pages artık etkindir; önceki entegrasyon yetkisi engeli güncel yayın engeli değildir.
+Dağıtım durumu [Pages iş akışında](https://github.com/kaansavukduran/besinmatriksi/actions/workflows/pages.yml)
+ve dağıtım çıktısındaki URL'den izlenebilir.
 
-Pages dağıtımı başarıyla tamamlanınca adres
-`https://kaansavukduran.github.io/besinmatriksi/` olur; gerçek yayın durumunu
-[Pages iş akışında](https://github.com/kaansavukduran/besinmatriksi/actions/workflows/pages.yml)
-ve dağıtım çıktısındaki URL'den kontrol et. Vite varlıkları, uygulama manifesti
-ve service worker göreli yollar kullanır; aynı çıktı hem kök alan adında hem
-`/besinmatriksi/` altında çalışır. Telefonda ilk açılıştan sonra tarayıcının
-**Ana ekrana ekle / Uygulamayı yükle** seçeneği kullanılabilir.
+Vite varlıkları, manifest ve service worker göreli yollar kullanır; aynı
+çıktı kök alan adında ve `/besinmatriksi/` altında çalışır. İlk açılıştan sonra
+telefonda **Ana ekrana ekle / Uygulamayı yükle** kullanılabilir.
+Bu iki alan adının cihaz kayıtları ayrıdır; tarif ve tercihleri taşımak için
+yedek dışa/içe aktarma kullanılır.
 
 ## Veri kapsamı ve lisanslar
 
@@ -68,7 +69,7 @@ ve service worker göreli yollar kullanır; aynı çıktı hem kök alan adında
 EFSA DRV Finder ayrıca 23 bileşen / 169 PRI-AI kaydıyla isteğe bağlı grup referansıdır; besin ölçümü değildir. Ayarlar → Yüzde referansı → EFSA: yaş ve kaynak cinsiyet grubunu seç. Yetişkin çinko için fitat, yetişkin kadın demiri için menopoz grubu ayrıca seçilir. Eşleşmeyen veya kapsam dışı alanda yüzde gösterilmez. Kaynak/görüş yılı ve koşullar açılabilir tabloda, PRI/AI türü matrikste ve CSV'de korunur. Kişisel hedefler değişmez.
 **664 küratörlü besin / 810 tüketim biçimi.** Tam USDA SR28 kaynağının **8.789/8.789** kaydı erişilebilir: 709 benzersiz SR28 kaydı küratörlü biçimlerde, kalan **8.080 kayıt** ayrı kaynak kataloğundadır. 664 besin adını, 8.789 ise hazırlamaya özgü kaynak kaydını sayar. Niş/hayvansal gizleme tercihleri ana ekranda görünen sayıyı değiştirir.
 
-Keşfet → **Tam USDA kataloğu** ile ayar açmadan eriş. 80 kayıtlık sayfalar, besin grubu seçimi ve özgün İngilizce ad veya NDB numarasıyla arama vardır. 2015 tarihli SR28 marka kayıtları güncel ambalaj etiketi sayılmaz; içerik ve alerjen bilgisi üründen doğrulanır. Hayvansal kayıtlar gizlenince içeriği belirsiz karma kayıtlar da gizlenir.
+Keşfet → **Tam Katalog** ile ayar açmadan eriş. 80 kayıtlık sayfalar, besin grubu seçimi ve özgün İngilizce ad veya NDB numarasıyla arama vardır. 2015 tarihli SR28 marka kayıtları güncel ambalaj etiketi sayılmaz; içerik ve alerjen bilgisi üründen doğrulanır. Hayvansal kayıtlar gizlenince içeriği belirsiz karma kayıtlar da gizlenir.
 
 **Vitaminler ve mineraller** özeti 28 yaygın mikro besini miktar, birim, seçili referans ve veri kapsamıyla gösterir. Tarif ve günlükte bir ada dokunmak katkı veren besinlerin kaynak dökümünü açar. Veri yok, kayıtlı sıfır ve kısmi toplam (≥) ayrıdır. A vitamini RAE değeri, farklı RE birimli AB referansına otomatik bölünmez. Bilimsel biçimlerin ayrıntılı matriksi ve CSV korunur.
 

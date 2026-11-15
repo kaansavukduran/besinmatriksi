@@ -7,7 +7,7 @@ import { renderMatrix, basicCard, BASIC_KEYS, macroPie } from './matrix.js';
 import NOTICES from './data/notices.json';
 import { createPrintController } from './print.js';
 import { FONTS, fontStack, ensureFont, headingFont, ensureHeadingFont } from './fonts.js';
-import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, mergeImport, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles, loadCollections, saveCollections, loadRecent, saveRecent, pushRecent } from './store.js';
+import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, mergeImport, saveImportState, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles, loadCollections, saveCollections, loadRecent, saveRecent, pushRecent } from './store.js';
 import { esc, fmtNum, fmtAmount, clamp, download, uid, configureFormatting, norm, pctText, fmtPct } from './util.js';
 import { matrixCSV } from './export.js';
 import { contrastRatio, accentText, exportTheme, parseTheme, COLOR_LABELS, validColor, themeTextContrast } from './theme.js';
@@ -66,6 +66,7 @@ const S = {
   personal: null, personalDraft: null, personalReadError: false, personalDay: localDay(), personalDayAuto: true, consumedOnly: false, personalSource: 'energy', personalSourceOpen: false, personalUndo: null,
 };
 const personalLoaded = loadPersonal();
+let lastSavedPersonal = structuredClone(personalLoaded.state);
 S.personal = personalLoaded.state; S.personalDraft = structuredClone(S.personal.profile); S.personalReadError = personalLoaded.error;
 setCustomFoods(loadCustom());
 { const m = migrateAionOff(migrateFontV2(S.settings)); if (m !== S.settings) { S.settings = m; saveSettings(S.settings); } }
@@ -420,10 +421,13 @@ function matrixForExplore(item) {
 
 // ---------------------------------------------------------------- TARİF
 const activeRecipe = () => S.recipes.find((r) => r.id === S.activeRecipe) || S.recipes[0];
+const recipeItemCount = () => S.recipeDaily ? S.recipes.reduce((sum, r) => sum + r.items.length, 0) : activeRecipe()?.items.length || 0;
 function persistRecipes() {
   const rc = activeRecipe();
+  const updated = rc?.updated;
   if (rc) rc.updated = Date.now();
-  if (!saveRecipes(S.recipes)) toast(L("Kaydedilemedi: cihaz depolaması kullanılamıyor"));
+  if (!saveRecipes(S.recipes)) { if (rc) rc.updated = updated; toast(L("Kaydedilemedi: cihaz depolaması kullanılamıyor")); return false; }
+  return true;
 }
 
 // Temel değer yüzdeleri için kişi: profilde cinsiyet ve enerji tahmini varsa onlar, yoksa ortalama kadın/erkek
@@ -828,8 +832,8 @@ function saveCustomEdit() {
   const rec = normalizeCustom({ ...E, id: E.id || uid() });
   const i = list.findIndex((x) => x.id === rec.id);
   if (i >= 0) list[i] = rec; else list.push(rec);
+  if (!saveCustom(list)) { toast(L("Kaydedilemedi: cihaz depolaması kullanılamıyor")); return false; }
   setCustomFoods(list);
-  if (!saveCustom(list)) toast(L("Kaydedilemedi: cihaz depolaması kullanılamıyor"));
   S.customEdit = null;
   S.cat = 'custom';
   S.sel = { t: 'u', id: rec.id };
@@ -860,7 +864,7 @@ export function render() {
   app().innerHTML = `
     <header class="top">
       <div class="brand">${S.settings.emoji ? `<span class="logo">${brandMark}</span>` : ''}<b>Besin Matriksi</b></div>
-      <nav class="tabs" aria-label="${tr('navigation')}">${TABS.map(([id, ic]) => `<button class="tab ${S.tab === id ? 'on' : ''}" data-action="tab" data-tab="${id}" ${S.tab === id ? 'aria-current="page"' : ''}><span class="ti" aria-hidden="true">${S.settings.emoji ? ic : ''}</span><span class="tt">${tr(id)}</span><span class="tt-short">${TAB_SHORT[id]()}</span>${id === 'tarif' && activeRecipe()?.items.length ? `<span class="badge">${activeRecipe().items.length}</span>` : ''}${id === 'karsilastir' && S.compare.length ? `<span class="badge">${S.compare.length}</span>` : ''}</button>`).join('')}</nav>
+      <nav class="tabs" aria-label="${tr('navigation')}">${TABS.map(([id, ic]) => `<button class="tab ${S.tab === id ? 'on' : ''}" data-action="tab" data-tab="${id}" ${S.tab === id ? 'aria-current="page"' : ''}><span class="ti" aria-hidden="true">${S.settings.emoji ? ic : ''}</span><span class="tt">${tr(id)}</span><span class="tt-short">${TAB_SHORT[id]()}</span>${id === 'tarif' && recipeItemCount() ? `<span class="badge">${recipeItemCount()}</span>` : ''}${id === 'karsilastir' && S.compare.length ? `<span class="badge">${S.compare.length}</span>` : ''}</button>`).join('')}</nav>
     </header>
     ${S.profiles.length ? `<div class="profile-bar" role="group" aria-label="${L("Görünüm profilleri")}"><span class="hint">${L("Görünüm:")}</span>${S.profiles.map(p => `<button class="pchip" data-action="profile-apply" data-id="${p.id}">${esc(p.name)}</button>`).join('')}</div>` : ''}
     <main class="view view-${S.tab}">${view}</main>
@@ -1010,13 +1014,15 @@ function aionMoodFor() {
 function addToRecipe(ref, g, quiet = false) {
   S.recipeDaily = false;
   const rc = activeRecipe();
+  const previous = quiet ? null : structuredClone(rc.items);
   const existing = rc.items.find((i) => refKey(i.ref) === refKey(ref));
   if (existing) existing.g = clamp(existing.g + g, 1, MAX_G);
   else rc.items.push({ id: Math.random().toString(36).slice(2, 9), ref: { ...ref }, g });
-  persistRecipes();
-  if (quiet) return;
+  if (quiet) return true;
+  if (!persistRecipes()) { rc.items = previous; return false; }
   toast(`“${resolve(ref).name}” → ${rc.name} (${fmtNum(g)} g)`);
   aionPlay('celebrate');
+  return true;
 }
 function addToCompare(ref, g) {
   if (S.compare.length >= 4) { toast(L("En fazla 4 besin karşılaştırılabilir")); return false; }
@@ -1033,7 +1039,8 @@ const PRESETS_UI = {
 };
 
 function persistPersonal() {
-  if (S.personalReadError || !savePersonal(S.personal)) { toast(tr(S.personalReadError ? 'corruptPersonal' : 'storageError')); return false; }
+  if (S.personalReadError || !savePersonal(S.personal)) { S.personal = structuredClone(lastSavedPersonal); toast(tr(S.personalReadError ? 'corruptPersonal' : 'storageError')); return false; }
+  lastSavedPersonal = structuredClone(S.personal);
   return true;
 }
 function updatePersonalDraft(input) {
@@ -1059,9 +1066,11 @@ async function importPersonalFile(file) {
     const imported = mergePersonalFoods(S.personal, payload.personal, customFoods(), payload.custom), merged = imported.state, list = imported.custom;
     if (!saveCustom(list)) throw Error('storage');
     if (S.personalReadError) localStorage.setItem(PERSONAL_KEY + '.recovery', localStorage.getItem(PERSONAL_KEY) || '');
+    if (!savePersonal(merged)) throw Error('storage');
     setCustomFoods(list); S.personal = merged; S.personalDraft = structuredClone(merged.profile); S.personalReadError = false;
-    if (merged.entries.some(e => e.ref.t === 'x')) await loadExt();
-    const saved = persistPersonal(); render(); if (saved) toast(tr('importDone'));
+    lastSavedPersonal = structuredClone(merged);
+    if (merged.entries.some(e => e.ref.t === 'x')) requestExtCatalog();
+    render(); toast(tr('importDone'));
   } catch { await uiDialog(tr('personal.importError'), { ok: tr('ok') }); }
 }
 async function onClick(e) {
@@ -1089,7 +1098,7 @@ async function onClick(e) {
       const day = localDay();
       const { entries, skipped } = recipeToEntries(rc.items, portions, rc.servings, day, (ref) => !!resolve(ref));
       if (!entries.length) { toast(L("Eklenecek malzeme yok.")); break; }
-      S.personal.entries.push(...entries); S.personal.milestones.food = true; persistPersonal();
+      S.personal.entries.push(...entries); S.personal.milestones.food = true; if (!persistPersonal()) break;
       toast(L("{n} kayıt bugünün günlüğüne eklendi", { n: entries.length }) + (skipped ? ' · ' + L("{n} malzeme atlandı (bulunamadı veya 1 g altı)", { n: skipped }) : ''));
       aionPlay('celebrate'); break;
     }
@@ -1097,7 +1106,7 @@ async function onClick(e) {
       if (!S.sel || !resolve(S.sel)) break;
       if (S.personalDayAuto) S.personalDay = localDay(); // uygulama gece yarısını açık geçirdiyse bugüne yaz
       S.personal.entries.push({ id: uid(), day: S.personalDay, ref: { ...S.sel }, g: S.amount, consumed: false });
-      S.personal.milestones.food = true; persistPersonal(); toast(tr('dayAdded')); aionPlay('celebrate'); break;
+      S.personal.milestones.food = true; if (!persistPersonal()) break; toast(tr('dayAdded')); aionPlay('celebrate'); break;
     }
     case 'personal-save': {
       if ([...document.querySelectorAll('[data-personal-field]')].some(el => !el.checkValidity())) { toast(tr('profile.invalid')); break; }
@@ -1156,7 +1165,9 @@ async function onClick(e) {
     case 'multi-pick': { const id = b.dataset.id; S.picked = S.picked.includes(id) ? S.picked.filter((x) => x !== id) : [...S.picked, id]; render(); break; }
     case 'multi-add': {
       const n = S.picked.length; if (!n) break;
+      const rc = activeRecipe(), previous = structuredClone(rc.items);
       for (const id of S.picked) addToRecipe({ t: 'c', id, f: 0 }, 100, true);
+      if (!persistRecipes()) { rc.items = previous; render(); break; }
       toast(L("{n} besin → {r} (her biri 100 g)", { n, r: activeRecipe().name })); aionPlay('celebrate');
       S.multi = false; S.picked = []; render(); break;
     }
@@ -1216,7 +1227,8 @@ async function onClick(e) {
       const E = S.customEdit;
       if (!(await uiDialog(L("“{n}” silinsin mi? Tariflerdeki kullanımları “bulunamadı” olarak kalır.", { n: E.name }), { ok: L("Sil"), cancel: L("Vazgeç") }))) break;
       const list = customFoods().filter((x) => x.id !== E.id);
-      setCustomFoods(list); saveCustom(list); S.customEdit = null; if (S.sel?.t === 'u') S.sel = null; render(); break;
+      if (!saveCustom(list)) { toast(L("Kaydedilemedi: cihaz depolaması kullanılamıyor")); break; }
+      setCustomFoods(list); S.customEdit = null; if (S.sel?.t === 'u') S.sel = null; render(); break;
     }
     case 'csv': exportCSV(); break;
     case 'print': try { printController.print(); } catch { toast(L("Yazdırma bu ortamda kullanılamıyor; CSV olarak indirebilirsin")); } break;
@@ -1231,7 +1243,7 @@ async function onClick(e) {
     case 'amt': setAmount(b.dataset.target, Number(b.dataset.val)); break;
     case 'nudge': if (b.dataset.target) setAmount(b.dataset.target, (getAmount(b.dataset.target) || 0) + Number(b.dataset.delta)); break;
     // tarif
-    case 'rc-new': { S.recipeDaily = false; const r = newRecipe(L("Tarif {n}", { n: S.recipes.length + 1 })); S.recipeDaily = false; S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); render(); break; }
+    case 'rc-new': { const r = newRecipe(L("Tarif {n}", { n: S.recipes.length + 1 })); S.recipeDaily = false; S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); render(); break; }
     case 'rc-daily-total': S.recipeDaily = true; render(); break;
     case 'daily-recipe-basis': setSetting('recipeTotalBasis', b.dataset.b); render(); break;
     case 'rc-open': S.recipeDaily = false; S.activeRecipe = b.dataset.id; render(); break;
@@ -1266,7 +1278,7 @@ async function onClick(e) {
     case 'pk-confirm':
     case 'pk-confirm-more': {
       const P = S.picker;
-      if (P.target === 'recipe') addToRecipe(P.sel, P.amount);
+      if (P.target === 'recipe') { if (!addToRecipe(P.sel, P.amount)) break; }
       else addToCompare(P.sel, P.amount);
       if (a === 'pk-confirm-more') { P.sel = null; } else S.picker = null;
       render(); break;
@@ -1295,20 +1307,33 @@ async function onClick(e) {
       const name = $('#profile-name')?.value.trim();
       if (!name) { toast(L("Bir profil adı gir")); break; }
       if (S.profiles.length >= 12) { toast(L("En fazla 12 profil kaydedilebilir")); break; }
-      S.profiles.push({ id: uid(), name: name.slice(0, 40), settings: normalizeSettings(S.settings) });
-      if (!saveProfiles(S.profiles)) toast(L("Profil cihaz depolamasına yazılamadı")); else toast(L("Görünüm kaydedildi")); render(); break;
+      const next = [...S.profiles, { id: uid(), name: name.slice(0, 40), settings: normalizeSettings(S.settings) }];
+      if (!saveProfiles(next)) { toast(L("Profil cihaz depolamasına yazılamadı")); break; }
+      S.profiles = next; render(); toast(L("Görünüm kaydedildi")); break;
     }
     case 'profile-apply': {
       const p = S.profiles.find(p => p.id === b.dataset.id);
-      if (p) { S.settings = normalizeSettings(p.settings); saveSettings(S.settings); applySettings(); if (S.settings.showExt) requestExtCatalog(); render(); toast(L("Görünüm: {n}", { n: p.name })); } break;
+      if (p) {
+        const next = normalizeSettings(p.settings);
+        if (!saveSettings(next)) { toast(L("Kaydedilemedi: cihaz depolaması kullanılamıyor")); break; }
+        S.settings = next; applySettings(); if (S.settings.showExt) requestExtCatalog(); render(); toast(L("Görünüm: {n}", { n: p.name }));
+      } break;
     }
     case 'profile-update': {
       const p = S.profiles.find(p => p.id === b.dataset.id);
-      if (p && await uiDialog(L("“{n}” geçerli görünümle güncellensin mi?", { n: p.name }), { ok: L("Güncelle"), cancel: L("Vazgeç") })) { p.settings = normalizeSettings(S.settings); saveProfiles(S.profiles); toast(L("Profil güncellendi")); } break;
+      if (p && await uiDialog(L("“{n}” geçerli görünümle güncellensin mi?", { n: p.name }), { ok: L("Güncelle"), cancel: L("Vazgeç") })) {
+        const next = S.profiles.map(x => x.id === p.id ? { ...x, settings: normalizeSettings(S.settings) } : x);
+        if (!saveProfiles(next)) { toast(L("Profil cihaz depolamasına yazılamadı")); break; }
+        S.profiles = next; toast(L("Profil güncellendi"));
+      } break;
     }
     case 'profile-delete': {
       const p = S.profiles.find(p => p.id === b.dataset.id);
-      if (p && await uiDialog(L("“{n}” görünüm profili silinsin mi?", { n: p.name }), { ok: L("Sil"), cancel: L("Vazgeç") })) { S.profiles = S.profiles.filter(x => x.id !== p.id); saveProfiles(S.profiles); render(); } break;
+      if (p && await uiDialog(L("“{n}” görünüm profili silinsin mi?", { n: p.name }), { ok: L("Sil"), cancel: L("Vazgeç") })) {
+        const next = S.profiles.filter(x => x.id !== p.id);
+        if (!saveProfiles(next)) { toast(L("Profil cihaz depolamasına yazılamadı")); break; }
+        S.profiles = next; render();
+      } break;
     }
     case 'section-move': S.settings = moveSection(S.settings, b.dataset.id, Number(b.dataset.d)); saveSettings(S.settings); render(); break;
     case 'unpin': setSetting('pinnedNutrients', S.settings.pinnedNutrients.filter(k => k !== b.dataset.key)); render(); break;
@@ -1365,13 +1390,13 @@ async function importText(t) {
     const parsed = parseImport(t);
     const { recipes, custom, profiles, collections, skipped } = mergeImport({ recipes: S.recipes, custom: customFoods(), profiles: S.profiles, collections: S.collections }, parsed);
     const { settings } = parsed;
-    S.recipes.push(...recipes);
-    if (collections.length) { S.collections = normalizeCollections([...S.collections, ...collections]); persistCollections(); }
-    if (profiles.length) { S.profiles = [...S.profiles, ...profiles].slice(0, 12); saveProfiles(S.profiles); }
-    if (custom.length) { const merged = [...customFoods(), ...custom]; setCustomFoods(merged); saveCustom(merged); }
-    if (S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) await loadExt();
-    if (settings && (await uiDialog(L("Yedekteki ayarlar da uygulansın mı?"), { ok: L("Evet"), cancel: L("Hayır") }))) { S.settings = normalizeSettings(settings); saveSettings(S.settings); applySettings(); }
-    persistRecipes();
+    const next = { recipes: [...S.recipes, ...recipes], custom: [...customFoods(), ...custom], profiles: [...S.profiles, ...profiles].slice(0, 12), collections: normalizeCollections([...S.collections, ...collections]) };
+    if (settings && await uiDialog(L("Yedekteki ayarlar da uygulansın mı?"), { ok: L("Evet"), cancel: L("Hayır") })) next.settings = normalizeSettings(settings);
+    const saved = saveImportState(next);
+    if (!saved.ok) throw new Error(saved.rollbackFailed ? L("Yedek tam kaydedilemedi ve önceki kayıtların tamamı geri yüklenemedi. Açık verilerini dışa aktar; depolamayı kontrol et.") : L("Kaydedilemedi: cihaz depolaması kullanılamıyor"));
+    S.recipes = next.recipes; S.collections = next.collections; S.profiles = next.profiles; setCustomFoods(next.custom);
+    if (next.settings) { S.settings = next.settings; applySettings(); }
+    if (S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) requestExtCatalog();
     toast(L("{n} tarif içe aktarıldı", { n: recipes.length }) + (skipped ? ' · ' + L("{n} kopya atlandı", { n: skipped }) : ''));
     render();
   } catch (err) {

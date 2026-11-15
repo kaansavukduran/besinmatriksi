@@ -92,6 +92,7 @@ B003b son kanıtı: `docs/evidence/B003b-packages.json`; 49 birim / 30 tarayıc�
 | B146 | Günlük amino asit referansları, katalog konumu/adı, kaynaklı eksik ölçümler | RUNTIME_TESTED; beta.33 |
 | B147 | Tarif amino asit grafiği, toplam protein paydası ve eksik ölçüm görünürlüğü | RUNTIME_TESTED; beta.34 |
 | B148 | Otomatik günlük tarif toplamı ve öğün karşılaştırması | RUNTIME_TESTED; beta.35 |
-| B149 | Güncel açık Foundation/FNDDS kapsamını doğruluk ve performans bütçesiyle büyütme | PLANNED; tek sonraki Forge |
+| B149 | Dört skill ile genel denetim; CSV, depolama hataları, yedek tutarlılığı ve günlük toplam açıklığı | RUNTIME_TESTED; beta.36; docs/evidence/B149/AUDIT.md |
+| B150 | Güncel açık Foundation/FNDDS kapsamını doğruluk ve performans bütçesiyle büyütme | PLANNED; tek sonraki Forge |
 
 Fiziksel telefon ve ekran okuyucu kabulü uygulanmadı; önceki B142 önerisi tamamlandı sayılmadan cihaz erişimi bekleyen işlere taşındı. Cronometer kapalı/lisanslı kataloglarıyla tam eşitlik doğrulanmış değildir.

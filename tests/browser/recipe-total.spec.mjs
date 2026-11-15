@@ -8,7 +8,7 @@ for(const language of ['tr','en']){
   await page.locator('[data-action="rc-new"]').click();await add(page,'muz');await page.locator('#rc-name').fill('Öğle');await page.locator('#rc-name').blur();await page.locator('[data-action="rc-serv"][data-d="1"]').click();
   await page.locator('[data-action="rc-daily-total"]').click();
   await expect(page.locator('.daily-recipe-total h1')).toHaveText(language==='tr'?'Günlük Toplam Tarif':'Daily Recipe Total');
-  await expect(page.locator('.meal-table tbody tr')).toHaveCount(2);
+  await expect(page.locator('.meal-table tbody tr')).toHaveCount(2);await expect(page.locator('.tabs [data-tab="tarif"] .badge')).toHaveText('2');
   await expect(page.locator('.meal-table tbody tr').first().locator('[data-meal-nutrient="energy"]')).toHaveText('378 kcal');
   await expect(page.locator('.meal-table tbody tr').last().locator('[data-meal-nutrient="energy"]')).toHaveText('89 kcal');
   await expect(page.locator('#recipe-summary [data-basic="energy"]')).toContainText('467');

@@ -29,7 +29,12 @@ export function matrixCSV(r, title, settings = {}) {
   const add = (l, v) => v != null && rows.push([L('Gösterge'), L(l), num(v)]);
   add('PRAL (mEq)', d.pral); add('Omega-6 : Omega-3', d.n6n3); add('Na : K (molar)', d.naK);
   add('Fitat : Zn (molar)', d.phyZn); add('Fitat : Fe (molar)', d.phyFe); add('Fitat : Ca (molar)', d.phyCa); add('Oksalat : Ca (molar)', d.oxCa);
-  if (d.aas) rows.push([L('Gösterge'), L("Amino asit skoru (sınırlayıcı: {a})", { a: L(d.aas.limiting) }), num(d.aas.raw), '%']);
+  if (d.aas) {
+    const a = d.aas;
+    const label = a.complete ? L("Amino asit skoru (sınırlayıcı: {a})", { a: L(a.limiting) })
+      : a.raw != null ? L("Amino asit skoru (alt sınır, kısmi ölçüm)") : L("Amino asit skoru hesaplanamıyor");
+    rows.push([L('Gösterge'), label, a.raw == null ? L('veri yok') : num(a.raw), '%']);
+  }
   if (efsa) rows.push([], [L('Yüzde referansı'), referenceLabel(settings)]);
   return '﻿' + rows.map((r) => r.map((c) => cell(c ?? '')).join(';')).join('\r\n');
 }

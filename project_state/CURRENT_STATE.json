@@ -1,12 +1,12 @@
 {
   "schema_version": "1",
   "project": "Besin Matriksi",
-  "product_version": "1.1.2-beta.35",
+  "product_version": "1.1.2-beta.36",
   "development_state": "IN_PROGRESS",
-  "last_forge_at": "2026-11-15T15:18:30.371696+00:00",
-  "last_completed_forge": "B148",
+  "last_forge_at": "2026-11-15T23:16:40.887895+00:00",
+  "last_completed_forge": "B149",
   "active_forge": null,
-  "next_recommended_forge": "B149",
+  "next_recommended_forge": "B150",
   "branch": "ccr-1e1934aa-iv8aev",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
   "validated_code_commit": null,
@@ -14,27 +14,41 @@
   "verified_gates": [
     {
       "id": "unit",
-      "result": "PASS138/138",
+      "command": "node --test --test-isolation=none tests/*.test.mjs",
+      "result": "PASS 143/143 final code",
       "level": "UNIT_TESTED"
     },
     {
       "id": "web",
-      "result": "PASS beta.35 web/PWA+singleHTML",
+      "command": "npm run build; npm run build:single",
+      "result": "PASS beta.36 web/PWA and single HTML",
       "level": "BUILT"
     },
     {
       "id": "browser",
-      "result": "PASS8/8 final new-view tests;10/10 existing recipe list/amino checks in prior regression;18unique observed, not a single18-test PASS run",
+      "result": "PASS 238/238 broad Chromium desktop/phone run before final profile-apply/picker gates; PASS 54/54 targeted on final code including four new controls cases. 242 unique cases observed across runs, not one 242-test run. Managed file:// cases excluded.",
       "level": "RUNTIME_TESTED"
     },
     {
       "id": "axe",
-      "result": "PASS0WCAG2.1AA violations in new daily total view",
+      "result": "PASS 0 WCAG2.1AA violations in daily-total light and dark views; mobile image inspected",
       "level": "RUNTIME_TESTED"
     },
     {
+      "id": "data",
+      "command": "npm run data",
+      "result": "PASS; foods, foods-ext and efsa generated SHA256 unchanged",
+      "level": "BUILT"
+    },
+    {
+      "id": "notices",
+      "command": "node scripts/build-notices.mjs --check",
+      "result": "PASS 24 notices",
+      "level": "UNIT_TESTED"
+    },
+    {
       "id": "native-runtime",
-      "result": "NOT_RUN beta.35",
+      "result": "NOT_RUN beta.36; physical devices, screen reader, local Firefox/WebKit also NOT_RUN",
       "level": "NOT_RUN"
     }
   ],
@@ -52,11 +66,6 @@
       "state": "NOT_RUN",
       "reason": "Native OS/device acceptance NOT_RUN. Local Linux has GTK3 but no WebKitGTK 4.1 or Xvfb; package creation is not runtime proof.",
       "next_step": "Inspect authorized environment provisioning for a Linux native smoke test; keep other physical platforms separate."
-    },
-    {
-      "forge": "PWA-hosting",
-      "state": "BLOCKED_PERMISSIONS",
-      "reason": "GitHub Pages create API returned HTTP 403 Resource not accessible by integration. No hosted PWA URL claimed."
     },
     {
       "forge": "UX-TASKS",
@@ -83,7 +92,7 @@
     "trigger": "trig_01Ljjr3Dkp6uBiQcjFaGuzm3",
     "stop_when": "Tüm uygulanabilir yol haritası işleri ve son kapılar doğrulandığında."
   },
-  "notes": "B148: Günlük Toplam Tarif otomatik salt-okunur görünümü; öğün tablosu + ortak toplam matris/kaynak. Tam tarif/1porsiyon kapsamı kaydedilir; kaynak kayıtlar ve adlar korunur, özet kendisini toplamaz.",
+  "notes": "B149: four requested audit skills applied. Partial-AA CSV, failed-save feedback/state, full-backup rollback, personal recovery guard, profile/custom/recipe retry, daily counter and spacing fixed. Scientific input data unchanged. See docs/evidence/B149/AUDIT.md for exact evidence and limitations.",
   "release_target": "v1.1.2-beta.1",
   "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission. EFSA group reference data are separate from food measurements; only verified compatible PRI/AI records, EFSA attribution required.",
   "historical_verified_gates": [
@@ -330,16 +339,16 @@
     "cross_browser": "PASS (ci.yml run success)"
   },
   "current_forge": {
-    "id": "B148",
-    "base_commit": "f11117e13ad8a6fb673d5037d3f7bca9e779d3d6",
-    "local_evidence": "docs/evidence/B148/AUDIT.md",
+    "id": "B149",
+    "base_commit": "9c7062988ef9f8dd085eb363556cc15eeb72937f",
+    "local_evidence": "docs/evidence/B149/AUDIT.md",
     "level": "RUNTIME_TESTED"
   },
-  "validation_base_commit": "f11117e13ad8a6fb673d5037d3f7bca9e779d3d6",
+  "validation_base_commit": "9c7062988ef9f8dd085eb363556cc15eeb72937f",
   "current_forges": [
     {
-      "id": "B148",
-      "scope": "Automatic daily recipe aggregate and per-meal nutrition overview",
+      "id": "B149",
+      "scope": "General software and Unslop audit; proven failure-state repairs and daily-summary clarity",
       "level": "RUNTIME_TESTED"
     }
   ],
@@ -357,5 +366,14 @@
     "curated_foods": 664,
     "curated_forms": 810,
     "cronometer_exact_parity": "NOT_VERIFIED"
-  }
+  },
+  "resolved_blockers": [
+    {
+      "forge": "PWA-hosting",
+      "state": "RESOLVED",
+      "reason": "GitHub Pages create API returned HTTP 403 Resource not accessible by integration. No hosted PWA URL claimed.",
+      "resolved_at": "2026-11-15",
+      "evidence": "Actual fresh-browser entry at https://kaansavukduran.github.io/besinmatriksi/ succeeded on beta.35 before B149 rollout; HTTP200, chickpea selection and nutrition values, no page error. New deployment receipt reported separately after publish."
+    }
+  ]
 }

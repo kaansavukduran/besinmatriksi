@@ -1,3 +1,11 @@
+# 1.1.2-beta.36 · 15 Kasım 2026
+
+- B149: Super-Unslop, Unslop, Fragaria Unslop ve Yazılım Denetle ile genel inceleme. Kısmi amino asit ölçümünde CSV indirme hatası giderildi; alt sınır ve hesaplanamayan skor açıkça ayrılır.
+- Depolama yazımı başarısız olduğunda özel besin, görünüm profili, günlük ve malzeme ekleme işlemleri artık başarı mesajı göstermez. Editör/seçici taslakları yeniden deneme için korunur; başarısız günlük/malzeme ekleme bellekte hayalet kayıt bırakmaz.
+- Genel yedek içe aktarımında yazılan gruplar hata olursa geri alınır. Geri alma da başarısızsa açık kurtarma uyarısı verilir. Başarısız kişisel yedek kurtarması bozuk kaydın üzerine yazma korumasını kaldırmaz.
+- Günlük toplamın sekme sayacı tüm malzemeleri sayar. Tarif kalori satırı adın altında kalır; ortak temel bölüm “Birleşik besin değerleri” olarak ayrılır.
+- GitHub Pages canlı erişimi doğrulandı ve eski engel notu güncellendi. Besin ölçümleri, bilimsel referanslar ve kayıt kimlikleri değiştirilmedi.
+
 # 1.1.2-beta.35 · 15 Kasım 2026
 
 - B148: tarif listesinin sonunda otomatik Günlük Toplam Tarif. Üstte her tarif/öğün için ayrı8temel besin değeri; altta tüm malzemelerin ortak matrisi, mikro besinler, amino asit grafikleri ve kaynak dökümü.

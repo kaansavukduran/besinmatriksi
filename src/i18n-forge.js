@@ -1,5 +1,8 @@
 // B142–B144: katalog erişimi, veri kapsamı ve ölçü birimi açıklamaları.
 export const FORGE_EN = {
+  "Birleşik besin değerleri": "Combined nutrition values",
+  "Yedek tam kaydedilemedi ve önceki kayıtların tamamı geri yüklenemedi. Açık verilerini dışa aktar; depolamayı kontrol et.": "The backup could not be fully saved and some previous records could not be restored. Export the open data and check device storage.",
+  "Amino asit skoru (alt sınır, kısmi ölçüm)": "Amino acid score (lower bound, partial measurements)",
   "Günlük Toplam Tarif": "Daily Recipe Total",
   "Her tariften 1 porsiyon": "One serving of each recipe",
   "Tariflerin tamamı": "Whole recipes",
