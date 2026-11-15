@@ -6,6 +6,18 @@ export const SEARCH_ALIASES = {
   soya_sutu: ['soya içeceği'], soya_sutu_z: ['soya içeceği'],
   badem_sutu: ['badem içeceği'], pirinc_sutu: ['pirinç içeceği'],
   aci_bakla: ['tirmis'], taro: ['kolokas'], yerfistigi: ['araşit'],
+  kahve: ['filtre kahve', 'filter coffee'], espresso: ['doppio', 'double espresso', 'kahve'],
+  americano: ['kahve'], turk_kahvesi: ['kahve'], turk_kahvesi_sade: ['kahve'],
+  latte_sutlu: ['kahve', 'latte'], cappuccino_sutlu: ['kahve', 'kapuçino'],
+  latte_bitkisel: ['kahve'], cappuccino_bitkisel: ['kahve', 'kapuçino'],
+  flat_white: ['kahve'], cortado: ['kahve'], espresso_macchiato: ['kahve', 'makyato'],
+  mocha: ['kahve', 'moka'], buzlu_latte: ['kahve', 'iced latte'],
+  ristretto: ['kahve'], lungo: ['kahve'], hazir_kahve: ['neskafe', 'nescafe', 'granül kahve'],
+  dondurulmus_pizza_peynirli: ['donmuş pizza', 'dondurulmus pizza', 'frozen pizza'],
+  dondurulmus_pizza_pepperoni: ['donmuş pizza', 'dondurulmus pizza', 'frozen pizza'],
+  patates_cipsi: ['cips', 'chips', 'crisps'], tortilla_cipsi: ['cips', 'mısır cipsi'],
+  nacho_cipsi: ['cips', 'peynirli cips'], sert_seker: ['şekerleme', 'bonbon'],
+  damla_cikolatali_kurabiye: ['cookie', 'çikolatalı bisküvi'],
 };
 export function searchKey(food) {
   return norm(`${food.tr} ${food.en} ${food.sci || ''} ${(SEARCH_ALIASES[food.id] || []).join(' ')}`);

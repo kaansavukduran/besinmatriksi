@@ -1,6 +1,8 @@
+import { CATALOG_EN } from './i18n-catalog.js';
 // Eski ekranların merkezi İngilizce sözlüğü. Anahtar = Türkçe kaynak metin.
 // Yeni metin eklerken L() içine Türkçe metni yaz ve buraya İngilizcesini yaz; tests/i18n.test.mjs eksikleri yakalar.
 export const UI_EN = {
+ ...CATALOG_EN,
  "İlk tarifim": "My first recipe",
  "Kendi besinlerim": "My foods",
  "10 gram azalt": "Decrease by 10 grams",
@@ -854,5 +856,17 @@ export const UI_EN = {
  "Ölçüm değil, tarif hesabı (tahmin), pişmiş ağırlıkla: %55 pişmiş patlıcan + %15 haşlanmış soğan + %15 pişmiş domates + %10 zeytinyağı + %2 sarımsak + maydanoz + tuz (USDA kayıtlarından). Patlıcan USDA'da haşlanmış; geleneksel kızartma/fırınlamanın yağ emişi hesaba katılmadı, gerçek yağ oranı daha yüksek olabilir.": "Not a measurement, a recipe calculation (estimate) by cooked weight: 55% cooked eggplant + 15% boiled onion + 15% cooked tomato + 10% olive oil + 2% garlic + parsley + salt (from USDA records). Eggplant is boiled in USDA; oil absorbed by traditional frying/baking is not included, the real fat content may be higher.",
  "Ölçüm değil, tarif hesabı (tahmin), pişmiş ağırlıkla: %55 haşlanmış enginar + %10 havuç + %8 bezelye + %8 patates + %6 soğan (hepsi haşlanmış) + %8 zeytinyağı + %3 limon suyu + dereotu + tuz (USDA kayıtlarından).": "Not a measurement, a recipe calculation (estimate) by cooked weight: 55% boiled artichoke + 10% carrot + 8% peas + 8% potato + 6% onion (all boiled) + 8% olive oil + 3% lemon juice + dill + salt (from USDA records).",
  "Ölçüm değil, tarif hesabı (tahmin), pişmiş ağırlıkla: %85 pişmiş bulgur + %2 domates salçası + %5 haşlanmış soğan + %5 zeytinyağı + %2,4 pişmiş domates + tuz (USDA kayıtlarından). Tereyağlı türü hesaba katılmadı.": "Not a measurement, a recipe calculation (estimate) by cooked weight: 85% cooked bulgur + 2% tomato paste + 5% boiled onion + 5% olive oil + 2.4% cooked tomato + salt (from USDA records). The butter version is not included.",
- "Etiketsiz değerlerin kaynağı:": "Source of unlabelled values:"
+ "Etiketsiz değerlerin kaynağı:": "Source of unlabelled values:",
+ "Tarif porsiyonu; ölçüm değil": "Recipe serving; not a measurement",
+ "Tabağında ne var?": "What's on your plate?",
+ "Bir fincan kahveden akşam yemeğine, yediklerini biraz daha yakından tanı.": "From your morning coffee to dinner, get to know what you eat.",
+ "Hızlı kategoriler": "Quick categories",
+ "Kahveler": "Coffee",
+ "Pizza ve fast food": "Pizza and fast food",
+ "Atıştırmalıklar": "Snacks",
+ "{foods} besin · {forms} tüketim biçimi": "{foods} foods · {forms} preparations",
+ "Cihazında çalışır. Çevrimdışı da yanında.": "Works on your device. Even offline.",
+ "Besinleri keşfet": "Explore foods",
+ "{n} besin": "{n} foods",
+ "Bir besin bul: mercimek, latte, pizza…": "Find a food: lentils, latte, pizza…"
 };

@@ -29,6 +29,7 @@ import { recipeGaps } from './gaps.js';
 import { similarFoods } from './similar.js';
 import { FOOD_ICONS } from './food-icons.js';
 import { foodArt } from './food-art.js';
+import { brandMark, plateIllustration } from './kitchen-art.js';
 import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS, shortcutKey, migrateFontV2, migrateAionOff } from './settings.js';
 
 const PRESETS = [1, 5, 10, 25, 50, 100, 150, 200, 250, 500, 750, 1000];
@@ -153,7 +154,7 @@ function amountControls(target, g, portions = [], { compact = false, liquid = fa
     <input type="range" class="slider" min="1" max="${MAX_G}" step="1" value="${g}" style="--fill:${((g - 1) / (MAX_G - 1)) * 100}%" data-slider="${esc(target)}" aria-valuetext="${fmtNum(g)} g" aria-label="${L("Miktar (gram)")}">
     ${compact ? '' : `<div class="slider-scale" aria-hidden="true"><span>1 g</span><span>250</span><span>500</span><span>750</span><span>1 kg</span></div>`}
     <div class="presets">${presets.map((p) => `<button class="pchip ${p === g ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p}">${p >= 1000 ? '1 kg' : p + ' g'}</button>`).join('')}</div>
-    ${portions.length ? `<div class="portions">${portions.map((p) => `<button class="pchip por ${Math.abs(p.g - g) < 0.01 ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p.g}" title="${esc(p.d ? L("USDA “{u}” ölçüsünden hacimle hesaplandı; yaklaşık", { u: p.src }) : p.en + ' (USDA)')}">${esc(getLanguage() === 'en' && p.en ? p.en : p.label)} · ${p.d ? '≈ ' : ''}${fmtNum(p.g)} g</button>`).join('')}</div>` : ''}
+    ${portions.length ? `<div class="portions">${portions.map((p) => `<button class="pchip por ${Math.abs(p.g - g) < 0.01 ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p.g}" title="${esc(p.r ? L("Tarif porsiyonu; ölçüm değil") : p.d ? L("USDA “{u}” ölçüsünden hacimle hesaplandı; yaklaşık", { u: p.src }) : p.en + ' (USDA)')}">${esc(getLanguage() === 'en' && p.en ? p.en : p.label)} · ${p.d ? '≈ ' : ''}${fmtNum(p.g)} g</button>`).join('')}</div>` : ''}
   </div>`;
 }
 
@@ -174,7 +175,7 @@ function miniAmount(target, g, servings, id, name) {
 function foodButton(f, action, extra = '') {
   const multi = S.multi && action === 'ex-pick', on = multi && S.picked.includes(f.id);
   if (multi) { action = 'multi-pick'; extra += ` aria-pressed="${on}"`; }
-  return `<button class="food ${on ? 'picked' : ''}" data-action="${action}" data-id="${esc(f.id)}" ${extra}>
+  return `<button class="food ${on ? 'picked' : S.sel?.id === f.id ? 'selected' : ''}" data-action="${action}" data-id="${esc(f.id)}" ${extra}>
     <span class="fi" aria-hidden="true">${on ? '✓' : foodIcon(f)}</span>
     <span class="fn">${esc(foodName(f))}${f.animal ? ` <span class="tag-animal">${L("Hayvansal")}</span>` : ''}</span>
     <span class="ff">${f.forms.length > 1 ? L("{n} biçim", { n: f.forms.length }) : esc(formName(f.forms[0].label))}${quickFacts(f.forms[0].v)}</span>
@@ -288,7 +289,7 @@ function foodList(prefix, cat, q, extGroup) {
   }
   const res = search(q, { cat, ext: S.settings.showExt && extLoaded() && !!q });
   if (!res.curated.length && !res.ext.length && !res.custom.length) return `<p class="empty">${L("Eşleşen besin yok. Aramayı kısalt veya “Tümü”ne dön.")}</p>`;
-  let html = (!q && !cat ? recentRow(prefix) : '') + sortBar(prefix);
+  let html = (prefix === 'ex' ? catalogHeading(cat, q, res.curated.length) : '') + (!q && !cat ? recentRow(prefix) : '') + sortBar(prefix);
   if (!q && !cat && S.sort === 'default') {
     for (const c of CATEGORIES) {
       const fs = res.curated.filter((f) => f.cat === c.id);
@@ -345,11 +346,12 @@ function renderExplore() {
       ${item.food && !Object.keys(item.v || {}).length ? `<div class="card unavail"><p>${esc(item.note || '')}</p><button class="btn primary" data-action="cu-new" data-name="${esc(item.name)}">＋ ${L("Etiketten kendi besinim olarak ekle")}</button></div>` : ''}
       ${similarRow(item)}
       <div id="matrix" class="matrix">${matrixForExplore(item)}</div>`
-    : (narrowExplore() ? '' : welcome() + periodicGrid()); // ≤700 px seçimsizken .detail gizli: periyodik tablo hiç kurulmaz
+    : '';
   return `<div class="explore ${item ? 'has-sel' : ''}">
     <nav class="cats ${S.settings.catGrid ? 'cats-grid' : ''}" aria-label="${L("Kategoriler")}">${categoryNav('ex', S.cat, S.settings.showExt)}</nav>
     <section class="list" aria-label="${L("Besinler")}">
-      <div class="searchbar"><input type="search" id="q" placeholder="${L("Ara (isteğe bağlı): muz, mercimek, lentil…")}" value="${esc(S.q)}" autocomplete="off" aria-label="${L("Besin ara")}">
+      ${!item && !S.cat && !S.q ? welcome() : ''}
+      <div class="searchbar"><input type="search" id="q" placeholder="${L("Bir besin bul: mercimek, latte, pizza…")}" value="${esc(S.q)}" autocomplete="off" aria-label="${L("Besin ara")}">
       ${S.q ? `<button class="btn ghost" data-action="ex-clear">${L("Temizle")}</button>` : ''}</div>
       ${S.searches.length ? `<div class="recent-searches" aria-label="${L("Son aramalar")}"><span class="hint">${L("Son aramalar")}</span><div class="presets">${S.searches.map(q => `<button class="pchip" data-action="search-recent" data-q="${esc(q)}">${esc(q)}</button>`).join('')}<button class="btn ghost" data-action="search-clear">${L("Geçmişi temizle")}</button></div></div>` : ''}
       <div id="foodlist">${foodList('ex', S.cat, S.q, S.extGroup)}</div>
@@ -358,49 +360,26 @@ function renderExplore() {
   </div>`;
 }
 
-// Seçim yokken sağ panel: seçili kategorinin (veya aramanın) besinleri periyodik tablo gibi kare ızgara
+// Katalog başlangıcı: yemek odağında kısa tanıtım ve doğrudan kategori bağlantıları.
 function welcome() {
+  const foods = visibleCurated();
   return `<div class="welcome">
-    <h2>${S.settings.emoji ? '🌱 ' : ''}${L("Besin matriksine hoş geldin")}</h2>
-    <ol class="welcome-steps">
-      <li>${L("Soldan bir kategori seç (ör. Baklagiller).")}</li>
-      <li>${L("Bir besine tıkla (ör. Yeşil mercimek).")}</li>
-      <li>${L("Biçimi (çiğ / haşlanmış…) seç, kaydırıcıyı sağa sola çekerek miktarı (1 g – 1 kg) ayarla.")}</li>
-      <li>${L("“Tarife ekle” ile birden çok besinin toplam matriksini gör.")}</li>
-    </ol>
-    <p class="hint">${L("{foods} besin, {forms} biçim, USDA tam bileşim tablosu · tamamen çevrimdışı · klavye gerekmez.", { foods: visibleCurated().length, forms: visibleCurated().reduce((a, f) => a + f.forms.length, 0) })}</p>
+    <div class="welcome-copy">
+      <h1>${L("Tabağında ne var?")}</h1>
+      <p>${L("Bir fincan kahveden akşam yemeğine, yediklerini biraz daha yakından tanı.")}</p>
+      <div class="welcome-links" aria-label="${L("Hızlı kategoriler")}">
+        ${[['kahve', '☕', L("Kahveler")], ['fastfood', '🍕', L("Pizza ve fast food")], ['atistirmalik', '🍫', L("Atıştırmalıklar")]].map(([id, icon, name]) => `<button class="pchip" data-action="ex-cat" data-cat="${id}">${S.settings.emoji ? `<span aria-hidden="true">${icon}</span> ` : ''}${name}<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9 9 3M3 3h6v6" stroke="currentColor" stroke-width="1.5"/></svg></button>`).join('')}
+      </div>
+      <p class="welcome-meta">${L("{foods} besin · {forms} tüketim biçimi", { foods: foods.length, forms: foods.reduce((a, f) => a + f.forms.length, 0) })}<span>${L("Cihazında çalışır. Çevrimdışı da yanında.")}</span></p>
+    </div>
+    ${S.settings.emoji ? plateIllustration : ''}
   </div>`;
 }
 
-const narrowMQ = typeof matchMedia === 'function' ? matchMedia('(max-width: 700px)') : null;
-const narrowExplore = () => !!narrowMQ?.matches;
-// Karşılama kartındaki sayı, kategori listesinde gerçekten görünen besinlerle aynı olsun (gizlenen niş/hayvansal hariç)
 const visibleCurated = () => search('', { cat: null }).curated;
-function periodicGrid() {
-  const special = S.cat && (S.cat.startsWith('col:') || S.cat === 'custom' || S.cat === 'ext');
-  const res = search(S.q, { cat: special ? null : S.cat });
-  const foods = res.curated;
-  if (!foods.length) return `<p class="empty">${L("Eşleşen besin yok. Aramayı kısalt veya “Tümü”ne dön.")}</p>`;
-  const tile = (f, i) => {
-    const v = f.forms[0].v;
-    return `<button class="pt" data-action="ex-pick" data-id="${esc(f.id)}" title="${esc(foodName(f))}">
-      <span class="pt-k">${v.energy != null ? fmtNum(v.energy) : '–'}<small>kcal</small></span>
-      <span class="pt-i" aria-hidden="true">${foodIcon(f, 40)}</span>
-      <b class="pt-name">${esc(foodName(f))}</b>
-      <span class="pt-m">${v.protein != null ? `P ${fmtNum(v.protein)}` : ''}${v.fiber != null ? ` · ${L("Lif")} ${fmtNum(v.fiber)}` : ''}</span></button>`;
-  };
-  const grid = (list) => `<div class="ptable">${list.map(tile).join('')}</div>`;
-  let body = '';
-  if (!S.q && !S.cat) {
-    let n = 0;
-    for (const c of CATEGORIES) {
-      const fs = foods.filter((f) => f.cat === c.id);
-      if (!fs.length) continue;
-      body += `<h3 class="pt-h">${S.settings.emoji ? c.icon + ' ' : ''}${esc(categoryName(c))} <span class="cnt">${fs.length}</span></h3><div class="ptable">${fs.map((f) => tile(f, n++)).join('')}</div>`;
-    }
-  } else body = grid(foods);
-  const title = S.q ? L("“{q}” için sonuçlar", { q: S.q }) : S.cat && !special ? categoryName(CATEGORIES.find((c) => c.id === S.cat) || { id: S.cat }) : L("Tüm besinler");
-  return `<div class="periodic"><h2>${esc(title)} <span class="cnt">${foods.length}</span></h2><p class="hint">${L("100 g için kcal; P: protein (g), Lif (g). Bir kareye dokun, matriksi açılsın.")}</p>${body}</div>`;
+function catalogHeading(cat, q, count) {
+  const title = q ? L("“{q}” için sonuçlar", { q }) : cat ? catName(cat) : L("Besinleri keşfet");
+  return `<div class="catalog-heading"><h2>${esc(title)}</h2><span class="hint">${L("{n} besin", { n: count })}</span></div>`;
 }
 
 function matrixForExplore(item) {
@@ -836,7 +815,7 @@ export function render() {
   else view = renderAbout();
   app().innerHTML = `
     <header class="top">
-      <div class="brand">${S.settings.emoji ? '<span class="logo" aria-hidden="true">🫐</span>' : ''}<b>Besin Matriksi</b></div>
+      <div class="brand">${S.settings.emoji ? `<span class="logo">${brandMark}</span>` : ''}<b>Besin Matriksi</b></div>
       <nav class="tabs" aria-label="${tr('navigation')}">${TABS.map(([id, ic]) => `<button class="tab ${S.tab === id ? 'on' : ''}" data-action="tab" data-tab="${id}" ${S.tab === id ? 'aria-current="page"' : ''}><span class="ti" aria-hidden="true">${S.settings.emoji ? ic : ''}</span><span class="tt">${tr(id)}</span><span class="tt-short">${TAB_SHORT[id]()}</span>${id === 'tarif' && activeRecipe()?.items.length ? `<span class="badge">${activeRecipe().items.length}</span>` : ''}${id === 'karsilastir' && S.compare.length ? `<span class="badge">${S.compare.length}</span>` : ''}</button>`).join('')}</nav>
     </header>
     ${S.profiles.length ? `<div class="profile-bar" role="group" aria-label="${L("Görünüm profilleri")}"><span class="hint">${L("Görünüm:")}</span>${S.profiles.map(p => `<button class="pchip" data-action="profile-apply" data-id="${p.id}">${esc(p.name)}</button>`).join('')}</div>` : ''}
@@ -877,7 +856,7 @@ function refreshMatrix() {
 
 // ---------------------------------------------------------------- miktar
 // Kaydırıcı her adımda localStorage'a yazmasın ve matrisi kare başına en çok bir kez yenilesin
-let rafId = 0, saveT = 0, qTimer = 0;
+let rafId = 0, saveT = 0;
 function scheduleRefresh() { if (!rafId) rafId = requestAnimationFrame(() => { rafId = 0; refreshMatrix(); }); }
 function scheduleSave() { clearTimeout(saveT); saveT = setTimeout(() => { saveT = 0; persistRecipes(); }, 300); }
 function flushSave() { if (saveT) { clearTimeout(saveT); saveT = 0; persistRecipes(); } }
@@ -1415,7 +1394,7 @@ function onInput(e) {
   if (t.dataset.slider) { setAmount(t.dataset.slider, Number(t.value), { fromSlider: true }); return; }
   if (t.id === 'q') {
     S.q = t.value; $('#foodlist').innerHTML = foodList('ex', S.cat, S.q, S.extGroup);
-    clearTimeout(qTimer); qTimer = setTimeout(() => { if (!S.sel && S.tab === 'kesfet' && !narrowExplore()) { const d = $('.detail'); if (d) d.innerHTML = welcome() + periodicGrid(); } }, 150);
+    if (S.q) $('.welcome')?.remove();
     return;
   }
   if (t.id === 'pq') { S.picker.q = t.value; $('.pk-list').innerHTML = foodList('pk', S.picker.cat, S.picker.q, S.picker.extGroup); return; }
@@ -1512,7 +1491,6 @@ export function start() {
     }
     if (!printController.active && d.matches?.('details.sec')) { if (d.open) S.closed.delete(d.dataset.sec); else S.closed.add(d.dataset.sec); }
   }, true);
-  narrowMQ?.addEventListener?.('change', () => { if (S.tab === 'kesfet' && !S.sel) render(); });
   document.addEventListener('keydown', (e) => {
     if (!document.querySelector('.modal') && !e.target.closest('input, textarea, select, [contenteditable="true"]') && e.altKey && !e.ctrlKey && !e.metaKey) {
       const key = shortcutKey(e); const target = Object.keys(SHORTCUT_ACTIONS).find(id => S.settings.shortcuts[id] === `Alt+${key}`);

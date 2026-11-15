@@ -2,6 +2,9 @@
 // Listede olmayan besin kategorinin sonuna, kendi aralarında katalog sırasıyla eklenir.
 // NICHE: Türkiye'de az bilinen besinler; varsayılan olarak kategori listelerinde gizlenir (aramada ve kayıtlı tariflerde kalır).
 export const POPULAR = {
+  kahve: ['kahve', 'turk_kahvesi_sade', 'turk_kahvesi', 'espresso', 'americano', 'latte_sutlu', 'cappuccino_sutlu', 'flat_white', 'latte_bitkisel', 'cappuccino_bitkisel', 'buzlu_latte', 'cortado', 'espresso_macchiato', 'mocha', 'lungo', 'ristretto', 'hazir_kahve', 'kahve_kafeinsiz', 'espresso_kafeinsiz'],
+  fastfood: ['pizza_peynirli', 'pizza_pepperoni', 'dondurulmus_pizza_peynirli', 'dondurulmus_pizza_pepperoni', 'hamburger', 'cheeseburger', 'double_hamburger', 'tavuk_burger', 'patates_kizartmasi', 'tavuk_nugget', 'sogan_halkasi'],
+  atistirmalik: ['patates_cipsi', 'tortilla_cipsi', 'nacho_cipsi', 'patates_cipsi_kalip', 'soganli_cips', 'damla_cikolatali_kurabiye', 'kakaolu_sandvic_biskuvi', 'gofret', 'beyaz_cikolata', 'cikolatali_yerfistigi', 'sert_seker', 'draje_seker', 'marshmallow', 'sutlu_karamel', 'waffle'],
   meyve: ['elma', 'muz', 'portakal', 'mandalina', 'uzum', 'cilek', 'karpuz', 'kavun', 'kiraz', 'seftali', 'armut', 'kayisi', 'limon', 'erik', 'nar', 'incir',
     'kivi', 'ayva', 'visne', 'dut', 'zeytin_siyah', 'zeytin_yesil', 'greyfurt', 'nektarin', 'avokado', 'ananas', 'trabzon_hurmasi', 'yabanmersini', 'ahududu',
     'bogurtlen', 'mango', 'misket_limonu', 'kavun_balli', 'frenk_uzumu', 'kizilcik', 'bektasi', 'murver', 'papaya', 'lici', 'carkifelek', 'guava', 'plantain', 'jackfruit', 'demirhindi'],
@@ -11,7 +14,7 @@ export const POPULAR = {
     'brokselahanasi', 'kuskonmaz', 'rezene', 'lahana_tursusu', 'edamame', 'alabas', 'fasulye_filizi', 'mercimek_filizi', 'yonca_filizi', 'kudret_nari'],
   yaprak: ['ispanak', 'marul', 'roka', 'semizotu', 'asma_yapragi', 'aysberg', 'tere', 'pazi', 'karalahana', 'su_teresi', 'pancar_yapragi', 'karahindiba',
     'hardal_yesili', 'collard', 'pak_choi', 'amarant_yapragi', 'moringa'],
-  kok: ['patates', 'havuc', 'patates_kizartmasi', 'pancar', 'turp', 'tatli_patates', 'kereviz_kok', 'zencefil', 'salgam', 'yer_elmasi', 'bayir_turpu', 'yaban_havucu', 'manyok', 'taro', 'yam'],
+  kok: ['patates', 'havuc', 'pancar', 'turp', 'tatli_patates', 'kereviz_kok', 'zencefil', 'salgam', 'yer_elmasi', 'bayir_turpu', 'yaban_havucu', 'manyok', 'taro', 'yam'],
   baklagil: ['kirmizi_mercimek', 'yesil_mercimek', 'nohut', 'kuru_fasulye', 'barbunya', 'yerfistigi', 'fistik_ezmesi', 'humus', 'dermason', 'kirmizi_fasulye',
     'borulce', 'kuru_bakla', 'mas', 'siyah_fasulye', 'kuru_bezelye', 'pinto', 'aci_bakla', 'adzuki', 'urad', 'guvercin_bezelyesi'],
   soya: ['soya_sutu', 'tofu_sert', 'soya_sosu', 'soya_fasulyesi', 'tofu_normal', 'soya_sutu_z', 'soya_unu', 'tempeh', 'miso', 'soya_izolat', 'tofu_nigari', 'natto'],
@@ -27,7 +30,7 @@ export const POPULAR = {
     'zencefil_toz', 'biberiye', 'adacayi', 'sogan_tozu', 'kori', 'kakule', 'muskat', 'anason', 'kisnis_tohumu', 'rezene_tohumu', 'cemen', 'safran', 'karaman_kimyonu', 'kereviz_tohumu'],
   yag: ['zeytinyagi', 'aycicek_yagi', 'misir_ozu_yagi', 'findik_yagi', 'kanola', 'hindistancevizi_yagi', 'susam_yagi', 'soya_yagi', 'aycicek_yagi_ho', 'keten_yagi',
     'ceviz_yagi', 'avokado_yagi', 'yerfistigi_yagi', 'palm_yagi', 'aspir_yagi', 'pirinc_kepegi_yagi', 'hardal_yagi'],
-  icecek: ['su', 'siyah_cay', 'kahve', 'yesil_cay', 'papatya', 'elma_suyu', 'uzum_suyu', 'espresso', 'domates_suyu', 'havuc_suyu', 'badem_sutu', 'hindistancevizi_suyu', 'elma_sirkesi',
+  icecek: ['su', 'siyah_cay', 'yesil_cay', 'papatya', 'elma_suyu', 'uzum_suyu', 'domates_suyu', 'havuc_suyu', 'badem_sutu', 'hindistancevizi_suyu', 'elma_sirkesi',
     'pirinc_sutu', 'hindistancevizi_sutu'],
   tatli: ['seker', 'bal', 'kakao', 'bitter', 'melas', 'keciboynuzu', 'esmer_seker', 'akcaagac', 'jaggery'],
   diger: ['tuz', 'besin_mayasi', 'hardal', 'balzamik', 'maya_ozu'],

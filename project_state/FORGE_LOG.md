@@ -738,3 +738,14 @@
 - KRİTİK #1: `kudret_narı` kimliği (ASCII dışı ı) kayıt kuralına uymuyordu → tarife eklenince yeniden açılışta sessizce siliniyor; günlüğe eklenince `normalizePersonal` hata verip tüm günlük/profil kaydını kilitliyordu. Kimlik `kudret_nari`; `LEGACY_IDS` ile eski kayıtlar (tarif, günlük, koleksiyon, yedek) taşınır; her katalog kimliğinin kurala uyduğunu sınayan test.
 - ORTA #2: B133 `mergeImport` gerçek uygulama belleğinde eşleşmiyordu (`setCustomFoods` `_k` ekliyor; oturumda eklenen tarif öğelerinde `pricePerKg` yok) → imzalar `_` alanlarını atar, tarif imzası normalize alanlarla kurulur; testte bellek biçimi.
 - Kanıt: `npm run data`; `npm test` 111/111; build + build:single; Playwright 158/158.
+
+## B141 · 2026-11-15 · Yemek odaklı tasarım, kapsam ve denetim
+- Kullanıcı: kendi tasarımımızla sıcak yemek kimliği, kahve/fast food/atıştırmalık kapsamı, taşma/örtüşme onarımı; Fragaria Unslop + Unslop + Yazılım Denetle. Tek sınırlı Forge; eski roadmap'teki başka ürün modülleri başlatılmadı.
+- Krem/zeytin/kil açık tema, sıcak koyu tema; mevcut kayıtlı seçimler korunur. Özgün yerel tabak/marka SVG'si ve PWA simgeleri. Tek katalog; yinelenen periyodik tablo kaldırıldı.
+- Katalog 627→664 (+37). Kahveler / Fast food ve pizza / Atıştırmalıklar. Yeni USDA eşleşmeleri, hayvansal/alerjen işaretleri, TR/EN arama/not/çizimler. Americano ve sütlü kahveler açık tarif tahmini; fincan gramları. Ristretto/lungo/sade Türk kahvesi açıklamalı ölçüm boşluğu; donmuş pizza pişmiş ağırlığı açık.
+- AUD-01/B140 devamı: eski kudret_narı koleksiyon ve recent kayıtları ortak validRef ile korunur; önce 2 FAIL, sonra regresyon ve gerçek aç/kaydet/reload PASS.
+- UI-02/UI-03: normal 320/390 ve büyük yazı/%200'de sekme hit target'ı, malzeme/karşılaştırma kartı, miktar/preset/Kapat, marka, tarif başlığı, özet ve matriks yüzde/amino asit taşmaları onarıldı. Kök yatay taşma giderildi; iki boyutlu tablonun kendi kaydırması korundu.
+- Pages: default dal push tetikleyicisi, test/build kapısı, sabit action SHA'ları, eşzamanlı yayın kilidi; gerçek /besinmatriksi/ alt yolunda manifest/SW/offline/kalıcılık testi. Canlı ilk etkinleştirme yönetici ayarıyla ayrı; 404 başlangıcı doğrulandı. Vercel aynı repo/proje/üretim dalını kullanır. Native Release/store yayını yok.
+- Kanıt: `npm run data`; `node scripts/build-notices.mjs --check` 23/23; `npm test` ve açık alt-test koşumu 116/116; `npm run build` + `npm run build:single` PASS. Dev yeni regresyonlar 10/10 PASS; Chromium desktop+phone,320/390/768/1440,normal+28px/%200. Paket tarayıcı ve yayın son sonucu docs/evidence/B141/AUDIT.md içinde.
+- Boşluklar: file:// açılışı yönetilen tarayıcı politikasıyla BLOCKED; aynı tek dosya dış isteksiz gerçek uygulama akışı PASS. Fiziksel cihaz/ekran okuyucu ve bu ortamda Firefox/WebKit/native kurulum NOT TESTED.
+- Tek sonraki Forge: B142 — fiziksel telefon ve ekran okuyucuyla yeni katalog/ölçek kabulü.

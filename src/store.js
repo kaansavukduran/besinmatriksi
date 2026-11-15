@@ -2,7 +2,7 @@
 import { uid } from './util.js';
 import { DEFAULT_SETTINGS, SETTINGS_VERSION, normalizeSettings } from './settings.js';
 import { normalizeCollections, remapCustomRefs } from './collections.js';
-import { normalizeRecipe, normalizeCustom } from './records.js';
+import { normalizeRecipe, normalizeCustom, validRef } from './records.js';
 import { recentSearches } from './search.js';
 export { DEFAULT_SETTINGS } from './settings.js';
 
@@ -11,8 +11,8 @@ const KEY_RECIPES = 'bm.recipes.v1';
 const KEY_CUSTOM = 'bm.custom.v1';
 
 export const THEMES = [
-  { id: 'light', name: 'Gün ışığı', bg: '#f7f7fb', fg: '#1e2233', ac: '#6b4de6' },
-  { id: 'dark', name: 'Gece', bg: '#14161f', fg: '#e7e9f3', ac: '#a58bff' },
+  { id: 'light', name: 'Gün ışığı', bg: '#f7f4ec', fg: '#29372a', ac: '#475c35' },
+  { id: 'dark', name: 'Gece', bg: '#1b211b', fg: '#f1eee3', ac: '#b7cb8a' },
   { id: 'oled', name: 'Siyah (OLED)', bg: '#000000', fg: '#f2f2f2', ac: '#8ad1ff' },
   { id: 'sepia', name: 'Sepya / kâğıt', bg: '#f6efe0', fg: '#3b2f22', ac: '#a8572a' },
   { id: 'pastel', name: 'Pastel', bg: '#fff5fb', fg: '#3a2a43', ac: '#e0569b' },
@@ -131,8 +131,9 @@ export function mergeImport(cur, imp) {
 export const MAX_RECENT = 8;
 export function normalizeRecent(list, known = () => true) {
   const out = [], seen = new Set();
-  for (const r of Array.isArray(list) ? list : []) {
-    if (!r || r.t !== 'c' || typeof r.id !== 'string' || !Number.isInteger(r.f) || r.f < 0 || !known(r)) continue;
+  for (const raw of Array.isArray(list) ? list : []) {
+    const r = validRef(raw);
+    if (!r || r.t !== 'c' || !known(r)) continue;
     const k = `${r.id}:${r.f}`; if (seen.has(k)) continue; seen.add(k);
     out.push({ t: 'c', id: r.id, f: r.f }); if (out.length >= MAX_RECENT) break;
   }

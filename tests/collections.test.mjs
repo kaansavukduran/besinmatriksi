@@ -55,6 +55,17 @@ test('bozuk veya eski kayıt güvenle normalleşir', () => {
   assert.ok(normalizeCollections(Array.from({ length: 99 }, (_, i) => ({ id: 'x' + i, name: 'K' + i }))).length <= MAX_COLLECTIONS);
 });
 
+test('eski katalog kimliği koleksiyon yükleme ve yedek içe aktarmada korunur ve tekilleşir', async () => {
+  const old = { t: 'c', id: 'kudret_narı', f: 0 };
+  const canonical = { t: 'c', id: 'kudret_nari', f: 0 };
+  const raw = [{ id: 'saved', name: 'Favoriler', items: [old, canonical] }];
+  assert.deepEqual(normalizeCollections(raw)[0].items, [canonical]);
+  assert.equal(raw[0].items[0].id, 'kudret_narı', 'özgün yedek değiştirilmemeli');
+  const { parseImport, exportPayload } = await import('../src/store.js');
+  const imported = parseImport(exportPayload([], {}, [], [], raw));
+  assert.deepEqual(imported.collections[0].items, [canonical]);
+});
+
 test('yedek: koleksiyonlar yeni kimlikle döner, alt kategori bağı ve kendi besin eşlemesi korunur', async () => {
   globalThis.localStorage ??= { getItem: () => null, setItem: () => {} };
   const { exportPayload, parseImport } = await import('../src/store.js');

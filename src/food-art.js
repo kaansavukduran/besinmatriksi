@@ -149,6 +149,8 @@ const SHAPES = {
   },
   // Fincan/bardak (içecekler). v: mug, glass, teacup, box (meyve suyu kutusu), carton (süt)
   cup: (c, c2 = '#ffffff', v = 'mug') => {
+    if (v === 'iced' || v === 'latte') return `<path d="M8 6h16l-2 23H10Z" fill="${c2}" ${st()}/><path d="M9 13h14l-1 15H11Z" fill="${c}"/>` + (v === 'iced' ? `<path d="M20 15l4-13" fill="none" ${st(1.6)}/><rect x="10" y="10" width="5" height="5" rx="1" fill="#edf4ef" stroke="#abc5c1" stroke-width=".7"/><rect x="17" y="16" width="5" height="5" rx="1" fill="#edf4ef" stroke="#abc5c1" stroke-width=".7"/>` : `<ellipse cx="16" cy="12" rx="7" ry="2" fill="#fff3df"/><path d="M11 22h10" stroke="#9e7455" stroke-width="2"/>`);
+    if (['foam', 'flat', 'macchiato'].includes(v)) return `<path d="M5 13h20q0 13-10 13Q5 26 5 13Z" fill="${c2}" ${st()}/><path d="M25 15q6 0 4 4-1 3-5 3" fill="none" ${st()}/><ellipse cx="15" cy="13" rx="9" ry="2.5" fill="${c}"/><ellipse cx="15" cy="13" rx="${v === 'macchiato' ? 3 : 7}" ry="${v === 'foam' ? 3 : 1.7}" fill="#fff4e4"/><path d="M4 29h23" ${st(1.2)}/>`;
     if (v === 'glass') return `<path d="M8 6 h16 l-2 22 h-12z" fill="${c2}" opacity=".35" ${st()}/><path d="M9 11 h14 l-1.6 17 h-10.8z" fill="${c}"/><path d="M8 6 h16 l-2 22 h-12z" fill="none" ${st()}/>` + shine(12, 15, 1, 3);
     if (v === 'teacup') return `<path d="M5 13 h19 q0 13-9.5 13 q-9.5 0-9.5-13z" fill="${c2}" ${st()}/><path d="M24 15 q5 0 4 4 q-1 3-5 3" fill="none" ${st()}/><ellipse cx="14.5" cy="13.5" rx="8.5" ry="2" fill="${c}"/><path d="M4 28 h22" ${st(1.4)}/>`;
     if (v === 'box') return `<rect x="9" y="8" width="14" height="20" rx="1.5" fill="${c2}" ${st()}/><rect x="9" y="14" width="14" height="9" fill="${c}"/><path d="M19 8 l3-5 h3" fill="none" ${st(1.2)}/>`;
@@ -199,6 +201,26 @@ const SHAPES = {
   // Kase/tabak içinde yarı akışkan (yoğurt, humus, miso, mayalı ürünler)
   bowl: (c, c2 = '#e3dccf', v = 'plain') => `<path d="M4 17 h24 q-1 11-12 11 q-11 0-12-11z" fill="${c2}" ${st()}/><path d="M5 17 q11-${v === 'peak' ? 9 : 5} 22 0z" fill="${c}" ${st(1)}/>` + (v === 'swirl' ? `<path d="M11 15 q5-3 10 0" fill="none" stroke="#fff" stroke-width="1" opacity=".7"/>` : '') + (v === 'dots' ? `<circle cx="13" cy="15" r="1" fill="${K}" opacity=".5"/><circle cx="18" cy="14" r="1" fill="${K}" opacity=".5"/>` : ''),
   // Tatlandırıcılar / diğer: sugar cubes, crystals, syrup drop
+  // B141: marka görseli kullanmadan küçük, okunaklı yemek çizimleri.
+  pizza: (c, c2, v = 'cheese') => `<path d="M5 7 Q16 1 27 7 L16 29Z" fill="${v === 'pepperoni' ? '#edc66c' : c2}" ${st()}/><path d="M5 7 Q16 1 27 7" fill="none" stroke="${c}" stroke-width="5" stroke-linecap="round"/>` + (v === 'pepperoni' ? `<circle cx="12" cy="12" r="2.7" fill="${c2}" stroke="${K}" stroke-width=".7"/><circle cx="20" cy="12" r="2.7" fill="${c2}" stroke="${K}" stroke-width=".7"/><circle cx="16" cy="21" r="2.4" fill="${c2}" stroke="${K}" stroke-width=".7"/>` : `<path d="M12 12l3 2m5-3l-2 3m-2 5l1 3" stroke="#fff1c5" stroke-width="2" stroke-linecap="round"/>`),
+  burger: (c, c2, v = 'beef') => `<path d="M4 14 Q5 4 16 4 Q27 4 28 14Z" fill="${c}" ${st()}/><path d="M4 24H28Q27 29 23 29H9Q5 29 4 24Z" fill="${c}" ${st()}/><path d="M4 17l4-2 5 2 5-2 6 2 4-2" fill="none" stroke="#72904a" stroke-width="3"/><rect x="4" y="18" width="24" height="5" rx="2" fill="${c2}" ${st(.8)}/>` + (v === 'double' ? `<rect x="5" y="23" width="22" height="3" rx="1.5" fill="${c2}" ${st(.8)}/>` : v === 'cheese' ? `<path d="M4 17h24l-7 7-7-4-5 2Z" fill="#f4c858" ${st(.7)}/>` : '') + `<path d="M11 8l1-1m5 1l1-1m4 3l1-1" stroke="#fff0c1" stroke-width="1.3" stroke-linecap="round"/>`,
+  snack: (c, c2, v = 'chips') => {
+    if (v === 'rings') return `<circle cx="12" cy="14" r="8" fill="${c}" ${st()}/><circle cx="12" cy="14" r="4" fill="#f7f2ea" ${st(.7)}/><circle cx="21" cy="22" r="8" fill="${c2}" ${st()}/><circle cx="21" cy="22" r="4" fill="#f7f2ea" ${st(.7)}/>`;
+    if (v === 'tortilla') return `<path d="M3 25L10 6L23 22Z" fill="${c}" ${st()}/><path d="M13 26L21 8L29 27Z" fill="${c2}" ${st()}/><path d="M9 19l1-2m12 4l1-2m-7 3l1-2" ${st(.7)}/>`;
+    if (v === 'nugget') return `<path d="M3 11Q6 5 13 7Q19 10 15 17Q10 23 5 18Q1 16 3 11Z" fill="${c}" ${st()}/><path d="M15 17Q20 11 26 17Q31 23 26 27Q18 32 14 25Q12 21 15 17Z" fill="${c2}" ${st()}/>`;
+    if (v === 'nuts') return [[10,12],[23,13],[16,23]].map(([x,y]) => `<ellipse cx="${x}" cy="${y}" rx="6" ry="4.5" transform="rotate(-20 ${x} ${y})" fill="${c}" ${st()}/><path d="M${x-2} ${y-1}l3 1" stroke="${c2}" stroke-width="1.2"/>`).join('');
+    return `<ellipse cx="11" cy="17" rx="7" ry="11" transform="rotate(-22 11 17)" fill="${c}" ${st()}/><ellipse cx="22" cy="19" rx="7" ry="10" transform="rotate(24 22 19)" fill="${c2}" ${st()}/>` + (v === 'stack' ? `<path d="M6 12q6 7 12 0M5 17q7 7 14 0M16 21q6 7 12 0" fill="none" ${st(.7)}/>` : `<path d="M9 10l-1 9m4-7l-1 10m11-8l3 8" stroke="#fff0bc" stroke-width=".9"/>`);
+  },
+  candy: (c, c2, v = 'wrapped') => {
+    if (v === 'wrapped') return `<path d="M8 13L2 8v16l6-5m16-6 6-5v16l-6-5" fill="${c2}" ${st()}/><rect x="7" y="9" width="18" height="15" rx="6" fill="${c}" ${st()}/><path d="M12 12q4 6 8 0" fill="none" stroke="#fff" opacity=".5"/>`;
+    if (v === 'beans') return [[10,11,c],[22,13,c2],[13,24,c2],[25,25,c]].map(([x,y,color]) => `<ellipse cx="${x}" cy="${y}" rx="5" ry="3.5" transform="rotate(-35 ${x} ${y})" fill="${color}" ${st()}/>`).join('');
+    return `<rect x="4" y="8" width="13" height="14" rx="${v === 'marshmallow' ? 5 : 2}" fill="${c}" ${st()}/><rect x="15" y="16" width="13" height="13" rx="${v === 'marshmallow' ? 5 : 2}" fill="${c2}" ${st()}/>`;
+  },
+  cookie: (c, c2, v = 'chip') => {
+    if (v === 'wafer') return `<path d="M3 11l18-5 8 16-18 6Z" fill="${c}" ${st()}/><path d="M6 14l18-5M8 19l18-5M10 24l18-5M10 9l8 17M16 8l8 17" fill="none" stroke="${c2}" stroke-width="1.3"/>`;
+    if (v === 'sandwich') return `<ellipse cx="16" cy="21" rx="12" ry="7" fill="${c}" ${st()}/><ellipse cx="16" cy="17" rx="12" ry="7" fill="${c2}" ${st(.8)}/><ellipse cx="16" cy="13" rx="12" ry="7" fill="${c}" ${st()}/><path d="M9 13h14M16 9v8" stroke="${c2}" stroke-width="1"/>`;
+    return `<circle cx="16" cy="17" r="12" fill="${c}" ${st()}/>` + (v === 'waffle' ? `<path d="M9 8v18M16 6v23M23 8v18M6 12h20M4 18h24M7 24h18" fill="none" stroke="${c2}" stroke-width="2"/>` : [[11,11],[20,10],[9,20],[18,19],[22,24]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.8" fill="${c2}"/>`).join(''));
+  },
   sweet: (c, c2 = '#ffffff', v = 'cubes') => {
     if (v === 'drop') return `<path d="M16 4 q10 12 10 17 a10 10 0 0 1 -20 0 q0-5 10-17z" fill="${c}" ${st()}/>` + shine(12, 19, 1.6, 2.4);
     if (v === 'crystal') return `<path d="M5 22 l6-10 l5 6 l4-8 l7 12z" fill="${c}" ${st()}/><path d="M5 22 h22 v4 h-22z" fill="${c2}" ${st(1)}/>`;
@@ -216,6 +238,44 @@ const SHAPES = {
 
 // Besine özgü çizim: [şekil, renk, ikinci renk, biçim seçeneği]
 export const FOOD_ART = {
+  pizza_peynirli: ["pizza", "#e5b66d", "#e6a73b", "cheese"],
+  pizza_pepperoni: ["pizza", "#dfac60", "#bd4936", "pepperoni"],
+  dondurulmus_pizza_peynirli: ["pizza", "#d6b47a", "#eec066", "cheese"],
+  dondurulmus_pizza_pepperoni: ["pizza", "#d4a35b", "#b24638", "pepperoni"],
+  hamburger: ["burger", "#d7a450", "#604030", "beef"],
+  double_hamburger: ["burger", "#d9a957", "#6b4231", "double"],
+  cheeseburger: ["burger", "#e5ad4c", "#6d4630", "cheese"],
+  tavuk_burger: ["burger", "#d8ad6b", "#b77b3f", "chicken"],
+  tavuk_nugget: ["snack", "#c69245", "#a16b2f", "nugget"],
+  sogan_halkasi: ["snack", "#dcad5c", "#b27d39", "rings"],
+  patates_cipsi: ["snack", "#f3c468", "#cb962e", "chips"],
+  patates_cipsi_kalip: ["snack", "#e7ba63", "#cc9b47", "stack"],
+  tortilla_cipsi: ["snack", "#e6bf67", "#ad8234", "tortilla"],
+  nacho_cipsi: ["snack", "#eaa341", "#bc762d", "tortilla"],
+  soganli_cips: ["snack", "#eacb80", "#72924b", "chips"],
+  beyaz_cikolata: ["block", "#f0dfb2", "#cbb98e", "bar"],
+  cikolatali_yerfistigi: ["snack", "#6c4431", "#d8b282", "nuts"],
+  sert_seker: ["candy", "#dc6e68", "#f5c867", "wrapped"],
+  draje_seker: ["candy", "#d95f60", "#8da95a", "beans"],
+  marshmallow: ["candy", "#f7e9df", "#edbdc4", "marshmallow"],
+  sutlu_karamel: ["candy", "#be8248", "#e8bf79", "caramel"],
+  damla_cikolatali_kurabiye: ["cookie", "#d7ad72", "#60412f", "chip"],
+  kakaolu_sandvic_biskuvi: ["cookie", "#58412e", "#f1e5c9", "sandwich"],
+  gofret: ["cookie", "#dfbb7a", "#f2dfae", "wafer"],
+  waffle: ["cookie", "#d4a45c", "#b48039", "waffle"],
+  latte_sutlu: ["cup", "#cba77f", "#f6ece0", "latte"],
+  cappuccino_sutlu: ["cup", "#ae865d", "#eadfcd", "foam"],
+  flat_white: ["cup", "#bb9472", "#e3d6bf", "flat"],
+  cortado: ["cup", "#a9815b", "#e8d9c1", "glass"],
+  espresso_macchiato: ["cup", "#60432f", "#ebdfce", "macchiato"],
+  mocha: ["cup", "#8d674e", "#e6d4be", "latte"],
+  buzlu_latte: ["cup", "#bf9e7e", "#e5eef0", "iced"],
+  kahve_kafeinsiz: ["cup", "#60483b", "#d7c7aa", "mug"],
+  espresso_kafeinsiz: ["cup", "#47372d", "#e2d5be", "espresso"],
+  ristretto: ["cup", "#30251d", "#d8c1a5", "espresso"],
+  lungo: ["cup", "#705139", "#ddd0b5", "espresso"],
+  turk_kahvesi_sade: ["cup", "#50362c", "#ebcfb3", "espresso"],
+
   // ---- meyveler
   elma: ['round', '#e53935', '#43a047'], armut: ['pear', '#c0ca33', '#43a047'], ayva: ['pear', '#fbc02d', '#689f38'], muz: ['long', '#fdd835', '', 'banana'],
   kayisi: ['round', '#ffa726', '#7cb342', 'crease'], seftali: ['round', '#ff8a65', '#66bb6a', 'crease'], nektarin: ['round', '#ef5350', '#9ccc65', 'crease'],

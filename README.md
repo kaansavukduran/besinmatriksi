@@ -43,6 +43,25 @@ Windows WebView2 gerektirir. Fiziksel cihaz kabulü henüz tamamlanmamıştır.
 Veriler ve tercihler cihazda tutulur; uygulama çalışma anında CDN, analitik veya uzak veri servisi kullanmaz.
 PWA'nın ilk çevrimiçi yüklemesi önbelleğe alınmalıdır; tek HTML dosyasında veri ve fontlar gömülüdür.
 
+## Web yayını
+
+Vercel adresi: **https://besinmatriksi.vercel.app/**.
+
+GitHub Pages için `.github/workflows/pages.yml`, üretim dalı
+`ccr-1e1934aa-iv8aev` güncellendiğinde testleri ve web derlemesini çalıştırır,
+ardından `dist` çıktısını yayımlar. İlk kurulumda bir repo yöneticisi
+**Settings → Pages → Build and deployment → Source → GitHub Actions**
+seçmelidir. Daha önce Pages etkinleştirme API'si entegrasyon yetkisi nedeniyle
+403 döndürdü; iş akışı bu yönetici ayarını değiştirmez.
+
+Pages dağıtımı başarıyla tamamlanınca adres
+`https://kaansavukduran.github.io/besinmatriksi/` olur; gerçek yayın durumunu
+[Pages iş akışında](https://github.com/kaansavukduran/besinmatriksi/actions/workflows/pages.yml)
+ve dağıtım çıktısındaki URL'den kontrol et. Vite varlıkları, uygulama manifesti
+ve service worker göreli yollar kullanır; aynı çıktı hem kök alan adında hem
+`/besinmatriksi/` altında çalışır. Telefonda ilk açılıştan sonra tarayıcının
+**Ana ekrana ekle / Uygulamayı yükle** seçeneği kullanılabilir.
+
 ## Veri kapsamı ve lisanslar
 
 **Besin bileşimi USDA SR28 tam ASCII tablosundan gelir.**

@@ -150,7 +150,12 @@ test('USDA FNDDS hazır içecekler: Türk kahvesi ve bitkisel sütlü latte N et
   const tk = DB.foods.find((f) => f.id === 'turk_kahvesi').forms[0];
   assert.equal(tk.usda.fndds, '92101600'); assert.equal(tk.s.energy, 'N'); assert.equal(tk.v.energy, 27);
   const am = DB.foods.find((f) => f.id === 'americano').forms[0];
-  assert.deepEqual(am.v, {}); assert.match(am.unavailable, /espresso/);
+  // B141: Americano artık espresso + su oranı açıkça verilen tarif hesabıdır.
+  assert.equal(am.usda, null); assert.equal(am.s.caffeine, 'r');
+  assert.deepEqual(am.recipeOf.map((p) => [p.ndb, p.pct]), [['14210', 20], ['14411', 80]]);
+  assert.ok(Math.abs(am.v.caffeine - DB.foods.find((f) => f.id === 'espresso').forms[0].v.caffeine * 0.2) < 1e-10);
+  assert.deepEqual(am.portions, [{ g: 150, label: '1 fincan (tarif)', en: '1 cup (recipe)', r: 1 }]);
+  assert.ok(Math.abs(scaleItem(am, am.portions[0].g).v.caffeine - 63.6) < 1e-10);
 });
 
 test("yalnız FDC Foundation'da olan mantarlar (aslan yelesi vb.) F etiketli; Türkiye'ye özgü ölçümsüz besinler açık notla (B119)", () => {
@@ -292,4 +297,44 @@ test('her katalog kimliği kayıt kimliği kuralına uyar; eski "kudret_narı" k
   const { normalizePersonal } = await import('../src/personal.js');
   const st = normalizePersonal({ schema: 1, entries: [{ id: 'e1', day: '2026-11-13', ref: { t: 'c', id: 'kudret_narı', f: 0 }, g: 100 }] });
   assert.equal(st.entries[0].ref.id, 'kudret_nari');
+});
+
+test('B141 fast food ve atıştırmalıklar hazırlama biçimine uygun USDA kaydına bağlıdır', () => {
+  const get = (id) => DB.foods.find((f) => f.id === id);
+  assert.equal(get('pizza_peynirli').forms[0].usda.ndb, '21299');
+  assert.equal(get('pizza_peynirli').forms[0].v.energy, 266);
+  const frozen = get('dondurulmus_pizza_peynirli');
+  assert.equal(frozen.cat, 'fastfood'); assert.equal(frozen.animal, true);
+  assert.deepEqual(frozen.forms.map((f) => f.usda.ndb), ['21224', '21225', '21505']);
+  assert.ok(frozen.forms.every((f) => /frozen, cooked/.test(f.usda.desc) && /^Fırınlanmış/.test(f.label)));
+  assert.equal(get('patates_cipsi').forms[0].v.energy, 532);
+  assert.equal(get('sert_seker').forms[0].v.energy, 394);
+  for (const id of ['hamburger', 'cheeseburger', 'tavuk_burger', 'tavuk_nugget', 'nacho_cipsi', 'beyaz_cikolata', 'marshmallow']) {
+    assert.equal(get(id).animal, true, id);
+    assert.ok(get(id).forms.every((f) => f.usda?.ndb && f.s.energy === 'u'), id);
+  }
+  for (const id of ['patates_cipsi', 'tortilla_cipsi', 'sert_seker']) assert.equal(get(id).animal, false, id);
+});
+
+test('B141 sütlü kahveler malzeme oranıyla tahmin edilir; ristretto/lungo için kafein uydurulmaz', () => {
+  const get = (id) => DB.foods.find((f) => f.id === id);
+  const espresso = get('espresso').forms[0];
+  for (const [id, espressoRatio] of [['latte_sutlu', 1 / 6], ['cappuccino_sutlu', 1 / 4], ['flat_white', 1 / 3], ['cortado', 1 / 2], ['espresso_macchiato', 3 / 4], ['mocha', 1 / 5], ['buzlu_latte', 1 / 8]]) {
+    const f = get(id); const fm = f.forms[0];
+    assert.equal(f.cat, 'kahve', id); assert.equal(f.animal, true, id);
+    assert.ok(f.allergens.includes('sut'), id); assert.match(f.note, /Ölçüm değil, tarif hesabı/);
+    const cocoaCaffeine = id === 'mocha' ? get('kakao').forms[0].v.caffeine * 0.02 : 0;
+    assert.ok(Math.abs(fm.v.caffeine - (espresso.v.caffeine * espressoRatio + cocoaCaffeine)) < 0.002, id);
+    assert.ok(Object.values(fm.s).every((s) => s === 'r'), id);
+  }
+  for (const id of ['ristretto', 'lungo', 'turk_kahvesi_sade']) {
+    const fm = get(id).forms[0];
+    assert.deepEqual(fm.v, {}, id); assert.deepEqual(fm.s, {}, id);
+    assert.match(fm.unavailable, /doğrulanmış ayrı bir bileşim ölçümü yoktur/, id);
+  }
+  assert.equal(get('kahve_kafeinsiz').forms[0].usda.ndb, '14201');
+  assert.equal(get('espresso_kafeinsiz').forms[0].usda.ndb, '14202');
+  assert.ok(get('kahve_kafeinsiz').forms[0].v.caffeine < get('kahve').forms[0].v.caffeine);
+  assert.equal(get('latte_sutlu').forms[0].portions[0].g, 180);
+  assert.equal(get('cortado').forms[0].portions[0].g, 60);
 });

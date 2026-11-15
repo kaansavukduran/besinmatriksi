@@ -333,6 +333,7 @@ for (const food of FOODS) {
         return { code, g, inert: !!inert, v: pv, desc: d.long };
       });
       const total = parts.reduce((a, x) => a + x.g, 0);
+      if (food.recipePortion != null && (!Number.isFinite(food.recipePortion) || food.recipePortion <= 0 || food.recipePortion > 1000)) throw new Error('Geçersiz tarif porsiyonu: ' + food.id);
       const v = {}, s = {};
       // Pişme verimi (ör. fırın): kayıp yalnız su sayılır; yalnız ısıya dayanıklı bileşenler yazılır (vitaminler, şeker türleri,
       // amino asitler, yağ asidi ayrıntısı ısıyla değişir → "veri yok"). yld = pişmiş ağırlık / çiğ toplam.
@@ -349,7 +350,7 @@ for (const food of FOODS) {
       }
       return { key, label: custom || FORM_LABELS[key], usda: null, ifct: null, estFrom: null,
         recipeOf: parts.map((x) => ({ ndb: x.code, desc: x.desc, pct: Math.round((x.g / total) * 1000) / 10 })), ...(yld < 1 ? { recipeYield: food.recipeYield } : {}),
-        portions: key === 'icecek' ? [{ g: 200, label: '1 su bardağı (≈200 g)', en: '1 glass (≈200 g)' }] : [], v, s };
+        portions: food.recipePortion ? [{ g: food.recipePortion, label: '1 fincan (tarif)', en: '1 cup (recipe)', r: 1 }] : key === 'icecek' ? [{ g: 200, label: '1 su bardağı (≈200 g)', en: '1 glass (≈200 g)' }] : [], v, s };
     }
     if (!ndb && food.fixed) {
       // Kimyasal formülden hesaplanan değer (ör. kreatin monohidrattaki kreatin); kaynak 'd' (hesap)

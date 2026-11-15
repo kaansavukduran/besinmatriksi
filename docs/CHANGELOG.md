@@ -1,3 +1,12 @@
+# 1.1.2-beta.30 · 15 Kasım 2026
+
+- B141: sıcak krem/zeytin/kil renkleri, özgün tabak ve marka çizimi, tek besin kataloğu; yeni kurulum açık tema, mevcut tercihler korunur.
+- Kahveler, Fast food ve pizza, Atıştırmalıklar: 37 yeni besin; toplam 664 kayıt. Americano/sütlü kahveler oranları gösterilen tarif tahmini; ristretto, lungo ve sade Türk kahvesi için doğrulanmamış değer üretilmez.
+- Tarif ve karşılaştırma kartları dar ekran/yüksek ölçek için yeniden akar; büyük yazıda sekmeler, eylemler ve besin satırları birbirini örtmez.
+- B140 kimlik göçü koleksiyon/son bakılanlara da uygulanır; eski favoriler kaybolmaz.
+- GitHub Pages üretim dalına otomatik yayın ve alt yol/çevrimdışı PWA kabul testi; ilk Pages etkinleştirmesi depo yönetici ayarıdır.
+- Web/PWA/tek dosya çıktısı bu çalışmada doğrulanır; yeni native paket/Release yayımlanmaz.
+
 # 1.1.1 · 9 Kasım 2026
 
 - B003b: EFSA grup PRI/AI referansları; 23 bileşen / 169 kaynak kaydı. Yaş/cinsiyet ve açık demir/çinko koşulları, görüş yılı/DOI, özgün birimler ve CSV dökümü; kişisel hedefler korunur. UL/AR/RI/SSI ve uyumsuz biçimlere yüzde atanmaz. EFSA yeniden kullanım/kaynak bildirimi çevrimdışı gömülür.

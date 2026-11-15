@@ -1,16 +1,12 @@
 // Kullanıcı tanımlı koleksiyonlar: kategori → alt kategori (en fazla 2 düzey) ve içlerindeki besin kayıtları.
 // Saf fonksiyonlar; depolama store.js'te. Hiçbir işlem verilen diziyi değiştirmez.
 import { uid } from './util.js';
+import { validRef } from './records.js';
 
 export const MAX_COLLECTIONS = 60;
 export const MAX_ITEMS = 300;
 
 const refKey = (ref) => (ref.t === 'c' ? `c:${ref.id}:${ref.f}` : ref.t === 'u' ? `u:${ref.id}` : `x:${ref.n}`);
-const validRef = (r) => r && typeof r === 'object' && (
-  (r.t === 'c' && typeof r.id === 'string' && Number.isInteger(r.f) && r.f >= 0) ||
-  (r.t === 'u' && typeof r.id === 'string') ||
-  (r.t === 'x' && typeof r.n === 'string'));
-
 export function normalizeCollections(input) {
   if (!Array.isArray(input)) return [];
   const out = [];
@@ -20,7 +16,7 @@ export function normalizeCollections(input) {
     const name = c.name.trim().slice(0, 40);
     if (!name) continue;
     const seen = new Set();
-    const items = (Array.isArray(c.items) ? c.items : []).filter(validRef).filter((r) => {
+    const items = (Array.isArray(c.items) ? c.items : []).map(validRef).filter(Boolean).filter((r) => {
       const k = refKey(r); if (seen.has(k)) return false; seen.add(k); return true;
     }).slice(0, MAX_ITEMS).map((r) => ({ ...r }));
     out.push({ id: c.id, name, icon: typeof c.icon === 'string' ? c.icon.slice(0, 4) : '', parent: typeof c.parent === 'string' ? c.parent : null, items });

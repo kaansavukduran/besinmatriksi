@@ -12,3 +12,12 @@ test('son bakılanlar: yalnız katalog kaydı, tekrarsız, en yeni önde, sını
   assert.deepEqual(normalizeRecent([{ t: 'c', id: 'gone', f: 0 }], (r) => r.id !== 'gone'), []);
   assert.deepEqual(normalizeRecent('bozuk'), []);
 });
+
+test('son bakılan eski katalog kimliği, varlık kontrolünden önce göç eder ve tekilleşir', () => {
+  const old = { t: 'c', id: 'kudret_narı', f: 0 };
+  const canonical = { t: 'c', id: 'kudret_nari', f: 0 };
+  assert.deepEqual(normalizeRecent([old], (r) => r.id === 'kudret_nari'), [canonical]);
+  const loaded = normalizeRecent([old, canonical], (r) => r.id === 'kudret_nari');
+  assert.deepEqual(loaded, [canonical]);
+  assert.equal(old.id, 'kudret_narı', 'özgün kayıt değiştirilmemeli');
+});

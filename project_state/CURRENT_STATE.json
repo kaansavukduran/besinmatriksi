@@ -1,12 +1,12 @@
 {
   "schema_version": "1",
   "project": "Besin Matriksi",
-  "product_version": "1.1.2-beta.29",
+  "product_version": "1.1.2-beta.30",
   "development_state": "IN_PROGRESS",
-  "last_forge_at": "2026-11-13T16:49:42.366978+00:00",
-  "last_completed_forge": "B140",
+  "last_forge_at": "2026-11-15T11:40:59.664085+00:00",
+  "last_completed_forge": "B141",
   "active_forge": null,
-  "next_recommended_forge": "B141",
+  "next_recommended_forge": "B142",
   "branch": "ccr-1e1934aa-iv8aev",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
   "validated_code_commit": "6acd3b2",
@@ -14,53 +14,31 @@
   "verified_gates": [
     {
       "id": "unit",
-      "command": "npm test",
-      "result": "PASS 58/58",
-      "level": "UNIT_TESTED",
-      "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175"
+      "command": "npm test; node --test --test-isolation=none tests/*.test.mjs",
+      "result": "PASS 116/116 subtests",
+      "level": "UNIT_TESTED"
     },
     {
       "id": "data",
-      "command": "npm run data + Test CI clean-diff gate",
-      "result": "PASS; USDA/EFSA unchanged",
-      "level": "BUILT",
-      "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62"
-    },
-    {
-      "id": "notices",
-      "command": "node scripts/build-notices.mjs --check",
-      "result": "PASS 14 original source/license notices",
-      "level": "UNIT_TESTED",
-      "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62"
+      "command": "npm run data; node scripts/build-notices.mjs --check",
+      "result": "PASS; 664 curated records, 23 notices",
+      "level": "BUILT"
     },
     {
       "id": "web",
-      "command": "npm run build && npm run build:single",
+      "command": "npm run build; npm run build:single",
       "result": "PASS",
-      "level": "BUILT",
-      "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175"
+      "level": "BUILT"
     },
     {
       "id": "browser",
-      "command": "npm run test:browser",
-      "result": "PASS 36/36 GitHub CI; local 34 PASS + 2 managed file:// SKIP",
-      "level": "RUNTIME_TESTED",
-      "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175"
-    },
-    {
-      "id": "packages",
-      "command": "release.yml workflow_dispatch publish=false",
-      "result": "PASS 7 artifact groups exact SHA; candidate downloaded ZIP CRC and all 21 SHA256 entries verified; public Release SKIPPED",
-      "level": "PACKAGED",
-      "source_sha": "d78b8dae8a536214e7cf092e4c0be0e7b542ee62",
-      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175"
+      "command": "Playwright Chromium desktop/phone + focused B117/B141 retest",
+      "result": "PASS coverage 170/170: 168 full-run pass + 2 updated-behavior retest pass; 2 file:// cases BLOCKED by administrator policy",
+      "level": "RUNTIME_TESTED"
     },
     {
       "id": "native-runtime",
-      "result": "NOT_RUN; package/file verification is not physical OS/device installation acceptance",
+      "result": "NOT_RUN for this version; earlier package evidence historical",
       "level": "NOT_RUN"
     }
   ],
@@ -109,7 +87,7 @@
     "trigger": "trig_01Ljjr3Dkp6uBiQcjFaGuzm3",
     "stop_when": "Tüm uygulanabilir yol haritası işleri ve son kapılar doğrulandığında."
   },
-  "notes": "B053 Aion, B051 TR/EN, B054 koleksiyonlar + sade arayüz tamam. 66 birim + 42 tarayıcı testi yerelde PASS. beta.3 yayımlanıyor.",
+  "notes": "B141: kullanıcı talebiyle özgün sıcak yemek kimliği; katalog 664 kayıt (+37), yüksek ölçek yerleşim ve eski favori göçü; web/PWA doğrulaması. Geçmiş native paket kanıtları bu sürüm için geçerli sayılmaz.",
   "release_target": "v1.1.2-beta.1",
   "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission. EFSA group reference data are separate from food measurements; only verified compatible PRI/AI records, EFSA attribution required.",
   "historical_verified_gates": [
@@ -354,5 +332,14 @@
     "release_attempt": 2,
     "cross_browser_run": 43448656370,
     "cross_browser": "PASS (ci.yml run success)"
+  },
+  "current_forge": {
+    "id": "B141",
+    "scope": "Food-focused UI, responsive repair, +37 coffee/fastfood/snack records, legacy favorites fix, Pages workflow",
+    "base_commit": "5f346c899e270a980e6d6752128a3b2fdb50e4d3",
+    "level": "RUNTIME_TESTED",
+    "local_evidence": "docs/evidence/B141/AUDIT.md",
+    "note": "Local unit/build/runtime evidence applies to this working tree; older verified_gates and native package records remain historical. Final production and Pages results will be reported separately.",
+    "browser_result": "170/170 verified across full+focused final runs; 2 file:// cases BLOCKED"
   }
 }

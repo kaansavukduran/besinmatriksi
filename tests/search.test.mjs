@@ -8,6 +8,11 @@ test('Türkçe arama İ/ı, ş ve diakritiklere duyarsızdır; eş anlamlıları
   assert.ok(searchKey({ id: 'salatalik', tr: 'Salatalık', en: 'Cucumber' }).includes(norm('hıyar')));
   assert.ok(searchKey({ id: 'ahududu', tr: 'Ahududu' }).includes('frambuaz'));
 });
+test('B141 gündelik kahve ve atıştırmalık adları Türkçe eş anlamlarla bulunur', () => {
+  assert.ok(searchKey({ id: 'espresso', tr: 'Espresso', en: 'coffee' }).includes('doppio'));
+  assert.ok(searchKey({ id: 'cappuccino_sutlu', tr: 'Cappuccino (sütlü)', en: 'coffee' }).includes(norm('kapuçino')));
+  assert.ok(searchKey({ id: 'dondurulmus_pizza_peynirli', tr: 'Dondurulmuş pizza', en: 'frozen cheese pizza' }).includes(norm('donmuş pizza')));
+});
 test('son aramalar yerel, sınırlı, sıralı ve tekrar içermeyen listedir', () => {
   assert.deepEqual(recentSearches(['Ispanak', 'muz', null], 'ıspanak'), ['ıspanak', 'muz']);
   assert.equal(recentSearches(Array.from({ length: 15 }, (_, i) => `besin ${i}`)).length, 8);

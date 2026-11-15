@@ -975,18 +975,16 @@ test('Kıyasla tablosu kendi içinde dikey kaydırmaz; sayfa boyunca açık (B10
   expect(await w.evaluate((e) => e.clientHeight)).toBeGreaterThan(1000);
 });
 
-test('Keşfet: karşılama kartı üstte; seçili kategorinin besinleri sağda kare ızgara (B112)', async ({ page }, info) => {
+test('Keşfet tek katalogda kategoriye göre süzülür ve besin ayrıntısını açar (B141)', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('#aion')).toBeHidden(); // Aion varsayılan kapalı (B113)
-  if (page.viewportSize().width <= 700) return; // dar ekranda (telefon) orta liste kullanılır; gizli karşılama/tablo kurulmaz (B134)
+  await expect(page.locator('#aion')).toBeHidden();
   await expect(page.locator('.welcome')).toHaveCount(1);
-  await expect(page.locator('.detail .periodic .pt').first()).toBeVisible();
+  await expect(page.locator('.welcome h1')).toHaveText('Tabağında ne var?');
+  await expect(page.locator('.periodic')).toHaveCount(0); // aynı katalog iki kez çizilmez
   await page.locator('.cat[data-cat="meyve"]').click();
-  const tiles = page.locator('.detail .periodic .pt');
-  await expect(tiles.first()).toContainText('Elma');
-  const box = await tiles.first().boundingBox();
-  expect(Math.abs(box.width - box.height)).toBeLessThan(2); // kare
-  await tiles.nth(1).click();
+  await expect(page.locator('.catalog-heading h2')).toHaveText('Meyveler');
+  await expect(page.locator('#foodlist [data-id="elma"]')).toHaveCount(1);
+  await page.locator('#foodlist [data-id="armut"]').click();
   await expect(page.locator('#matrix .basic-card')).toBeVisible();
 });
 
@@ -1005,7 +1003,7 @@ test('çeşitlilik: longevity besinleri görünür; besin mayası/psyllium etike
   await expect(page.locator('.modal input').first()).toHaveValue(/Besin mayası/);
 });
 
-test('içecekler ve tahıllar: Türk kahvesi (FNDDS), hibiskus; Americano ve siyez açıklamalı (B117)', async ({ page }) => {
+test('içecekler: Türk kahvesi FNDDS, Americano açık tarif tahmini, siyez veri boşluğu (B117/B141)', async ({ page }) => {
   await page.goto('/');
   await page.locator('#q').fill('türk kahvesi'); await page.locator('#foodlist [data-id="turk_kahvesi"]').click();
   await expect(page.locator('#matrix [data-basic="energy"]')).toContainText('27');
@@ -1013,7 +1011,11 @@ test('içecekler ve tahıllar: Türk kahvesi (FNDDS), hibiskus; Americano ve siy
   if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
   await page.locator('#q').fill('hibiskus'); await expect(page.locator('#foodlist [data-id="hibiskus_cayi"]')).toHaveCount(1);
   await page.locator('#q').fill('americano'); await page.locator('#foodlist [data-id="americano"]').click();
-  await expect(page.locator('.unavail')).toContainText('espresso');
+  await expect(page.locator('.unavail')).toHaveCount(0);
+  await expect(page.locator('#matrix .src-r').first()).toContainText('Tahmin (tarif)');
+  await expect(page.locator('#matrix .idcard')).toContainText('espresso');
+  await page.locator('[data-amount="ex"] [data-val="150"]').first().click();
+  await expect(page.locator('[data-amount="ex"] .amt-val')).toContainText('150');
   if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
   await page.locator('#q').fill('siyez'); await expect(page.locator('#foodlist [data-id="siyez_bulguru"]')).toHaveCount(1);
 });
@@ -1081,7 +1083,7 @@ test('denetim düzeltmeleri: Kıyasla ✕ doğru besini siler (silinmiş özel b
   await page.goto('/');
   if (page.viewportSize().width > 700) {
     await page.locator('#q').fill('mercimek');
-    await expect(page.locator('.detail .periodic h2')).toContainText('mercimek');
+    await expect(page.locator('.catalog-heading h2')).toContainText('mercimek');
     await page.locator('#q').fill('');
   }
   // gizli (çözümlenemeyen) bir kıyas kaydı + muz
@@ -1163,13 +1165,14 @@ test('macOS Option+3 (e.key "£") Kıyasla sekmesini açar (B133)', async ({ pag
   await expect(page.locator('[data-tab="karsilastir"]')).toHaveAttribute('aria-current', 'page');
 });
 
-test('dar ekranda gizli periyodik tablo kurulmaz; genişleyince kurulur (B134)', async ({ page }) => {
+test('tek katalog dar ve geniş ekranda besinleri tekrarlamadan gösterir (B134/B141)', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 800 });
   await page.goto('/');
   await expect(page.locator('#foodlist [data-id]').first()).toBeVisible();
   await expect(page.locator('.periodic')).toHaveCount(0);
   await page.setViewportSize({ width: 1280, height: 800 });
-  await expect(page.locator('.detail .periodic .pt').first()).toBeVisible();
+  await expect(page.locator('#foodlist [data-id="elma"]')).toHaveCount(1);
+  await expect(page.locator('.periodic')).toHaveCount(0);
 });
 
 test('gözleme aranır, pişme verimi %85 gösterilir (B135)', async ({ page }) => {

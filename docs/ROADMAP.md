@@ -79,3 +79,10 @@ B003b son kanıtı: `docs/evidence/B003b-packages.json`; 49 birim / 30 tarayıc�
 - Son CI 58/58 birim ve 36/36 tarayıcı PASS; yerel 34 PASS + 2 yönetilen file:// SKIP. Run 42617550175, yedi artifact grubu aynı kaynak SHA; aday ZIP ve içindeki 21 dosya özeti doğrulandı.
 - B030 aday paket hazırlığı: 1.1.2-beta.1; yalnız workflow_dispatch/publish=false. Herkese açık Release yok. B051/B052 henüz tamamlanmadı; tüm uygulanabilir işler bitmediği için otomasyon açık kalır.
 - Kaynak ZIP/Git geçmişi/manifest Drive yedeği, önceki otomatik onay engeli kullanıcının açık onayıyla çözüldükten sonra yüklendi; üçü de geri indirilip SHA256 ile doğrulandı. Sağlık çalışma zamanı kayıtları dahil değil.
+
+## Güncel artış · 2026-11-15
+
+| ID | Forge | Durum |
+|---|---|---|
+| B141 | Yemek odaklı özgün görsel kimlik, tek katalog, kahve/fast food/atıştırmalık +37 kayıt, dar ekran ve %200 ölçek taşmalarını giderme, eski favori göçü, Pages otomatik yayın | RUNTIME_TESTED; ayrıntılar docs/evidence/B141/AUDIT.md; canlı Pages ilk etkinleştirmesi ayrı |
+| B142 | Fiziksel telefon ve ekran okuyucuyla yeni katalog/ölçek erişilebilirlik kabulü | PLANNED; bu çalışmanın tek sonraki Forge önerisi |

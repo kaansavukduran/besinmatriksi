@@ -19,10 +19,10 @@ test('v1 ayarları v2 biçimine taşınır; eski kopya ve tercihler korunur', ()
 test('bozuk, bilinmeyen ve sınırsız ayarlar güvenli varsayılanlara döner', () => {
   const s = normalizeSettings(JSON.parse('{"theme":"<script>","fontSize":1000,"lineHeight":null,"accent":"red; color: red","ruler":"false","__proto__":{"evil":true}}'));
   assert.equal(s.fontSize, 28); assert.equal(s.lineHeight, DEFAULT_SETTINGS.lineHeight);
-  assert.equal(s.theme, 'dark'); assert.equal(s.accent, 'auto'); assert.equal(s.ruler, false);
+  assert.equal(s.theme, DEFAULT_SETTINGS.theme); assert.equal(s.accent, 'auto'); assert.equal(s.ruler, false);
   assert.equal(s.evil, undefined); assert.deepEqual(normalizeSettings([]), DEFAULT_SETTINGS);
   assert.equal(normalizeSettings({ fontSize: Infinity }).fontSize, 17);
-  memory.set('bm.settings.v2', '{broken'); assert.equal(loadSettings().theme, 'dark');
+  memory.set('bm.settings.v2', '{broken'); assert.equal(loadSettings().theme, DEFAULT_SETTINGS.theme);
 });
 test('bölüm sıfırlama diğer tercihleri korur; ayar dosyası tarif taşımaz', () => {
   const s = resetSettingGroup({ ...DEFAULT_SETTINGS, theme: 'dark', fontSize: 24 }, 'reading');
@@ -55,11 +55,11 @@ test('matriks gizleme, sıralama ve sabitleme ölçümleri değiştirmez', async
   assert.deepEqual(r, before);
 });
 
-test('yeni kurulum: varsayılan tema Koyu, yazı Inter (B110 kararı); eski kayıtlı seçimler korunur (2026-11-12)', () => {
-  assert.equal(DEFAULT_SETTINGS.theme, 'dark'); assert.equal(DEFAULT_SETTINGS.font, 'inter');
-  const old = normalizeSettings({ theme: 'light', font: 'atkinson' });
-  assert.equal(old.theme, 'light'); assert.equal(old.font, 'atkinson');
-  assert.equal(normalizeSettings({}).theme, 'dark');
+test('yeni kurulum: sıcak açık tema, Inter; eski koyu ve erişilebilirlik seçimleri korunur (B141)', () => {
+  assert.equal(DEFAULT_SETTINGS.theme, 'light'); assert.equal(DEFAULT_SETTINGS.font, 'inter');
+  const old = normalizeSettings({ theme: 'dark', font: 'atkinson' });
+  assert.equal(old.theme, 'dark'); assert.equal(old.font, 'atkinson');
+  assert.equal(normalizeSettings({}).theme, 'light');
 });
 test('yazı tipi: varsayılan Inter; bir kerelik geçiş yuvarlak/sistem yazısını Inter yapar, erişilebilirlik seçimini korur (B110)', async () => {
   const { DEFAULT_SETTINGS, migrateFontV2 } = await import('../src/settings.js');
