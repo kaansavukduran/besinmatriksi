@@ -1,3 +1,9 @@
+# 1.1.2-beta.33 · 15 Kasım 2026
+
+- B146: dokuz esansiyel amino asit için WHO/FAO/UNU günlük ortalama ihtiyaç çubuğu. Kaydedilmiş yetişkin yaş/kilo profili veya açıkça etiketli70kg yetişkin örneği. Metiyonin/fenilalanin ortak hedefe kendi katkısı olarak etiketlenir; kısmi ölçümlerde≥. Toplam protein ve protein kalitesi hesabı değişmedi.
+- Tam Katalog adı ve kategori listesinin sonunda erişim.
+- USDA SR Legacy2018 resmî arşivinden315 eksik ölçüm/72kaynak kaydı;16ana katalog,299geniş katalog. Önceki değerler korunur; kaynak etiketiL.
+
 # 1.1.2-beta.32 · 15 Kasım 2026
 
 - B145: katalog kategori ayraçları emojisiz, daha büyük başlık ve üst/alt boşlukla ayrılır. Besin çizimleri korunur.

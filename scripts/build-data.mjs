@@ -135,7 +135,7 @@ function fnddsForm(code) {
 const INERT_NOT_ZERO = new Set(['iodine']);
 // Fırınlamada korunduğu kabul edilen bileşenler (kütle korunumu; Maillard/oksidasyonla değişenler hariç)
 const HEAT_STABLE = new Set(['energy', 'energy_kj', 'ash', 'protein', 'fat', 'sfa', 'mufa', 'pufa', 'carb', 'fiber', 'na', 'salt', 'k', 'ca', 'p', 'mg', 'fe', 'zn', 'cu', 'mn', 'se']);
-const EXTRA_DBS = [['USDA_SR_LEGACY_2018_FILL.csv.gz', 'L'], ['USDA_IODINE_R4.csv.gz', 'I'], ['USDA_CHOLINE_R2.csv.gz', 'C'], ['USDA_PA_R2.1.csv.gz', 'P'], ['USDA_PURINE_R3.csv.gz', 'U']];
+const EXTRA_DBS = [['USDA_SR_LEGACY_2018_FILL.csv.gz', 'L'], ['USDA_SR_LEGACY_2018_B146_FILL.csv.gz', 'L'], ['USDA_IODINE_R4.csv.gz', 'I'], ['USDA_CHOLINE_R2.csv.gz', 'C'], ['USDA_PA_R2.1.csv.gz', 'P'], ['USDA_PURINE_R3.csv.gz', 'U']];
 const extraByNdb = new Map(); // ndb ('F'+6 hane = yalnız Foundation) -> [[key, value, tag]]
 {
   const unitOf = new Map(NUTRIENTS.map((n) => [n.key, n.unit]));

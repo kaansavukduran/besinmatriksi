@@ -1,11 +1,12 @@
 import { NUTRIENTS, NUTRIENT_BY_KEY, SECTIONS } from './nutrients.js';
 import { EN_NUTRIENTS } from './i18n-nutrients.js';
 import { t, getLanguage, locale, L } from './i18n.js';
-import { esc, fmtNum, fmtAmount } from './util.js';
+import { esc, fmtNum, fmtAmount, fmtPct } from './util.js';
 import { PROFILE_RANGES, bodyMetrics, energyEstimate, dayResult, nutrientComparison, weekSeries, localDay, shiftDay } from './personal.js';
 import { recipeContributions, LABELS as SRC_LABELS, usdaRecord } from './recipe-sources.js';
 import { basicCard } from './matrix.js';
 import { renderMicronutrients } from './micronutrients.js';
+import { aminoNote } from './amino-daily.js';
 const label = n => getLanguage() === 'en' ? EN_NUTRIENTS[n.key] : n.label;
 const amount = (value, unit) => { if (value == null) return t('unknown'); const a = fmtAmount(value, unit); return `${a.n} ${esc(a.u)}`; };
 const dateText = day => new Intl.DateTimeFormat(locale(), { dateStyle: 'long' }).format(new Date(day + 'T12:00:00'));
@@ -41,12 +42,14 @@ export function renderDaySources(entries, resolve, key) {
     return `<li><b>${item ? esc(foodName(item)) : t('missingRecord')}</b> · ${fmtNum(row.grams)} g · ${amount(row.value, n.unit)}<p>${esc(code)} ${row.usda && row.value != null ? `${esc(usdaRecord(row.usda))} · ${esc(row.usda.desc)}` : ''}</p>${row.inputs.length ? `<ul>${row.inputs.map(input => { const nn = NUTRIENT_BY_KEY[input.key]; return `<li>${esc(label(nn))}: ${amount(input.value, nn.unit)}</li>`; }).join('')}</ul>` : ''}</li>`;
   }).join('')}</ul>`;
 }
-function renderNutrients(result, settings, energyTarget) {
+function renderNutrients(result, settings, energyTarget, profile) {
   return `<h2>${t('nutrientTitle')}</h2><p class="hint">${t('compareHint')}</p>${SECTIONS.map(sec => {
     const ns = NUTRIENTS.filter(n => n.section === sec.id);
-    return `<details class="personal-section" ${['enerji', 'protein', 'mineral'].includes(sec.id) ? 'open' : ''}><summary>${t('sec_' + sec.id)}</summary><div class="personal-table-scroll" tabindex="0" role="region" aria-label="${t('sec_' + sec.id)}"><table class="personal-table"><thead><tr><th>${t('nutrient')}</th><th>${t('amount')}</th><th>${t('reference')}</th><th>${t('difference')}</th></tr></thead><tbody>${ns.map(n => {
-      const c = nutrientComparison(n, result, settings, energyTarget), ref = c.reference;
-      return `<tr data-daily-nutrient="${n.key}"><th scope="row">${esc(label(n))}</th><td>${amount(c.value, n.unit)}<small>${t('coverage', { known: result.cov[n.key] || 0, total: result.n })}${!c.complete && c.value != null ? ' · ' + t('partial') : ''}</small></td><td>${ref.value == null ? t('noReference') : `${amount(ref.value, n.unit)} · ${ref.personalKind ? t(ref.personalKind === 'manual' ? 'energyRefManual' : 'energyRefEstimate') : esc(ref.type || t(settings.referenceMode === 'custom' ? 'refManual' : 'refEU'))}`}</td><td>${c.difference == null ? '—' : `${c.difference > 0 ? '+' : ''}${amount(c.difference, n.unit)}<small>${t(c.difference > 0 ? 'above' : c.difference < 0 ? 'below' : 'equal')}</small>`}</td></tr>`;
+    return `<details class="personal-section" ${['enerji', 'protein', 'mineral'].includes(sec.id) ? 'open' : ''}><summary>${t('sec_' + sec.id)}</summary>${sec.id === 'protein' && settings.referenceMode !== 'custom' ? `<p class="hint aa-reference">${esc(aminoNote(profile))}</p>` : ''}<div class="personal-table-scroll" tabindex="0" role="region" aria-label="${t('sec_' + sec.id)}"><table class="personal-table"><thead><tr><th>${t('nutrient')}</th><th>${t('amount')}</th><th>${t('reference')}</th><th>${t('difference')}</th></tr></thead><tbody>${ns.map(n => {
+      const c = nutrientComparison(n, result, settings, energyTarget, profile), ref = c.reference;
+      const pct = ref.amino && ref.value > 0 && c.value != null && settings.showNrv ? 100 * c.value / ref.value : null;
+      const bar = pct == null ? '' : `<span class="nrv" title="${esc(ref.title)}"><span class="bar"><i style="width:${Math.min(100, pct).toFixed(1)}%"></i></span><span class="pct">${!c.complete ? '≥' : ''}${fmtPct(pct)}</span></span>${ref.joint ? `<small>${esc(ref.joint)}</small>` : ''}`;
+      return `<tr data-daily-nutrient="${n.key}"><th scope="row">${esc(label(n))}</th><td>${amount(c.value, n.unit)}<small>${t('coverage', { known: result.cov[n.key] || 0, total: result.n })}${!c.complete && c.value != null ? ' · ' + t('partial') : ''}</small></td><td>${ref.value == null ? t('noReference') : `${amount(ref.value, n.unit)} · ${ref.personalKind ? t(ref.personalKind === 'manual' ? 'energyRefManual' : 'energyRefEstimate') : esc(ref.amino ? L("Günlük ortalama ihtiyaç") : ref.type || t(settings.referenceMode === 'custom' ? 'refManual' : 'refEU'))}`}${bar}</td><td>${c.difference == null ? '—' : `${c.difference > 0 ? '+' : ''}${amount(c.difference, n.unit)}<small>${t(c.difference > 0 ? 'above' : c.difference < 0 ? 'below' : 'equal')}</small>`}</td></tr>`;
     }).join('')}</tbody></table></div></details>`;
   }).join('')}`;
 }
@@ -88,7 +91,7 @@ export function renderPersonal(state, draft, day, consumedOnly, settings, resolv
     ${entries.length ? `<button class="btn" data-action="personal-to-recipe">🥣 ${L("Bu günü tarif olarak kaydet")}</button>` : ''}
     ${undo ? `<button class="btn" data-action="personal-undo">${t('undo')}</button>` : ''}
     <details class="personal-sources" ${sourceOpen ? 'open' : ''}><summary>${t('source')}</summary><label class="field"><span>${t('nutrient')}</span><select id="personal-source-key">${NUTRIENTS.map(n => `<option value="${n.key}" ${n.key === sourceKey ? 'selected' : ''}>${esc(label(n))}</option>`).join('')}</select></label><div id="personal-sources-content">${renderDaySources(entries, resolve, sourceKey)}</div></details>
-    ${renderNutrients(result, settings, target > 0 ? { value: target, kind: manual ? 'manual' : 'estimate' } : null)}
+    ${renderNutrients(result, settings, target > 0 ? { value: target, kind: manual ? 'manual' : 'estimate' } : null, state.profile)}
     </section>
     <section class="card"><div class="presets"><button class="btn" data-action="personal-export">${t('exportPersonal')}</button><button class="btn" data-action="open-file" data-id="personal-file">${t('importPersonal')}</button><input type="file" accept="application/json,.json" id="personal-file" hidden></div><p class="hint">${t('privacy')}</p></section>
   </div>`;

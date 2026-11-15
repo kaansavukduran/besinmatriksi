@@ -944,3 +944,5 @@ button.micro-name:hover { text-decoration-color: currentColor; }
 :root[data-ui-narrow="true"][data-ui-scaled="true"] .amount:not(.compact):not(.mini) .nudge:nth-child(5) { grid-row: 3; grid-column: 1; }
 .catalog-pending { display: block; grid-column: 1 / -1; color: var(--muted); font-size: .85rem; margin: 8px 0; }
 .food.pending-ref { grid-template-columns: minmax(0, 1fr); }
+
+.aa-joint { display: block; font-size: .7rem; color: var(--muted); line-height: 1.35; margin-top: .2rem; overflow-wrap: anywhere; }

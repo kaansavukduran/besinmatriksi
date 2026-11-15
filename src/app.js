@@ -230,7 +230,7 @@ function categoryNav(prefix, current) {
     const n = vis.filter((f) => f.cat === c.id).length;
     return `<button class="cat ${current === c.id ? 'on' : ''}" data-action="${prefix}-cat" data-cat="${c.id}"><span class="cat-i">${S.settings.emoji ? c.icon : ''}</span><span class="cat-l">${esc(categoryName(c))}</span> <span class="cnt">${n}</span></button>`;
   }).join('');
-  const ext = `<button class="cat ${current === 'ext' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="ext"><span class="cat-i">${S.settings.emoji ? '🗂️' : ''}</span><span class="cat-l">${L("Tam USDA kataloğu")}</span> <span class="cnt">${fmtNum(META.ext)}</span></button>`;
+  const ext = `<button class="cat ${current === 'ext' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="ext"><span class="cat-i">${S.settings.emoji ? '🗂️' : ''}</span><span class="cat-l">${L("Tam Katalog")}</span> <span class="cnt">${fmtNum(META.ext)}</span></button>`;
   const cu = `<button class="cat ${current === 'custom' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="custom"><span class="cat-i">${S.settings.emoji ? '🏷️' : ''}</span><span class="cat-l">${L("Kendi besinlerim")}</span> <span class="cnt">${customFoods().length}</span></button>`;
   const colBtn = (c, sub) => {
     const n = sub ? c.items.length : collectionRefs(S.collections, c.id).length;
@@ -238,7 +238,7 @@ function categoryNav(prefix, current) {
   };
   const tree = collectionTree(S.collections);
   const cols = `<div class="cat-group" role="presentation">${L("Koleksiyonlarım")}</div>${tree.map((c) => colBtn(c, false) + c.children.map((ch) => colBtn(ch, true)).join('')).join('')}${prefix === 'ex' ? `<button class="cat add" data-action="col-new">＋ ${L("Yeni koleksiyon")}</button>` : ''}`;
-  return all + ext + cats + cu + cols;
+  return all + cats + cu + cols + ext;
 }
 
 function refButton(ref, prefix, colId, index = -1, count = 0) {
@@ -301,7 +301,7 @@ function foodList(prefix, cat, q, extGroup) {
     const current = Math.min(prefix === 'ex' ? S.extPage : S.picker.extPage || 0, pageCount - 1);
     const shown = all.slice(current * pageSize, (current + 1) * pageSize);
     const groupLabel = L("USDA besin grubu");
-    return `<div class="catalog-heading"><h2 tabindex="-1">${L("Tam USDA kataloğu")}</h2><span class="hint">${L("{n} kayıt", { n: fmtNum(all.length) })}</span></div>
+    return `<div class="catalog-heading"><h2 tabindex="-1">${L("Tam Katalog")}</h2><span class="hint">${L("{n} kayıt", { n: fmtNum(all.length) })}</span></div>
       <p class="catalog-source">${L("USDA SR28 · 2015 kaynak arşivi. İngilizce özgün adlar; markalı ürünler güncel ambalaj etiketi değildir.")}</p>
       <p class="hint">${L("Kaynak kapsamı: {n} / {n} SR28 kaydı. {c} kayıt ana katalogda; {x} kayıt bu listede. Gizleme tercihin sonuçları daraltabilir.", { n: fmtNum(meta.sourceRecords), c: fmtNum(meta.curatedSourceRecords), x: fmtNum(meta.extendedRecords) })}</p>
       <label class="catalog-group"><span>${groupLabel}</span><select id="${prefix}-extgroup" data-extgroup="${prefix}"><option value="">${L("Tüm besin grupları")}</option>${groups.map(([g, name]) => `<option value="${g}" ${g === extGroup ? 'selected' : ''}>${esc(L(name))}</option>`).join('')}</select></label>
@@ -329,7 +329,7 @@ function foodList(prefix, cat, q, extGroup) {
 }
 
 function fullCatalogSearch(prefix) {
-  return `<button class="linkish full-catalog-search" data-action="${prefix}-full-search">${L("Tam USDA kataloğunda da ara")}</button>`;
+  return `<button class="linkish full-catalog-search" data-action="${prefix}-full-search">${L("Tam Katalog içinde de ara")}</button>`;
 }
 
 function formChips(prefix, ref) {
@@ -412,7 +412,7 @@ function catalogHeading(cat, q, count) {
 
 function matrixForExplore(item) {
   const r = scaleItem(item, S.amount);
-  return renderMatrix(r, S.settings, { item, closed: S.closed, persona: persona() });
+  return renderMatrix(r, S.settings, { item, closed: S.closed, aminoProfile: S.personal.profile, persona: persona() });
 }
 
 // ---------------------------------------------------------------- TARİF
@@ -494,7 +494,7 @@ function renderRecipe() {
       </div>
       <div id="recipe-summary">${renderRecipeSummary(rc, r)}</div>
       <div id="recipe-gaps">${renderRecipeGaps(r)}</div>
-      <div id="matrix" class="matrix">${renderMatrix(r, S.settings, { recipe: rc, basisLabel, closed: S.closed })}</div>
+      <div id="matrix" class="matrix">${renderMatrix(r, S.settings, { recipe: rc, basisLabel, closed: S.closed, aminoProfile: S.personal.profile })}</div>
       <div id="recipe-sources">${renderRecipeSources(rc, resolve, { key: S.recipeSource, factor, basisLabel, open: S.recipeSourcesOpen, precision: S.settings.precision })}</div>` : ''}
     </section>
   </div>`;
@@ -871,7 +871,7 @@ function refreshMatrix() {
   else if (S.tab === 'tarif') {
     const rc = activeRecipe();
     const { r, basisLabel, factor } = recipeResult(rc);
-    m.innerHTML = renderMatrix(r, S.settings, { recipe: rc, basisLabel, closed: S.closed });
+    m.innerHTML = renderMatrix(r, S.settings, { recipe: rc, basisLabel, closed: S.closed, aminoProfile: S.personal.profile });
     const summary = $('#recipe-summary'); if (summary) summary.innerHTML = renderRecipeSummary(rc, r);
     const gapsEl = $('#recipe-gaps'); if (gapsEl) gapsEl.innerHTML = renderRecipeGaps(r);
     const sources = $('#recipe-sources'); if (sources) sources.innerHTML = renderRecipeSources(rc, resolve, { key: S.recipeSource, factor, basisLabel, open: S.recipeSourcesOpen, precision: S.settings.precision });

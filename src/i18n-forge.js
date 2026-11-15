@@ -1,9 +1,18 @@
 // B142–B144: katalog erişimi, veri kapsamı ve ölçü birimi açıklamaları.
 export const FORGE_EN = {
+  "Metiyonin + sistein ortak hedefine katkı": "Contribution to the shared methionine + cysteine target",
+  "Fenilalanin + tirozin ortak hedefine katkı": "Contribution to the shared phenylalanine + tyrosine target",
+  "WHO/FAO/UNU 2007 · yetişkin ortalama ihtiyacı · {w} kg × {r} mg/kg/gün": "WHO/FAO/UNU 2007 · average adult requirement · {w} kg × {r} mg/kg/day",
+  "Günlük ortalama ihtiyaç": "Average daily requirement",
+  "Bu profil için yetişkin amino asit referansı uygulanmadı. Çocuklar ve özel durumlar için ayrı değerlendirme gerekir.": "Adult amino acid references are not applied to this profile. Children and special circumstances need separate assessment.",
+  "Amino asit günlük referansı: kayıtlı yetişkin profili, {w} kg.": "Daily amino acid reference: saved adult profile, {w} kg.",
+  "Amino asit günlük referansı: 70 kg yetişkin örneği. Kendi kilon için Günlük ve profil bölümünde yaş ve kilonu kaydet.": "Daily amino acid reference: example for a 70 kg adult. Save your age and weight in Daily & profile to use your weight.",
+  "WHO/FAO/UNU 2007 ortalama ihtiyacı; emilim veya kişisel yeterlilik ölçümü değildir. Metiyonin ve fenilalanin çubukları ortak hedefe yalnız o amino asidin katkısını gösterir. ≥: eksik ölçümlü toplam.": "WHO/FAO/UNU 2007 average requirement; not a measure of absorption or personal adequacy. Methionine and phenylalanine bars show only that amino acid’s contribution to a shared target. ≥: total with missing measurements.",
+
   'USDA kataloğu yüklenemedi. Bağlantını kontrol edip sayfayı yenile; kayıtların korunur.': 'The USDA catalogue could not load. Check your connection and reload the page; your saved records are kept.',
   'Sayfayı yenile': 'Reload page',
   'USDA sonuçlarının ilk 80 kaydı gösteriliyor. Tüm sonuçları sayfalı katalogda aç.': 'Showing the first 80 USDA results. Open the paginated catalogue to see all results.',
-  'Tam USDA kataloğu': 'Full USDA catalogue',
+  'Tam Katalog': 'Full Catalogue',
   'USDA kataloğu yükleniyor…': 'Loading the USDA catalogue…',
   '{n} kayıt': '{n} records',
   'USDA besin grubu': 'USDA food group',
@@ -17,7 +26,7 @@ export const FORGE_EN = {
   'Önceki': 'Previous',
   'Sonraki': 'Next',
   'Sayfa {a} / {b}': 'Page {a} / {b}',
-  'Tam USDA kataloğunda da ara': 'Search the full USDA catalogue',
+  'Tam Katalog içinde de ara': 'Search the full catalogue',
   'İçerik doğrulanmalı': 'Ingredients need verification',
   'Markalı kaynak kaydı': 'Branded source record',
   'USDA SR28 (2015) arşiv kaydı; güncel ürün etiketi değildir.': 'Archived USDA SR28 (2015) record; not a current product label.',

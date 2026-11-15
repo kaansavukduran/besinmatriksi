@@ -2,6 +2,7 @@ import { scaleItem, aggregate } from './calc.js';
 import { validRef, normalizeCustom } from './records.js';
 import { uid } from './util.js';
 import { referenceFor } from './settings.js';
+import { aminoReference } from './amino-daily.js';
 export const PERSONAL_KEY = 'bm.personal.v1';
 export const PROFILE_RANGES = { age: [1, 120], height: [50, 250], weight: [10, 400], bodyFat: [0, 100], waterPct: [0, 100], muscleKg: [0, 400], boneKg: [0, 50], visceralLevel: [0, 100], metabolicAge: [1, 120], deviceRmr: [1, 10000] };
 export const emptyProfile = () => ({ ...Object.fromEntries(Object.keys(PROFILE_RANGES).map(k => [k, null])), sex: 'unspecified', activity: null, energySource: 'equation', specialContext: false, measuredOn: '', note: '' });
@@ -89,11 +90,12 @@ export function dayResult(state, day, resolve, consumedOnly = false) {
   const scaled = entries.map(e => { const item = resolve(e.ref); return item ? scaleItem(item, e.g) : { v: {}, s: {}, grams: e.g }; });
   return { entries, result: aggregate(scaled) };
 }
-export function nutrientComparison(nutrient, result, settings, energyTarget = null) {
+export function nutrientComparison(nutrient, result, settings, energyTarget = null, profile) {
   const value = result.v[nutrient.key];
+  const aa = settings.referenceMode !== 'custom' ? aminoReference(nutrient.key, profile) : null;
   const reference = energyTarget?.value > 0 && ['energy', 'energy_kj'].includes(nutrient.key)
     ? { value: energyTarget.value * (nutrient.key === 'energy_kj' ? 4.184 : 1), personalKind: energyTarget.kind }
-    : referenceFor(nutrient, settings);
+    : aa ? { value: aa.value, title: aa.title, amino: true, joint: aa.joint } : referenceFor(nutrient, settings);
   const complete = result.n > 0 && result.cov[nutrient.key] === result.n;
   return { value, reference, complete, difference: value != null && reference.value > 0 && complete ? value - reference.value : null };
 }

@@ -777,3 +777,10 @@
 - Sırala kontrolleri 0,82rem, daha az yatay padding ve normal masaüstünde32px; dokunmatik hedef en az44px, ölçek/density tercihleri korunur.
 - Kanıt: 128/128 birim; web+single derlemeleri PASS. Mevcut B057/B059/B141 testleri6/6PASS. TR/EN açık/koyu,1440masaüstü,390telefon,320+28px/%200 olmak üzere6 görünümde emojisiz başlık/boşluk, sınırlar ve gerçek sıralama tıklaması PASS. Fiziksel cihaz/diğer motor/native NOT_TESTED. Ayrıntı docs/evidence/B145/AUDIT.md.
 - Önceki önerilen veri genişletmesi son açık kullanıcı isteğiyle ertelendi. Sonraki tek Forge: B146, güncel açık Foundation/FNDDS kaynak kapsamı.
+
+## B146 · 2026-11-15 · Günlük amino asit barları ve kaynaklı eksik hücreler
+- Kullanıcı isteği: dokuz esansiyel amino asit için ayrı günlük yüzde/bar; toplam protein ve AA_REF/derive protein kalitesi aynen korunur. WHO/FAO/UNU2007 Tablo23 mg/kg/gün; kayıtlı yetişkin kilosu veya açık70kg örneği. Met/Phe ortak hedefe yalnız kendi katkısı, çocuk/özel bağlamda yetişkin barı yok; kısmi≥, boş≠0. Günlük detay tablosu da aynı referansa bağlı.
+- Tam Katalog adı; keşfet ve tarif seçicisinde kategori listesinin sonu. Kaynak/USDA etiketi bilimsel açıklamada korunur.
+- Resmî SRLegacy2018 arşivi tekrar indirildi/öncekiSHA256eşleşti. Analitik köken ve tamNDB eşlemesiyle315yeni hücre/72kaynak kaydı;16ana/299geniş. Beta.32 karşılaştırması0eski hücre değişimi. Kaynak/inceleme docs/evidence/B146/RESEARCH.md.
+- Kanıt: npm run data; npm run notices;132/132birim;web+singlederlemeleri;26/26tarayıcıtestiPASS. Kilo80kg save/reload, miktar,9bar, toplamprotein, kısmi tarif, veri boşluğu, TR/EN320px28px/%200, eski mikro/katalog hata-kurtarma ve kişisel offline akışı. Ayrıntı docs/evidence/B146/AUDIT.md. Native/fiziksel/diğer motorlar bu turNOT_TESTED; yeniCIayrı.
+- Sonraki tek Forge B147: açık Foundation/FNDDS kapsamını doğruluk ve performans bütçesiyle büyütme.

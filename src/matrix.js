@@ -8,6 +8,7 @@ import { L, getLanguage } from './i18n.js';
 import { dailyRefs, refKind } from './daily-ref.js';
 import { nutrientLabel } from './i18n-nutrients.js';
 import { renderMicronutrients } from './micronutrients.js';
+import { aminoReference, aminoNote } from './amino-daily.js';
 
 const nl = nutrientLabel;
 
@@ -40,12 +41,13 @@ function row(n, r, cfg) {
   const s = r.s[n.key];
   if (x == null) return { missing: true, html: '' };
   let pct = '';
-  const ref = referenceFor(n, cfg);
+  const aa = cfg.referenceMode !== 'custom' ? aminoReference(n.key, cfg.aminoProfile) : null;
+  const ref = aa ? { value: aa.value, title: aa.title, label: L("Günlük ortalama ihtiyaç") } : referenceFor(n, cfg);
   if (cfg.showNrv && ref.value) {
     const p = (x / ref.value) * 100;
     pct = `<span class="nrv" title="${esc(ref.title)}; ${ref.label}: ${fmtNum(ref.value)} ${esc(n.unit)}">
       <span class="bar"><i style="width:${Math.min(100, p).toFixed(1)}%"></i>${p > 100 ? '<b class="over"></b>' : ''}</span>
-      <span class="pct">${fmtPct(p)}${ref.type ? `<small class="ref-kind">${ref.type}</small>` : ''}</span></span>`;
+      <span class="pct">${aa && r.cov && r.n > 1 && r.cov[n.key] < r.n ? '≥' : ''}${fmtPct(p)}${ref.type ? `<small class="ref-kind">${ref.type}</small>` : ''}</span></span>${aa?.joint ? `<small class="aa-joint">${esc(aa.joint)}</small>` : ''}`;
   }
   const extra = [];
   if (x === 0 && (s === 'u' || s === 'i' || s === 'k')) extra.push(`<span class="flag" title="${L("Kaynak bu değeri 0 olarak bildiriyor (tespit sınırının altında olabilir)")}">${L("kaynak 0")}</span>`);
@@ -59,7 +61,7 @@ function row(n, r, cfg) {
   }
   return {
     missing: false,
-    html: `<div class="row" role="row">
+    html: `<div class="row" role="row" data-nutrient="${n.key}">
       <span class="lbl" role="cell">${esc(nl(n))}</span>
       <span class="val" role="cell">${valueCell(n, x, cfg)}</span>
       ${pct ? `<span class="pctc" role="cell">${pct}</span>` : '<span class="pctc" role="cell"></span>'}
@@ -109,7 +111,7 @@ function section(sec, r, cfg, open) {
   return `<details class="sec" data-sec="${sec.id}" ${open ? 'open' : ''}>
     <summary><span class="ico" aria-hidden="true">${cfg.emoji ? sec.icon : ''}</span><span class="st">${esc(L(sec.title))}</span>
     <span class="cov ${have ? '' : 'none'}" title="${L("Verisi olan bileşen / tanımlı bileşen")}">${have}/${total}</span></summary>
-    ${body}</details>`;
+    ${sec.id === 'protein' && cfg.showNrv && cfg.referenceMode !== 'custom' ? `<p class="hint aa-reference">${esc(aminoNote(cfg.aminoProfile))}</p>` : ''}${body}</details>`;
 }
 
 // Kalori kutusunun üstünde: kalorinin protein / karbonhidrat / yağ / lif paylarını gösteren pasta (halka) grafik
@@ -299,6 +301,7 @@ export function renderMatrix(r, cfg, ctx = {}) {
   cfg = normalizeSettings(cfg);
   const item = ctx.item || null;
   cfg.sourceItem = item;
+  cfg.aminoProfile = ctx.aminoProfile;
   // Değerlerin çoğu tek kaynaktan geliyorsa o kaynağın etiketi her satırda tekrarlanmaz; bir kez üstte yazılır,
   // satırlarda yalnız farklı kaynaklar (FDC, Flavonoid, tahmin…) etiketlenir.
   cfg.baseSrc = dominantSource(r.s);
