@@ -72,6 +72,10 @@ EFSA DRV Finder ayrıca 23 bileşen / 169 PRI-AI kaydıyla isteğe bağlı grup 
 
 Keşfet → **Tam Katalog** ile ayar açmadan eriş. 80 kayıtlık sayfalar, besin grubu seçimi ve özgün İngilizce ad veya NDB numarasıyla arama vardır. 2015 tarihli SR28 marka kayıtları güncel ambalaj etiketi sayılmaz; içerik ve alerjen bilgisi üründen doğrulanır. Hayvansal kayıtlar gizlenince içeriği belirsiz karma kayıtlar da gizlenir.
 
+Sol üstteki **Besin Matriksi** logosuna veya adına tıklayarak Keşfet ana
+görünümüne dönülür. Masaüstünde kategori düğmeleri satırlara yerleşir; yatay
+kaydırma gerekmez. Telefonda dokunarak yatay kaydırma kullanılabilir.
+
 **Kategori düzeni:** Meyveler, normal meyveler ile Kuru meyveler'i birlikte;
 Sebzeler, sebzeler, Yeşil yapraklılar ve Kök ve yumrular'ı; Baklagiller ise
 baklagiller ile Soya ürünleri'ni birlikte gösterir.

@@ -1,3 +1,8 @@
+# 1.1.2-beta.40 · 16 Kasım 2026
+
+- B153: sol üstteki logo ve uygulama adı Keşfet ana görünümüne döner. Arama/kategori/ayrıntı kapanır; kayıtlı tarifler, beslenme ve görünüm tercihleri korunur. Klavyede Enter ve boşluk tuşuyla kullanılabilir.
+- Masaüstünde kategoriler yatay kaydırma çubuğu yerine ekrana sığan satırlara yerleşir. Uzun adlar ve büyük yazı taşmadan kırılır; mobil dokunmatik kaydırma ve seçilmiş eşit kutulu görünüm korunur.
+
 # 1.1.2-beta.39 · 16 Kasım 2026
 
 - B152: Soya ürünleri ayrı üst sekme yerine Baklagiller altında alt başlık olarak gösterilir. Tümü, arama, alt başlık içinde sıralama, beslenme filtreleri ve tarif/karşılaştırma besin seçicisi aynı hiyerarşiyi kullanır.

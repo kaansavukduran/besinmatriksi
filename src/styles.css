@@ -85,7 +85,8 @@ i.sci, .dsub i { font-style: italic; }
   padding: calc(env(safe-area-inset-top) + 14px) max(24px, calc((100vw - 1480px) / 2)) 14px; background: color-mix(in srgb, var(--bg) 88%, transparent);
   backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
 }
-.brand { display: flex; align-items: center; gap: .65rem; margin-right: auto; font-size: 1.08rem; white-space: nowrap; }
+.brand { display: flex; align-items: center; gap: .65rem; margin-right: auto; min-height: var(--tap); padding: 0; border: 0; border-radius: var(--radius); background: transparent; color: var(--fg); text-align: left; font-size: 1.08rem; white-space: nowrap; }
+.brand:hover b { text-decoration: underline; text-underline-offset: .18em; }
 .logo { display: flex; color: var(--acc); }
 .tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
 .tabs::-webkit-scrollbar { display: none; }
@@ -982,6 +983,13 @@ button.micro-name:hover { text-decoration-color: currentColor; }
 .explore:not(.has-sel) > .cats.cats-grid { flex-wrap: wrap; }
 .explore:not(.has-sel) > .cats .cat { border-color: var(--line); background: var(--card); }
 .explore:not(.has-sel) > .cats .cat.on { background: var(--acc); }
+/* B153: desktop categories flow onto rows, without requiring a horizontal scrollbar. */
+@media (min-width: 701px) {
+  .explore:not(.has-sel) > .cats:not(.cats-grid) { flex-wrap: wrap; gap: 6px; overflow: visible; padding-bottom: 0; }
+  .explore:not(.has-sel) > .cats:not(.cats-grid) .cat { min-width: 0; max-width: 100%; white-space: normal; }
+  .explore:not(.has-sel) > .cats:not(.cats-grid) .cat-l { min-width: 0; overflow-wrap: anywhere; }
+  .explore:not(.has-sel) > .cats:not(.cats-grid) .cnt { flex-shrink: 0; }
+}
 .diet-filter { grid-template-columns: minmax(0, 1fr); }
 .diet-filter > *, .diet-vegetarian legend, .diet-checks { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
 .diet-filter .linkish { white-space: normal; }

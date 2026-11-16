@@ -828,3 +828,10 @@
 - Kanıt152/152 birim; web/PWA+singleHTML11,23MB;24bildirim.24/24 hedefli Chromium masaüstü/telefon TR/EN (1,3dk), 320px/28px/%200, vegan filtre, tofu ekleme/tekrar ekleme200g ve yenileme dahil. Geniş262-test koşumu önceki beta.38'in kanıtıdır, bu sürümde tekrarlanmadı.
 - Açık/koyu baklagil sayfasında axe0WCAG2.1AAihlal; masaüstü/mobil görseller incelendi. Fiziksel cihaz, ekran okuyucu, diğer yerel motorlar/native NOT_RUN. Yeni native Release/store yok. Yayın makbuzları teslimde ayrı doğrulanır.
 - Ayrıntı docs/evidence/B152/VERIFY.md. Sonraki tek ForgeB153: açık Foundation/FNDDS kapsamı.
+
+## B153 · 2026-11-16 · Marka ile ana görünüm ve masaüstü kategori satırları
+- Son kullanıcı isteğiyle önceki veri genişletmesi B154'e taşındı. Logo ve marka adı gerçek düğme; Keşfet ana görünümüne döner, arama/kategori/ayrıntıyı kapatır ve sayfa başına gelir. Kaydedilmiş tarifler, beslenme/görünüm tercihleri, diğer taslak ve seçimler değiştirilmez. TR/EN erişilebilir adı, Enter/boşluk ve görünür klavye odağı var.
+- 701px üstü varsayılan kategori düğmeleri taşmadan satırlara yerleşir;1440px4satır, yatay kaydırma yok. Uzun ad/büyük yazı kırılır. Telefonun dokunmatik kaydırması ve kullanıcı tarafından seçilen eşit kutulu ızgara korunur. Yeni ayar/bağımlılık/veri göçü yok.
+- Kanıt152/152 birim;web/PWA+single11,23MB;24bildirim. İlk koşumda24 mevcut hiyerarşi/beslenme testiPASS,12yeni kontrol test beklentileri nedeniyleFAIL (yanlış atıştırmalık kimliği, sınıf sonu boşluğu, fare odağında klavye halkası beklentisi). Beklentiler düzeltilip yeni12/12 son koddaPASS(1dk); tek36/36koşumu iddiası yok.
+- Gerçek girişteTR/EN desktop/phone,768/1024/1440px kategori erişimi;320/960px,28px,%200,emoji kapalı ve her iki ızgara tercihi; bütün sekmelerden dönüş, kayıt ve ayarların ham dizelerinin değişmemesi/yenileme test edildi. Açık/koyu ana görünümde axe0WCAG2.1AAihlal,1440px görsel incelendi.
+- Fiziksel cihaz/ekranokuyucu/yerel diğer motorlar/nativeNOT_RUN; yeni Release/store yok. Yayın makbuzları teslimde ayrı. Ayrıntı docs/evidence/B153/VERIFY.md. Sonraki tek ForgeB154: açık Foundation/FNDDS kaynak kapsamı.

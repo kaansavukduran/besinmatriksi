@@ -884,7 +884,7 @@ export function render() {
   else view = renderAbout();
   app().innerHTML = `
     <header class="top">
-      <div class="brand">${S.settings.emoji ? `<span class="logo">${brandMark}</span>` : ''}<b>Besin Matriksi</b></div>
+      <button type="button" class="brand" data-action="ex-home" aria-label="${L("Besin Matriksi: Keşfet'e dön")}">${S.settings.emoji ? `<span class="logo">${brandMark}</span>` : ''}<b>Besin Matriksi</b></button>
       <nav class="tabs" aria-label="${tr('navigation')}">${TABS.map(([id, ic]) => `<button class="tab ${S.tab === id ? 'on' : ''}" data-action="tab" data-tab="${id}" ${S.tab === id ? 'aria-current="page"' : ''}><span class="ti" aria-hidden="true">${S.settings.emoji ? ic : ''}</span><span class="tt">${tr(id)}</span><span class="tt-short">${TAB_SHORT[id]()}</span>${id === 'tarif' && recipeItemCount() ? `<span class="badge">${recipeItemCount()}</span>` : ''}${id === 'karsilastir' && S.compare.length ? `<span class="badge">${S.compare.length}</span>` : ''}</button>`).join('')}</nav>
     </header>
     ${S.profiles.length ? `<div class="profile-bar" role="group" aria-label="${L("Görünüm profilleri")}"><span class="hint">${L("Görünüm:")}</span>${S.profiles.map(p => `<button class="pchip" data-action="profile-apply" data-id="${p.id}">${esc(p.name)}</button>`).join('')}</div>` : ''}
@@ -1165,6 +1165,7 @@ async function onClick(e) {
     case 'setting-reset': if (Object.hasOwn(DEFAULT_SETTINGS, b.dataset.key)) { setSetting(b.dataset.key, DEFAULT_SETTINGS[b.dataset.key]); render(); } break;
     case 'tab': S.tab = b.dataset.tab; render(); window.scrollTo(0, 0); break;
     // keşfet
+    case 'ex-home': S.tab = 'kesfet'; S.sel = null; S.cat = null; S.q = ''; S.extGroup = null; S.extPage = 0; render(); window.scrollTo(0, 0); break;
     case 'diet-reset': updateDiet(Object.fromEntries(DIET_KEYS.map(k=>[k,DEFAULT_SETTINGS[k]]))); break;
     case 'ex-cat': S.sel = null; S.cat = b.dataset.cat || null; S.extGroup = null; S.extPage = 0; render(); $('.list') && ($('.list').scrollTop = 0); break;
     case 'ext-reload': location.reload(); break;

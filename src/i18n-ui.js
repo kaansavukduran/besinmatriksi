@@ -5,6 +5,7 @@ import { FORGE_EN } from './i18n-forge.js';
 // Eski ekranların merkezi İngilizce sözlüğü. Anahtar = Türkçe kaynak metin.
 // Yeni metin eklerken L() içine Türkçe metni yaz ve buraya İngilizcesini yaz; tests/i18n.test.mjs eksikleri yakalar.
 export const UI_EN = {
+ "Besin Matriksi: Keşfet'e dön": "Besin Matriksi: Back to Explore",
  ...CATALOG_EN,
  ...MICRO_EN,
  ...EXT_CATALOG_EN,
