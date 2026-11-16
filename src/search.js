@@ -1,5 +1,20 @@
 import { norm } from './util.js';
 export const SEARCH_ALIASES = {
+  gun_kurusu_kayisi: ["gün kurusu", "günkurusu", "gunkurusu", "gunkursu", "kükürtsüz kuru kayısı", "kayısı kurusu", "unsulfured apricot"],
+  kuru_dut: ["dut kurusu", "beyaz kuru dut"],
+  kuru_cilek: ["çilek kurusu", "kurutulmuş çilek"],
+  kuru_ananas: ["ananas kurusu", "kurutulmuş ananas"],
+  kuru_kivi: ["kivi kurusu", "kurutulmuş kivi"],
+  kuru_mango: ["mango kurusu", "kurutulmuş mango"],
+  kuru_armut: ["armut kurusu", "kurutulmuş armut", "sulfured dried pears"],
+  kuru_trabzon_hurmasi: ["hurma kurusu", "cennet hurması kurusu", "kurutulmuş Trabzon hurması"],
+  kuru_turna_yemisi: ["kuru cranberry", "cranberry kurusu", "kurutulmuş turna yemişi"],
+  kuru_yaban_mersini: ["yaban mersini kurusu", "kurutulmuş yaban mersini", "kuru blueberry"],
+  kuru_hunnap: ["hünnap kurusu", "kurutulmuş hünnap", "çin hurması kurusu"],
+  kuru_lici: ["liçi kurusu", "kurutulmuş liçi", "dried litchis"],
+  kuru_longan: ["longan kurusu", "kurutulmuş longan"],
+  muz_cipsi: ["banana chips", "kızarmış muz cipsi"],
+
   kuru_kayisi: ['kayısı kurusu', 'kükürtlü kuru kayısı', 'dried apricots', 'sulphured', 'sulfured'],
   salatalik: ['hıyar'], yabanmersini: ['yabanmersini', 'blueberry'],
   ahududu: ['frambuaz'], karabugday: ['greçka'], brokoli: ['brokkoli'],

@@ -47,6 +47,21 @@ export const FOOD_ICONS = {
   karpuz: '🍉', kavun: '🍈', kavun_balli: '🍈', ananas: '🍍', mango: '🥭', papaya: '🥭', guava: '🍈', avokado: '🥑', carkifelek: '🟣', lici: '🔴',
   jackfruit: '🍈', demirhindi: '🟤', plantain: '🍌', zeytin_siyah: '🫒', zeytin_yesil: '🫒',
   // kuru meyveler
+  gun_kurusu_kayisi: "🟤",
+  kuru_dut: "🟡",
+  kuru_cilek: "🍓",
+  kuru_ananas: "🍍",
+  kuru_kivi: "🥝",
+  kuru_mango: "🥭",
+  kuru_armut: "🍐",
+  kuru_trabzon_hurmasi: "🟠",
+  kuru_turna_yemisi: "🔴",
+  kuru_yaban_mersini: "🫐",
+  kuru_hunnap: "🔴",
+  kuru_lici: "🟤",
+  kuru_longan: "🟤",
+  muz_cipsi: "🍌",
+
   kuru_kayisi: '🍑', kuru_incir: '🟤', kuru_uzum: '🍇', hurma: '🌴', hurma_medjool: '🌴', kuru_erik: '🟣', goji: '🔴', kuru_muz: '🍌',
   // sebzeler
   domates: '🍅', domates_salcasi: '🥫', salatalik: '🥒', biber_yesil: '🫑', biber_kirmizi: '🫑', aci_biber: '🌶️', patlican: '🍆', kabak: '🥒',

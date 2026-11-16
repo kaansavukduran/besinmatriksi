@@ -68,7 +68,7 @@ yedek dışa/içe aktarma kullanılır.
 
 **Besin bileşimi USDA SR28 ve kayıtlarda belirtilen USDA Foundation, FNDDS ve özel bileşen kaynaklarından gelir.**
 EFSA DRV Finder ayrıca 23 bileşen / 169 PRI-AI kaydıyla isteğe bağlı grup referansıdır; besin ölçümü değildir. Ayarlar → Yüzde referansı → EFSA: yaş ve kaynak cinsiyet grubunu seç. Yetişkin çinko için fitat, yetişkin kadın demiri için menopoz grubu ayrıca seçilir. Eşleşmeyen veya kapsam dışı alanda yüzde gösterilmez. Kaynak/görüş yılı ve koşullar açılabilir tabloda, PRI/AI türü matrikste ve CSV'de korunur. Kişisel hedefler değişmez.
-**693 küratörlü besin / 839 tüketim biçimi.** Tam USDA SR28 kaynağının **8.789/8.789** kaydı erişilebilir: 713 benzersiz SR28 kaydı küratörlü biçimlerde, kalan **8.076 kayıt** ayrı kaynak kataloğundadır. 693 besin adını, 8.789 ise hazırlamaya özgü kaynak kaydını sayar. Niş/hayvansal gizleme tercihleri ana ekranda görünen sayıyı değiştirir.
+**707 küratörlü besin / 853 tüketim biçimi.** Tam USDA SR28 kaynağının **8.789/8.789** kaydı erişilebilir: 719 benzersiz SR28 kaydı küratörlü biçimlerde, kalan **8.070 kayıt** ayrı kaynak kataloğundadır. 707 besin adını, 8.789 ise hazırlamaya özgü kaynak kaydını sayar. Niş/hayvansal gizleme tercihleri ana ekranda görünen sayıyı değiştirir.
 
 Keşfet → **Tam Katalog** ile ayar açmadan eriş. 80 kayıtlık sayfalar, besin grubu seçimi ve özgün İngilizce ad veya NDB numarasıyla arama vardır. 2015 tarihli SR28 marka kayıtları güncel ambalaj etiketi sayılmaz; içerik ve alerjen bilgisi üründen doğrulanır. Hayvansal kayıtlar gizlenince içeriği belirsiz karma kayıtlar da gizlenir.
 
@@ -83,6 +83,11 @@ Alt gruplar üst kategori sırasında ayrı sekmeler değildir. Bir üst kategor
 girildiğinde Tümü görünümündeki başlık ve besin ızgarası düzeni kullanılır.
 Sıralama alt başlıkların içinde yapılır; arama ve beslenme filtresi üst kategorinin
 bütün alt gruplarına uygulanır. Tarif ve karşılaştırma seçicisi aynı düzeni kullanır.
+
+**Kuru meyveler:** Meyveler içinde28 kayıt. Gün kurusu kayısı ayrı seçilir;
+ayrı ölçümü bulunmayan gün kurusu, kuru dut, çilek, ananas ve kivide “veri yok”
+görünür ve ambalaj değerleriyle kendi besinini ekleme yolu sunulur. Şekerli
+kurutulmuş meyveler ve kızartılmış muz cipsi adlarında açıkça ayrılır.
 
 **İçecekler:** Kahveler, çaylar, bitkisel çaylar, diğer sıcak içecekler, soğuk
 içecekler, meyve/sebze suları, bitkisel sütler, sütlü içecekler ve alkollü içecekler

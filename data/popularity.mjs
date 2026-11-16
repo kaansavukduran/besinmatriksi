@@ -8,7 +8,7 @@ export const POPULAR = {
   meyve: ['elma', 'muz', 'portakal', 'mandalina', 'uzum', 'cilek', 'karpuz', 'kavun', 'kiraz', 'seftali', 'armut', 'kayisi', 'limon', 'erik', 'nar', 'incir',
     'kivi', 'ayva', 'visne', 'dut', 'zeytin_siyah', 'zeytin_yesil', 'greyfurt', 'nektarin', 'avokado', 'ananas', 'trabzon_hurmasi', 'yabanmersini', 'ahududu',
     'bogurtlen', 'mango', 'misket_limonu', 'kavun_balli', 'frenk_uzumu', 'kizilcik', 'bektasi', 'murver', 'papaya', 'lici', 'carkifelek', 'guava', 'plantain', 'jackfruit', 'demirhindi'],
-  kurumeyve: ['kuru_kayisi', 'kuru_uzum', 'kuru_incir', 'hurma', 'kuru_erik', 'hurma_medjool', 'goji', 'kuru_muz'],
+  kurumeyve: ['kuru_kayisi', 'gun_kurusu_kayisi', 'kuru_uzum', 'kuru_incir', 'hurma', 'kuru_erik', 'hurma_medjool', 'goji', 'kuru_muz'],
   sebze: ['domates', 'salatalik', 'sogan', 'sarimsak', 'taze_sogan', 'biber_yesil', 'biber_kirmizi', 'patlican', 'kabak', 'domates_salcasi', 'aci_biber', 'taze_fasulye', 'bezelye',
     'lahana', 'brokoli', 'karnabahar', 'pirasa', 'misir', 'bamya', 'balkabagi', 'kereviz_sap', 'enginar', 'salatalik_tursusu', 'taze_bakla', 'kirmizi_lahana',
     'brokselahanasi', 'kuskonmaz', 'rezene', 'lahana_tursusu', 'edamame', 'alabas', 'fasulye_filizi', 'mercimek_filizi', 'yonca_filizi', 'kudret_nari'],

@@ -807,3 +807,22 @@ export const BEVERAGE_ADDITIONS = [
  F('limonata','Limonata (konsantreden, suyla)','lemonade frozen concentrate prepared with water','icecek',[['icecek','14293',null]],{note:'USDA beyaz limonata konsantresinin suyla hazırlanmış kaydıdır. Taze limonla yapılan ev limonatasının ölçümü değildir; sulandırma oranı ve şeker miktarı ürüne göre değişir.'}),
 ];
 FOODS.push(...BEVERAGE_ADDITIONS);
+
+// B155: dried fruit identities; missing measurements stay empty, never copied from fresh/sulfured fruit.
+export const DRIED_FRUIT_ADDITIONS = [
+ F("gun_kurusu_kayisi","Gün kurusu kayısı","sun dried apricot unsulphured","kurumeyve",[["kurutulmus", null, null]],{"unavailable": "Gün kurusu kayısı için bu katalogdaki kaynaklarda doğrulanmış ayrı besin ölçümü yok. Kükürt dioksitle işlenmiş kuru kayısı değerleri buraya kopyalanmadı; ambalaj değerlerini Kendi besinim ile ekleyebilirsin."}),
+ F("kuru_dut","Kuru dut","dried mulberry mulberries","kurumeyve",[["kurutulmus", null, null]],{"unavailable": "Bu kuru meyve için bu katalogdaki kaynaklarda doğrulanmış ayrı besin ölçümü yok. Taze meyve veya başka kurutulmuş ürünlerin değerleri kullanılmadı; ambalaj değerlerini Kendi besinim ile ekleyebilirsin."}),
+ F("kuru_cilek","Kuru çilek","dried strawberry strawberries","kurumeyve",[["kurutulmus", null, null]],{"unavailable": "Bu kuru meyve için bu katalogdaki kaynaklarda doğrulanmış ayrı besin ölçümü yok. Taze meyve veya başka kurutulmuş ürünlerin değerleri kullanılmadı; ambalaj değerlerini Kendi besinim ile ekleyebilirsin."}),
+ F("kuru_ananas","Kuru ananas","dried pineapple","kurumeyve",[["kurutulmus", null, null]],{"unavailable": "Bu kuru meyve için bu katalogdaki kaynaklarda doğrulanmış ayrı besin ölçümü yok. Taze meyve veya başka kurutulmuş ürünlerin değerleri kullanılmadı; ambalaj değerlerini Kendi besinim ile ekleyebilirsin."}),
+ F("kuru_kivi","Kuru kivi","dried kiwi kiwifruit","kurumeyve",[["kurutulmus", null, null]],{"unavailable": "Bu kuru meyve için bu katalogdaki kaynaklarda doğrulanmış ayrı besin ölçümü yok. Taze meyve veya başka kurutulmuş ürünlerin değerleri kullanılmadı; ambalaj değerlerini Kendi besinim ile ekleyebilirsin."}),
+ F("kuru_mango","Kuru mango (şekerli)","dried mango sweetened","kurumeyve",[["kurutulmus", "09178", null]],{"note": "USDA şeker ilaveli kurutulmuş ürün kaydıdır; şekersiz ürünlerin ölçümü değildir. Ambalajdaki değerler farklı olabilir."}),
+ F("kuru_armut","Kuru armut","dried pear pears","kurumeyve",[["kurutulmus", "09259", null]],{"allergens": ["sulfit"], "note": "USDA kükürt dioksitle işlenmiş kuru armut kaydıdır. İşlenmemiş armut kurusu için ayrı bir ölçüm değildir."}),
+ F("kuru_trabzon_hurmasi","Kuru Trabzon hurması","dried persimmon japanese","kurumeyve",[["kurutulmus", "09264", null]],{"note": "USDA kurutulmuş Japon hurması (Diospyros kaki) kaydıdır; hurma (date, Phoenix dactylifera) ile aynı meyve değildir."}),
+ F("kuru_turna_yemisi","Kuru turna yemişi (şekerli)","dried cranberries cranberry sweetened","kurumeyve",[["kurutulmus", "09079", null]],{"note": "USDA şeker ilaveli kurutulmuş ürün kaydıdır; şekersiz ürünlerin ölçümü değildir. Ambalajdaki değerler farklı olabilir. Bu değerler aynı meyvenin taze kaydındaki kurutulmuş biçimle aynı USDA ölçümüdür; ayrı bir analiz değildir."}),
+ F("kuru_yaban_mersini","Kuru yaban mersini (şekerli)","dried blueberries blueberry sweetened","kurumeyve",[["kurutulmus", "09163", null]],{"note": "USDA şeker ilaveli kurutulmuş ürün kaydıdır; şekersiz ürünlerin ölçümü değildir. Ambalajdaki değerler farklı olabilir. Bu değerler aynı meyvenin taze kaydındaki kurutulmuş biçimle aynı USDA ölçümüdür; ayrı bir analiz değildir."}),
+ F("kuru_hunnap","Kuru hünnap","dried chinese jujube","kurumeyve",[["kurutulmus", "09147", null]],{"note": "Bu değerler aynı meyvenin taze kaydındaki kurutulmuş biçimle aynı USDA ölçümüdür; ayrı bir analiz değildir."}),
+ F("kuru_lici","Kuru liçi","dried lychee litchi","kurumeyve",[["kurutulmus", "09165", null]],{}),
+ F("kuru_longan","Kuru longan","dried longan","kurumeyve",[["kurutulmus", "09173", null]],{}),
+ F("muz_cipsi","Muz cipsi (kızartılmış)","banana chips fried","kurumeyve",[["kurutulmus", "19400", null]],{"note": "USDA muz cipsi kaydıdır. Kızartılmış atıştırmalık, sade kurutulmuş muz veya muz tozuyla aynı ürün değildir; yağ ve şeker içeriği ürüne göre değişebilir."}),
+];
+FOODS.push(...DRIED_FRUIT_ADDITIONS);

@@ -1,3 +1,10 @@
+# 1.1.2-beta.42 · 16 Kasım 2026
+
+- B155: Gün kurusu kayısı ayrı kayıt; günkurusu/gunkursu ve kükürtsüz kuru kayısı adlarıyla bulunur. Kükürtlü kayısının değerleri buraya aktarılmaz.
+- Kuru dut, çilek, ananas, kivi, mango, armut, Trabzon hurması, turna yemişi, yaban mersini, hünnap, liçi, longan ve muz cipsi eklendi. Kuru meyveler14→28 kayıt; toplam707 besin/853 biçim.
+- Dokuz seçim gerçek kurutulmuş/hazırlanmış USDA kaydıyla eşleşir. Şeker ekli ürünler ve kızartılmış muz adlarında ayrılır. Ayrı ölçümü olmayan beş kayıt veri boşluğunu ve ambalajdan ekleme yolunu gösterir.
+- Mevcut693 besinin bütün alanları/ölçümleri ve eski biçim indeksleri korunur. Üç kuru meyve seçimi, taze kaydındaki kuru biçimle aynı analizi açıkça paylaşır. Altı SR28 kaydı geniş listeden ana kataloğa taşındı;719+8070=8789 kaynak kapsamı.
+
 # 1.1.2-beta.41 · 16 Kasım 2026
 
 - B154: listede ve tariflerde ad Kuru kayısı olarak sadeleşti; İngilizcesi Dried apricots. Kayısı kurusu ve eski kükürtlü adıyla da bulunur.

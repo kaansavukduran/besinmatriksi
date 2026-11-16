@@ -1,12 +1,12 @@
 {
   "schema_version": "1",
   "project": "Besin Matriksi",
-  "product_version": "1.1.2-beta.41",
+  "product_version": "1.1.2-beta.42",
   "development_state": "IN_PROGRESS",
-  "last_forge_at": "2026-11-16T13:29:37.498645+00:00",
-  "last_completed_forge": "B154",
+  "last_forge_at": "2026-11-16T13:41:09.206258+00:00",
+  "last_completed_forge": "B155",
   "active_forge": null,
-  "next_recommended_forge": "B155",
+  "next_recommended_forge": "B156",
   "branch": "ccr-1e1934aa-iv8aev",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
   "validated_code_commit": null,
@@ -14,32 +14,37 @@
   "verified_gates": [
     {
       "id": "unit",
-      "result": "PASS153/153 beta.41",
+      "result": "PASS156/156 beta.42; raw-source energy/protein mapping,missing versus zero and existing form identity",
       "level": "UNIT_TESTED"
     },
     {
       "id": "web",
-      "result": "PASS beta.41 web/PWA and single HTML11.24MB",
+      "result": "PASS beta.42 web/PWA and single HTML11.25MB",
       "level": "BUILT"
     },
     {
       "id": "browser",
-      "result": "PASS16/16 Chromium desktop/phone TR/EN apricot name+aliases+source+saved recipe and hierarchy regression;48.1seconds",
+      "result": "PASS12/12 Chromium desktop/phone TR/EN dried fruit and apricot regression;33.5seconds,partial mixed-recipe energy and saved references",
+      "level": "RUNTIME_TESTED"
+    },
+    {
+      "id": "axe",
+      "result": "PASS0 WCAG2.1AA violations on light/dark fruit catalogue; new dried-fruit and mobile data-gap screenshots inspected",
       "level": "RUNTIME_TESTED"
     },
     {
       "id": "data",
-      "result": "PASS all693 old food forms/values/sources,allergens and dietary metadata unchanged; only kuru_kayisi.tr and note differ",
+      "result": "PASS deterministic regeneration; all693 old foods exactly unchanged; all8070 retained extended records unchanged;6 exact records promoted,719+8070=8789",
       "level": "UNIT_TESTED"
     },
     {
       "id": "notices",
-      "result": "PASS24 notices",
-      "level": "BUILT"
+      "result": "PASS24 notices; all707 local SVGs unique",
+      "level": "UNIT_TESTED"
     },
     {
       "id": "native-runtime",
-      "result": "NOT_RUN beta.41 physical devices, screen reader, local Firefox/WebKit and native runtime",
+      "result": "NOT_RUN beta.42 physical devices, screen reader, local Firefox/WebKit and native runtime",
       "level": "NOT_RUN"
     }
   ],
@@ -83,7 +88,7 @@
     "trigger": "trig_01Ljjr3Dkp6uBiQcjFaGuzm3",
     "stop_when": "Tüm uygulanabilir yol haritası işleri ve son kapılar doğrulandığında."
   },
-  "notes": "B154: plain Kuru kayısı / Dried apricots name; common and legacy search aliases. USDA09032 sulfured-source distinction moved to a localized detail note; sulphite metadata, all food forms/values and saved references unchanged. See docs/evidence/B154/VERIFY.md.",
+  "notes": "B155:14 dried-fruit identities incl separate unsulphured sun-dried apricot;9 exact USDA dry/prepared source matches and5 explicit unmeasured identities with label-entry path.28 dried records,707 foods/853 forms; all693 old foods exactly unchanged.719+8070=8789 SR28 coverage. See docs/evidence/B155/VERIFY.md.",
   "release_target": "v1.1.2-beta.1",
   "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission. EFSA group reference data are separate from food measurements; only verified compatible PRI/AI records, EFSA attribution required.",
   "historical_verified_gates": [

@@ -78,6 +78,21 @@ export const EN_FORMS = {
 };
 
 export const EN_FOODS = {
+  gun_kurusu_kayisi: "Sun-dried apricots (unsulphured)",
+  kuru_dut: "Dried mulberries",
+  kuru_cilek: "Dried strawberries",
+  kuru_ananas: "Dried pineapple",
+  kuru_kivi: "Dried kiwi",
+  kuru_mango: "Dried mango (sweetened)",
+  kuru_armut: "Dried pears",
+  kuru_trabzon_hurmasi: "Dried persimmons",
+  kuru_turna_yemisi: "Dried cranberries (sweetened)",
+  kuru_yaban_mersini: "Dried blueberries (sweetened)",
+  kuru_hunnap: "Dried jujubes",
+  kuru_lici: "Dried lychees",
+  kuru_longan: "Dried longans",
+  muz_cipsi: "Banana chips (fried)",
+
   adacayi_demleme: "Sage tea (brewed)",
   ihlamur_cayi: "Linden tea",
   nane_cayi: "Mint tea",
