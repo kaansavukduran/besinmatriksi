@@ -10,8 +10,8 @@ export const DRINK_GROUPS = [
  {id:'icecek_sut',name:'Süt ve sütlü içecekler',icon:'🥛'},
  {id:'icecek_alkol',name:'Alkollü içecekler',icon:'🍷'},
 ];
-const fruit = ['meyve','kurumeyve'], vegetables=['sebze','yaprak','kok'];
-const CHILDREN = new Set(['kurumeyve','yaprak','kok','kahve']);
+const fruit = ['meyve','kurumeyve'], vegetables=['sebze','yaprak','kok'], legumes=['baklagil','soya'];
+const CHILDREN = new Set(['kurumeyve','yaprak','kok','kahve','soya']);
 const TEA = new Set(['siyah_cay','yesil_cay','oolong']);
 const HERBAL = new Set(['papatya','hibiskus_cayi','bitki_cayi','adacayi_demleme','ihlamur_cayi','nane_cayi','rooibos_cayi']);
 const PLANT_MILK = new Set(['soya_sutu','soya_sutu_z','badem_sutu','pirinc_sutu','yulaf_sutu','hindistancevizi_sutu','hindistancevizi_sutu_konserve','kaju_ayrani']);
@@ -34,6 +34,7 @@ export function categoryContains(food,id){
  const group=catalogGroup(food);
  if(id==='meyve')return fruit.includes(group);
  if(id==='sebze')return vegetables.includes(group);
+ if(id==='baklagil')return legumes.includes(group);
  if(id==='icecek')return DRINK_GROUPS.some(g=>g.id===group);
  if(id==='kahve')return food.cat==='kahve'; // Old internal category selections remain readable.
  return group===id;
@@ -45,7 +46,7 @@ export function rootCategories(categories){
 }
 export function catalogSections(foods,categories){
  const byId=new Map(categories.map(c=>[c.id,c]));
- const groups=rootCategories(categories).flatMap(c=>c.id==='meyve'?fruit.map(id=>byId.get(id)):c.id==='sebze'?vegetables.map(id=>byId.get(id)):c.id==='icecek'?DRINK_GROUPS:[c]);
+ const groups=rootCategories(categories).flatMap(c=>c.id==='meyve'?fruit.map(id=>byId.get(id)):c.id==='sebze'?vegetables.map(id=>byId.get(id)):c.id==='baklagil'?legumes.map(id=>byId.get(id)):c.id==='icecek'?DRINK_GROUPS:[c]);
  const buckets=new Map();for(const f of foods){const group=catalogGroup(f);if(!buckets.has(group))buckets.set(group,[]);buckets.get(group).push(f);}
  return groups.filter(g=>buckets.has(g.id)).map(g=>({...g,foods:buckets.get(g.id)}));
 }

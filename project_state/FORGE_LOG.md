@@ -821,3 +821,10 @@
 - Kanıt151/151 final birim;web+singleHTML;24bildirim;deterministik veri üretimi.262/262 genel Chromium(7,6dk), son parentbaşlık ölçeği hizalamasından sonra final151birim/derlemeler+20/20hiyerarşi/beslenmeUI(45,2sn). Tek282-test koşumu iddiası yok. TR/EN desktop/phone;320px/28px/%200; eski kuru kayısı referansı200gile yenilemede korunur.
 - Açık/koyu parent sayfasında axe0WCAG2.1AAihlal;gerçek masaüstü/mobil gruplar ve kategori dışı özel etiket aramasının süzülmesi görüldü. İki file://vaka ortam politikasıyla hariç. Fiziksel/ekranokuyucu/native/yerel diğer motorlarNOT_RUN; yayın/CI makbuzları teslimde ayrı. Native Release/store yok.
 - Ayrıntı docs/evidence/B151/AUDIT.md. Sonraki tek ForgeB152: açık Foundation/FNDDS kapsamı.
+
+## B152 · 2026-11-16 · Baklagiller altında Soya ürünleri
+- Kullanıcının yeni isteği önceki kaynak genişletmesini B153'e taşıdı. Soya üst sekmesi kaldırıldı; Baklagiller, normal baklagil ızgarası ile Soya ürünleri alt başlığını birlikte gösterir. Tümü ve seçili kategori, arama, sıralama, sayaçlar, beslenme filtreleri, tarif/karşılaştırma seçicisi aynı sunum hiyerarşisini kullanır.
+- Önceden onaylanan içecek sınıflaması korunur: soya sütleri İçecekler altında. Kimlikler, biçim indeksleri, ölçümler ve ham besin kategorileri değişmedi; veri göçü veya kayıt silme yok.
+- Kanıt152/152 birim; web/PWA+singleHTML11,23MB;24bildirim.24/24 hedefli Chromium masaüstü/telefon TR/EN (1,3dk), 320px/28px/%200, vegan filtre, tofu ekleme/tekrar ekleme200g ve yenileme dahil. Geniş262-test koşumu önceki beta.38'in kanıtıdır, bu sürümde tekrarlanmadı.
+- Açık/koyu baklagil sayfasında axe0WCAG2.1AAihlal; masaüstü/mobil görseller incelendi. Fiziksel cihaz, ekran okuyucu, diğer yerel motorlar/native NOT_RUN. Yeni native Release/store yok. Yayın makbuzları teslimde ayrı doğrulanır.
+- Ayrıntı docs/evidence/B152/VERIFY.md. Sonraki tek ForgeB153: açık Foundation/FNDDS kapsamı.

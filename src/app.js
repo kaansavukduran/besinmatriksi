@@ -337,7 +337,7 @@ function foodList(prefix, cat, q, extGroup) {
   const res = search(q, { cat, ext: S.settings.showExt && extLoaded() && !!q });
   if (!res.curated.length && !res.ext.length && !res.custom.length) return `<p class="empty">${L("Eşleşen besin yok. Aramayı kısalt veya “Tümü”ne dön.")}</p>${q ? fullCatalogSearch(prefix) : ''}`;
   let html = (prefix === 'ex' ? catalogHeading(cat, q, res.curated.length + res.ext.length + res.custom.length) : '') + (!q && !cat ? recentRow(prefix) : '') + sortBar(prefix);
-  const groupedCategory = ['meyve','sebze','icecek'].includes(cat);
+  const groupedCategory = ['meyve','sebze','baklagil','icecek'].includes(cat);
   if (prefix==='ex' && groupedCategory && !q && S.sort!=='default') html += `<p class="hint">${L("Her alt başlık kendi içinde sıralanır.")}</p>`;
   if (groupedCategory || (!q && !cat && S.sort === 'default')) {
     for (const group of catalogSections(res.curated,CATEGORIES)) {
@@ -431,7 +431,7 @@ function welcome() {
 const visibleCurated = () => search('', { cat: null }).curated;
 function catalogHeading(cat, q, count) {
   const title = q ? L("“{q}” için sonuçlar", { q }) : cat ? catName(cat) : L("Besinleri keşfet");
-  return `<div class="catalog-heading ${['meyve','sebze','icecek'].includes(cat)?'grouped-heading':''}"><h2>${esc(title)}</h2><span class="hint">${L("{n} besin", { n: count })}</span></div>`;
+  return `<div class="catalog-heading ${['meyve','sebze','baklagil','icecek'].includes(cat)?'grouped-heading':''}"><h2>${esc(title)}</h2><span class="hint">${L("{n} besin", { n: count })}</span></div>`;
 }
 
 function matrixForExplore(item) {

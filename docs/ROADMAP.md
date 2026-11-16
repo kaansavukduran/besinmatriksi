@@ -95,6 +95,7 @@ B003b son kanıtı: `docs/evidence/B003b-packages.json`; 49 birim / 30 tarayıc�
 | B149 | Dört skill ile genel denetim; CSV, depolama hataları, yedek tutarlılığı ve günlük toplam açıklığı | RUNTIME_TESTED; beta.36; docs/evidence/B149/AUDIT.md |
 | B150 | Onaylı kompakt beslenme filtresi, vejetaryen alt tercihleri, kategori konumu ve bitkisel kahveler | RUNTIME_TESTED; beta.37; docs/evidence/B150/AUDIT.md |
 | B151 | Meyve/sebze alt grupları, birleşik İçecekler hiyerarşisi ve kaynaklı içecek kapsamı | RUNTIME_TESTED; beta.38; docs/evidence/B151/AUDIT.md |
-| B152 | Güncel açık Foundation/FNDDS kapsamını doğruluk ve performans bütçesiyle büyütme | PLANNED; tek sonraki Forge |
+| B152 | Soya ürünlerini Baklagiller altında gruplama | RUNTIME_TESTED; beta.39; docs/evidence/B152/VERIFY.md |
+| B153 | Güncel açık Foundation/FNDDS kapsamını doğruluk ve performans bütçesiyle büyütme | PLANNED; tek sonraki Forge |
 
 Fiziksel telefon ve ekran okuyucu kabulü uygulanmadı; önceki B142 önerisi tamamlandı sayılmadan cihaz erişimi bekleyen işlere taşındı. Cronometer kapalı/lisanslı kataloglarıyla tam eşitlik doğrulanmış değildir.

@@ -1,12 +1,12 @@
 {
   "schema_version": "1",
   "project": "Besin Matriksi",
-  "product_version": "1.1.2-beta.38",
+  "product_version": "1.1.2-beta.39",
   "development_state": "IN_PROGRESS",
-  "last_forge_at": "2026-11-16T12:02:13.791798+00:00",
-  "last_completed_forge": "B151",
+  "last_forge_at": "2026-11-16T13:04:55.219302+00:00",
+  "last_completed_forge": "B152",
   "active_forge": null,
-  "next_recommended_forge": "B152",
+  "next_recommended_forge": "B153",
   "branch": "ccr-1e1934aa-iv8aev",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
   "validated_code_commit": null,
@@ -14,37 +14,37 @@
   "verified_gates": [
     {
       "id": "unit",
-      "result": "PASS151/151 final beta.38",
+      "result": "PASS152/152 beta.39",
       "level": "UNIT_TESTED"
     },
     {
       "id": "web",
-      "result": "PASS beta.38 web/PWA and single HTML",
+      "result": "PASS beta.39 web/PWA and single HTML (11.23 MB)",
       "level": "BUILT"
     },
     {
       "id": "browser",
-      "result": "PASS262/262 broad Chromium desktop/phone; after final parent-heading font alignment PASS20/20 hierarchy+diet tests. Not a single282-test run; two managed file:// cases excluded.",
+      "result": "PASS24/24 targeted Chromium desktop/phone TR/EN hierarchy+diet tests; 320px28px200percent; same tofu reference merged200g and persisted",
       "level": "RUNTIME_TESTED"
     },
     {
       "id": "axe",
-      "result": "PASS0 WCAG2.1AA violations on light/dark parent pages; desktop/mobile images and scoped custom search checked",
+      "result": "PASS0 WCAG2.1AA violations on light/dark legume pages; desktop/phone screenshots inspected",
       "level": "RUNTIME_TESTED"
     },
     {
       "id": "data",
-      "result": "PASS deterministic regeneration; all685 previous form values, sources and order unchanged; four existing SR28 records moved to curated,713+8076=8789",
-      "level": "BUILT"
+      "result": "Unchanged food/source data; all693 foods/839 forms and saved reference identities preserved",
+      "level": "UNIT_TESTED"
     },
     {
       "id": "notices",
       "result": "PASS24 notices",
-      "level": "UNIT_TESTED"
+      "level": "BUILT"
     },
     {
       "id": "native-runtime",
-      "result": "NOT_RUN beta.38 physical devices, screen reader, local Firefox/WebKit and native runtime",
+      "result": "NOT_RUN beta.39 physical devices, screen reader, local Firefox/WebKit and native runtime",
       "level": "NOT_RUN"
     }
   ],
@@ -88,7 +88,7 @@
     "trigger": "trig_01Ljjr3Dkp6uBiQcjFaGuzm3",
     "stop_when": "Tüm uygulanabilir yol haritası işleri ve son kapılar doğrulandığında."
   },
-  "notes": "B151: grouped fruit/dried-fruit and vegetable/leaf/root parents; Coffee replaced by unified Drinks root with nine sections. Eight new beverages, with four named herbal infusions explicitly unmeasured.693 foods/839 forms. Existing IDs and every previous form value preserved. See docs/evidence/B151/AUDIT.md.",
+  "notes": "B152: Soya ürünleri is a child of Baklagiller in discovery, search, sort and both food pickers. Drinks keep soy milks. Existing food/form IDs and all measurements unchanged. See docs/evidence/B152/VERIFY.md.",
   "release_target": "v1.1.2-beta.1",
   "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission. EFSA group reference data are separate from food measurements; only verified compatible PRI/AI records, EFSA attribution required.",
   "historical_verified_gates": [

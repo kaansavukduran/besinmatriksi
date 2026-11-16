@@ -1,3 +1,8 @@
+# 1.1.2-beta.39 · 16 Kasım 2026
+
+- B152: Soya ürünleri ayrı üst sekme yerine Baklagiller altında alt başlık olarak gösterilir. Tümü, arama, alt başlık içinde sıralama, beslenme filtreleri ve tarif/karşılaştırma besin seçicisi aynı hiyerarşiyi kullanır.
+- Mevcut besin kimlikleri, ölçümleri ve kayıtlı tarifler korunur. Soya sütleri İçecekler altında kalır.
+
 # 1.1.2-beta.38 · 16 Kasım 2026
 
 - B151: Meyveler içinde kuru meyveler; Sebzeler içinde yeşil yapraklılar ve kök/yumrular. Üst kategori seçimi bütün alt grupları, Tümü'ndeki gibi başlık ve besin ızgaralarıyla gösterir.
