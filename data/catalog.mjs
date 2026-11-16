@@ -45,7 +45,7 @@ export const CATEGORIES = [
   ['icecek', 'İçecekler ve bitkisel sütler', '🥛'],
   ['tatli', 'Tatlandırıcılar ve kakao', '🍫'],
   ['kahve', 'Kahveler', '☕'],
-  ['fastfood', 'Fast food ve pizza', '🍕'],
+  ['fastfood', 'Fast Food', '🍕'],
   ['atistirmalik', 'Atıştırmalıklar', '🍪'],
   ['sut', 'Süt ve süt ürünleri', '🧀'],
   ['yumurta', 'Yumurta', '🥚'],
@@ -777,3 +777,20 @@ export const FOODS = [
   F("lungo", "Lungo", "lungo coffee long espresso", "kahve", [["demleme", null, null, "Uzun çekim"]], {"unavailable": "Lungo için bu katalogda doğrulanmış ayrı bir bileşim ölçümü yoktur. Uzun çekim, espressoya su eklemekle aynı değildir; Americano verileri kullanılmadı."}),
   F("turk_kahvesi_sade", "Türk kahvesi (sade)", "unsweetened turkish coffee", "kahve", [["demleme", null, null, "Şekersiz"]], {"unavailable": "Sade Türk kahvesi için bu katalogda doğrulanmış ayrı bir bileşim ölçümü yoktur. Şekerli FNDDS kaydı veya filtre kahve değerleri sade Türk kahvesi diye sunulmadı."}),
 ];
+
+// B150: named plant-milk variations; same declared gram recipes, never copied cow-milk values.
+export const PLANT_COFFEES = [];
+for (const [suffix, tr, en, source, allergens] of [
+ ['yulafli', 'yulaf', 'oat', 'F100277', ['gluten']],
+ ['bademli', 'badem', 'almond', '14091', ['sertkabuklu']],
+ ['soyali', 'soya', 'soy', '16120', ['soya']],
+]) for (const base of FOODS.filter(f => ['latte_sutlu','cappuccino_sutlu','flat_white','cortado','espresso_macchiato','mocha','buzlu_latte'].includes(f.id))) {
+ const name = base.tr.replace(/ \(sütlü\)$/, '');
+ const english = {latte_sutlu:'latte',cappuccino_sutlu:'cappuccino',flat_white:'flat white',cortado:'cortado',espresso_macchiato:'espresso macchiato',mocha:'mocha',buzlu_latte:'iced latte'}[base.id];
+ const item = F(base.id + '_' + suffix, name + ' (' + tr + ' sütlü)', english + ' with ' + en + ' milk', 'kahve', [['icecek', null, null, 'Ev tarifi']], {
+  plantCoffee: true, allergens, recipePortion: base.recipePortion,
+  recipe: base.recipe.map(([code,g,inert]) => [code === '01211' ? source : code,g,...(inert == null ? [] : [inert])]),
+  note: 'Ölçüm değil, tarif tahmini: espresso ve ' + tr + ' içeceği; ek malzemeler kaynak dökümünde gösterilir. Süt köpüğü ağırlık eklemez. Kullanılan ürün ve hazırlama oranıyla değerler değişir.',
+ });
+ PLANT_COFFEES.push(item); FOODS.push(item);
+}

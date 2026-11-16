@@ -1,3 +1,11 @@
+# 1.1.2-beta.37 · 16 Kasım 2026
+
+- B150: kahve, Fast Food ve Atıştırmalıklar üst kategori sırasının sonuna taşındı; tanıtım içindeki yinelenen bağlantılar kaldırıldı. Fast Food adı sadeleştirildi.
+- Kategorilerde ve tarif/karşılaştırma besin seçicisinde ortak, kaydedilen kompakt beslenme filtresi. Hepçil varsayılan; Vegan, Vejetaryen ve Pesketaryen seçenekleri.
+- Vejetaryen menüsü altında bağımsız ovo/yumurta ve lakto/süt ürünü kutuları; ek içerik filtrelerinin üstünde yer alır. Glutensiz, laktozsuz, soya, sert kabuklu yemiş, yer fıstığı ve susam filtreleri birlikte seçilebilir.
+- Yulaf, badem ve soya içeceğiyle 21 kahve tarifi tahmini; toplam 685 küratörlü besin / 831 tüketim biçimi. Tüm mevcut ölçümler ve kayıt kimlikleri korunur.
+- Belirsiz içerik uygun kabul edilmez. Filtreyle gizlenen özel besin/koleksiyonlar boş veya silinmiş gibi gösterilmez; önceki kayıtlar değişmez. Dar ekranda büyük yazı ve yüzde 200 ölçek taşması giderildi.
+
 # 1.1.2-beta.36 · 15 Kasım 2026
 
 - B149: Super-Unslop, Unslop, Fragaria Unslop ve Yazılım Denetle ile genel inceleme. Kısmi amino asit ölçümünde CSV indirme hatası giderildi; alt sınır ve hesaplanamayan skor açıkça ayrılır.

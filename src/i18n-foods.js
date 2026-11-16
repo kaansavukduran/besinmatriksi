@@ -1,7 +1,7 @@
 // Küratörlü besinlerin, kategorilerin ve tüketim biçimlerinin İngilizce adları.
 // Kullanıcının kendi girdiği besin adları çevrilmez.
 export const EN_CATEGORIES = {
-  kahve: 'Coffee', fastfood: 'Fast food & pizza', atistirmalik: 'Snacks & sweets',
+  kahve: 'Coffee', fastfood: 'Fast Food', atistirmalik: 'Snacks & sweets',
   meyve: 'Fruits', kurumeyve: 'Dried fruits', sebze: 'Vegetables', yaprak: 'Leafy greens', kok: 'Roots & tubers',
   baklagil: 'Legumes', soya: 'Soy foods', tahil: 'Grains & pseudocereals', kuruyemis: 'Nuts', tohum: 'Seeds',
   mantar: 'Mushrooms', alg: 'Seaweed & algae', taze_ot: 'Fresh herbs', baharat: 'Spices', yag: 'Plant oils',
@@ -69,6 +69,27 @@ export const EN_FORMS = {
 };
 
 export const EN_FOODS = {
+  latte_sutlu_yulafli: 'Latte (oat milk)',
+  cappuccino_sutlu_yulafli: 'Cappuccino (oat milk)',
+  flat_white_yulafli: 'Flat white (oat milk)',
+  cortado_yulafli: 'Cortado (oat milk)',
+  espresso_macchiato_yulafli: 'Espresso macchiato (oat milk)',
+  mocha_yulafli: 'Mocha (oat milk)',
+  buzlu_latte_yulafli: 'Iced latte (oat milk)',
+  latte_sutlu_bademli: 'Latte (almond milk)',
+  cappuccino_sutlu_bademli: 'Cappuccino (almond milk)',
+  flat_white_bademli: 'Flat white (almond milk)',
+  cortado_bademli: 'Cortado (almond milk)',
+  espresso_macchiato_bademli: 'Espresso macchiato (almond milk)',
+  mocha_bademli: 'Mocha (almond milk)',
+  buzlu_latte_bademli: 'Iced latte (almond milk)',
+  latte_sutlu_soyali: 'Latte (soy milk)',
+  cappuccino_sutlu_soyali: 'Cappuccino (soy milk)',
+  flat_white_soyali: 'Flat white (soy milk)',
+  cortado_soyali: 'Cortado (soy milk)',
+  espresso_macchiato_soyali: 'Espresso macchiato (soy milk)',
+  mocha_soyali: 'Mocha (soy milk)',
+  buzlu_latte_soyali: 'Iced latte (soy milk)',
   pizza_peynirli: "Cheese pizza",
   pizza_pepperoni: "Pepperoni pizza",
   dondurulmus_pizza_peynirli: "Frozen cheese pizza",

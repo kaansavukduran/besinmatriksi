@@ -8,6 +8,8 @@ export const MATRIX_SECTIONS = [...SECTIONS, { id: 'hesap', title: 'Hesaplanan g
 export const SETTINGS_VERSION = 2;
 export const SHORTCUT_ACTIONS = { kesfet: 'Keşfet', tarif: 'Tarif oluştur', karsilastir: 'Karşılaştır', ayarlar: 'Ayarlar', hakkinda: 'Hakkında', gunluk: 'Günlük ve profil' };
 export const DEFAULT_SETTINGS = {
+  dietPattern: 'omnivore', vegetarianEggs: true, vegetarianDairy: true,
+  dietGlutenFree: false, dietLactoseFree: false, dietSoyFree: false, dietTreeNutFree: false, dietPeanutFree: false, dietSesameFree: false,
   theme: 'light', accent: 'auto', font: 'inter', fontSize: 17,
   lineHeight: 1.55, letterSpacing: 0, wordSpacing: 0, density: 'comfy',
   radius: 6, bold: false, reduceMotion: false, ruler: false,
@@ -27,9 +29,10 @@ export const SETTING_GROUPS = {
   reading: ['font', 'fontSize', 'lineHeight', 'letterSpacing', 'wordSpacing', 'bold'],
   aion: ['aionEnabled', 'aionMotion', 'aionSize', 'aionSide', 'aionTips'],
   accessibility: ['density', 'ruler', 'reduceMotion', 'emoji', 'shortcuts', 'focusWidth', 'largeCursor'],
-  matrix: ['recipeTotalBasis', 'cardFacts', 'recipeGaps', 'showRecent', 'showSimilar', 'showAnimal', 'catGrid', 'showNiche', 'showNrv', 'showSource', 'showSd', 'showAlt', 'showMissing', 'precision', 'defaultAmount', 'showExt', 'sectionOrder', 'hiddenSections', 'pinnedNutrients', 'referenceMode', 'targets', 'efsaAge', 'efsaSex', 'efsaPhytate', 'efsaIronGroup', 'energyUnit', 'amountUnit', 'autoUnits', 'decimalSeparator'],
+  matrix: ['dietPattern','vegetarianEggs','vegetarianDairy','dietGlutenFree','dietLactoseFree','dietSoyFree','dietTreeNutFree','dietPeanutFree','dietSesameFree','recipeTotalBasis', 'cardFacts', 'recipeGaps', 'showRecent', 'showSimilar', 'showAnimal', 'catGrid', 'showNiche', 'showNrv', 'showSource', 'showSd', 'showAlt', 'showMissing', 'precision', 'defaultAmount', 'showExt', 'sectionOrder', 'hiddenSections', 'pinnedNutrients', 'referenceMode', 'targets', 'efsaAge', 'efsaSex', 'efsaPhytate', 'efsaIronGroup', 'energyUnit', 'amountUnit', 'autoUnits', 'decimalSeparator'],
 };
 const enums = {
+  dietPattern: ['omnivore','vegan','vegetarian','pescatarian'],
   recipeTotalBasis: ['total', 'serving'],
   theme: ['light', 'dark', 'oled', 'sepia', 'pastel', 'ocean', 'forest', 'contrast', 'contrast-dark', 'custom', 'system'], language: ['auto', 'tr', 'en'],
   font: ['atkinson', 'opendyslexic', 'lexend', 'andika', 'nunito', 'inter', 'literata', 'mono', 'system'],

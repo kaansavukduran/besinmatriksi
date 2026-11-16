@@ -1,3 +1,4 @@
+import { matchesDiet, extendedDietProfile } from './diet.js';
 import DB from './data/foods.json';
 import { norm } from './util.js';
 import { searchKey } from './search.js';
@@ -31,7 +32,7 @@ export async function loadExt() {
 export const extLoaded = () => !!EXT;
 export const extMeta = () => EXT?.meta || {};
 export const extGroups = () => (EXT ? EXT.groups : {});
-export const extFoods = () => (EXT ? (SHOW_ANIMAL ? EXT.foods : EXT.foods.filter((f) => !f.a && f.diet !== 'unknown')) : []);
+export const extFoods = () => (EXT ? (SHOW_ANIMAL ? EXT.foods : EXT.foods.filter((f) => !f.a && f.diet !== 'unknown')).filter(eligibleExtFood) : []);
 export const extAnimalGroup = (g) => !!EXT && !EXT.foods.some((f) => f.g === g && !f.a && f.diet !== 'unknown');
 
 // Ref: { t: 'c', id, f } küratörlü | { t: 'x', n } geniş katalog
@@ -94,11 +95,15 @@ export function setCustomFoods(list) {
 export const customFoods = () => CUSTOM;
 
 // Hayvansal besinler Ayarlar'dan gizlenebilir; gizliyken liste, arama ve öneriler yalnız bitkisel kayıtları görür
-let SHOW_ANIMAL = true, SHOW_NICHE = false;
+let SHOW_ANIMAL = true, SHOW_NICHE = false, DIET_SETTINGS = {};
+export function setDietSettings(s) { DIET_SETTINGS = s; }
+export const eligibleFood = f => matchesDiet(f?.dietary, DIET_SETTINGS);
+export const eligibleExtFood = f => matchesDiet(extendedDietProfile(f), DIET_SETTINGS);
+export const eligibleRef = ref => { const item = resolve(ref); return item?.food ? eligibleFood(item.food) : item?.ext ? eligibleExtFood(item.ext) : matchesDiet(null, DIET_SETTINGS); };
 export function setAnimalVisible(v) { SHOW_ANIMAL = v !== false; }
 // Az bilinen (niş) besinler kategori listelerinde varsayılan olarak gizli; aramada ve kayıtlı tariflerde görünür
 export function setNicheVisible(v) { SHOW_NICHE = v === true; }
-export const visibleFoods = ({ niche = SHOW_NICHE } = {}) => FOODS.filter((f) => (SHOW_ANIMAL || !f.animal) && (niche || !f.niche));
+export const visibleFoods = ({ niche = SHOW_NICHE } = {}) => FOODS.filter((f) => (SHOW_ANIMAL || !f.animal) && (niche || !f.niche) && eligibleFood(f));
 export const ANIMAL_CATS = new Set(DB.animalCategories || []);
 
 export function search(q, { cat = null, ext = false, extGroup = null } = {}) {
@@ -110,8 +115,8 @@ export function search(q, { cat = null, ext = false, extGroup = null } = {}) {
     out.sort((a, b) => score(b._k, k) - score(a._k, k) || a.tr.localeCompare(b.tr, 'tr'));
   }
   let extOut = [];
-  if (ext && EXT && terms.length) extOut = EXT.foods.filter((f) => (SHOW_ANIMAL || (!f.a && f.diet !== 'unknown')) && (!extGroup || f.g === extGroup) && match(f._k)).sort((a, b) => Number(!!a.branded) - Number(!!b.branded) || score(b._k, k) - score(a._k, k) || a.en.localeCompare(b.en));
-  const custom = terms.length ? CUSTOM.filter((f) => match(f._k)) : [];
+  if (ext && EXT && terms.length) extOut = EXT.foods.filter((f) => (SHOW_ANIMAL || (!f.a && f.diet !== 'unknown')) && (!extGroup || f.g === extGroup) && eligibleExtFood(f) && match(f._k)).sort((a, b) => Number(!!a.branded) - Number(!!b.branded) || score(b._k, k) - score(a._k, k) || a.en.localeCompare(b.en));
+  const custom = terms.length ? CUSTOM.filter((f) => eligibleFood(f) && match(f._k)) : [];
   return { curated: out, ext: extOut, custom };
 }
 function score(s, k) { return s.startsWith(k) ? 3 : s.includes(' ' + k) ? 2 : 1; }

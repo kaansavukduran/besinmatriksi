@@ -766,8 +766,6 @@ table.cmp .cpct { display: block; font-size: .72rem; color: var(--muted); font-w
 .welcome { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 24px; align-items: center; background: transparent; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; padding: 6px 0 28px; margin-bottom: 28px; }
 .welcome h1 { font-size: clamp(1.8rem, 2.7vw, 2.7rem); line-height: 1.14; letter-spacing: -.045em; font-weight: 700; margin: 0 0 14px; }
 .welcome-copy > p { max-width: 35em; color: var(--muted); margin: 0 0 20px; }
-.welcome-links { display: flex; flex-wrap: wrap; gap: 8px; }
-.welcome-links .pchip { display: inline-flex; align-items: center; gap: 6px; white-space: normal; text-align: left; background: transparent; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; padding: 6px 0; margin-right: 12px; font-size: .83rem; }
 .welcome-copy .welcome-meta { margin: 20px 0 0; font-size: .76rem; }
 .welcome-meta > span { display: block; margin-top: 4px; }
 .kitchen-plate { width: 100%; height: auto; max-width: 320px; justify-self: center; }
@@ -806,8 +804,6 @@ table.cmp .cpct { display: block; font-size: .72rem; color: var(--muted); font-w
   .welcome-copy { grid-column: 1 / -1; grid-row: 1; }
   .welcome h1, .welcome-copy > p:first-of-type { padding-right: 0; }
   .kitchen-plate { display: none; }
-  .welcome-links { gap: 6px; }
-  .welcome-links .pchip { font-size: .8rem; padding: 8px 0; }
   .welcome-copy .welcome-meta { margin-top: 14px; font-size: .7rem; }
   .explore:not(.has-sel) .foods { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .explore:not(.has-sel) .food { min-height: 86px; padding: 14px 4px; }
@@ -967,3 +963,25 @@ button.micro-name:hover { text-decoration-color: currentColor; }
 .meal-table .linkish { text-align: left; overflow-wrap: anywhere; max-width: 100%; }
 
 @media print { .daily-recipe-header .presets, .daily-recipe-total > .presets { display: none !important; } .meal-overview { overflow: visible; } .meal-table { font-size: 8pt; } .meal-table th:first-child { min-width: 0; } }
+
+/* B150: compact shared catalogue filters; vegetarian choices sit above extra restrictions. */
+.diet-filter { border-block: 1px solid var(--line); padding: .85rem 0; margin: 0 0 1rem; display: grid; gap: .55rem; min-width: 0; }
+.diet-select { display: flex; align-items: center; flex-wrap: wrap; gap: .65rem; font-size: .9rem; }
+.diet-select select { flex: 1 1 160px; min-width: 0; max-width: min(100%, 24rem); min-height: var(--tap); border-radius: var(--radius); padding: .35rem .6rem; color: var(--fg); background: var(--card); border: 1px solid var(--line); }
+.diet-vegetarian { margin: .2rem 0; padding: .55rem 0 0; border: 0; border-top: 1px solid var(--line); min-width: 0; }
+.diet-vegetarian legend { padding: 0 .45rem 0 0; font-size: .85rem; font-weight: 600; }
+.diet-vegetarian .hint { margin: .2rem 0 0; }
+.diet-checks { display: flex; flex-wrap: wrap; gap: .2rem 1rem; }
+.diet-check { overflow-wrap: anywhere; display: flex; align-items: center; gap: .5rem; font-size: .83rem; min-height: var(--tap); max-width: 100%; }
+.diet-check input { flex: 0 0 auto; width: 1rem; height: 1rem; margin: 0; accent-color: var(--acc); }
+.diet-extras summary { color: var(--ac); font-size: .85rem; min-height: var(--tap); padding: .35rem 0; }
+.diet-note { margin: 0; font-size: .75rem; color: var(--muted); }
+.diet-filter .linkish { justify-self: start; font-size: .8rem; text-align: left; }
+.explore:not(.has-sel) { grid-template-columns: minmax(0, 1fr); }
+.explore:not(.has-sel) > .cats { grid-column: 1 / -1; flex-direction: row; flex-wrap: nowrap; position: static; max-height: none; max-width: 100%; overflow-x: auto; padding-bottom: 6px; }
+.explore:not(.has-sel) > .cats.cats-grid { flex-wrap: wrap; }
+.explore:not(.has-sel) > .cats .cat { border-color: var(--line); background: var(--card); }
+.explore:not(.has-sel) > .cats .cat.on { background: var(--acc); }
+.diet-filter { grid-template-columns: minmax(0, 1fr); }
+.diet-filter > *, .diet-vegetarian legend, .diet-checks { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
+.diet-filter .linkish { white-space: normal; }

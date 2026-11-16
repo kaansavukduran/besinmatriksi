@@ -1,4 +1,6 @@
-import { setNicheVisible, extAnimalGroup, setAnimalVisible, visibleFoods, ANIMAL_CATS, foodName, categoryName, formName, CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, extGroups, extMeta, extFoods, setCustomFoods, customFoods } from './data.js';
+import { DIET_KEYS, dietActive } from './diet.js';
+import { renderDietFilter } from './diet-view.js';
+import { setDietSettings, eligibleFood, eligibleRef, setNicheVisible, extAnimalGroup, setAnimalVisible, visibleFoods, ANIMAL_CATS, foodName, categoryName, formName, CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, extGroups, extMeta, extFoods, setCustomFoods, customFoods } from './data.js';
 import { NUTRIENTS, NUTRIENT_BY_KEY, SECTIONS, SOURCES } from './nutrients.js';
 import { scaleItem, aggregate, scaleAggregate } from './calc.js';
 import { combineRecipes } from './recipe-total.js';
@@ -42,6 +44,7 @@ const S = {
   searches: loadSearches(),
   profiles: loadProfiles(),
   collections: loadCollections(), colPicker: false, sort: 'default', multi: false, picked: [], ingOpen: new Set(), settingsQ: '', rcQ: '', rcSort: 'manual', recent: loadRecent((r) => !!FOODS.find((f) => f.id === r.id)?.forms[r.f]),
+  dietOpen: { ex: false, pk: false },
   cat: null,
   extGroup: null,
   extPage: 0,
@@ -83,6 +86,7 @@ let extLoading = false;
 
 // ---------------------------------------------------------------- ayarlar
 function applySettings() {
+  setDietSettings(S.settings);
   setAnimalVisible(S.settings.showAnimal); setNicheVisible(S.settings.showNiche);
   const s = S.settings, r = document.documentElement;
   setLanguage(preferredLanguage(s.language)); r.lang = preferredLanguage(s.language);
@@ -124,6 +128,15 @@ function setSetting(k, v) {
   if (!saveSettings(S.settings)) toast(tr('storageError'));
   applySettings();
   if (k === 'showExt' && v) requestExtCatalog();
+}
+
+function updateDiet(patch) {
+  const next = normalizeSettings({...S.settings,...patch});
+  if (!saveSettings(next)) { toast(tr('storageError')); render(); return; }
+  S.settings = next; setDietSettings(next);
+  S.extPage = 0; if(S.picker)S.picker.extPage=0;
+  S.picked = S.picked.filter(id=>eligibleFood(FOODS.find(f=>f.id===id)));
+  render();
 }
 
 // ---------------------------------------------------------------- yardımcı bileşenler
@@ -230,14 +243,16 @@ function extButton(f, action) {
 function categoryNav(prefix, current) {
   const vis = visibleFoods();
   const all = `<button class="cat ${!current ? 'on' : ''}" data-action="${prefix}-cat" data-cat=""><span class="cat-i">${S.settings.emoji ? '✨' : ''}</span><span class="cat-l">${L("Tümü")}</span> <span class="cnt">${vis.length}</span></button>`;
-  const cats = CATEGORIES.filter((c) => S.settings.showAnimal || !ANIMAL_CATS.has(c.id)).map((c) => {
+  const trailing = ['kahve','fastfood','atistirmalik'];
+  const ordered = [...CATEGORIES.filter(c=>!trailing.includes(c.id)), ...trailing.map(id=>CATEGORIES.find(c=>c.id===id))];
+  const cats = ordered.filter((c) => S.settings.showAnimal || !ANIMAL_CATS.has(c.id)).map((c) => {
     const n = vis.filter((f) => f.cat === c.id).length;
     return `<button class="cat ${current === c.id ? 'on' : ''}" data-action="${prefix}-cat" data-cat="${c.id}"><span class="cat-i">${S.settings.emoji ? c.icon : ''}</span><span class="cat-l">${esc(categoryName(c))}</span> <span class="cnt">${n}</span></button>`;
   }).join('');
   const ext = `<button class="cat ${current === 'ext' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="ext"><span class="cat-i">${S.settings.emoji ? '🗂️' : ''}</span><span class="cat-l">${L("Tam Katalog")}</span> <span class="cnt">${fmtNum(META.ext)}</span></button>`;
-  const cu = `<button class="cat ${current === 'custom' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="custom"><span class="cat-i">${S.settings.emoji ? '🏷️' : ''}</span><span class="cat-l">${L("Kendi besinlerim")}</span> <span class="cnt">${customFoods().length}</span></button>`;
+  const cu = `<button class="cat ${current === 'custom' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="custom"><span class="cat-i">${S.settings.emoji ? '🏷️' : ''}</span><span class="cat-l">${L("Kendi besinlerim")}</span> <span class="cnt">${customFoods().filter(eligibleFood).length}</span></button>`;
   const colBtn = (c, sub) => {
-    const n = sub ? c.items.length : collectionRefs(S.collections, c.id).length;
+    const n = (sub ? c.items : collectionRefs(S.collections, c.id)).filter(eligibleRef).length;
     return `<button class="cat ${sub ? 'sub' : ''} ${current === 'col:' + c.id ? 'on' : ''}" data-action="${prefix}-cat" data-cat="col:${c.id}"><span class="cat-i">${sub ? '↳' : S.settings.emoji ? '📁' : ''}</span><span class="cat-l">${esc(c.name)}</span> <span class="cnt">${n}</span></button>`;
   };
   const tree = collectionTree(S.collections);
@@ -267,9 +282,9 @@ function collectionList(prefix, cat, q) {
   const sections = [{ col: c, refs: c.items }, ...S.collections.filter((x) => x.parent === c.id).map((ch) => ({ col: ch, refs: ch.items }))];
   let html = '';
   for (const { col, refs } of sections) {
-    const shown = refs.filter((r) => { if (!k) return true; const it = resolve(r); return it && norm(it.name).includes(k); });
+    const shown = refs.filter((r) => { if (!eligibleRef(r)) return false; if (!k) return true; const it = resolve(r); return it && norm(it.name).includes(k); });
     if (col !== c) html += `<h3 class="grp">↳ ${esc(col.name)}</h3>`;
-    html += shown.length ? `<div class="foods">${shown.map((r) => refButton(r, prefix, col.id, k ? -1 : refs.indexOf(r), refs.length)).join('')}</div>` : (col === c && sections.length > 1 ? '' : `<p class="empty">${L("Bu koleksiyon boş. Bir besin seç ve “Koleksiyona ekle”ye dokun.")}</p>`);
+    html += shown.length ? `<div class="foods">${shown.map((r) => refButton(r, prefix, col.id, k ? -1 : refs.indexOf(r), refs.length)).join('')}</div>` : (col === c && sections.length > 1 ? '' : `<p class="empty">${refs.length && dietActive(S.settings) ? L("Beslenme filtrelerine uyan kayıt yok. Filtreleri temizleyerek tüm kayıtlarını görebilirsin.") : L("Bu koleksiyon boş. Bir besin seç ve “Koleksiyona ekle”ye dokun.")}</p>`);
   }
   return manage + html;
 }
@@ -282,7 +297,7 @@ const knownFood = (r) => !!FOODS.find((f) => f.id === r.id)?.forms[r.f];
 // Son bakılanlar: aramasız, kategorisiz Keşfet görünümünde tek satır
 function recentRow(prefix) {
   if (prefix !== 'ex' || S.multi || !S.settings.showRecent) return '';
-  const items = S.recent.map((r) => ({ r, f: FOODS.find((x) => x.id === r.id) })).filter((x) => x.f);
+  const items = S.recent.map((r) => ({ r, f: FOODS.find((x) => x.id === r.id) })).filter((x) => x.f && eligibleRef(x.r));
   if (!items.length) return '';
   return `<div class="recent-row"><h3 class="grp">🕘 ${L("Son bakılanlar")}</h3><button class="btn ghost" data-action="recent-clear" aria-label="${L("Son bakılanları temizle")}">${L("Temizle")}</button></div>
     <div class="presets recent">${items.map(({ r, f }) => `<button class="pchip" data-action="ex-pick-ref" data-ref='${esc(JSON.stringify(r))}'>${S.settings.emoji ? foodIcon(f) + ' ' : ''}${esc(foodName(f))}${f.forms.length > 1 ? ` <span class="muted">${esc(formName(f.forms[r.f].label))}</span>` : ''}</button>`).join('')}</div>`;
@@ -291,10 +306,10 @@ function recentRow(prefix) {
 function foodList(prefix, cat, q, extGroup) {
   if (cat?.startsWith('col:')) return collectionList(prefix, cat, q);
   if (cat === 'custom') {
-    const list = q ? search(q).custom : customFoods();
+    const list = q ? search(q).custom : customFoods().filter(eligibleFood);
     return `<button class="btn primary block" data-action="cu-new">＋ ${L("Etiketten yeni besin ekle")}</button>
       <p class="hint">${L("Markalı ürünler (bitkisel süt, protein tozu, hazır gıda…) için etiketteki 100 g değerlerini gir. Cihazda saklanır, yedeğe dahil edilir.")}</p>
-      <div class="foods">${list.map((f) => customButton(f, prefix + '-pick-custom')).join('') || `<p class="empty">${L("Henüz kendi besinin yok.")}</p>`}</div>`;
+      <div class="foods">${list.map((f) => customButton(f, prefix + '-pick-custom')).join('') || `<p class="empty">${customFoods().length && dietActive(S.settings) ? L("Beslenme filtrelerine uyan kayıt yok. Filtreleri temizleyerek tüm kayıtlarını görebilirsin.") : L("Henüz kendi besinin yok.")}</p>`}</div>`;
   }
   if (cat === 'ext') {
     if (!extLoaded()) return `<div class="catalog-wait">${catalogPending()}</div>`;
@@ -383,6 +398,7 @@ function renderExplore() {
     <nav class="cats ${S.settings.catGrid ? 'cats-grid' : ''}" aria-label="${L("Kategoriler")}">${categoryNav('ex', S.cat)}</nav>
     <section class="list" aria-label="${L("Besinler")}">
       ${!item && !S.cat && !S.q ? welcome() : ''}
+      ${renderDietFilter(S.settings,'ex',S.dietOpen.ex)}
       <div class="searchbar"><input type="search" id="q" placeholder="${L("Bir besin bul: mercimek, latte, pizza…")}" value="${esc(S.q)}" autocomplete="off" aria-label="${L("Besin ara")}">
       ${S.q ? `<button class="btn ghost" data-action="ex-clear">${L("Temizle")}</button>` : ''}</div>
       ${S.searches.length ? `<div class="recent-searches" aria-label="${L("Son aramalar")}"><span class="hint">${L("Son aramalar")}</span><div class="presets">${S.searches.map(q => `<button class="pchip" data-action="search-recent" data-q="${esc(q)}">${esc(q)}</button>`).join('')}<button class="btn ghost" data-action="search-clear">${L("Geçmişi temizle")}</button></div></div>` : ''}
@@ -392,16 +408,13 @@ function renderExplore() {
   </div>`;
 }
 
-// Katalog başlangıcı: yemek odağında kısa tanıtım ve doğrudan kategori bağlantıları.
+// Katalog başlangıcı: yemek odağında kısa tanıtım; kategoriler üst sırada.
 function welcome() {
   const foods = visibleCurated();
   return `<div class="welcome">
     <div class="welcome-copy">
       <h1>${L("Tabağında ne var?")}</h1>
       <p>${L("Bir fincan kahveden akşam yemeğine, yediklerini biraz daha yakından tanı.")}</p>
-      <div class="welcome-links" aria-label="${L("Hızlı kategoriler")}">
-        ${[['kahve', '☕', L("Kahveler")], ['fastfood', '🍕', L("Pizza ve fast food")], ['atistirmalik', '🍫', L("Atıştırmalıklar")]].map(([id, icon, name]) => `<button class="pchip" data-action="ex-cat" data-cat="${id}">${S.settings.emoji ? `<span aria-hidden="true">${icon}</span> ` : ''}${name}<svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M3 9 9 3M3 3h6v6" stroke="currentColor" stroke-width="1.5"/></svg></button>`).join('')}
-      </div>
       <p class="welcome-meta">${L("{foods} besin · {forms} tüketim biçimi", { foods: foods.length, forms: foods.reduce((a, f) => a + f.forms.length, 0) })}<span>${L("Cihazında çalışır. Çevrimdışı da yanında.")}</span></p>
     </div>
     ${S.settings.emoji ? plateIllustration : ''}
@@ -778,7 +791,7 @@ function renderPicker() {
           <div class="pk-prev">${item.v.energy != null ? `${fmtNum((item.v.energy * P.amount) / 100)} kcal · ` : ''}${item.v.protein != null ? `${fmtNum((item.v.protein * P.amount) / 100)} g protein · ` : ''}${item.v.fiber != null ? `${fmtNum((item.v.fiber * P.amount) / 100)} g ${L("lif")}` : ''}</div>
           <button class="btn primary big" data-action="pk-confirm">${P.target === 'recipe' ? '＋ ' + L("Tarife ekle") : '＋ ' + L("Karşılaştırmaya ekle")}</button>
           ${P.target === 'recipe' ? `<button class="btn" data-action="pk-confirm-more">＋ ${L("Ekle ve başka seç")}</button>` : ''}</div>`
-      : `<nav class="cats cats-grid">${categoryNav('pk', P.cat)}</nav>
+      : `${renderDietFilter(S.settings,'pk',S.dietOpen.pk)}<nav class="cats cats-grid">${categoryNav('pk', P.cat)}</nav>
         <div class="searchbar"><input type="search" id="pq" placeholder="${L("Ara (isteğe bağlı)")}" value="${esc(P.q)}" autocomplete="off" aria-label="${L("Besin ara")}"></div>
         <div class="pk-list">${foodList('pk', P.cat, P.q, P.extGroup)}</div>`}
     </div></div>`;
@@ -847,8 +860,9 @@ const TABS = [['kesfet', '🔎'], ['tarif', '🥣'], ['gunluk', '📒'], ['karsi
 
 export function render() {
   if (S.personalDayAuto && S.personalDay !== localDay()) S.personalDay = localDay();
+  document.querySelectorAll('[data-diet-details]').forEach(el=>S.dietOpen[el.dataset.dietDetails]=el.open);
   const keep = {};
-  document.querySelectorAll('[data-keep-scroll]').forEach((el) => (keep[el.dataset.keepScroll] = el.scrollTop));
+  document.querySelectorAll('[data-keep-scroll]').forEach((el) => (keep[el.dataset.keepScroll] = {top:el.scrollTop,left:el.scrollLeft}));
   const winY = window.scrollY;
   const focusedId = document.activeElement?.id;
   const focusedSelector = focusSelector(document.activeElement);
@@ -874,7 +888,7 @@ export function render() {
   if (S.tab === 'ayarlar') applySettingsFilter();
   if (S.tab === 'tarif') applyRecipeFilter();
   document.querySelectorAll('.list, .detail, .pk-list, .cats').forEach((el, i) => (el.dataset.keepScroll = el.className.split(' ')[0] + i));
-  document.querySelectorAll('[data-keep-scroll]').forEach((el) => { if (keep[el.dataset.keepScroll] != null) el.scrollTop = keep[el.dataset.keepScroll]; });
+  document.querySelectorAll('[data-keep-scroll]').forEach((el) => { if (keep[el.dataset.keepScroll] != null) el.scrollTop = keep[el.dataset.keepScroll].top; el.scrollLeft = keep[el.dataset.keepScroll]?.left || 0; });
   window.scrollTo(0, winY);
   syncModalFocus(!document.querySelector('.modal') && wasModal ? modalOpener : focusedSelector);
   if (focusedId) {
@@ -1144,6 +1158,7 @@ async function onClick(e) {
     case 'setting-reset': if (Object.hasOwn(DEFAULT_SETTINGS, b.dataset.key)) { setSetting(b.dataset.key, DEFAULT_SETTINGS[b.dataset.key]); render(); } break;
     case 'tab': S.tab = b.dataset.tab; render(); window.scrollTo(0, 0); break;
     // keşfet
+    case 'diet-reset': updateDiet(Object.fromEntries(DIET_KEYS.map(k=>[k,DEFAULT_SETTINGS[k]]))); break;
     case 'ex-cat': S.sel = null; S.cat = b.dataset.cat || null; S.extGroup = null; S.extPage = 0; render(); $('.list') && ($('.list').scrollTop = 0); break;
     case 'ext-reload': location.reload(); break;
     case 'ex-full-search': S.sel = null; S.cat = 'ext'; S.extGroup = null; S.extPage = 0; render(); break;
@@ -1496,6 +1511,7 @@ function onChange(e) {
     render(); return;
   }
   const t = e.target;
+  if (t.dataset.diet && DIET_KEYS.includes(t.dataset.diet)) { updateDiet({[t.dataset.diet]:t.type==='checkbox'?t.checked:t.value}); return; }
   if (t.dataset.personalField) { updatePersonalDraft(t); return; }
   if (t.dataset.settingNumber) { if (!t.checkValidity()) toast(tr('settingInvalid')); return; }
   if (t.id === 'personal-day') { if (validDay(t.value)) { S.personalDay = t.value; S.personalDayAuto = t.value === localDay(); render(); } else { toast(tr('dateInvalid')); t.value = S.personalDay; } return; }

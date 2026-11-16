@@ -67,9 +67,32 @@ yedek dışa/içe aktarma kullanılır.
 
 **Besin bileşimi USDA SR28 ve kayıtlarda belirtilen USDA Foundation, FNDDS ve özel bileşen kaynaklarından gelir.**
 EFSA DRV Finder ayrıca 23 bileşen / 169 PRI-AI kaydıyla isteğe bağlı grup referansıdır; besin ölçümü değildir. Ayarlar → Yüzde referansı → EFSA: yaş ve kaynak cinsiyet grubunu seç. Yetişkin çinko için fitat, yetişkin kadın demiri için menopoz grubu ayrıca seçilir. Eşleşmeyen veya kapsam dışı alanda yüzde gösterilmez. Kaynak/görüş yılı ve koşullar açılabilir tabloda, PRI/AI türü matrikste ve CSV'de korunur. Kişisel hedefler değişmez.
-**664 küratörlü besin / 810 tüketim biçimi.** Tam USDA SR28 kaynağının **8.789/8.789** kaydı erişilebilir: 709 benzersiz SR28 kaydı küratörlü biçimlerde, kalan **8.080 kayıt** ayrı kaynak kataloğundadır. 664 besin adını, 8.789 ise hazırlamaya özgü kaynak kaydını sayar. Niş/hayvansal gizleme tercihleri ana ekranda görünen sayıyı değiştirir.
+**685 küratörlü besin / 831 tüketim biçimi.** Tam USDA SR28 kaynağının **8.789/8.789** kaydı erişilebilir: 709 benzersiz SR28 kaydı küratörlü biçimlerde, kalan **8.080 kayıt** ayrı kaynak kataloğundadır. 685 besin adını, 8.789 ise hazırlamaya özgü kaynak kaydını sayar. Niş/hayvansal gizleme tercihleri ana ekranda görünen sayıyı değiştirir.
 
 Keşfet → **Tam Katalog** ile ayar açmadan eriş. 80 kayıtlık sayfalar, besin grubu seçimi ve özgün İngilizce ad veya NDB numarasıyla arama vardır. 2015 tarihli SR28 marka kayıtları güncel ambalaj etiketi sayılmaz; içerik ve alerjen bilgisi üründen doğrulanır. Hayvansal kayıtlar gizlenince içeriği belirsiz karma kayıtlar da gizlenir.
+
+**Beslenme filtreleri:** kategori listesindeki kompakt menü varsayılan olarak Hepçil'dir.
+Vegan, Vejetaryen veya Pesketaryen seçimi kategoriler arasında korunur;
+tarife/karşılaştırmaya besin ekleme penceresi de aynı tercihi kullanır.
+Vejetaryen seçildiğinde menünün altında, Ek tercihler'in üstünde **Yumurta
+tüketiyorum (ovo)** ve **Süt ürünleri tüketiyorum (lakto)** kutuları açılır.
+İkisi seçiliyken ovo-lakto, yalnız biri seçiliyken ilgili alt tür uygulanır.
+Kutular bu içeriklere izin verir; her öğünde bulunmalarını şart koşmaz.
+İkisini kapatmak Vegan seçimiyle aynı değildir: bal vejetaryen kapsamda kalır.
+
+Glutensiz, laktozsuz, soya, sert kabuklu yemiş, yer fıstığı ve susam içermeyen
+seçenekleri birlikte kullanılabilir. Yer fıstığı ayrı değerlendirilir.
+Bilinen içerik bilgisi yeterli olmayan hazır ürün/özel etiket kayıtları etkin
+filtrede gizlenir; boş alerjen alanı uygunluk kanıtı sayılmaz. Bu, ürün
+sertifikası veya çapraz bulaşma güvencesi değildir. Filtreler kayıtlı tarifleri,
+günlüğü ve koleksiyon içeriğini silmez; temizlendiğinde kayıtlar yeniden görünür.
+
+Kahvelerde yulaf, badem ve soya içeceğiyle **21 ayrı tarif tahmini** bulunur:
+latte, cappuccino, flat white, cortado, espresso macchiato, mocha ve buzlu latte.
+Gram oranları ve kaynak malzemeleri görünür; inek sütlü kahvenin besin değerleri
+bitkisel sürüme kopyalanmaz. Kullanılan bitkisel ürünün tam içeriği yoksa diğer
+alerjenlerin bulunmadığı varsayılmaz; örneğin yulaflı latte otomatik glutensiz
+olarak işaretlenmez.
 
 **Vitaminler ve mineraller** özeti 28 yaygın mikro besini miktar, birim, seçili referans ve veri kapsamıyla gösterir. Tarif ve günlükte bir ada dokunmak katkı veren besinlerin kaynak dökümünü açar. Veri yok, kayıtlı sıfır ve kısmi toplam (≥) ayrıdır. A vitamini RAE değeri, farklı RE birimli AB referansına otomatik bölünmez. Bilimsel biçimlerin ayrıntılı matriksi ve CSV korunur.
 

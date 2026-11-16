@@ -806,3 +806,11 @@
 - Açık/koyu günlük toplamda axe WCAG2.1AA sıfır ihlal, masaüstü/mobil görseller incelendi. Yerel file:// iki vaka ortam politikası nedeniyle hariç; Firefox/WebKit, ekran okuyucu ve native/fiziksel cihaz NOT_RUN.
 - Pages ve Vercel canlı beta.35 normal girişte doğrulandı; eski Pages engeli kapatıldı. Beta.36 yayın makbuzu teslimde ayrı bildirilecek; yeni native Release/store yayını yok.
 - Sonraki tek Forge B150: açık Foundation/FNDDS kapsamını doğruluk ve performans bütçesiyle büyütme.
+
+## B150 · 2026-11-16 · Kompakt beslenme filtresi ve bitkisel kahveler
+- Kullanıcının onayladığı tasarım; önceki kaynak genişletmesi B151'e taşındı. Kahve/Fast Food/Atıştırmalıklar üst kategori sırasının sonunda, yinelenen tanıtım bağlantıları kaldırıldı. Fast Food adı sadeleşti.
+- Hepçil varsayılan; Vegan/Vejetaryen/Pesketaryen ortak kayıtlı tercih. Vejetaryen seçilince ovo/yumurta ve lakto/süt kutuları menü ile ek filtrelerin arasında. Altı AND içerik kısıtı; yer fıstığı sert kabuklu yemişlerden ayrı. Boş alerjen alanından uygunluk çıkarılmaz; belirsiz ürünler gizli. Kalıcı tarif/günlük/koleksiyonlar silinmez.
+- Yulaf/badem/soya ile21 ayrı kahve tarifi tahmini.685 besin/831biçim. Hesap kaynakları/gram oranları ve r etiketi görünür; FDC yulaf malzemesi gerçek kaydıyla desteklenir. Önceki664 kaydın dietary dışındaki bütün alanları/ölçümleri aynı.
+- Kanıt147/147 final birim; web/PWA+singleHTML;24bildirim; deterministik veri üretimi.254/254 geniş Chromium koşumu (6,8dk); ardından yalnız yeni kahvelerin İngilizce arama kaynak adları düzeltildi, final147 birim/derlemeler ve12/12özellik UI kabulü (22,5sn) tekrarPASS. Tek266-test koşumu iddiası yok. TR/EN desktop/phone;320px/28px/%200; başarısız tercih yazımı, filtreli boş durum ve ham kayıtların korunması dahil.
+- Axe açık/koyu0WCAG2.1AAihlal; gerçek mobil/masaüstü görseller incelendi. İki yerel file:// vaka ortam politikası nedeniyle hariç. Fiziksel/ekranokuyucu/native/yerel diğer motorlarNOT_RUN; beta.37yayın/CI makbuzları teslimde ayrı. B149 CI244+488PASS farklı sürümün tarihi kanıtıdır.
+- Ayrıntı docs/evidence/B150/AUDIT.md. Yeni native Release/store yayını yok. Sonraki tek Forge B151: açık Foundation/FNDDS kaynak kapsamı.

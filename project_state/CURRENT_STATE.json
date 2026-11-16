@@ -1,12 +1,12 @@
 {
   "schema_version": "1",
   "project": "Besin Matriksi",
-  "product_version": "1.1.2-beta.36",
+  "product_version": "1.1.2-beta.37",
   "development_state": "IN_PROGRESS",
-  "last_forge_at": "2026-11-15T23:16:40.887895+00:00",
-  "last_completed_forge": "B149",
+  "last_forge_at": "2026-11-16T07:48:12.627111+00:00",
+  "last_completed_forge": "B150",
   "active_forge": null,
-  "next_recommended_forge": "B150",
+  "next_recommended_forge": "B151",
   "branch": "ccr-1e1934aa-iv8aev",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
   "validated_code_commit": null,
@@ -14,41 +14,37 @@
   "verified_gates": [
     {
       "id": "unit",
-      "command": "node --test --test-isolation=none tests/*.test.mjs",
-      "result": "PASS 143/143 final code",
+      "result": "PASS147/147 final beta.37",
       "level": "UNIT_TESTED"
     },
     {
       "id": "web",
-      "command": "npm run build; npm run build:single",
-      "result": "PASS beta.36 web/PWA and single HTML",
+      "result": "PASS beta.37 web/PWA and single HTML",
       "level": "BUILT"
     },
     {
       "id": "browser",
-      "result": "PASS 238/238 broad Chromium desktop/phone run before final profile-apply/picker gates; PASS 54/54 targeted on final code including four new controls cases. 242 unique cases observed across runs, not one 242-test run. Managed file:// cases excluded.",
+      "result": "PASS254/254 broad Chromium desktop/phone; after final English coffee search-name correction PASS12/12 feature acceptance. Not a single266-test run. Two managed file:// cases excluded.",
       "level": "RUNTIME_TESTED"
     },
     {
       "id": "axe",
-      "result": "PASS 0 WCAG2.1AA violations in daily-total light and dark views; mobile image inspected",
+      "result": "PASS0 WCAG2.1AA violations light/dark new filter page; desktop/mobile images inspected",
       "level": "RUNTIME_TESTED"
     },
     {
       "id": "data",
-      "command": "npm run data",
-      "result": "PASS; foods, foods-ext and efsa generated SHA256 unchanged",
+      "result": "PASS deterministic generation; all664 previous foods unchanged except new dietary metadata; extended catalogue and EFSA unchanged",
       "level": "BUILT"
     },
     {
       "id": "notices",
-      "command": "node scripts/build-notices.mjs --check",
-      "result": "PASS 24 notices",
+      "result": "PASS24 notices",
       "level": "UNIT_TESTED"
     },
     {
       "id": "native-runtime",
-      "result": "NOT_RUN beta.36; physical devices, screen reader, local Firefox/WebKit also NOT_RUN",
+      "result": "NOT_RUN beta.37; physical devices, screen reader and local Firefox/WebKit NOT_RUN",
       "level": "NOT_RUN"
     }
   ],
@@ -92,7 +88,7 @@
     "trigger": "trig_01Ljjr3Dkp6uBiQcjFaGuzm3",
     "stop_when": "Tüm uygulanabilir yol haritası işleri ve son kapılar doğrulandığında."
   },
-  "notes": "B149: four requested audit skills applied. Partial-AA CSV, failed-save feedback/state, full-backup rollback, personal recovery guard, profile/custom/recipe retry, daily counter and spacing fixed. Scientific input data unchanged. See docs/evidence/B149/AUDIT.md for exact evidence and limitations.",
+  "notes": "B150: compact shared dietary filter with independent vegetarian egg/dairy boxes above extra restrictions; six extra ingredient filters. Coffee/Fast Food/Snacks in category row;21 named oat/almond/soy coffee recipe estimates.685 foods/831 forms; old values/IDs preserved. See docs/evidence/B150/AUDIT.md.",
   "release_target": "v1.1.2-beta.1",
   "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission. EFSA group reference data are separate from food measurements; only verified compatible PRI/AI records, EFSA attribution required.",
   "historical_verified_gates": [
@@ -291,6 +287,14 @@
       "id": "native-runtime",
       "result": "NOT_RUN; physical OS/device installation/native runtime still separate",
       "level": "NOT_RUN"
+    },
+    {
+      "id": "B149-browser-ci",
+      "source_sha": "2cc61d3787f3ce2d23456939e8173cf8f19c0e76",
+      "result": "PASS244 Chromium and488 Firefox/WebKit/iPhone/iPad emulation",
+      "level": "RUNTIME_TESTED",
+      "url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/43774170740",
+      "version": "1.1.2-beta.36"
     }
   ],
   "publication_policy": "No public Release or store publication. Only workflow_dispatch with publish=false; never move v1.1.1 tag. Latest user instruction confirmed this boundary.",
@@ -339,16 +343,16 @@
     "cross_browser": "PASS (ci.yml run success)"
   },
   "current_forge": {
-    "id": "B149",
-    "base_commit": "9c7062988ef9f8dd085eb363556cc15eeb72937f",
-    "local_evidence": "docs/evidence/B149/AUDIT.md",
+    "id": "B150",
+    "base_commit": "2cc61d3787f3ce2d23456939e8173cf8f19c0e76",
+    "local_evidence": "docs/evidence/B150/AUDIT.md",
     "level": "RUNTIME_TESTED"
   },
-  "validation_base_commit": "9c7062988ef9f8dd085eb363556cc15eeb72937f",
+  "validation_base_commit": "2cc61d3787f3ce2d23456939e8173cf8f19c0e76",
   "current_forges": [
     {
-      "id": "B149",
-      "scope": "General software and Unslop audit; proven failure-state repairs and daily-summary clarity",
+      "id": "B150",
+      "scope": "Approved dietary filters, vegetarian egg/dairy choices, category placement and 21 plant-milk coffee recipes",
       "level": "RUNTIME_TESTED"
     }
   ],
@@ -363,8 +367,8 @@
     "curated_source_records": 709,
     "extended_records": 8080,
     "covered_source_records": 8789,
-    "curated_foods": 664,
-    "curated_forms": 810,
+    "curated_foods": 685,
+    "curated_forms": 831,
     "cronometer_exact_parity": "NOT_VERIFIED"
   },
   "resolved_blockers": [

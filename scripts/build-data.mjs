@@ -1,3 +1,4 @@
+import { curatedDietProfile } from '../data/diet-profiles.mjs';
 // Ham kaynaklardan (data/raw) uygulamanın çevrimdışı veri dosyalarını üretir.
 //   src/data/foods.json      küratörlü Türkçe katalog (USDA SR28 tam bileşim)
 //   src/data/foods-ext.json  kayıpsız USDA SR28 geniş katalog (İngilizce özgün adlar)
@@ -328,6 +329,11 @@ for (const food of FOODS) {
       // Bir bileşen yalnız tüm malzemelerde ölçülmüşse yazılır. 'inert' malzemede (içme suyu, sofra tuzu) ölçülmemiş
       // organik bileşenler kimyasal olarak bulunmadığından 0 alınır; mineralleri USDA ölçümünden gelir.
       const parts = food.recipe.map(([code, g, inert]) => {
+        if (code.startsWith('F')) {
+          const ff = ffByNdb.get(code.slice(1)); if (!ff) throw new Error('Tarif Foundation kaydı yok: ' + code);
+          const values = { ...ff.v }; fillFromExtra(code, values, null);
+          return { code, g, inert: false, v: values, desc: ff.desc, fdc: ff.fdcId };
+        }
         const d = des.get(code); if (!d) throw new Error('Tarif malzemesi yok: ' + code);
         const pv = usdaValues(code); const fl = flavValues.get(code); if (fl) Object.assign(pv, fl.v); fillFromFoundation(code, pv, null); fillFromExtra(code, pv, null);
         return { code, g, inert: !!inert, v: pv, desc: d.long };
@@ -349,7 +355,7 @@ for (const food of FOODS) {
         v[n.key] = round(val); s[n.key] = 'r';
       }
       return { key, label: custom || FORM_LABELS[key], usda: null, ifct: null, estFrom: null,
-        recipeOf: parts.map((x) => ({ ndb: x.code, desc: x.desc, pct: Math.round((x.g / total) * 1000) / 10 })), ...(yld < 1 ? { recipeYield: food.recipeYield } : {}),
+        recipeOf: parts.map((x) => ({ ...(x.fdc ? { fdc: x.fdc } : { ndb: x.code }), desc: x.desc, pct: Math.round((x.g / total) * 1000) / 10 })), ...(yld < 1 ? { recipeYield: food.recipeYield } : {}),
         portions: food.recipePortion ? [{ g: food.recipePortion, label: '1 fincan (tarif)', en: '1 cup (recipe)', r: 1 }] : key === 'icecek' ? [{ g: 200, label: '1 su bardağı (≈200 g)', en: '1 glass (≈200 g)' }] : [], v, s };
     }
     if (!ndb && food.fixed) {
@@ -376,6 +382,7 @@ for (const food of FOODS) {
     id: food.id, tr: food.tr, en: food.en, cat: food.cat,
     sci: forms.find((f) => f.usda?.sci)?.usda.sci || forms.find((f) => f.ifct?.sci)?.ifct.sci || null,
     allergens: food.allergens || [],
+    dietary: curatedDietProfile(food),
     animal: !!food.animal || ANIMAL_CATS.includes(food.cat),
     ...(NICHE.has(food.id) ? { niche: true } : {}),
     note: food.note || null,
