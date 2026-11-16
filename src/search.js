@@ -1,5 +1,6 @@
 import { norm } from './util.js';
 export const SEARCH_ALIASES = {
+  kuru_kayisi: ['kayısı kurusu', 'kükürtlü kuru kayısı', 'dried apricots', 'sulphured', 'sulfured'],
   salatalik: ['hıyar'], yabanmersini: ['yabanmersini', 'blueberry'],
   ahududu: ['frambuaz'], karabugday: ['greçka'], brokoli: ['brokkoli'],
   keten: ['flaxseed'], kirmizi_fasulye: ['meksika fasulyesi'],

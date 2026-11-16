@@ -197,7 +197,7 @@ export const EN_FOODS = {
   nar: 'Pomegranate', incir: 'Fig', trabzon_hurmasi: 'Persimmon (Japanese)', karpuz: 'Watermelon', kavun: 'Cantaloupe', kavun_balli: 'Honeydew melon',
   ananas: 'Pineapple', mango: 'Mango', papaya: 'Papaya', guava: 'Guava', avokado: 'Avocado', carkifelek: 'Passion fruit', lici: 'Lychee',
   jackfruit: 'Jackfruit', demirhindi: 'Tamarind', plantain: 'Plantain (cooking banana)', zeytin_siyah: 'Olives (black, canned)', zeytin_yesil: 'Olives (green, brined)',
-  kuru_kayisi: 'Dried apricots (sulphured)', kuru_incir: 'Dried figs', kuru_uzum: 'Raisins (seedless)', hurma: 'Dates (Deglet Noor)', hurma_medjool: 'Dates (Medjool)',
+  kuru_kayisi: 'Dried apricots', kuru_incir: 'Dried figs', kuru_uzum: 'Raisins (seedless)', hurma: 'Dates (Deglet Noor)', hurma_medjool: 'Dates (Medjool)',
   kuru_erik: 'Prunes', goji: 'Goji berries', kuru_muz: 'Banana powder / dried banana',
   domates: 'Tomato', domates_salcasi: 'Tomato paste (no salt)', salatalik: 'Cucumber (with peel)', biber_yesil: 'Green bell pepper', biber_kirmizi: 'Red bell pepper',
   aci_biber: 'Hot chilli pepper (red)', patlican: 'Aubergine (eggplant)', kabak: 'Courgette (zucchini)', balkabagi: 'Pumpkin', brokoli: 'Broccoli', karnabahar: 'Cauliflower',

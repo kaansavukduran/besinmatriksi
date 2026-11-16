@@ -1,3 +1,8 @@
+# 1.1.2-beta.41 · 16 Kasım 2026
+
+- B154: listede ve tariflerde ad Kuru kayısı olarak sadeleşti; İngilizcesi Dried apricots. Kayısı kurusu ve eski kükürtlü adıyla da bulunur.
+- USDA09032 ölçümünün kükürt dioksitle işlenmiş ürüne ait olduğu ayrıntı notunda açıklanır. Sülfit bilgisi, bütün besin değerleri ve kayıtlı tarif kimliği korunur; gün kurusu için ayrı ölçüm olduğu iddia edilmez.
+
 # 1.1.2-beta.40 · 16 Kasım 2026
 
 - B153: sol üstteki logo ve uygulama adı Keşfet ana görünümüne döner. Arama/kategori/ayrıntı kapanır; kayıtlı tarifler, beslenme ve görünüm tercihleri korunur. Klavyede Enter ve boşluk tuşuyla kullanılabilir.

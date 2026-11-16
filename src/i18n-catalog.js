@@ -1,5 +1,6 @@
 // B141 katalog açıklamaları; ana sözlük tarafından kullanılır.
 export const CATALOG_EN = {
+  "Bu kaydın besin değerleri USDA’nın kükürt dioksitle işlenmiş kuru kayısı ölçümüne aittir. Kükürtsüz (gün kurusu) ürün için ayrı bir ölçüm değildir.": "The nutrient values in this record come from the USDA measurement for dried apricots treated with sulfur dioxide. This is not a separate measurement for unsulphured, sun-dried apricots.",
   "USDA genel ürün kaydıdır; marka, tarif ve porsiyon değişebilir. Ambalaj etiketi farklıysa Kendi besinim ile ürününü ekle.": "This is a generic USDA product record; brands, recipes and portions vary. If the package label differs, add your product under My foods.",
   "Dondurulmuş pizzanın fırında pişirilmiş ağırlığı içindir; donmuş/pişmemiş gramla aynı değildir. Marka, hamur ve üst malzemeler değerleri değiştirir.": "Values refer to the baked weight of frozen pizza, not its frozen/unbaked weight. Brands, crusts and toppings affect the values.",
   "Pepperoni içeren USDA pizza kaydıdır; Türkiye’deki sucuklu pizzayla aynı tarif değildir.": "This USDA pizza record contains pepperoni; it is not the same recipe as Turkish sucuk pizza.",

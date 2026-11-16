@@ -1,12 +1,12 @@
 {
   "schema_version": "1",
   "project": "Besin Matriksi",
-  "product_version": "1.1.2-beta.40",
+  "product_version": "1.1.2-beta.41",
   "development_state": "IN_PROGRESS",
-  "last_forge_at": "2026-11-16T13:20:05.605012+00:00",
-  "last_completed_forge": "B153",
+  "last_forge_at": "2026-11-16T13:29:37.498645+00:00",
+  "last_completed_forge": "B154",
   "active_forge": null,
-  "next_recommended_forge": "B154",
+  "next_recommended_forge": "B155",
   "branch": "ccr-1e1934aa-iv8aev",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
   "validated_code_commit": null,
@@ -14,27 +14,22 @@
   "verified_gates": [
     {
       "id": "unit",
-      "result": "PASS152/152 beta.40",
+      "result": "PASS153/153 beta.41",
       "level": "UNIT_TESTED"
     },
     {
       "id": "web",
-      "result": "PASS beta.40 web/PWA and single HTML11.23MB",
+      "result": "PASS beta.41 web/PWA and single HTML11.24MB",
       "level": "BUILT"
     },
     {
       "id": "browser",
-      "result": "PASS24 existing hierarchy+diet cases, then PASS12/12 corrected header/navigation cases on final beta.40 runtime; TR/EN desktop/phone, keyboard,768/1024/1440px and320/960px28px200percent. Separate runs, not a36/36 run.",
-      "level": "RUNTIME_TESTED"
-    },
-    {
-      "id": "axe",
-      "result": "PASS0 WCAG2.1AA violations on light/dark Explore home; desktop category screenshot inspected,1440px4rows and no horizontal overflow",
+      "result": "PASS16/16 Chromium desktop/phone TR/EN apricot name+aliases+source+saved recipe and hierarchy regression;48.1seconds",
       "level": "RUNTIME_TESTED"
     },
     {
       "id": "data",
-      "result": "Food measurements, saved reference IDs and existing settings schema unchanged",
+      "result": "PASS all693 old food forms/values/sources,allergens and dietary metadata unchanged; only kuru_kayisi.tr and note differ",
       "level": "UNIT_TESTED"
     },
     {
@@ -44,7 +39,7 @@
     },
     {
       "id": "native-runtime",
-      "result": "NOT_RUN beta.40 physical devices, screen reader, local Firefox/WebKit and native runtime",
+      "result": "NOT_RUN beta.41 physical devices, screen reader, local Firefox/WebKit and native runtime",
       "level": "NOT_RUN"
     }
   ],
@@ -88,7 +83,7 @@
     "trigger": "trig_01Ljjr3Dkp6uBiQcjFaGuzm3",
     "stop_when": "Tüm uygulanabilir yol haritası işleri ve son kapılar doğrulandığında."
   },
-  "notes": "B153: clickable brand returns to Explore home; desktop category buttons wrap into rows without horizontal scrolling. Search/category/detail cleared only on brand navigation; recipes, filters and appearance preserved. Mobile swipe and saved grid preference remain. See docs/evidence/B153/VERIFY.md.",
+  "notes": "B154: plain Kuru kayısı / Dried apricots name; common and legacy search aliases. USDA09032 sulfured-source distinction moved to a localized detail note; sulphite metadata, all food forms/values and saved references unchanged. See docs/evidence/B154/VERIFY.md.",
   "release_target": "v1.1.2-beta.1",
   "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission. EFSA group reference data are separate from food measurements; only verified compatible PRI/AI records, EFSA attribution required.",
   "historical_verified_gates": [

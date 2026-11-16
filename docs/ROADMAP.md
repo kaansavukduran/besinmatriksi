@@ -97,6 +97,7 @@ B003b son kanıtı: `docs/evidence/B003b-packages.json`; 49 birim / 30 tarayıc�
 | B151 | Meyve/sebze alt grupları, birleşik İçecekler hiyerarşisi ve kaynaklı içecek kapsamı | RUNTIME_TESTED; beta.38; docs/evidence/B151/AUDIT.md |
 | B152 | Soya ürünlerini Baklagiller altında gruplama | RUNTIME_TESTED; beta.39; docs/evidence/B152/VERIFY.md |
 | B153 | Tıklanabilir marka ile Keşfet ana görünümü ve kaydırmasız masaüstü kategori satırları | RUNTIME_TESTED; beta.40; docs/evidence/B153/VERIFY.md |
-| B154 | Güncel açık Foundation/FNDDS kapsamını doğruluk ve performans bütçesiyle büyütme | PLANNED; tek sonraki Forge |
+| B154 | Kuru kayısı adını sadeleştirme, gündelik arama ve kaynak açıklığı | RUNTIME_TESTED; beta.41; docs/evidence/B154/VERIFY.md |
+| B155 | Güncel açık Foundation/FNDDS kapsamını doğruluk ve performans bütçesiyle büyütme | PLANNED; tek sonraki Forge |
 
 Fiziksel telefon ve ekran okuyucu kabulü uygulanmadı; önceki B142 önerisi tamamlandı sayılmadan cihaz erişimi bekleyen işlere taşındı. Cronometer kapalı/lisanslı kataloglarıyla tam eşitlik doğrulanmış değildir.

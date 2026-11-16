@@ -109,7 +109,7 @@ export const FOODS = [
   F('zeytin_yesil', 'Zeytin (yeşil, salamura)', 'green olive', 'meyve', [['konserve', '09195', null]]),
 
   // ---------------- Kuru meyveler ----------------
-  F('kuru_kayisi', 'Kuru kayısı (kükürtlü)', 'dried apricot', 'kurumeyve', [['kurutulmus', '09032', null]], { allergens: ['sulfit'] }),
+  F('kuru_kayisi', 'Kuru kayısı', 'dried apricot', 'kurumeyve', [['kurutulmus', '09032', null]], { allergens: ['sulfit'], note: 'Bu kaydın besin değerleri USDA’nın kükürt dioksitle işlenmiş kuru kayısı ölçümüne aittir. Kükürtsüz (gün kurusu) ürün için ayrı bir ölçüm değildir.' }),
   F('kuru_incir', 'Kuru incir', 'dried fig', 'kurumeyve', [['kurutulmus', '09094', null]]),
   F('kuru_uzum', 'Kuru üzüm (çekirdeksiz)', 'raisin', 'kurumeyve', [['kurutulmus', '09298', null]]),
   F('hurma', 'Hurma (Deglet Noor)', 'date', 'kurumeyve', [['kurutulmus', '09087', null]]),

@@ -835,3 +835,9 @@
 - Kanıt152/152 birim;web/PWA+single11,23MB;24bildirim. İlk koşumda24 mevcut hiyerarşi/beslenme testiPASS,12yeni kontrol test beklentileri nedeniyleFAIL (yanlış atıştırmalık kimliği, sınıf sonu boşluğu, fare odağında klavye halkası beklentisi). Beklentiler düzeltilip yeni12/12 son koddaPASS(1dk); tek36/36koşumu iddiası yok.
 - Gerçek girişteTR/EN desktop/phone,768/1024/1440px kategori erişimi;320/960px,28px,%200,emoji kapalı ve her iki ızgara tercihi; bütün sekmelerden dönüş, kayıt ve ayarların ham dizelerinin değişmemesi/yenileme test edildi. Açık/koyu ana görünümde axe0WCAG2.1AAihlal,1440px görsel incelendi.
 - Fiziksel cihaz/ekranokuyucu/yerel diğer motorlar/nativeNOT_RUN; yeni Release/store yok. Yayın makbuzları teslimde ayrı. Ayrıntı docs/evidence/B153/VERIFY.md. Sonraki tek ForgeB154: açık Foundation/FNDDS kaynak kapsamı.
+
+## B154 · 2026-11-16 · Kuru kayısı gündelik adı ve kaynak notu
+- Kullanıcının son isteği önceki kaynak genişletmesini B155'e taşıdı. Kuru kayısı (kükürtlü) adı Kuru kayısı; İngilizce Dried apricots. Kayısı kurusu ve eski kükürtlü/İngilizce kaynak yazımlarıyla arama korunur. Kükürtsüz/gün kurusu eş anlamlı eklenmedi.
+- USDA09032 açıklaması “Apricots, dried, sulfured, uncooked” aynıdır; kaynak işleme bilgisi TR/EN ayrıntı notunda açıklandı. Sülfit alerjen bilgisi ve241kcal değişmedi.693önceki besinin bütün biçimleri/ölçümleri/kaynakları,alerjenleri ve dietary alanları karşılaştırıldı; tek fark kuru_kayisi.tr ve note. Kayıtlı kimlik/biçim sırası korunur.
+- Kanıt153/153 birim;web/PWA+single11,24MB;24bildirim;16/16 Chromium TR/EN desktop/phone(48,1sn). Normal arama→ayrıntı→kaynak/sülfit→tarif→yenilemede aynı kimlik ve sade ad; mevcut hiyerarşi/%200 dar ekran regresyonu daPASS. Yeni bağımlılık veya ölçüm yok.
+- Fiziksel/ekranokuyucu/yerel diğer motorlar/nativeNOT_RUN; yeni Release/store yok. Yayın makbuzları teslimde ayrı. Ayrıntı docs/evidence/B154/VERIFY.md. Sonraki tek ForgeB155: açık Foundation/FNDDS kaynak kapsamı.

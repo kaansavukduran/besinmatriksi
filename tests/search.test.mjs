@@ -3,6 +3,16 @@ import assert from 'node:assert/strict';
 import { norm } from '../src/util.js';
 import { searchKey, recentSearches } from '../src/search.js';
 import { normalizeProfiles, exportPayload, parseImport } from '../src/store.js';
+import fs from 'node:fs';
+import {EN_FOODS} from '../src/i18n-foods.js';
+test('B154 dried apricots use a plain name and common searches while retaining sulphite/source identity',()=>{
+ const food=JSON.parse(fs.readFileSync(new URL('../src/data/foods.json',import.meta.url))).foods.find(f=>f.id==='kuru_kayisi');
+ assert.equal(food.tr,'Kuru kayısı');assert.equal(EN_FOODS[food.id],'Dried apricots');
+ const key=searchKey(food);for(const query of ['kuru kayısı','kayısı kurusu','kükürtlü kuru kayısı','dried apricots','sulphured','sulfured'])for(const term of norm(query).split(' '))assert.ok(key.includes(term),query);
+ assert.ok(!key.includes('kukurtsuz'));assert.ok(!key.includes('gun kurusu'));
+ assert.deepEqual(food.allergens,['sulfit']);assert.match(food.note,/kükürt dioksitle işlenmiş/);assert.match(food.note,/ayrı bir ölçüm değildir/);
+ assert.equal(food.forms[0].usda.ndb,'09032');assert.equal(food.forms[0].v.energy,241);
+});
 test('Türkçe arama İ/ı, ş ve diakritiklere duyarsızdır; eş anlamlıları bulur', () => {
   assert.equal(norm('İSPaNAK ışık Şeftâli'), 'ispanak isik seftali');
   assert.ok(searchKey({ id: 'salatalik', tr: 'Salatalık', en: 'Cucumber' }).includes(norm('hıyar')));
