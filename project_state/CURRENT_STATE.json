@@ -1,12 +1,12 @@
 {
   "schema_version": "1",
   "project": "Besin Matriksi",
-  "product_version": "1.1.2-beta.37",
+  "product_version": "1.1.2-beta.38",
   "development_state": "IN_PROGRESS",
-  "last_forge_at": "2026-11-16T07:48:12.627111+00:00",
-  "last_completed_forge": "B150",
+  "last_forge_at": "2026-11-16T12:02:13.791798+00:00",
+  "last_completed_forge": "B151",
   "active_forge": null,
-  "next_recommended_forge": "B151",
+  "next_recommended_forge": "B152",
   "branch": "ccr-1e1934aa-iv8aev",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
   "validated_code_commit": null,
@@ -14,27 +14,27 @@
   "verified_gates": [
     {
       "id": "unit",
-      "result": "PASS147/147 final beta.37",
+      "result": "PASS151/151 final beta.38",
       "level": "UNIT_TESTED"
     },
     {
       "id": "web",
-      "result": "PASS beta.37 web/PWA and single HTML",
+      "result": "PASS beta.38 web/PWA and single HTML",
       "level": "BUILT"
     },
     {
       "id": "browser",
-      "result": "PASS254/254 broad Chromium desktop/phone; after final English coffee search-name correction PASS12/12 feature acceptance. Not a single266-test run. Two managed file:// cases excluded.",
+      "result": "PASS262/262 broad Chromium desktop/phone; after final parent-heading font alignment PASS20/20 hierarchy+diet tests. Not a single282-test run; two managed file:// cases excluded.",
       "level": "RUNTIME_TESTED"
     },
     {
       "id": "axe",
-      "result": "PASS0 WCAG2.1AA violations light/dark new filter page; desktop/mobile images inspected",
+      "result": "PASS0 WCAG2.1AA violations on light/dark parent pages; desktop/mobile images and scoped custom search checked",
       "level": "RUNTIME_TESTED"
     },
     {
       "id": "data",
-      "result": "PASS deterministic generation; all664 previous foods unchanged except new dietary metadata; extended catalogue and EFSA unchanged",
+      "result": "PASS deterministic regeneration; all685 previous form values, sources and order unchanged; four existing SR28 records moved to curated,713+8076=8789",
       "level": "BUILT"
     },
     {
@@ -44,7 +44,7 @@
     },
     {
       "id": "native-runtime",
-      "result": "NOT_RUN beta.37; physical devices, screen reader and local Firefox/WebKit NOT_RUN",
+      "result": "NOT_RUN beta.38 physical devices, screen reader, local Firefox/WebKit and native runtime",
       "level": "NOT_RUN"
     }
   ],
@@ -88,7 +88,7 @@
     "trigger": "trig_01Ljjr3Dkp6uBiQcjFaGuzm3",
     "stop_when": "Tüm uygulanabilir yol haritası işleri ve son kapılar doğrulandığında."
   },
-  "notes": "B150: compact shared dietary filter with independent vegetarian egg/dairy boxes above extra restrictions; six extra ingredient filters. Coffee/Fast Food/Snacks in category row;21 named oat/almond/soy coffee recipe estimates.685 foods/831 forms; old values/IDs preserved. See docs/evidence/B150/AUDIT.md.",
+  "notes": "B151: grouped fruit/dried-fruit and vegetable/leaf/root parents; Coffee replaced by unified Drinks root with nine sections. Eight new beverages, with four named herbal infusions explicitly unmeasured.693 foods/839 forms. Existing IDs and every previous form value preserved. See docs/evidence/B151/AUDIT.md.",
   "release_target": "v1.1.2-beta.1",
   "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission. EFSA group reference data are separate from food measurements; only verified compatible PRI/AI records, EFSA attribution required.",
   "historical_verified_gates": [
@@ -343,16 +343,16 @@
     "cross_browser": "PASS (ci.yml run success)"
   },
   "current_forge": {
-    "id": "B150",
-    "base_commit": "2cc61d3787f3ce2d23456939e8173cf8f19c0e76",
-    "local_evidence": "docs/evidence/B150/AUDIT.md",
+    "id": "B151",
+    "base_commit": "e1e2088491bb1e8a97307651ce1dfb5c65e31e0c",
+    "local_evidence": "docs/evidence/B151/AUDIT.md",
     "level": "RUNTIME_TESTED"
   },
-  "validation_base_commit": "2cc61d3787f3ce2d23456939e8173cf8f19c0e76",
+  "validation_base_commit": "e1e2088491bb1e8a97307651ce1dfb5c65e31e0c",
   "current_forges": [
     {
-      "id": "B150",
-      "scope": "Approved dietary filters, vegetarian egg/dairy choices, category placement and 21 plant-milk coffee recipes",
+      "id": "B151",
+      "scope": "Fruit/vegetable descendants, unified grouped beverage catalogue and eight beverage records",
       "level": "RUNTIME_TESTED"
     }
   ],
@@ -364,11 +364,11 @@
     "dataset": "USDA SR28",
     "source_year": 2015,
     "total_source_records": 8789,
-    "curated_source_records": 709,
-    "extended_records": 8080,
+    "curated_source_records": 713,
+    "extended_records": 8076,
     "covered_source_records": 8789,
-    "curated_foods": 685,
-    "curated_forms": 831,
+    "curated_foods": 693,
+    "curated_forms": 839,
     "cronometer_exact_parity": "NOT_VERIFIED"
   },
   "resolved_blockers": [

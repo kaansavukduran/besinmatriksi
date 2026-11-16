@@ -1,3 +1,11 @@
+# 1.1.2-beta.38 · 16 Kasım 2026
+
+- B151: Meyveler içinde kuru meyveler; Sebzeler içinde yeşil yapraklılar ve kök/yumrular. Üst kategori seçimi bütün alt grupları, Tümü'ndeki gibi başlık ve besin ızgaralarıyla gösterir.
+- Kahveler sekmesinin yerini İçecekler aldı. Kahve, çay, bitkisel çay, sıcak/soğuk içecek, meyve/sebze suyu ve bitkisel/sütlü içecekler burada gruplanır. Arama, sıralama, beslenme filtresi ve besin seçicisi aynı hiyerarşiyi kullanır.
+- Adaçayı, ıhlamur, nane ve rooibos ayrı demleme kayıtları; türüne ait doğrulanmış ölçümü olmayan değerler başka bitkiden veya kuru baharattan kopyalanmaz.
+- USDA kaynaklı sıcak çikolata karışımı, limonlu şekerli buzlu çay, şekersiz hazır yeşil çay ve konsantreden limonata. Toplam693 besin/839biçim; mevcut685 kaydın biçim sırası ve bütün ölçümleri korunur.
+- SR28 kapsamı8.789/8.789; dört kaynak kaydı geniş listeden ana kataloğa taşındı (713ana/8.076geniş), yinelenen kaynak eklenmedi.
+
 # 1.1.2-beta.37 · 16 Kasım 2026
 
 - B150: kahve, Fast Food ve Atıştırmalıklar üst kategori sırasının sonuna taşındı; tanıtım içindeki yinelenen bağlantılar kaldırıldı. Fast Food adı sadeleştirildi.

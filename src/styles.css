@@ -985,3 +985,6 @@ button.micro-name:hover { text-decoration-color: currentColor; }
 .diet-filter { grid-template-columns: minmax(0, 1fr); }
 .diet-filter > *, .diet-vegetarian legend, .diet-checks { min-width: 0; max-width: 100%; overflow-wrap: anywhere; }
 .diet-filter .linkish { white-space: normal; }
+
+/* Parent titles use the same readable scale as their grouped catalogue sections. */
+.catalog-heading.grouped-heading h2 { font-size: 1.5rem; min-width: 0; max-width: 100%; overflow-wrap: anywhere; }

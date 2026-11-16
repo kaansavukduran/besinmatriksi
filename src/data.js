@@ -1,3 +1,4 @@
+import { categoryContains, rootCategories } from './catalog-tree.js';
 import { matchesDiet, extendedDietProfile } from './diet.js';
 import DB from './data/foods.json';
 import { norm } from './util.js';
@@ -12,6 +13,7 @@ export const categoryName = (c) => (en() && EN_CATEGORIES[c.id]) || c.name;
 
 export const META = DB.meta;
 export const CATEGORIES = DB.categories.map(([id, name, icon]) => ({ id, name, icon }));
+export const NAV_CATEGORIES = rootCategories(CATEGORIES);
 export const FOODS = DB.foods;
 const byId = new Map(FOODS.map((f) => [f.id, f]));
 for (const f of FOODS) f._k = searchKey(f) + ' ' + norm(EN_FOODS[f.id] || ''); // ekranda görünen İngilizce adla da bulunur
@@ -110,13 +112,13 @@ export function search(q, { cat = null, ext = false, extGroup = null } = {}) {
   const k = norm(q);
   const terms = k ? k.split(' ') : [];
   const match = (s) => terms.every((t) => s.includes(t));
-  let out = visibleFoods({ niche: SHOW_NICHE || terms.length > 0 }).filter((f) => (!cat || f.cat === cat) && (!terms.length || match(f._k)));
+  let out = visibleFoods({ niche: SHOW_NICHE || terms.length > 0 }).filter((f) => (!cat || categoryContains(f,cat)) && (!terms.length || match(f._k)));
   if (terms.length) {
     out.sort((a, b) => score(b._k, k) - score(a._k, k) || a.tr.localeCompare(b.tr, 'tr'));
   }
   let extOut = [];
-  if (ext && EXT && terms.length) extOut = EXT.foods.filter((f) => (SHOW_ANIMAL || (!f.a && f.diet !== 'unknown')) && (!extGroup || f.g === extGroup) && eligibleExtFood(f) && match(f._k)).sort((a, b) => Number(!!a.branded) - Number(!!b.branded) || score(b._k, k) - score(a._k, k) || a.en.localeCompare(b.en));
-  const custom = terms.length ? CUSTOM.filter((f) => eligibleFood(f) && match(f._k)) : [];
+  if (ext && EXT && terms.length && !cat) extOut = EXT.foods.filter((f) => (SHOW_ANIMAL || (!f.a && f.diet !== 'unknown')) && (!extGroup || f.g === extGroup) && eligibleExtFood(f) && match(f._k)).sort((a, b) => Number(!!a.branded) - Number(!!b.branded) || score(b._k, k) - score(a._k, k) || a.en.localeCompare(b.en));
+  const custom = terms.length && !cat ? CUSTOM.filter((f) => eligibleFood(f) && match(f._k)) : [];
   return { curated: out, ext: extOut, custom };
 }
 function score(s, k) { return s.startsWith(k) ? 3 : s.includes(' ' + k) ? 2 : 1; }

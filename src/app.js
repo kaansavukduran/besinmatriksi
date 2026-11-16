@@ -1,6 +1,7 @@
+import { catalogGroup, categoryContains, catalogSections, DRINK_GROUPS } from './catalog-tree.js';
 import { DIET_KEYS, dietActive } from './diet.js';
 import { renderDietFilter } from './diet-view.js';
-import { setDietSettings, eligibleFood, eligibleRef, setNicheVisible, extAnimalGroup, setAnimalVisible, visibleFoods, ANIMAL_CATS, foodName, categoryName, formName, CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, extGroups, extMeta, extFoods, setCustomFoods, customFoods } from './data.js';
+import { setDietSettings, eligibleFood, eligibleRef, setNicheVisible, extAnimalGroup, setAnimalVisible, visibleFoods, ANIMAL_CATS, foodName, categoryName, formName, CATEGORIES, NAV_CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, extGroups, extMeta, extFoods, setCustomFoods, customFoods } from './data.js';
 import { NUTRIENTS, NUTRIENT_BY_KEY, SECTIONS, SOURCES } from './nutrients.js';
 import { scaleItem, aggregate, scaleAggregate } from './calc.js';
 import { combineRecipes } from './recipe-total.js';
@@ -166,8 +167,14 @@ function catalogPending() {
 
 function catName(id) {
   if (id?.startsWith('ext:')) return 'USDA: ' + L(extGroups()[id.slice(4)] || '');
-  const c = CATEGORIES.find((c) => c.id === id);
+  const c = NAV_CATEGORIES.find(c=>c.id===id) || DRINK_GROUPS.find(c=>c.id===id) || CATEGORIES.find(c=>c.id===id);
   return c ? categoryName(c) : id === 'custom' ? L("Kendi besinlerim") : '';
+}
+function foodCategoryPath(food){
+ const group=catalogGroup(food),parent=NAV_CATEGORIES.find(c=>categoryContains(food,c.id));
+ const child=DRINK_GROUPS.find(c=>c.id===group)||CATEGORIES.find(c=>c.id===group);
+ if(parent&&child&&parent.id!==child.id)return categoryName(parent)+' › '+categoryName(child);
+ return parent?categoryName(parent):catName(food.cat);
 }
 const catIcon = (id) => (S.settings.emoji ? CATEGORIES.find((c) => c.id === id)?.icon || '📦' : '');
 // Besinin kendi simgesi; yoksa kategori simgesi
@@ -243,10 +250,8 @@ function extButton(f, action) {
 function categoryNav(prefix, current) {
   const vis = visibleFoods();
   const all = `<button class="cat ${!current ? 'on' : ''}" data-action="${prefix}-cat" data-cat=""><span class="cat-i">${S.settings.emoji ? '✨' : ''}</span><span class="cat-l">${L("Tümü")}</span> <span class="cnt">${vis.length}</span></button>`;
-  const trailing = ['kahve','fastfood','atistirmalik'];
-  const ordered = [...CATEGORIES.filter(c=>!trailing.includes(c.id)), ...trailing.map(id=>CATEGORIES.find(c=>c.id===id))];
-  const cats = ordered.filter((c) => S.settings.showAnimal || !ANIMAL_CATS.has(c.id)).map((c) => {
-    const n = vis.filter((f) => f.cat === c.id).length;
+  const cats = NAV_CATEGORIES.filter((c) => S.settings.showAnimal || !ANIMAL_CATS.has(c.id)).map((c) => {
+    const n = vis.filter(f=>categoryContains(f,c.id)).length;
     return `<button class="cat ${current === c.id ? 'on' : ''}" data-action="${prefix}-cat" data-cat="${c.id}"><span class="cat-i">${S.settings.emoji ? c.icon : ''}</span><span class="cat-l">${esc(categoryName(c))}</span> <span class="cnt">${n}</span></button>`;
   }).join('');
   const ext = `<button class="cat ${current === 'ext' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="ext"><span class="cat-i">${S.settings.emoji ? '🗂️' : ''}</span><span class="cat-l">${L("Tam Katalog")}</span> <span class="cnt">${fmtNum(META.ext)}</span></button>`;
@@ -332,11 +337,13 @@ function foodList(prefix, cat, q, extGroup) {
   const res = search(q, { cat, ext: S.settings.showExt && extLoaded() && !!q });
   if (!res.curated.length && !res.ext.length && !res.custom.length) return `<p class="empty">${L("Eşleşen besin yok. Aramayı kısalt veya “Tümü”ne dön.")}</p>${q ? fullCatalogSearch(prefix) : ''}`;
   let html = (prefix === 'ex' ? catalogHeading(cat, q, res.curated.length + res.ext.length + res.custom.length) : '') + (!q && !cat ? recentRow(prefix) : '') + sortBar(prefix);
-  if (!q && !cat && S.sort === 'default') {
-    for (const c of CATEGORIES) {
-      const fs = res.curated.filter((f) => f.cat === c.id);
-      if (!fs.length) continue;
-      html += `<h3 class="grp">${esc(categoryName(c))}</h3><div class="foods">${fs.map((f) => foodButton(f, prefix + '-pick')).join('')}</div>`;
+  const groupedCategory = ['meyve','sebze','icecek'].includes(cat);
+  if (prefix==='ex' && groupedCategory && !q && S.sort!=='default') html += `<p class="hint">${L("Her alt başlık kendi içinde sıralanır.")}</p>`;
+  if (groupedCategory || (!q && !cat && S.sort === 'default')) {
+    for (const group of catalogSections(res.curated,CATEGORIES)) {
+      const title=categoryName(group);
+      const heading=prefix==='ex' && !q && cat && title===catName(cat) ? '' : `<h3 class="grp">${esc(title)}</h3>`;
+      html += `<section class="catalog-section" data-catalog-group="${group.id}" aria-label="${esc(title)}">${heading}<div class="foods">${(q?group.foods:sortFoods(group.foods)).map(f=>foodButton(f,prefix+'-pick')).join('')}</div></section>`;
     }
   } else {
     html += `<div class="foods">${(q ? res.curated : sortFoods(res.curated)).map((f) => foodButton(f, prefix + '-pick')).join('')}</div>`;
@@ -375,7 +382,7 @@ function renderExplore() {
     ? `<div class="dhead">
         <button class="back" data-action="ex-back" aria-label="${L("Listeye dön")}">← ${L("Liste")}</button>
         <div class="dtitle"><h2>${S.settings.emoji && item.food ? foodIcon(item.food, 40) + ' ' : ''}${esc(item.name)}</h2>
-          <div class="dsub">${item.animal ? `<span class="tag-animal">${L("Hayvansal")}</span> ` : ''}${esc(catName(item.cat))}${item.sci ? ` · <i>${esc(item.sci)}</i>` : ''}</div></div>
+          <div class="dsub">${item.animal ? `<span class="tag-animal">${L("Hayvansal")}</span> ` : ''}${esc(item.food ? foodCategoryPath(item.food) : catName(item.cat))}${item.sci ? ` · <i>${esc(item.sci)}</i>` : ''}</div></div>
       </div>
       ${formChips('ex', S.sel)}
       ${amountControls('ex', S.amount, item.portions, { liquid: item.liquid })}
@@ -424,7 +431,7 @@ function welcome() {
 const visibleCurated = () => search('', { cat: null }).curated;
 function catalogHeading(cat, q, count) {
   const title = q ? L("“{q}” için sonuçlar", { q }) : cat ? catName(cat) : L("Besinleri keşfet");
-  return `<div class="catalog-heading"><h2>${esc(title)}</h2><span class="hint">${L("{n} besin", { n: count })}</span></div>`;
+  return `<div class="catalog-heading ${['meyve','sebze','icecek'].includes(cat)?'grouped-heading':''}"><h2>${esc(title)}</h2><span class="hint">${L("{n} besin", { n: count })}</span></div>`;
 }
 
 function matrixForExplore(item) {

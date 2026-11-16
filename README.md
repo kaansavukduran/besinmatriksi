@@ -46,8 +46,9 @@ PWA'nın ilk çevrimiçi yüklemesi önbelleğe alınmalıdır; tek HTML dosyas�
 ## Web yayını
 
 Vercel: **https://besinmatriksi.vercel.app/**.
+Cloudflare Pages: **https://besinmatriksi.pages.dev/**.
 GitHub Pages: **https://kaansavukduran.github.io/besinmatriksi/**.
-İki adres de 15 Kasım 2026 tarihinde gerçek tarayıcı girişiyle doğrulandı.
+Üç adres de 16 Kasım 2026 tarihinde gerçek tarayıcı girişiyle doğrulandı.
 
 `.github/workflows/pages.yml`, üretim dalı `ccr-1e1934aa-iv8aev`
 güncellendiğinde testleri ve web derlemesini çalıştırır, ardından `dist`
@@ -60,16 +61,30 @@ ve dağıtım çıktısındaki URL'den izlenebilir.
 Vite varlıkları, manifest ve service worker göreli yollar kullanır; aynı
 çıktı kök alan adında ve `/besinmatriksi/` altında çalışır. İlk açılıştan sonra
 telefonda **Ana ekrana ekle / Uygulamayı yükle** kullanılabilir.
-Bu iki alan adının cihaz kayıtları ayrıdır; tarif ve tercihleri taşımak için
+Bu alan adlarının cihaz kayıtları ayrıdır; tarif ve tercihleri taşımak için
 yedek dışa/içe aktarma kullanılır.
 
 ## Veri kapsamı ve lisanslar
 
 **Besin bileşimi USDA SR28 ve kayıtlarda belirtilen USDA Foundation, FNDDS ve özel bileşen kaynaklarından gelir.**
 EFSA DRV Finder ayrıca 23 bileşen / 169 PRI-AI kaydıyla isteğe bağlı grup referansıdır; besin ölçümü değildir. Ayarlar → Yüzde referansı → EFSA: yaş ve kaynak cinsiyet grubunu seç. Yetişkin çinko için fitat, yetişkin kadın demiri için menopoz grubu ayrıca seçilir. Eşleşmeyen veya kapsam dışı alanda yüzde gösterilmez. Kaynak/görüş yılı ve koşullar açılabilir tabloda, PRI/AI türü matrikste ve CSV'de korunur. Kişisel hedefler değişmez.
-**685 küratörlü besin / 831 tüketim biçimi.** Tam USDA SR28 kaynağının **8.789/8.789** kaydı erişilebilir: 709 benzersiz SR28 kaydı küratörlü biçimlerde, kalan **8.080 kayıt** ayrı kaynak kataloğundadır. 685 besin adını, 8.789 ise hazırlamaya özgü kaynak kaydını sayar. Niş/hayvansal gizleme tercihleri ana ekranda görünen sayıyı değiştirir.
+**693 küratörlü besin / 839 tüketim biçimi.** Tam USDA SR28 kaynağının **8.789/8.789** kaydı erişilebilir: 713 benzersiz SR28 kaydı küratörlü biçimlerde, kalan **8.076 kayıt** ayrı kaynak kataloğundadır. 693 besin adını, 8.789 ise hazırlamaya özgü kaynak kaydını sayar. Niş/hayvansal gizleme tercihleri ana ekranda görünen sayıyı değiştirir.
 
 Keşfet → **Tam Katalog** ile ayar açmadan eriş. 80 kayıtlık sayfalar, besin grubu seçimi ve özgün İngilizce ad veya NDB numarasıyla arama vardır. 2015 tarihli SR28 marka kayıtları güncel ambalaj etiketi sayılmaz; içerik ve alerjen bilgisi üründen doğrulanır. Hayvansal kayıtlar gizlenince içeriği belirsiz karma kayıtlar da gizlenir.
+
+**Kategori düzeni:** Meyveler, normal meyveler ile Kuru meyveler'i birlikte;
+Sebzeler, sebzeler, Yeşil yapraklılar ve Kök ve yumrular'ı birlikte gösterir.
+Alt gruplar üst kategori sırasında ayrı sekmeler değildir. Bir üst kategoriye
+girildiğinde Tümü görünümündeki başlık ve besin ızgarası düzeni kullanılır.
+Sıralama alt başlıkların içinde yapılır; arama ve beslenme filtresi üst kategorinin
+bütün alt gruplarına uygulanır. Tarif ve karşılaştırma seçicisi aynı düzeni kullanır.
+
+**İçecekler:** Kahveler, çaylar, bitkisel çaylar, diğer sıcak içecekler, soğuk
+içecekler, meyve/sebze suları, bitkisel sütler, sütlü içecekler ve alkollü içecekler
+aynı üst kategoride gruplanır. Buzlu kahveler soğuk içecekler altında yer alır.
+Adaçayı, ıhlamur, nane ve rooibos demlenmiş tür olarak ayrıdır; türe özel ölçüm
+bulunmayan değerler boş bırakılır. Kuru adaçayının besin değerleri demlemeye
+aktarılmaz. Genel USDA bitki çayı kaydı ayrıca ve açık adıyla korunur.
 
 **Beslenme filtreleri:** kategori listesindeki kompakt menü varsayılan olarak Hepçil'dir.
 Vegan, Vejetaryen veya Pesketaryen seçimi kategoriler arasında korunur;

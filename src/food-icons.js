@@ -134,4 +134,12 @@ export const FOOD_ICONS = {
   espresso_macchiato_soyali: '☕',
   mocha_soyali: '☕',
   buzlu_latte_soyali: '☕',
+  adacayi_demleme: '🍵',
+  ihlamur_cayi: '🍵',
+  nane_cayi: '🍵',
+  rooibos_cayi: '🍵',
+  sicak_cikolata: '🥤',
+  buzlu_cay_limonlu: '🥤',
+  soguk_yesil_cay: '🥤',
+  limonata: '🥤',
 };

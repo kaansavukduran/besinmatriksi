@@ -445,7 +445,7 @@ export const FOODS = [
   F('psyllium', 'Karnıyarık otu tohumu kabuğu (psyllium)', 'psyllium husk', 'tohum', [['toz', null, null]], { unavailable: 'Psyllium kabuğu USDA SR28 / FoodData Central (Foundation, FNDDS) tablolarında yok. Ürün etiketindeki 100 g değerleriyle “Kendi besinlerim”den ekle; çoğunlukla çözünür liftir.' }),
   // B117 (2026-11-13): içecekler ve tahıl çeşitliliği
   F('hibiskus_cayi', 'Hibiskus çayı (bamya çiçeği)', 'hibiscus tea', 'icecek', [['demleme', '14649', null]]),
-  F('bitki_cayi', 'Bitki çayı (ıhlamur, adaçayı, nane…; papatya dışı)', 'herbal tea', 'icecek', [['demleme', '14381', null]]),
+  F('bitki_cayi', 'Bitki çayı (genel USDA kaydı)', 'herbal tea', 'icecek', [['demleme', '14381', null]]),
   F('oolong', 'Oolong çayı', 'oolong tea', 'icecek', [['demleme', '14185', null]]),
   F('turk_kahvesi', 'Türk kahvesi (orta şekerli)', 'turkish coffee', 'kahve', [['icecek', 'N92101600', null]], { note: 'USDA FNDDS, “Türk kahvesi” adı altında demleme kahve + şeker tarifini kullanır. Geleneksel telveli pişirme ve fincan boyutu değişebilir; sade Türk kahvesi ayrı kayıtta veri boşluğu olarak gösterilir.' }),
   F('latte_bitkisel', 'Latte (bitkisel sütle)', 'latte with plant milk', 'kahve', [['icecek', 'N92101903', null]], { note: 'USDA FNDDS: espresso + bitkisel süt (türü belirtilmemiş). Kendi sütünle Tarif oluştur’da hesaplayabilirsin.' }),
@@ -794,3 +794,16 @@ for (const [suffix, tr, en, source, allergens] of [
  });
  PLANT_COFFEES.push(item); FOODS.push(item);
 }
+
+// B151: beverage identities are distinct from dry herbs and generic herbal-tea measurements.
+export const BEVERAGE_ADDITIONS = [
+ F('adacayi_demleme','Adaçayı (demlenmiş)','sage tea brewed','icecek',[['demleme',null,null]],{unavailable:'Bu türün demlenmiş çayı için bu katalogda doğrulanmış ayrı bileşim ölçümü yok. Kuru adaçayının veya genel bitki çayının değerleri kullanılmadı.'}),
+ F('ihlamur_cayi','Ihlamur çayı','linden tea brewed','icecek',[['demleme',null,null]],{unavailable:'Ihlamur çayı için bu katalogda doğrulanmış ayrı bileşim ölçümü yok. Genel bitki çayı ölçümleri ıhlamur ölçümü olarak sunulmadı.'}),
+ F('nane_cayi','Nane çayı','mint peppermint tea brewed','icecek',[['demleme',null,null]],{unavailable:'Demlenmiş nane çayı için bu katalogda doğrulanmış ayrı bileşim ölçümü yok. Kuru veya taze nane değerleri demlemeye aktarılmadı.'}),
+ F('rooibos_cayi','Rooibos çayı','rooibos red bush tea brewed','icecek',[['demleme',null,null]],{unavailable:'Rooibos çayı için bu katalogda doğrulanmış ayrı bileşim ölçümü yok. Başka çay türlerinin değerleri kopyalanmadı.'}),
+ F('sicak_cikolata','Sıcak çikolata (hazır karışım, suyla)','hot cocoa mix prepared with water','icecek',[['icecek','14194',null]],{note:'USDA hazır kakaolu karışımın suyla hazırlanmış kaydıdır. Süt veya bitkisel içecek eklenmiş tarif değildir; karışımın alerjen ve vegan uygunluğu içerik etiketinden doğrulanmalıdır.'}),
+ F('buzlu_cay_limonlu','Buzlu çay (limonlu, şekerli)','iced black tea lemon sweetened ready to drink','icecek',[['icecek','14199',null]],{note:'USDA limonlu, şekerli ve içime hazır siyah çay kaydıdır. Evde demlenip soğutulmuş şekersiz çayla aynı ürün değildir.'}),
+ F('soguk_yesil_cay','Soğuk yeşil çay (şekersiz)','green tea ready to drink unsweetened cold','icecek',[['icecek','14261',null]],{note:'USDA içime hazır şekersiz yeşil çay kaydıdır; şekerli ve aromalı ürünlerin etiketi farklı olabilir.'}),
+ F('limonata','Limonata (konsantreden, suyla)','lemonade frozen concentrate prepared with water','icecek',[['icecek','14293',null]],{note:'USDA beyaz limonata konsantresinin suyla hazırlanmış kaydıdır. Taze limonla yapılan ev limonatasının ölçümü değildir; sulandırma oranı ve şeker miktarı ürüne göre değişir.'}),
+];
+FOODS.push(...BEVERAGE_ADDITIONS);

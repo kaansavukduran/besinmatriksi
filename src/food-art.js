@@ -728,6 +728,14 @@ export const FOOD_ART = {
   espresso_macchiato_soyali: ["cup", "#d48c52", "#ead8bb", "foam"],
   mocha_soyali: ["cup", "#d98f53", "#ead8bb", "foam"],
   buzlu_latte_soyali: ["cup", "#de9254", "#ead8bb", "foam"],
+  adacayi_demleme: ["cup", "#647c34", "#dce9c6", "tea"],
+  ihlamur_cayi: ["cup", "#698537", "#dce9c6", "tea"],
+  nane_cayi: ["cup", "#6e8e3a", "#dce9c6", "tea"],
+  rooibos_cayi: ["cup", "#73973d", "#dce9c6", "tea"],
+  sicak_cikolata: ["cup", "#78a040", "#dce9c6", "tea"],
+  buzlu_cay_limonlu: ["cup", "#7da943", "#dce9c6", "tea"],
+  soguk_yesil_cay: ["cup", "#82b246", "#dce9c6", "tea"],
+  limonata: ["cup", "#87bb49", "#dce9c6", "tea"],
 };
 
 // Eski bir çizimde olmayan şablon/seçenek gelirse güvenle boş döner (emoji yedeği devreye girer)

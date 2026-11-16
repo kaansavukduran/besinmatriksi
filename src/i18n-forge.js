@@ -1,5 +1,14 @@
 // B142–B144: katalog erişimi, veri kapsamı ve ölçü birimi açıklamaları.
 export const FORGE_EN = {
+  "Her alt başlık kendi içinde sıralanır.": "Each subsection is sorted separately.",
+  "Bu türün demlenmiş çayı için bu katalogda doğrulanmış ayrı bileşim ölçümü yok. Kuru adaçayının veya genel bitki çayının değerleri kullanılmadı.": "No separately verified composition measurement for this brewed tea is available in this catalogue. Dry sage or generic herbal-tea values were not used.",
+  "Ihlamur çayı için bu katalogda doğrulanmış ayrı bileşim ölçümü yok. Genel bitki çayı ölçümleri ıhlamur ölçümü olarak sunulmadı.": "No separately verified composition measurement for linden tea is available in this catalogue. Generic herbal-tea measurements are not presented as linden measurements.",
+  "Demlenmiş nane çayı için bu katalogda doğrulanmış ayrı bileşim ölçümü yok. Kuru veya taze nane değerleri demlemeye aktarılmadı.": "No separately verified composition measurement for brewed mint tea is available in this catalogue. Dry or fresh mint values were not transferred to the infusion.",
+  "Rooibos çayı için bu katalogda doğrulanmış ayrı bileşim ölçümü yok. Başka çay türlerinin değerleri kopyalanmadı.": "No separately verified composition measurement for rooibos tea is available in this catalogue. Values from other tea species were not copied.",
+  "USDA hazır kakaolu karışımın suyla hazırlanmış kaydıdır. Süt veya bitkisel içecek eklenmiş tarif değildir; karışımın alerjen ve vegan uygunluğu içerik etiketinden doğrulanmalıdır.": "USDA record for cocoa mix prepared with water. This is not a recipe prepared with milk or a plant drink; verify allergens and vegan suitability from the ingredient label.",
+  "USDA limonlu, şekerli ve içime hazır siyah çay kaydıdır. Evde demlenip soğutulmuş şekersiz çayla aynı ürün değildir.": "USDA record for ready-to-drink sweetened black tea with lemon. This is not the same product as homemade unsweetened brewed tea served cold.",
+  "USDA içime hazır şekersiz yeşil çay kaydıdır; şekerli ve aromalı ürünlerin etiketi farklı olabilir.": "USDA record for ready-to-drink unsweetened green tea; sweetened and flavoured product labels may differ.",
+  "USDA beyaz limonata konsantresinin suyla hazırlanmış kaydıdır. Taze limonla yapılan ev limonatasının ölçümü değildir; sulandırma oranı ve şeker miktarı ürüne göre değişir.": "USDA record for white lemonade concentrate prepared with water. This is not a measurement of homemade lemonade from fresh lemons; dilution and sugar vary by product.",
   "Beslenme filtrelerine uyan kayıt yok. Filtreleri temizleyerek tüm kayıtlarını görebilirsin.": "No records match the dietary filters. Clear the filters to see all your records.",
   "Beslenme": "Diet",
   "Hepçil · tümü": "Omnivore · all",
