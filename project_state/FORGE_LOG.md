@@ -880,3 +880,4 @@
 - pide_lavas 18041 (ABD zenginleştirilmiş: folik asit 83 µg, Fe 2,62 mg) → 18413 (zenginleştirilmemiş: folik asit 0, Fe 1,4 mg); un/pirinç/makarnadaki zenginleştirilmemiş seçimle tutarlı. Lor/lor_cottage (aynı NDB) ve çapati kopyası kayıtlı referansları bozmamak için şimdilik korundu (birleştirme ayrı göç ister).
 - Kanıt: `npm run data`; `npm test` 161/161; build + build:single; Playwright tam koşu 306/306.
 - Sürüm 1.1.2-beta.44 (B158 + B159 + B160). Sonraki: **B161** lor/lor_cottage ve çapati yinelenenlerini kimlik göçüyle birleştirmek; sonra kullanıcı önceliklerinden sade UI/UX.
+- Yayın kanıtı: v1.1.2-beta.44 pre-release 2026-11-17T15:42:53Z (release.yml run 44114498663 success; derleme işinin içinde Chromium tarayıcı testleri de PASS); GitHub Pages run 44114485946 success; ci.yml run 44114486013 15:54 UTC itibarıyla sürüyor (NOT_RUN sonuç).
