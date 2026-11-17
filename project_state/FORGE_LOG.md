@@ -919,3 +919,9 @@
 - Başka sekmede değişen ayarlar bu sekmeye gelmiyordu (yalnız tarif/günlük/koleksiyon eşitleniyordu); bu sekme sonraki kayıtta eski ayarlarla diğerinin değişikliğini eziyordu → `storage` olayında `bm.settings.v2` yeniden yüklenir ve uygulanır.
 - Kanıt: `npm test` 163/163 (B166 profil birimi); `npm run build`; Playwright B166 iki sekme 2/2; tam koşu 316/316.
 - Sonraki: **B167** denetim kalanı #10 "kaynak 0" işaretinin diğer kaynaklar için doğruluğu ve #11 GOS kısmi toplamı; ardından beta.46.
+
+## B167 · 2026-11-17 · "kaynak 0" tüm ölçüm kaynaklarında; GOS kısmi toplamı alt sınır
+- "kaynak 0" işareti yalnız SR28 / IFCT / etiket için çıkıyordu; FDC, FNDDS, SR Legacy, flavonoid, izoflavon, iyot, kolin, proantosiyanidin ve pürin veritabanlarının ölçülmüş 0'ları işaretsizdi (2684 hücre). → Tüm ölçüm kaynakları işaretlenir; tarif tahmini, hesap ve "Varsayılan 0" işaretlenmez.
+- Tolerans kartı rafinoz ailesini 4 şekerden yalnız biri ölçülmüşken de "GOS ölçülmüş: X g" diye toplam gibi yazıyordu (soya sütü, badem sütü) → "en az X g (n/4 şeker ölçülmüş)".
+- Kanıt: `npm test` 164/164 (B167 birimi; eski kodda işaret sayısı 0 olur); build + build:single; tam koşu aşağıda.
+- Sonraki: **B168** beta.46 (B164–B167); ardından kullanıcı önceliği (4) büyük sürüklenebilir gram kaydırıcısının telefonda dokunma alanı denetimi.

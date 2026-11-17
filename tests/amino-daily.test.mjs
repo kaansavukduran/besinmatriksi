@@ -36,3 +36,12 @@ test('matrix daily bars preserve protein, measured zero, partial lower bound, an
   const missing = renderMatrix({ ...r, v: { protein: 50 } }, {}, { recipe: {} });
   assert.doesNotMatch(missing, /data-nutrient="his"/);
 });
+
+test('B167 "kaynak 0" tüm ölçüm kaynaklarında, tahmin/hesapta yok; GOS kısmi ölçümde alt sınır', () => {
+  setLanguage('tr');
+  const r = { v: { protein: 1, petunidin: 0, his: 0, raffinose: 0.3 }, s: { protein: 'u', petunidin: 'f', his: 'r', raffinose: 'u' }, n: 1, grams: 100 };
+  const html = renderMatrix(r, { showMissing: false }, { item: { name: 'x', food: null } });
+  assert.equal(html.split('>kaynak 0<').length - 1, 1, 'yalnız ölçülmüş flavonoid 0 işaretli, tarif tahmini 0 değil');
+  assert.match(html, /en az 0,3 g \(1\/4 şeker ölçülmüş\)/);
+  assert.doesNotMatch(html, /Rafinoz ailesi \(GOS\) ölçülmüş/);
+});

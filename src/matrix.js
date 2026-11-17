@@ -9,6 +9,8 @@ import { dailyRefs, refKind } from './daily-ref.js';
 import { nutrientLabel } from './i18n-nutrients.js';
 import { renderMicronutrients } from './micronutrients.js';
 import { aminoReference, aminoNote } from './amino-daily.js';
+// B167: ölçüm kaynağı 0 bildirdiyse "kaynak 0" işareti (tüm ölçüm kaynakları; tahmin/hesap ve "Varsayılan 0" hariç)
+const MEASURED_ZERO_SRC = new Set(['u', 'i', 'k', 'f', 'F', 'N', 'y', 'L', 'I', 'C', 'P', 'U']);
 
 const nl = nutrientLabel;
 
@@ -50,7 +52,7 @@ function row(n, r, cfg) {
       <span class="pct">${aa && r.cov && r.n > 1 && r.cov[n.key] < r.n ? '≥' : ''}${fmtPct(p)}${ref.type ? `<small class="ref-kind">${ref.type}</small>` : ''}</span></span>${aa?.joint ? `<small class="aa-joint">${esc(aa.joint)}</small>` : ''}`;
   }
   const extra = [];
-  if (x === 0 && (s === 'u' || s === 'i' || s === 'k')) extra.push(`<span class="flag" title="${L("Kaynak bu değeri 0 olarak bildiriyor (tespit sınırının altında olabilir)")}">${L("kaynak 0")}</span>`);
+  if (x === 0 && MEASURED_ZERO_SRC.has(s)) extra.push(`<span class="flag" title="${L("Kaynak bu değeri 0 olarak bildiriyor (tespit sınırının altında olabilir)")}">${L("kaynak 0")}</span>`);
   if (cfg.showSd && r.sd?.[n.key] != null) extra.push(`<span class="sd" title="${L("IFCT standart sapması")}">± ${fmtAmount(r.sd[n.key], n.unit, cfg.precision).n}</span>`);
   if (cfg.showAlt && r.alt?.[n.key] != null) {
     const a = fmtAmount(r.alt[n.key], n.unit, cfg.precision);
@@ -208,7 +210,7 @@ function toleranceCard(r, item, cfg, open) {
   const lines = [];
   lines.push(`<div class="kv"><span>${L("Alerjenler (AB 14 listesi)")}</span><span>${unknownAllergens ? `<span class="muted">${L("Bilgi girilmedi; ürün etiketini kontrol et")}</span>` : al || (item ? `<span class="chip ok">${L("Katalogda bildirilen yok")}</span>` : `<span class="muted">${L("tarif: malzemelere bak")}</span>`)}</span></div>`);
   lines.push(`<div class="kv"><span>Gluten</span><span>${unknownAllergens ? L("veri yok; ürün etiketi ve çapraz bulaşma bilgisi gerekli") : item?.allergens?.includes('gluten') ? L("İçerir") : item ? L("Tahıl kaynaklı gluten beklenmez (çapraz bulaşma ürüne göre)") : '–'}</span></div>`);
-  lines.push(`<div class="kv"><span>FODMAP</span><span>${rfo.length ? L("Rafinoz ailesi (GOS) ölçülmüş: {g} g.", { g: fmtNum(rfoSum) }) + ' ' : ''}${L("Porsiyon eşikleri: veri yok (Monash / FODMAP Friendly verileri lisanslı, bu uygulamada yok).")}</span></div>`);
+  lines.push(`<div class="kv"><span>FODMAP</span><span>${rfo.length === 4 ? L("Rafinoz ailesi (GOS) ölçülmüş: {g} g.", { g: fmtNum(rfoSum) }) + ' ' : rfo.length ? L("Rafinoz ailesi (GOS): en az {g} g ({n}/4 şeker ölçülmüş).", { g: fmtNum(rfoSum), n: rfo.length }) + ' ' : ''}${L("Porsiyon eşikleri: veri yok (Monash / FODMAP Friendly verileri lisanslı, bu uygulamada yok).")}</span></div>`);
   if (r.v.lactose != null) lines.push(`<div class="kv"><span>${L("Laktoz")}</span><span>${fmtNum(r.v.lactose)} g</span></div>`);
   lines.push(`<div class="kv"><span>${L("Histamin / biyojen aminler")}</span><span><b>${L("veri yok")}</b></span></div>`);
   if (item?.note) lines.push(`<div class="note">⚠️ ${esc(L(item.note))}</div>`);
