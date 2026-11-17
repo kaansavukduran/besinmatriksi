@@ -550,7 +550,6 @@ export const UI_EN = {
  "Koleksiyon için bir ad yaz": "Type a name for the collection",
  "Yeni koleksiyonun adı:": "Name of the new collection:",
  "Oluştur": "Create",
- "En fazla 60 koleksiyon olabilir": "You can have up to 60 collections",
  "Alt kategorinin adı:": "Name of the subcategory:",
  "Yeni ad:": "New name:",
  "“{n}” ve {s} alt kategorisi silinsin mi? Besinlerin kendisi silinmez.": "Delete “{n}” and its {s} subcategories? The foods themselves are not deleted.",
@@ -897,5 +896,8 @@ export const UI_EN = {
  "Bu güne henüz besin eklenmedi. Keşfet'te bir besin seç ve “Günlüğe ekle”ye dokun; günün bileşen matriksi burada oluşur.": "No foods added to this day yet. Pick a food in Explore and tap “Add to diary”; the day's nutrient matrix will appear here.",
  "Tüm ayarlar varsayılana dönsün mü? Kişisel hedefler ve görünüm seçimleri sıfırlanır; tarif ve günlük kayıtları korunur.": "Reset all settings to default? Personal targets and appearance choices are reset; recipes and diary entries are kept.",
  "“{n}” zaten tarifte; toplam en fazla {m} g olabilir, {m} g'da kaldı.": "“{n}” is already in the recipe; the total can be at most {m} g, so it stays at {m} g.",
- "En fazla {m} g (1 kg) seçilebilir.": "At most {m} g (1 kg) can be selected."
+ "En fazla {m} g (1 kg) seçilebilir.": "At most {m} g (1 kg) can be selected.",
+ "En fazla {m} koleksiyon olabilir; yer açmak için birini sil.": "You can have at most {m} collections; delete one to make room.",
+ "Alt kategori yalnız bir üst koleksiyonun altına eklenebilir.": "A subcategory can only be added under a top-level collection.",
+ "“{c}” dolu: bir koleksiyonda en fazla {m} besin olabilir.": "“{c}” is full: a collection can hold at most {m} foods."
 };

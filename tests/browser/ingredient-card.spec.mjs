@@ -104,3 +104,19 @@ test('B164 1000 g sınırı sessizce kırpılmaz: tarifte birikince ve +10 ile b
   await expect(page.locator('.toast')).toContainText('En fazla 1000 g');
   await expect(page.locator('[data-amount="ex"] .amt-val b')).toHaveText('1.000');
 });
+
+test('B165 koleksiyondaki geniş katalog kaydı vegan süzgeçte kaybolmaz, katalog yüklenince açılır; sınır mesajları nedenini söyler', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem('bm.settings.v2', JSON.stringify({ version: 2, settings: { language: 'tr', dietPattern: 'vegan', showExt: false } }));
+    const many = Array.from({ length: 60 }, (_, i) => ({ id: 'c' + i, name: 'K' + i, items: i === 0 ? [{ t: 'x', n: '09427' }] : [] }));
+    localStorage.setItem('bm.collections.v1', JSON.stringify(many));
+  });
+  await page.goto('/');
+  await page.locator('[data-action="ex-cat"][data-cat="col:c0"]').first().click();
+  await expect(page.locator('#foodlist [data-action="ex-pick-ref"]')).toHaveCount(1, { timeout: 15000 });
+  await expect(page.locator('#foodlist .pending-ref')).toHaveCount(0);
+  await page.locator('[data-action="col-sub"][data-id="c0"]').click();
+  await page.locator('.dlg .dlg-line').fill('Alt');
+  await page.locator('.dlg [data-r="1"]').click();
+  await expect(page.locator('.toast')).toContainText('En fazla 60 koleksiyon');
+});

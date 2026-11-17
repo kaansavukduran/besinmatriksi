@@ -26,7 +26,13 @@ import { energyEstimate, recipeToEntries, dayToRecipeItems, loadPersonal, savePe
 import { renderPersonal, renderEnergy, renderDaySources } from './personal-view.js';
 import { nutrientLabel } from './i18n-nutrients.js';
 import { getLanguage } from './i18n.js';
-import { normalizeCollections, createCollection, renameCollection, deleteCollection, toggleRef, removeRef, collectionTree, collectionRefs, hasRef, moveRef, moveIndex } from './collections.js';
+import { normalizeCollections, createCollection, renameCollection, deleteCollection, toggleRef, removeRef, collectionTree, collectionRefs, hasRef, moveRef, moveIndex, MAX_COLLECTIONS, MAX_ITEMS } from './collections.js';
+// B165: koleksiyon hatası nedenine göre bildirilir (sınır ≠ boş ad)
+function collectionError(err) {
+  if (err?.message === 'too-many') return L("En fazla {m} koleksiyon olabilir; yer açmak için birini sil.", { m: MAX_COLLECTIONS });
+  if (err?.message === 'bad-parent') return L("Alt kategori yalnız bir üst koleksiyonun altına eklenebilir.");
+  return L("Koleksiyon için bir ad yaz");
+}
 import { mountAion, configureAion, aionMood, aionPlay, aionSay } from './aion.js';
 import { greetingFor, newlyReached, celebrationText } from './aion-moments.js';
 import { dailyRefs } from './daily-ref.js';
@@ -287,7 +293,9 @@ function collectionList(prefix, cat, q) {
   const sections = [{ col: c, refs: c.items }, ...S.collections.filter((x) => x.parent === c.id).map((ch) => ({ col: ch, refs: ch.items }))];
   let html = '';
   for (const { col, refs } of sections) {
-    const shown = refs.filter((r) => { if (!eligibleRef(r)) return false; if (!k) return true; const it = resolve(r); return it && norm(it.name).includes(k); });
+    // B165: geniş katalog henüz yüklenmemişken USDA kaydı süzgeçte kaybolmaz; "yükleniyor" satırı görünür ve yüklemeyi başlatır
+    const pendingExt = (r) => r.t === 'x' && !extLoaded() && !resolve(r);
+    const shown = refs.filter((r) => { if (pendingExt(r)) return !k; if (!eligibleRef(r)) return false; if (!k) return true; const it = resolve(r); return it && norm(it.name).includes(k); });
     if (col !== c) html += `<h3 class="grp">↳ ${esc(col.name)}</h3>`;
     html += shown.length ? `<div class="foods">${shown.map((r) => refButton(r, prefix, col.id, k ? -1 : refs.indexOf(r), refs.length)).join('')}</div>` : (col === c && sections.length > 1 ? '' : `<p class="empty">${refs.length && dietActive(S.settings) ? L("Beslenme filtrelerine uyan kayıt yok. Filtreleri temizleyerek tüm kayıtlarını görebilirsin.") : L("Bu koleksiyon boş. Bir besin seç ve “Koleksiyona ekle”ye dokun.")}</p>`);
   }
@@ -1197,6 +1205,7 @@ async function onClick(e) {
     case 'col-toggle': {
       const before = S.collections.find((c) => c.id === b.dataset.id);
       const added = before && !hasRef(before, S.sel);
+      if (added && before.items.length >= MAX_ITEMS) { toast(L("“{c}” dolu: bir koleksiyonda en fazla {m} besin olabilir.", { c: before.name, m: MAX_ITEMS })); break; }
       S.collections = toggleRef(S.collections, b.dataset.id, S.sel); persistCollections(); render();
       if (added) aionPlay('celebrate');
       break;
@@ -1204,21 +1213,21 @@ async function onClick(e) {
     case 'col-create-add': {
       const name = $('#col-new-name')?.value || '';
       try { const r = createCollection(S.collections, name); S.collections = toggleRef(r.list, r.created.id, S.sel); persistCollections(); render(); aionPlay('celebrate'); }
-      catch { toast(L("Koleksiyon için bir ad yaz")); }
+      catch (err) { toast(collectionError(err)); }
       break;
     }
     case 'col-new': {
       const name = await uiDialog(L("Yeni koleksiyonun adı:"), { input: '', line: true, ok: L("Oluştur"), cancel: L("Vazgeç") });
       if (name == null) break;
       try { const r = createCollection(S.collections, name); S.collections = r.list; S.cat = 'col:' + r.created.id; persistCollections(); render(); }
-      catch (err) { toast(err.message === 'too-many' ? L("En fazla 60 koleksiyon olabilir") : L("Koleksiyon için bir ad yaz")); }
+      catch (err) { toast(collectionError(err)); }
       break;
     }
     case 'col-sub': {
       const name = await uiDialog(L("Alt kategorinin adı:"), { input: '', line: true, ok: L("Oluştur"), cancel: L("Vazgeç") });
       if (name == null) break;
       try { const r = createCollection(S.collections, name, b.dataset.id); S.collections = r.list; S.cat = 'col:' + r.created.id; persistCollections(); render(); }
-      catch { toast(L("Koleksiyon için bir ad yaz")); }
+      catch (err) { toast(collectionError(err)); }
       break;
     }
     case 'col-rename': {
@@ -1425,7 +1434,7 @@ async function importText(t) {
     if (!saved.ok) throw new Error(saved.rollbackFailed ? L("Yedek tam kaydedilemedi ve önceki kayıtların tamamı geri yüklenemedi. Açık verilerini dışa aktar; depolamayı kontrol et.") : L("Kaydedilemedi: cihaz depolaması kullanılamıyor"));
     S.recipes = next.recipes; S.collections = next.collections; S.profiles = next.profiles; setCustomFoods(next.custom);
     if (next.settings) { S.settings = next.settings; applySettings(); }
-    if (S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) requestExtCatalog();
+    if (S.recipes.some(r => r.items.some(it => it.ref.t === 'x')) || S.collections.some(c => c.items.some(r => r.t === 'x'))) requestExtCatalog();
     toast(L("{n} tarif içe aktarıldı", { n: recipes.length }) + (skipped ? ' · ' + L("{n} kopya atlandı", { n: skipped }) : ''));
     render();
   } catch (err) {
@@ -1571,6 +1580,7 @@ export function start() {
   applySettings();
   if (S.settings.showExt || S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) requestExtCatalog();
   if (S.personal.entries.some(e => e.ref.t === 'x')) requestExtCatalog();
+  if (S.collections.some(c => c.items.some(r => r.t === 'x'))) requestExtCatalog(); // B165
   window.addEventListener('resize', () => { document.documentElement.dataset.uiNarrow = String(window.innerWidth / (S.settings.uiScale / 100) < 900); });
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (S.settings.theme === 'system') applySettings(); });
   mountAion();

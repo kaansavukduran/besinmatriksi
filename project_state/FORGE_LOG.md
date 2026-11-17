@@ -907,3 +907,9 @@
 - Yayın: v1.1.2-beta.45 yayımlandı (yukarıda B163 kaydında kanıt).
 - Kanıt: `npm test` 162/162; `npm run build`; Playwright B164 2/2 (masaüstü + telefon); tam koşu 312/312.
 - Sonraki: **B165** denetim kalanı #9 koleksiyon sınırı mesajı ve #6 geniş katalog öğelerinin koleksiyonda yüklenmesi.
+
+## B165 · 2026-11-17 · Koleksiyon: geniş katalog kaydı kaybolmaz; sınır mesajları doğru
+- Hata: geniş katalog (USDA, `t:'x'`) kapalıyken bir koleksiyondaki USDA kaydı diyet süzgecinde (ör. vegan) "bilinmiyor" sayılıp gizleniyordu; "yükleniyor" satırı hiç çizilmediği için katalog da yüklenmiyor ve kayıt kalıcı olarak görünmez kalıyordu. → Yüklenmemiş USDA kaydı süzgeçten geçer ("yükleniyor" satırı yüklemeyi başlatır); açılışta ve yedek içe aktarmada koleksiyonlarda USDA kaydı varsa katalog istenir. Yüklendikten sonra diyet süzgeci gerçek kayda uygulanır.
+- "Yeni koleksiyona ekle" ve "Alt kategori" sınır (60) hatasında "ad yaz" diyordu → nedenine göre mesaj (sınır / geçersiz üst / boş ad). Dolu koleksiyona (300 besin) ekleme sessizce yok sayılıp Aion seviniyordu → "dolu" bildirimi, sevinme yok.
+- Kanıt: `npm test` 162/162; `npm run build`; Playwright B165 2/2; düzeltme geri alınınca aynı test düşüyor (NDB 09427 hiç görünmüyor), düzeltmeyle geçiyor; tam koşu aşağıda.
+- Sonraki: **B166** denetim kalanı #3 görünüm profilinin hedefleri ezmesi ve #7 sekmeler arası ayar eşitleme.
