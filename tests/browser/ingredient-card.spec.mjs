@@ -131,3 +131,23 @@ test('B166 başka sekmede değişen ayar bu sekmeye gelir; eski ayarla üzerine 
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('bm.settings.v2')).settings);
   expect(saved.theme).toBe('dark'); expect(saved.energyUnit).toBe('kcal');
 });
+
+test('B168 gram kaydırıcısı: sol yarı 1–250 g, dokunuşla küçük miktar seçilir, hazır miktarla konum eşleşir, tarifte 44 px', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  const sl = page.locator('[data-amount="ex"] .slider');
+  await page.locator('[data-amount="ex"] [data-action="amt"][data-val="250"]').click();
+  await expect(sl).toHaveValue(/^(499|500)$/); // √(249/999) = 0,499 → 250 g
+  await sl.fill('100'); // %10 konum
+  await expect(page.locator('[data-amount="ex"] .amt-val b')).toHaveText('11');
+  await expect(sl).toHaveAttribute('aria-valuetext', '11 g');
+  await sl.focus(); await page.keyboard.press('ArrowRight');
+  await expect(page.locator('[data-amount="ex"] .amt-val b')).toHaveText('11');
+  await sl.fill('1000');
+  await expect(page.locator('[data-amount="ex"] .amt-val b')).toHaveText('1.000');
+  await page.locator('[data-action="ex-add-recipe"]').click();
+  await page.locator('[data-action="tab"][data-tab="tarif"]').first().click();
+  await page.locator('[data-action="ing-open"]').first().click();
+  const h = await page.locator('[data-amount^="rc:"] .slider').evaluate((e) => e.getBoundingClientRect().height);
+  expect(h).toBeGreaterThanOrEqual(44);
+});

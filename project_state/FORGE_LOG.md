@@ -924,5 +924,11 @@
 - "kaynak 0" işareti yalnız SR28 / IFCT / etiket için çıkıyordu; FDC, FNDDS, SR Legacy, flavonoid, izoflavon, iyot, kolin, proantosiyanidin ve pürin veritabanlarının ölçülmüş 0'ları işaretsizdi (2684 hücre). → Tüm ölçüm kaynakları işaretlenir; tarif tahmini, hesap ve "Varsayılan 0" işaretlenmez.
 - Tolerans kartı rafinoz ailesini 4 şekerden yalnız biri ölçülmüşken de "GOS ölçülmüş: X g" diye toplam gibi yazıyordu (soya sütü, badem sütü) → "en az X g (n/4 şeker ölçülmüş)".
 - Kanıt: `npm test` 164/164 (B167 birimi; eski kodda işaret sayısı 0 olur); build + build:single; Playwright tam koşu 316/316.
-- Sürüm 1.1.2-beta.46 (B164 + B165 + B166 + B167).
+- Sürüm 1.1.2-beta.46 (B164 + B165 + B166 + B167). Yayın kanıtı: release.yml run 44179695553 ilk denemede macOS/iOS işleri makine bulamayıp iptal (kod hatası değil) → yalnız düşen işler yeniden çalıştırıldı, deneme 2 success; v1.1.2-beta.46 pre-release 2026-11-17T22:17 UTC.
 - Sonraki: **B168** beta.46 (B164–B167); ardından kullanıcı önceliği (4) büyük sürüklenebilir gram kaydırıcısının telefonda dokunma alanı denetimi.
+
+## B168 · 2026-11-17 · Gram kaydırıcısı karekök ölçekli; tarifte 44 px dokunma hedefi
+- Ölçüm (iPhone SE): doğrusal 1–1000 g kaydırıcı 266 px → 3,76 g/piksel; 10 g ≈ 3 piksel, en sık kullanılan küçük miktarlar (baharat, yağ, kuruyemiş) sürükleyerek seçilemiyordu. Tarif kartındaki kaydırıcı 36 px yüksekti.
+- `src/amount-scale.js`: konum 0–1000 → gram karekök eğrisi (sol yarı 1–250 g; 10 g artık ~%9,5 konumda, 100 g ~%31); adım <100 g 1 g, <500 g 5 g, üstü 10 g; tüm hazır miktarlar gidiş-dönüşte aynı gram. `aria-valuetext` gramı söyler. Ölçek etiketleri gerçek konumlarında (1 g · 50 · 250 · 1 kg); dar kutuda (büyük yazı/%200) ara etiketler gizlenir. Tarif kaydırıcısı 44 px.
+- Kanıt: `npm test` 166/166 (amount-scale 2 test: uçlar, gidiş-dönüş, adımlar, tekdüzelik); build; Playwright B168 2/2, app + ingredient-card + polish 186/188 → beklenen konum 499 düzeltildi; tam koşu 311. testte arka plan zaman sınırına takıldı (o ana dek 0 hata), kalan recipe-amino + recipe-total 16/16. 390 px ekran görüntüsü incelendi; 320 px + 28 px + %200'de etiket çakışması yok.
+- Sonraki: **B169** kullanıcı önceliği (5) Aion: sade UI ilkesiyle ipucu sıklığı ve konum denetimi (telefon 320 px'te içerikle çakışma).

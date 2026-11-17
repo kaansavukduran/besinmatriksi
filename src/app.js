@@ -26,6 +26,7 @@ import { energyEstimate, recipeToEntries, dayToRecipeItems, loadPersonal, savePe
 import { renderPersonal, renderEnergy, renderDaySources } from './personal-view.js';
 import { nutrientLabel } from './i18n-nutrients.js';
 import { getLanguage } from './i18n.js';
+import { SLIDER_STEPS, sliderToGrams, gramsToSlider } from './amount-scale.js';
 import { normalizeCollections, createCollection, renameCollection, deleteCollection, toggleRef, removeRef, collectionTree, collectionRefs, hasRef, moveRef, moveIndex, MAX_COLLECTIONS, MAX_ITEMS } from './collections.js';
 // B165: koleksiyon hatası nedenine göre bildirilir (sınır ≠ boş ad)
 function collectionError(err) {
@@ -198,8 +199,8 @@ function amountControls(target, g, portions = [], { compact = false, liquid = fa
       <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="1" aria-label="${L("1 gram artır")}">+1</button>
       <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="10" aria-label="${L("10 gram artır")}">+10</button>
     </div>
-    <input type="range" class="slider" min="1" max="${MAX_G}" step="1" value="${g}" style="--fill:${((g - 1) / (MAX_G - 1)) * 100}%" data-slider="${esc(target)}" aria-valuetext="${fmtNum(g)} g" aria-label="${L("Miktar (gram)")}">
-    ${compact ? '' : `<div class="slider-scale" aria-hidden="true"><span>1 g</span><span>250</span><span>500</span><span>750</span><span>1 kg</span></div>`}
+    <input type="range" class="slider" min="0" max="${SLIDER_STEPS}" step="1" value="${gramsToSlider(g, MAX_G)}" style="--fill:${gramsToSlider(g, MAX_G) / SLIDER_STEPS * 100}%" data-slider="${esc(target)}" aria-valuetext="${fmtNum(g)} g" aria-label="${L("Miktar (gram)")}">
+    ${compact ? '' : `<div class="slider-scale" aria-hidden="true">${[[1, '1 g'], [50, '50'], [250, '250'], [MAX_G, '1 kg']].map(([v, t]) => `<span style="left:${gramsToSlider(v, MAX_G) / SLIDER_STEPS * 100}%">${t}</span>`).join('')}</div>`}
     <div class="presets">${presets.map((p) => `<button class="pchip ${p === g ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p}">${p >= 1000 ? '1 kg' : p + ' g'}</button>`).join('')}</div>
     ${portions.length ? `<div class="portions">${portions.map((p) => `<button class="pchip por ${Math.abs(p.g - g) < 0.01 ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p.g}" title="${esc(p.r ? L("Tarif porsiyonu; ölçüm değil") : p.d ? L("USDA “{u}” ölçüsünden hacimle hesaplandı; yaklaşık", { u: p.src }) : p.en + ' (USDA)')}">${esc(getLanguage() === 'en' && p.en ? p.en : p.label)} · ${p.d ? '≈ ' : ''}${fmtNum(p.g)} g</button>`).join('')}</div>` : ''}
   </div>`;
@@ -955,8 +956,8 @@ function setAmount(target, g, { fromSlider = false } = {}) {
     if (out) out.textContent = fmtNum(S.settings.amountUnit === 'oz' ? g / 28.349523125 : g);
     if (S.settings.amountUnit === 'oz') box.querySelector('.amount-unit').textContent = `oz (≈ ${fmtNum(g)} g)`;
     const sl = box.querySelector('.slider');
-    if (sl && !fromSlider) sl.value = String(Math.round(g));
-    if (sl) { sl.style.setProperty('--fill', ((g - 1) / (MAX_G - 1)) * 100 + '%'); sl.setAttribute('aria-valuetext', fmtNum(g) + ' g'); }
+    if (sl && !fromSlider) sl.value = String(gramsToSlider(g, MAX_G));
+    if (sl) { sl.style.setProperty('--fill', gramsToSlider(g, MAX_G) / SLIDER_STEPS * 100 + '%'); sl.setAttribute('aria-valuetext', fmtNum(g) + ' g'); }
     box.querySelectorAll('.pchip').forEach((b) => b.classList.toggle('on', Math.abs(Number(b.dataset.val) - g) < 0.01));
     const ps = box.querySelector('.per-serv') || box.parentElement?.querySelector('.per-serv');
     if (ps) ps.textContent = L("porsiyon başı {g} g", { g: fmtNum(g / Number(ps.dataset.perserv)) });
@@ -1517,7 +1518,7 @@ function onInput(e) {
   }
   if (t.id === 'cu-name' && S.customEdit) { S.customEdit.name = t.value; return; }
   if (t.id === 'cu-portion' && S.customEdit) { S.customEdit.portion = t.value === '' ? null : Number(t.value); return; }
-  if (t.dataset.slider) { setAmount(t.dataset.slider, Number(t.value), { fromSlider: true }); return; }
+  if (t.dataset.slider) { setAmount(t.dataset.slider, sliderToGrams(t.value, MAX_G), { fromSlider: true }); return; }
   if (t.id === 'q') {
     S.q = t.value; S.extPage = 0; $('#foodlist').innerHTML = foodList('ex', S.cat, S.q, S.extGroup);
     if (S.q) $('.welcome')?.remove();

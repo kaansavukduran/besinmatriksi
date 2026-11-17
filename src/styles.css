@@ -570,8 +570,11 @@ input[type="color"] { width: 100%; min-height: 44px; cursor: pointer; }
 .slider:focus-visible { outline: none; }
 .slider:focus-visible::-webkit-slider-thumb { outline: var(--focus-width, 3px) solid var(--acc); outline-offset: 3px; }
 .slider:focus-visible::-moz-range-thumb { outline: var(--focus-width, 3px) solid var(--acc); outline-offset: 3px; }
-.compact .slider { height: 36px; }
-.slider-scale { display: flex; justify-content: space-between; font-size: .75rem; color: var(--muted); padding: 0 4px; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+.compact .slider { height: 44px; } /* B168: dokunma hedefi en az 44 px */
+.slider-scale { position: relative; height: 1.4em; font-size: .75rem; color: var(--muted); margin: 0 17px 4px; font-variant-numeric: tabular-nums; }
+.slider-scale span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+.slider-scale span:first-child { transform: none; left: -13px !important; }
+.slider-scale span:last-child { transform: none; left: auto !important; right: -13px; }
 .amt-val b { font-size: 1.35em; }
 
 /* ============ Tek sıra eylem çubuğu ============ */
@@ -1000,3 +1003,7 @@ button.micro-name:hover { text-decoration-color: currentColor; }
 
 /* B163: kcal + kJ birlikte */
 .kj-alt { color: var(--muted); font-size: .88em; display: inline-block; max-width: 100%; overflow-wrap: anywhere; }
+
+/* B168: dar kutuda (büyük yazı/ölçek) ara ölçek etiketleri üst üste binmesin; uç etiketler kalır */
+.amount:not(.mini) { container-type: inline-size; }
+@container (max-width: 18em) { .slider-scale span:not(:first-child):not(:last-child) { display: none; } }
