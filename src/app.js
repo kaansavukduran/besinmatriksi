@@ -41,7 +41,7 @@ import { similarFoods } from './similar.js';
 import { FOOD_ICONS } from './food-icons.js';
 import { foodArt } from './food-art.js';
 import { brandMark, plateIllustration } from './kitchen-art.js';
-import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS, shortcutKey, migrateFontV2, migrateAionOff } from './settings.js';
+import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS, shortcutKey, migrateFontV2, migrateAionOff, applyProfileSettings } from './settings.js';
 
 const PRESETS = [1, 5, 10, 25, 50, 100, 150, 200, 250, 500, 750, 1000];
 const MAX_G = 1000;
@@ -726,7 +726,7 @@ function renderSettings() {
       <div class="presets"><button class="btn" data-action="theme-apply">${tr('themeApply')}</button><button class="btn" data-action="theme-export">${tr('themeExport')}</button><button class="btn" data-action="open-file" data-id="theme-file">${tr('themeImport')}</button><input type="file" id="theme-file" accept="application/json,.json" hidden></div>
     </section>
     <section class="card"><h2>${L("Görünüm profilleri")}</h2>
-      <p class="hint">${L("Okuma, sunum veya gece için en fazla 12 görünüm kaydet. Profiller üst çubuktan uygulanabilir ve tam yedeğe dahildir.")}</p>
+      <p class="hint">${L("Okuma, sunum veya gece için en fazla 12 görünüm kaydet. Profiller üst çubuktan uygulanabilir ve tam yedeğe dahildir.")} ${L("Profil uygulanınca hedeflerin, referans ve diyet seçimin, sabitlenen besinler ve dil olduğu gibi kalır.")}</p>
       <div class="presets"><input id="profile-name" aria-label="${L("Yeni profil adı")}" placeholder="${L("Ör. Gece okuması")}" maxlength="40"><button class="btn" data-action="profile-save">${L("Görünümü kaydet")}</button></div>
       ${S.profiles.map(p => `<div class="section-option"><b>${esc(p.name)}</b><span class="presets"><button class="btn" data-action="profile-apply" data-id="${p.id}">${L("Uygula")}</button><button class="btn" data-action="profile-update" data-id="${p.id}" aria-label="${L("{p} profilini güncelle", { p: esc(p.name) })}">${L("Güncelle")}</button><button class="btn danger" data-action="profile-delete" data-id="${p.id}" aria-label="${L("{p} profilini sil", { p: esc(p.name) })}">${L("Sil")}</button></span></div>`).join('')}
     </section>
@@ -1349,7 +1349,7 @@ async function onClick(e) {
     case 'profile-apply': {
       const p = S.profiles.find(p => p.id === b.dataset.id);
       if (p) {
-        const next = normalizeSettings(p.settings);
+        const next = applyProfileSettings(S.settings, p.settings);
         if (!saveSettings(next)) { toast(L("Kaydedilemedi: cihaz depolaması kullanılamıyor")); break; }
         S.settings = next; applySettings(); if (S.settings.showExt) requestExtCatalog(); render(); toast(L("Görünüm: {n}", { n: p.name }));
       } break;
@@ -1604,6 +1604,8 @@ export function start() {
     if (!S.recipes.some((r) => r.id === S.activeRecipe)) S.activeRecipe = S.recipes[0].id;
     setCustomFoods(loadCustom()); S.collections = loadCollections(); S.profiles = loadProfiles();
     const p = loadPersonal(); S.personal = p.state; S.personalReadError = p.error;
+    // B166: ayarlar da eşitlenir; yoksa bu sekme eski ayarlarla bir sonraki kayıtta diğer sekmenin değişikliğini ezer
+    if (e.key === 'bm.settings.v2') { S.settings = loadSettings(); applySettings(); if (S.settings.showExt) requestExtCatalog(); }
     render();
   });
   window.addEventListener('pagehide', flushSave);

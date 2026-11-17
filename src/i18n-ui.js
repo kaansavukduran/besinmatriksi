@@ -899,5 +899,6 @@ export const UI_EN = {
  "En fazla {m} g (1 kg) seçilebilir.": "At most {m} g (1 kg) can be selected.",
  "En fazla {m} koleksiyon olabilir; yer açmak için birini sil.": "You can have at most {m} collections; delete one to make room.",
  "Alt kategori yalnız bir üst koleksiyonun altına eklenebilir.": "A subcategory can only be added under a top-level collection.",
- "“{c}” dolu: bir koleksiyonda en fazla {m} besin olabilir.": "“{c}” is full: a collection can hold at most {m} foods."
+ "“{c}” dolu: bir koleksiyonda en fazla {m} besin olabilir.": "“{c}” is full: a collection can hold at most {m} foods.",
+ "Profil uygulanınca hedeflerin, referans ve diyet seçimin, sabitlenen besinler ve dil olduğu gibi kalır.": "Applying a profile keeps your targets, reference and diet choice, pinned nutrients and language as they are."
 };

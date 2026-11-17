@@ -120,3 +120,14 @@ test('B165 koleksiyondaki geniş katalog kaydı vegan süzgeçte kaybolmaz, kata
   await page.locator('.dlg [data-r="1"]').click();
   await expect(page.locator('.toast')).toContainText('En fazla 60 koleksiyon');
 });
+
+test('B166 başka sekmede değişen ayar bu sekmeye gelir; eski ayarla üzerine yazılmaz', async ({ page, context }) => {
+  await page.goto('/');
+  const other = await context.newPage(); await other.goto('/');
+  await other.evaluate(() => { const s = JSON.parse(localStorage.getItem('bm.settings.v2')); s.settings.theme = 'dark'; localStorage.setItem('bm.settings.v2', JSON.stringify(s)); });
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await page.locator('[data-action="tab"][data-tab="ayarlar"]').first().click();
+  await page.locator('[data-k="energyUnit"][data-v=\'"kcal"\']').click();
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('bm.settings.v2')).settings);
+  expect(saved.theme).toBe('dark'); expect(saved.energyUnit).toBe('kcal');
+});

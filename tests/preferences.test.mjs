@@ -43,3 +43,13 @@ test('eski dört renkli tema görünümü korunur; yeni renkler ayar ve v2 tema 
   assert.equal(normalizeColors({ ...edited, muted: '#abc;display:none' }).muted, old.fg);
   assert.equal(themeTextContrast({ ...edited, card: '#cccccc' }), 1, 'ikincil metin kontrastı da denetlenmeli');
 });
+
+test('B166 görünüm profili uygulanınca hedefler, diyet, referans, sabitlenenler ve dil korunur; görünüm gelir', async () => {
+  const { applyProfileSettings, DEFAULT_SETTINGS } = await import('../src/settings.js');
+  const current = { ...DEFAULT_SETTINGS, theme: 'light', fontSize: 18, targets: { protein: 120 }, dietPattern: 'vegan', referenceMode: 'efsa', pinnedNutrients: ['b12'], language: 'en' };
+  const profile = { ...DEFAULT_SETTINGS, theme: 'dark', fontSize: 24, targets: {}, dietPattern: 'omnivore', referenceMode: 'eu', pinnedNutrients: [], language: 'tr' };
+  const next = applyProfileSettings(current, profile);
+  assert.equal(next.theme, 'dark'); assert.equal(next.fontSize, 24);
+  assert.deepEqual(next.targets, { protein: 120 }); assert.equal(next.dietPattern, 'vegan'); assert.equal(next.referenceMode, 'efsa');
+  assert.deepEqual(next.pinnedNutrients, ['b12']); assert.equal(next.language, 'en');
+});

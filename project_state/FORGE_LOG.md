@@ -913,3 +913,9 @@
 - "Yeni koleksiyona ekle" ve "Alt kategori" sınır (60) hatasında "ad yaz" diyordu → nedenine göre mesaj (sınır / geçersiz üst / boş ad). Dolu koleksiyona (300 besin) ekleme sessizce yok sayılıp Aion seviniyordu → "dolu" bildirimi, sevinme yok.
 - Kanıt: `npm test` 162/162; `npm run build`; Playwright B165 2/2; düzeltme geri alınınca aynı test düşüyor (NDB 09427 hiç görünmüyor), düzeltmeyle geçiyor; tam koşu 314/314.
 - Sonraki: **B166** denetim kalanı #3 görünüm profilinin hedefleri ezmesi ve #7 sekmeler arası ayar eşitleme.
+
+## B166 · 2026-11-17 · Görünüm profili hedefleri ezmez; sekmeler arası ayar eşitleme
+- Görünüm profili tüm ayar nesnesini saklayıp aynen geri yüklüyordu: profil kaydedildikten sonra girilen kişisel hedefler, diyet süzgeci, referans (AB/EFSA/özel), sabitlenen besinler ve dil, profil uygulanınca eskisiyle eziliyordu. → `applyProfileSettings`: bu anahtarlar (`PROFILE_PRESERVED_KEYS`) korunur, yalnız görünüm/okuma/erişilebilirlik/matriks gösterimi gelir. Ayarlar'daki açıklama bunu söyler (TR/EN).
+- Başka sekmede değişen ayarlar bu sekmeye gelmiyordu (yalnız tarif/günlük/koleksiyon eşitleniyordu); bu sekme sonraki kayıtta eski ayarlarla diğerinin değişikliğini eziyordu → `storage` olayında `bm.settings.v2` yeniden yüklenir ve uygulanır.
+- Kanıt: `npm test` 163/163 (B166 profil birimi); `npm run build`; Playwright B166 iki sekme 2/2; tam koşu aşağıda.
+- Sonraki: **B167** denetim kalanı #10 "kaynak 0" işaretinin diğer kaynaklar için doğruluğu ve #11 GOS kısmi toplamı; ardından beta.46.

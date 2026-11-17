@@ -85,6 +85,14 @@ export function moveSection(settings, id, direction) {
   if (i >= 0 && j >= 0 && j < order.length) [order[i], order[j]] = [order[j], order[i]];
   return next;
 }
+// B166: görünüm profili yalnız görünümü taşır; kişisel veriye bağlı ayarlar (hedefler, referans, diyet, sabitlenen besinler, dil) uygulanırken korunur
+export const PROFILE_PRESERVED_KEYS = ['targets', 'referenceMode', 'efsaAge', 'efsaSex', 'efsaPhytate', 'efsaIronGroup', 'dietPattern', 'vegetarianEggs', 'vegetarianDairy', 'dietGlutenFree', 'dietLactoseFree', 'dietSoyFree', 'dietTreeNutFree', 'dietPeanutFree', 'dietSesameFree', 'pinnedNutrients', 'language'];
+export function applyProfileSettings(current, profileSettings) {
+  const next = normalizeSettings(profileSettings);
+  const cur = normalizeSettings(current);
+  for (const k of PROFILE_PRESERVED_KEYS) next[k] = cur[k];
+  return normalizeSettings(next);
+}
 export function resetSettingGroup(settings, group) {
   const next = normalizeSettings(settings);
   for (const k of SETTING_GROUPS[group] || []) next[k] = structuredClone(DEFAULT_SETTINGS[k]);
