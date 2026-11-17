@@ -1034,11 +1034,12 @@ function addToRecipe(ref, g, quiet = false) {
   const rc = activeRecipe();
   const previous = quiet ? null : structuredClone(rc.items);
   const existing = rc.items.find((i) => refKey(i.ref) === refKey(ref));
+  const capped = !!existing && existing.g + g > MAX_G; // B164: sınır sessizce kırpılmaz
   if (existing) existing.g = clamp(existing.g + g, 1, MAX_G);
   else rc.items.push({ id: Math.random().toString(36).slice(2, 9), ref: { ...ref }, g });
   if (quiet) return true;
   if (!persistRecipes()) { rc.items = previous; return false; }
-  toast(`“${resolve(ref).name}” → ${rc.name} (${fmtNum(g)} g)`);
+  toast(capped ? L("“{n}” zaten tarifte; toplam en fazla {m} g olabilir, {m} g'da kaldı.", { n: resolve(ref).name, m: MAX_G }) : `“${resolve(ref).name}” → ${rc.name} (${fmtNum(g)} g)`);
   aionPlay('celebrate');
   return true;
 }
@@ -1261,7 +1262,12 @@ async function onClick(e) {
     case 'ex-add-compare': addToCompare(S.sel, S.amount); render(); break;
     // miktar
     case 'amt': setAmount(b.dataset.target, Number(b.dataset.val)); break;
-    case 'nudge': if (b.dataset.target) setAmount(b.dataset.target, (getAmount(b.dataset.target) || 0) + Number(b.dataset.delta)); break;
+    case 'nudge': {
+      if (!b.dataset.target) break;
+      const want = (getAmount(b.dataset.target) || 0) + Number(b.dataset.delta);
+      if (want > MAX_G) toast(L("En fazla {m} g (1 kg) seçilebilir.", { m: MAX_G }));
+      setAmount(b.dataset.target, want); break;
+    }
     // tarif
     case 'rc-new': { const r = newRecipe(L("Tarif {n}", { n: S.recipes.length + 1 })); S.recipeDaily = false; S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); render(); break; }
     case 'rc-daily-total': S.recipeDaily = true; render(); break;

@@ -901,3 +901,9 @@
 - Kanıt: `npm test` 162/162; `npm run build`; Playwright app + ingredient-card 171/171 (B163 testi eklendi; ilk koşuda telefonda arama kutusu gizli kaldığı için test sayfa yeniden yüklemeye çevrildi). Tam koşuda 28 px yazı + %200 ölçek + 320 px üç testte taşma çıktı (kJ eki `nowrap`) → kırılabilir satır içi blok; micro-catalog + polish + recipe-total 30/30.
 - Sürüm 1.1.2-beta.45 (B161 + B162 + B163). Yayın kanıtı: v1.1.2-beta.45 pre-release 2026-11-17T19:00:51Z (release.yml run 44151005276 success).
 - Sonraki: **B164** beta.45 (B161–B163) ve denetim kalanı #8 1000 g sınırı bildirimi.
+
+## B164 · 2026-11-17 · 1000 g sınırı sessizce kırpılmaz
+- Tarifte zaten olan bir besini yeniden eklemek miktarı 1000 g'da sessizce kesiyordu ve bildirim eklenen miktarı ("750 g") söylüyordu → "zaten tarifte; toplam en fazla 1000 g, 1000 g'da kaldı" bildirimi. +10/+1 düğmesi 1000 g'ı aşmak isteyince "En fazla 1000 g (1 kg)" bildirimi (TR/EN).
+- Yayın: v1.1.2-beta.45 yayımlandı (yukarıda B163 kaydında kanıt).
+- Kanıt: `npm test` 162/162; `npm run build`; Playwright B164 2/2 (masaüstü + telefon); tam koşu aşağıda.
+- Sonraki: **B165** denetim kalanı #9 koleksiyon sınırı mesajı ve #6 geniş katalog öğelerinin koleksiyonda yüklenmesi.

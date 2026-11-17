@@ -89,3 +89,18 @@ test('B163 enerji "ikisi" kcal ile kJ birlikte; "Varsayılana dön" onay ister, 
   await page.locator('.dlg [data-r="1"]').click();
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('bm.settings.v2') || '{}').settings?.energyUnit)).toBe('both');
 });
+
+test('B164 1000 g sınırı sessizce kırpılmaz: tarifte birikince ve +10 ile bildirim', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  await page.locator('[data-amount="ex"] [data-action="amt"][data-val="750"]').click();
+  await page.locator('[data-action="ex-add-recipe"]').click();
+  await page.locator('[data-action="ex-add-recipe"]').click();
+  await expect(page.locator('.toast')).toContainText('1000 g');
+  const g = await page.evaluate(() => JSON.parse(localStorage.getItem('bm.recipes.v1'))[0].items[0].g);
+  expect(g).toBe(1000);
+  await page.locator('[data-amount="ex"] [data-action="amt"][data-val="1000"]').click();
+  await page.locator('[data-amount="ex"] [data-action="nudge"][data-delta="10"]').click();
+  await expect(page.locator('.toast')).toContainText('En fazla 1000 g');
+  await expect(page.locator('[data-amount="ex"] .amt-val b')).toHaveText('1.000');
+});

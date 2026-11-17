@@ -895,5 +895,7 @@ export const UI_EN = {
  "Tarifi kopyala": "Duplicate recipe",
  "Tarifi sil": "Delete recipe",
  "Bu güne henüz besin eklenmedi. Keşfet'te bir besin seç ve “Günlüğe ekle”ye dokun; günün bileşen matriksi burada oluşur.": "No foods added to this day yet. Pick a food in Explore and tap “Add to diary”; the day's nutrient matrix will appear here.",
- "Tüm ayarlar varsayılana dönsün mü? Kişisel hedefler ve görünüm seçimleri sıfırlanır; tarif ve günlük kayıtları korunur.": "Reset all settings to default? Personal targets and appearance choices are reset; recipes and diary entries are kept."
+ "Tüm ayarlar varsayılana dönsün mü? Kişisel hedefler ve görünüm seçimleri sıfırlanır; tarif ve günlük kayıtları korunur.": "Reset all settings to default? Personal targets and appearance choices are reset; recipes and diary entries are kept.",
+ "“{n}” zaten tarifte; toplam en fazla {m} g olabilir, {m} g'da kaldı.": "“{n}” is already in the recipe; the total can be at most {m} g, so it stays at {m} g.",
+ "En fazla {m} g (1 kg) seçilebilir.": "At most {m} g (1 kg) can be selected."
 };
