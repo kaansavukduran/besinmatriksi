@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 45 · Daha sade Günlük ve Tarif
+# 🫐 Besin Matriksi 1.1.2 Beta 46 · Sessiz hatalar giderildi
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -21,11 +21,13 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
-- **Boş Günlük artık sade:** Henüz besin eklenmemiş günde uzun “Veri yok” listesi yerine kısa bir yönlendirme; besin ekleyince matris gelir.
-- **Tarif düğmeleri yerinde:** “Tarifi kopyala” ve “Tarifi sil” tarifin başlığında; günlük toplam kartına karışmıyor.
-- **“Varsayılana dön” onay sorar:** Ayarlar ve hedefler yanlışlıkla silinmez; tarif ve günlük kayıtları zaten korunur.
-- **kcal + kJ birlikte:** Varsayılan enerji seçeneği artık gerçekten ikisini gösterir (ör. 89 kcal · 371 kJ).
-- **Yinelenen kayıtlar temizlendi:** “Lor” ile “Cottage peynir” aynı USDA kaydıydı, birleşti (eski tarif ve günlükler kendiliğinden taşınır); iki çapati “ev tarifi” ve “ticari, donmuş” olarak ayrıldı.
+- **Görünüm profili hedeflerini korur:** Bir görünüm profilini uygulamak artık kişisel hedeflerini, diyet ve referans seçimini, sabitlenen besinleri ve dili değiştirmez; yalnız görünüm gelir.
+- **Sekmeler arası ayar eşitleme:** Uygulama iki sekmede açıkken birinde yaptığın ayar diğerine de gelir; eski ayarla üzerine yazılmaz.
+- **Koleksiyonda USDA besinleri kaybolmaz:** Geniş katalog kapalıyken vegan süzgeci koleksiyondaki USDA kaydını gizliyordu; artık yüklenip görünür.
+- **Sınırlar sessiz değil:** 1000 g'a ulaşan miktar, 60 koleksiyon ve 300 besinlik koleksiyon sınırı nedenini söyleyen bildirimle gösterilir.
+- **“kaynak 0” her ölçüm kaynağında:** FDC, FNDDS, flavonoid, kolin, pürin gibi veritabanlarının ölçülmüş 0'ları da işaretli; tahmin ve “Varsayılan 0” ayrı kalır.
+- **GOS dürüst:** Rafinoz ailesinin yalnız bir kısmı ölçülmüşse toplam yerine “en az X g (n/4 ölçülmüş)” yazar.
+- **Beta 45'ten:** Sade boş Günlük, başlıkta tarif kopyala/sil, onaylı “Varsayılana dön”, kcal ile kJ birlikte, lor ve çapati yinelenenleri temizlendi.
 - **Beta 44'ten:** Alkol (etanol) satırı, “Varsayılan 0” etiketi, daha doğru diyet sınıfı, zenginleştirilmemiş beyaz pide, 22 yeni fast food ve atıştırmalık, tutarlılık kapısıyla ayıklanan 332 karışık hücre.
 - **Önceki beta'lardan (34–43):** Sıcak açık/koyu yeni tema, kahve ve fast food kataloğu, diyet filtreleri, kategori grupları, günlük toplam tarif, mikro besin özeti, kuru meyveler.
 - **Vegan Türk mutfağı (tarif hesabı):** Kısır, piyaz, fava, ezogelin çorbası, zeytinyağlı taze fasulye (domatesli), imam bayıldı, zeytinyağlı enginar, bulgur pilavı. USDA'nın pişmiş/çiğ ölçümlerinden, “Tahmin (tarif)” etiketli; USDA'da olmayan malzemeler (nar ekşisi, biber salçası, nane) notta.
