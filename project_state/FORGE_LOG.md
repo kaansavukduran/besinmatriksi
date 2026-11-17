@@ -888,3 +888,9 @@
 - Kuru meyvelerin taze karşılıklarıyla aynı NDB'yi paylaşması (09163, 09079, 09147) B155'in bilinçli seçimi; değiştirilmedi.
 - Kanıt: `npm run data`; `npm test` 162/162 (B161: göç, ad tekilliği); build + build:single; Playwright 306/306.
 - Sonraki: **B162** kullanıcı önceliği (2) sade UI/UX: Unslop gözüyle Günlük ve Tarif ekranları (telefon 390/320 px).
+
+## B162 · 2026-11-17 · Unslop: Günlük boş durumu ve tarif düğmeleri
+- Tarif ekranında "Kopyala / Sil" günlük toplam kartının altına yapışık duruyordu (hangi şeye ait olduğu belirsizdi) → tarif başlığına "Tarifi kopyala / Tarifi sil" olarak taşındı.
+- Boş Günlük, telefonda ~6900 px boyunca "Veri yok 0/0" satırları çiziyordu → günde hiç kayıt yokken bileşen matrisi ve kaynak paneli yerine tek satırlık yönlendirme (`.day-empty`, TR/EN). Kayıt varken "yalnız tüketilenler" süzgeci matrisi gizlemez (Veri yok satırları anlamlı kalır).
+- Kanıt: `npm test` 162/162; `npm run build`; Playwright audit-storage + personal + ingredient-card 50/50 (B149 testi yeni boş duruma uyarlandı; B162 testi eklendi).
+- Sonraki: **B163** kod denetimi kalanları: "Varsayılana dön" onayı ve kcal+kJ "ikisi" görünümü.

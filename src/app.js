@@ -512,15 +512,12 @@ function renderRecipe() {
     <aside class="rlist" aria-label="${L("Tarifler")}">
       <button class="btn primary block" data-action="rc-new">＋ ${L("Yeni tarif")}</button>
       ${list}${totalEntry}
-      <div class="rtools">
-        <button class="btn" data-action="rc-dup">${L("Kopyala")}</button>
-        <button class="btn danger" data-action="rc-delete">${L("Sil")}</button>
-      </div>
     </aside>
     <section class="rmain">
       <div class="rhead"><label class="rtitle"><span class="sr">${L("Tarif adı")}</span><input id="rc-name" value="${esc(rc.name)}" aria-label="${L("Tarif adı")}"></label>
         <button class="btn primary" data-action="rc-add">＋ ${L("Malzeme ekle")}</button>
-        ${rc.items.length ? `<button class="btn" data-action="rc-to-day">📒 ${L("Günlüğe ekle")}</button><button class="btn ghost" data-action="csv">⬇ CSV</button><button class="btn ghost" data-action="print">🖨 ${L("Yazdır")}</button>` : ''}</div>
+        ${rc.items.length ? `<button class="btn" data-action="rc-to-day">📒 ${L("Günlüğe ekle")}</button><button class="btn ghost" data-action="csv">⬇ CSV</button><button class="btn ghost" data-action="print">🖨 ${L("Yazdır")}</button>` : ''}
+        <span class="rtools" role="group" aria-label="${L("Bu tarif")}"><button class="btn ghost" data-action="rc-dup">${L("Tarifi kopyala")}</button><button class="btn ghost danger" data-action="rc-delete">${L("Tarifi sil")}</button></span></div>
       <div class="ings">${items || `<p class="empty">${L("Henüz malzeme yok. “Malzeme ekle”ye tıkla veya Keşfet'te bir besinde “Tarife ekle”yi kullan. Ör: muz + yaban mersini.")}</p>`}</div>
       ${rc.items.length ? `<div class="ropts">
         <div class="kv"><span>${L("Porsiyon sayısı")}</span><span class="stepper"><button class="nudge" data-action="rc-serv" data-d="-1" aria-label="${L("Porsiyon sayısını azalt")}">−</button><b>${rc.servings}</b><button class="nudge" data-action="rc-serv" data-d="1" aria-label="${L("Porsiyon sayısını artır")}">+</button></span></div>

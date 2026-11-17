@@ -72,6 +72,8 @@ export function renderWeek(state, day, resolve, consumedOnly) {
 
 export function renderPersonal(state, draft, day, consumedOnly, settings, resolve, sourceKey, sourceOpen, undo, readError, microOpen = true) {
   const { entries, result } = dayResult(state, day, resolve, consumedOnly);
+  // Boş durum yalnız günde hiç kayıt yokken; "yalnız tüketilenler" süzgeci matrisi gizlemez (Veri yok satırları anlamlıdır)
+  const dayHasEntries = state.entries.some((e) => e.day === day);
   let estimate; try { estimate = energyEstimate(state.profile); } catch { estimate = {}; }
   const manual = settings.referenceMode === 'custom' && settings.targets.energy > 0;
   const target = manual ? settings.targets.energy : estimate.daily;
@@ -90,8 +92,8 @@ export function renderPersonal(state, draft, day, consumedOnly, settings, resolv
     ${renderWeek(state, day, resolve, consumedOnly)}
     ${entries.length ? `<button class="btn" data-action="personal-to-recipe">🥣 ${L("Bu günü tarif olarak kaydet")}</button>` : ''}
     ${undo ? `<button class="btn" data-action="personal-undo">${t('undo')}</button>` : ''}
-    <details class="personal-sources" ${sourceOpen ? 'open' : ''}><summary>${t('source')}</summary><label class="field"><span>${t('nutrient')}</span><select id="personal-source-key">${NUTRIENTS.map(n => `<option value="${n.key}" ${n.key === sourceKey ? 'selected' : ''}>${esc(label(n))}</option>`).join('')}</select></label><div id="personal-sources-content">${renderDaySources(entries, resolve, sourceKey)}</div></details>
-    ${renderNutrients(result, settings, target > 0 ? { value: target, kind: manual ? 'manual' : 'estimate' } : null, state.profile)}
+    ${dayHasEntries ? `<details class="personal-sources" ${sourceOpen ? 'open' : ''}><summary>${t('source')}</summary><label class="field"><span>${t('nutrient')}</span><select id="personal-source-key">${NUTRIENTS.map(n => `<option value="${n.key}" ${n.key === sourceKey ? 'selected' : ''}>${esc(label(n))}</option>`).join('')}</select></label><div id="personal-sources-content">${renderDaySources(entries, resolve, sourceKey)}</div></details>` : ''}
+    ${dayHasEntries ? renderNutrients(result, settings, target > 0 ? { value: target, kind: manual ? 'manual' : 'estimate' } : null, state.profile) : `<p class="empty day-empty">${L("Bu güne henüz besin eklenmedi. Keşfet'te bir besin seç ve “Günlüğe ekle”ye dokun; günün bileşen matriksi burada oluşur.")}</p>`}
     </section>
     <section class="card"><div class="presets"><button class="btn" data-action="personal-export">${t('exportPersonal')}</button><button class="btn" data-action="open-file" data-id="personal-file">${t('importPersonal')}</button><input type="file" accept="application/json,.json" id="personal-file" hidden></div><p class="hint">${t('privacy')}</p></section>
   </div>`;

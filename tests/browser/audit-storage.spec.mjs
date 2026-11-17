@@ -22,7 +22,7 @@ for(const language of ['tr','en']){
  });
  test(`B149 personal failure ${language}: failed daily addition never looks saved or duplicates on retry`,async({page})=>{
   await setup(page,language);await page.locator('#q').fill('nohut');await page.locator('#foodlist [data-id="nohut"]').click();await page.evaluate(()=>window.denyStorageKey='bm.personal.v1');await page.locator('[data-action="ex-add-day"]').click();await expect(page.locator('.toast')).toContainText(language==='tr'?'Kaydedilemedi':'Could not save');
-  await page.locator('.tabs [data-tab="gunluk"]').click();await expect(page.locator('[data-action="personal-remove"]')).toHaveCount(0);await expect(page.locator('[data-daily-nutrient="energy"]')).toContainText(language==='tr'?'Veri yok':'No data');expect(await page.evaluate(()=>localStorage.getItem('bm.personal.v1'))).toBeNull();
+  await page.locator('.tabs [data-tab="gunluk"]').click();await expect(page.locator('[data-action="personal-remove"]')).toHaveCount(0);await expect(page.locator('.day-empty')).toBeVisible();await expect(page.locator('[data-daily-nutrient="energy"]')).toHaveCount(0);expect(await page.evaluate(()=>localStorage.getItem('bm.personal.v1'))).toBeNull();
   await page.evaluate(()=>window.denyStorageKey='');await page.locator('.tabs [data-tab="kesfet"]').click();await page.locator('[data-action="ex-add-day"]').click();expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('bm.personal.v1')).entries.length)).toBe(1);
  });
  test(`B149 import failure ${language}: no half-import, then normal retry`,async({page})=>{

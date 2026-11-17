@@ -890,5 +890,9 @@ export const UI_EN = {
  "USDA kaydındaki yağın bir kısmı tereyağı (kolesterol ve bütirik asit). USDA FNDDS tarifi: pişmiş beyaz pirinç + yağ (türü belirtilmemiş; tereyağı olabilir) + tuz.": "Part of the fat in the USDA record is butter (cholesterol and butyric acid). USDA FNDDS recipe: cooked white rice + fat (type not specified; may be butter) + salt.",
  "Alkol": "Alcohol",
  "Varsayılan 0": "Assumed 0",
- "USDA bu değeri ölçmeden 0 kabul etmiş (bu besinde doğal olarak bulunmadığı varsayılan bileşen; ör. bitkide kolesterol, ette lif)": "USDA assumed this value to be 0 without measuring it (a component assumed not to occur naturally in this food, e.g. cholesterol in plants, fibre in meat)"
+ "USDA bu değeri ölçmeden 0 kabul etmiş (bu besinde doğal olarak bulunmadığı varsayılan bileşen; ör. bitkide kolesterol, ette lif)": "USDA assumed this value to be 0 without measuring it (a component assumed not to occur naturally in this food, e.g. cholesterol in plants, fibre in meat)",
+ "Bu tarif": "This recipe",
+ "Tarifi kopyala": "Duplicate recipe",
+ "Tarifi sil": "Delete recipe",
+ "Bu güne henüz besin eklenmedi. Keşfet'te bir besin seç ve “Günlüğe ekle”ye dokun; günün bileşen matriksi burada oluşur.": "No foods added to this day yet. Pick a food in Explore and tap “Add to diary”; the day's nutrient matrix will appear here."
 };

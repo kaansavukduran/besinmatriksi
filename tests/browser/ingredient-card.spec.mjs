@@ -53,3 +53,19 @@ test('seitan: ölçülmemiş B vitaminleri "Varsayılan 0" etiketiyle (B158)', a
   await page.locator('#foodlist [data-id="seitan"]').first().click();
   await expect(page.locator('#matrix .src-z').first()).toContainText('Varsayılan 0');
 });
+
+test('B162 boş günde bileşen matrisi yerine kısa yönlendirme; besin eklenince matris gelir. Tarif kopyala/sil tarifin başlığında', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('[data-action="tab"][data-tab="gunluk"]').first().click();
+  await expect(page.locator('.day-empty')).toBeVisible();
+  await expect(page.locator('.personal-section')).toHaveCount(0);
+  await page.locator('[data-action="tab"][data-tab="kesfet"]').first().click();
+  await page.locator('#q').fill('nohut'); await page.locator('#foodlist [data-id="nohut"]').first().click();
+  await page.locator('[data-action="ex-add-day"]').first().click();
+  await page.locator('[data-action="tab"][data-tab="gunluk"]').first().click();
+  await expect(page.locator('.day-empty')).toHaveCount(0);
+  expect(await page.locator('.personal-section').count()).toBeGreaterThan(3);
+  await page.locator('[data-action="tab"][data-tab="tarif"]').first().click();
+  await expect(page.locator('.rhead [data-action="rc-delete"]')).toHaveText('Tarifi sil');
+  await expect(page.locator('.rlist [data-action="rc-delete"]')).toHaveCount(0);
+});

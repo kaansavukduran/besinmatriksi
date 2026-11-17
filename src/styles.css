@@ -260,8 +260,8 @@ i.sci, .dsub i { font-style: italic; }
 .rlist-item { min-width: 0; max-width: 100%; }
 .rname { max-width: 100%; white-space: normal; overflow-wrap: anywhere; flex-wrap: wrap; width: 100%; text-align: left; min-height: var(--tap); padding: .3rem .8rem; border-radius: calc(var(--radius) * .7); border: 1px solid var(--line); background: var(--card); display: flex; gap: .3rem; align-items: center; }
 .rlist-item.on .rname { background: var(--acc); color: var(--ac-fg); border-color: var(--acc); font-weight: 700; }
-.rtools { display: flex; gap: 6px; }
-.rtools .btn { flex: 1; }
+.rtools { display: flex; gap: 6px; margin-left: auto; }
+.rtools .btn { flex: 0 1 auto; }
 .rhead { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 8px; }
 .rtitle { flex: 1; min-width: 200px; }
 .rtitle input { width: 100%; font-size: 1.4rem; font-weight: 700; border: 1px solid transparent; border-radius: calc(var(--radius) * .6); background: transparent; padding: .2rem .5rem; }
