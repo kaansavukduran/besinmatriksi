@@ -869,3 +869,9 @@
 - NUT_DATA Src_Cd 7 ("assumed zero", ölçülmeden 0 kabul) artık okunur: bu hücreler 'z' etiketi "Varsayılan 0" (kesik çerçeve) taşır, ölçülmüş 0'dan ayrılır. 5.275 küratörlü hücre; ör. seitanın B1/B2/B3/B6/folat/E/K değerleri, bitkilerde kolesterol. Değerler değişmedi (0 kalır), yalnız kaynağı dürüst gösterilir; CSV, tarif kaynak dökümü ve Hakkında etiketleri dahil.
 - Kanıt: `npm run data`; `npm test` 159/159 (B158: alkol/kütle, alkolsüzde veri yok, seitan 'z', mercimek kolesterol 'z'); build + build:single; B158 tarayıcı 2/2 (seitan "Varsayılan 0").
 - Playwright tam koşu 306/306 PASS. Sonraki: **B159** foods-ext bitkisel gruplarda hayvansal izli ~25 kayıt (kolesterol ≥5 mg veya laktoz >0,5 g → hayvansal) ve marka filtresi (USA/AMP/Monster).
+
+## B159 · 2026-11-17 · Geniş katalog diyet sınıfı: süt bazlı tozlar, marka tanıma
+- Veri denetiminin A7 bulgusu yeniden doğrulandı: ChatGPT'nin B150 diyet sınıflaması (kolesterol > 0 veya karma ürün → "belirsiz") denetimdeki ~25 kaydın tamamını zaten "bitkisel" olmaktan çıkarmıştı. Kalan iki açık kapatıldı: "dairy" sözcüğü hayvansal kalıba eklendi (dairy drink mix ×2, dairy based malted drink, Wendy's Frosty → hayvansal; "non-dairy" önce AMBIGUOUS'ta yakalanır); Vitasoy/Nasoya/Mori-Nu/Monster ve büyük harfli AMP marka listesine (16 Vitasoy tofu/soya sütü + AMP ×2 + Monster → marka, içerik doğrulanamadığı için "belirsiz"). Eski listenin büyük/küçük harf duyarsızlığı korundu.
+- Fark: marka 1878 → 1897, bitkisel 1387 → 1371, hayvansal 3919 → 3923; diğer kayıtlar değişmedi (kayıt kayıt karşılaştırıldı).
+- Kanıt: `npm run data`; `npm test` 160/160 (B159: bitkisel kayıtta kolesterol/laktoz sızıntısı 0); build + build:single; diyet/katalog/ağaç/mikro tarayıcı testleri 38/38.
+- Sonraki: **B160** beta.44 (B158+B159) ve veri denetiminin düşük öncelikli kalanları (pide_lavas zenginleştirilmemiş 18413, lor/lor_cottage yinelenen NDB, çapati kopyası).

@@ -88,3 +88,12 @@ test('katalog büyümesi kaynak değerlerini değiştirmez; ölçülmemiş mikro
     assert.ok(Number.isFinite(value) && value >= 0, f.n + '/' + key);
   }
 });
+
+test('B159 geniş katalog: süt bazlı içecek tozları hayvansal, Vitasoy/AMP/Monster marka; bitkisel kayıtta kolesterol veya laktoz yok', () => {
+  const list = Array.isArray(extended) ? extended : (extended.foods || Object.values(extended).find(Array.isArray));
+  const by = new Map(list.map((f) => [f.n, f]));
+  for (const n of ['14422', '14311']) assert.equal(by.get(n).diet, 'animal', n);
+  for (const n of ['16272', '14625', '14627']) assert.equal(by.get(n).branded, true, n);
+  const leaks = list.filter((f) => f.diet === 'plant' && ((f.v.cholesterol ?? 0) > 0 || (f.v.lactose ?? 0) > 0.5)).map((f) => f.n);
+  assert.deepEqual(leaks, []);
+});

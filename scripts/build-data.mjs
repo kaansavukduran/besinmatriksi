@@ -475,13 +475,13 @@ const EXT_GROUPS = {
 };
 const ANIMAL_GROUPS = new Set(['0100', '0500', '1300', '1700', '1000', '1500']);
 const PLANT_GROUPS = new Set(['0200', '0900', '1100', '1200', '1600', '2000', '0400']);
-const ANIMAL = /\b(milk|cheese|butter|eggs?|chicken|beef|pork|ham|bacon|fish|tuna|salmon|shrimp|crab|lard|tallow|gelatin|honey|whey|casein|cream|creamed|yogurt|meat|turkey|lamb|veal|anchov\w*|clam|sardine|cod|oyster|ghee|sausage|frankfurters?|franks|bologna|cod liver|herring|menhaden|whale|seal|mutton|goose|duck|poultry|buttermilk|lactose|nonfat dry milk|sour cream)\b/i;
+const ANIMAL = /\b(milk|cheese|butter|eggs?|chicken|beef|pork|ham|bacon|fish|tuna|salmon|shrimp|crab|lard|tallow|gelatin|honey|whey|casein|cream|creamed|yogurt|meat|turkey|lamb|veal|anchov\w*|clam|sardine|cod|oyster|ghee|sausage|frankfurters?|franks|bologna|cod liver|herring|menhaden|whale|seal|mutton|goose|duck|poultry|buttermilk|lactose|nonfat dry milk|sour cream|dairy)\b/i;
 const PLANT_OK = /\b(soymilk|soy milk|almond milk|rice milk|coconut milk|coconut cream|oat milk|peanut butter|sesame butter|cashew butter|almond butter|nut butter|butternut|butterhead|butterbur|cocoa butter|shea|butter beans|milk substitute|coconut water|cream of wheat|cream of rice|cream[- ]style|vegetable broth|vegetable stock)\b/gi;
 const AMBIGUOUS = /\b(meatless|meat[- ]free|non[- ]dairy|nondairy|imitation|egg substitute|vegetarian|vegan)\b/i;
 const MIXED_PRODUCT = /\b(formula|meal replacement|whitener|souffle|pudding|pancakes?|salad|mayonnaise|margarine|dressing|veggie burgers?|prepared from recipe)\b/i;
 // SR28 2015 katalogda bilinen marka tanımları; bu bayrak tüm ticari adları tespit ettiği iddiası taşımaz.
-const KNOWN_BRAND = /\b(Clif|McDonald|Burger King|Dunkin|Red Bull|SlimFast|Slim-Fast|Carnation|Stouffer|Kellogg|Campbell|Gerber|Heinz|Kraft|Nestle|Nestlé|Quaker|Hershey|Toblerone|Subway|Wendy|Denny|Applebee|Cracker Barrel|Boston Market|Kentucky Fried|Pizza Hut|Taco Bell|Sbarro|Panera|Chick-fil-A|ZonePerfect)\b/i;
-const isBranded = (name) => /[A-Z]{4,}/.test(name.replace(/\bUSDA(?: Commodity)?\b/g, '')) || KNOWN_BRAND.test(name);
+const KNOWN_BRAND = /\b(Clif|McDonald|Burger King|Dunkin|Red Bull|SlimFast|Slim-Fast|Carnation|Stouffer|Kellogg|Campbell|Gerber|Heinz|Kraft|Nestle|Nestlé|Quaker|Hershey|Toblerone|Subway|Wendy|Denny|Applebee|Cracker Barrel|Boston Market|Kentucky Fried|Pizza Hut|Taco Bell|Sbarro|Panera|Chick-fil-A|ZonePerfect|Vitasoy|Nasoya|Mori-Nu|Monster)\b/i;
+const isBranded = (name) => /[A-Z]{4,}/.test(name.replace(/\bUSDA(?: Commodity)?\b/g, '')) || KNOWN_BRAND.test(name) || /\bAMP\b/.test(name);
 function dietOf(group, name, branded, values) {
   if (ANIMAL_GROUPS.has(group)) return 'animal';
   if (AMBIGUOUS.test(name)) return 'unknown';
