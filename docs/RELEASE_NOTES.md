@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 44 · Alkol, “Varsayılan 0” ve daha dürüst veri
+# 🫐 Besin Matriksi 1.1.2 Beta 45 · Daha sade Günlük ve Tarif
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -21,13 +21,13 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
-- **Alkol:** Bira, şarap gibi içeceklerde alkol (etanol) gösterilir; kalorinin nereden geldiği artık eksiksiz.
-- **“Varsayılan 0” etiketi:** USDA'nın ölçmeden 0 kabul ettiği değerler (ör. seitanın B vitaminleri, bitkilerde kolesterol) ölçülmüş 0'dan ayrı, kesik çerçeveli etiketle gösterilir.
-- **Daha doğru diyet sınıfı:** Geniş katalogda süt bazlı içecek tozları hayvansal; markalı ürünler (ör. Vitasoy, AMP, Monster) içerik doğrulanamadığı için “belirsiz”.
-- **Beyaz pide:** ABD'de zenginleştirilmiş kayıt yerine zenginleştirilmemiş pide (Türkiye'de un zenginleştirmesi zorunlu değil).
-- **729 besin:** Sosisli, corn dog, vejetaryen sosisli, taco, fasulyeli burrito (peynirsiz), nachos, balık/salamlı/çıtır tavuk sandviç, pretzel, mikrodalga ve karamelli patlamış mısır, pirinç/mısır patlağı, çikolatalı ve çilekli dondurma, yarı tatlı ve bademli sütlü çikolata, sebzeli suşi, buzlu mocha (sütlü ve bitkisel). Hayvansal olanlar etiketli.
-- **Daha temiz veri:** Farklı USDA numunelerinin karıştığı 332 hücre ayıklandı (ör. humus, bazı mantarların amino asitleri); simit, lahmacun ve gözlemede ABD tipi zenginleştirilmiş un yerine zenginleştirilmemiş un; peksimet, sebze burger ve soyalı mayonez hayvansal iz taşıdığı için etiketlendi; kuru nohuttaki aykırı manganez değeri gösterilmiyor.
-- **Önceki beta'lardan (34–42):** Sıcak açık/koyu yeni tema, kahve ve fast food kataloğu, diyet filtreleri, kategori grupları, günlük toplam tarif, mikro besin özeti, kuru meyveler.
+- **Boş Günlük artık sade:** Henüz besin eklenmemiş günde uzun “Veri yok” listesi yerine kısa bir yönlendirme; besin ekleyince matris gelir.
+- **Tarif düğmeleri yerinde:** “Tarifi kopyala” ve “Tarifi sil” tarifin başlığında; günlük toplam kartına karışmıyor.
+- **“Varsayılana dön” onay sorar:** Ayarlar ve hedefler yanlışlıkla silinmez; tarif ve günlük kayıtları zaten korunur.
+- **kcal + kJ birlikte:** Varsayılan enerji seçeneği artık gerçekten ikisini gösterir (ör. 89 kcal · 371 kJ).
+- **Yinelenen kayıtlar temizlendi:** “Lor” ile “Cottage peynir” aynı USDA kaydıydı, birleşti (eski tarif ve günlükler kendiliğinden taşınır); iki çapati “ev tarifi” ve “ticari, donmuş” olarak ayrıldı.
+- **Beta 44'ten:** Alkol (etanol) satırı, “Varsayılan 0” etiketi, daha doğru diyet sınıfı, zenginleştirilmemiş beyaz pide, 22 yeni fast food ve atıştırmalık, tutarlılık kapısıyla ayıklanan 332 karışık hücre.
+- **Önceki beta'lardan (34–43):** Sıcak açık/koyu yeni tema, kahve ve fast food kataloğu, diyet filtreleri, kategori grupları, günlük toplam tarif, mikro besin özeti, kuru meyveler.
 - **Vegan Türk mutfağı (tarif hesabı):** Kısır, piyaz, fava, ezogelin çorbası, zeytinyağlı taze fasulye (domatesli), imam bayıldı, zeytinyağlı enginar, bulgur pilavı. USDA'nın pişmiş/çiğ ölçümlerinden, “Tahmin (tarif)” etiketli; USDA'da olmayan malzemeler (nar ekşisi, biber salçası, nane) notta.
 - **Gözleme (ıspanaklı ve patatesli, peynirsiz):** Tarif hesabı, sacda pişme verimiyle; yalnız ısıya dayanıklı değerler.
 - **Telefonda daha hafif:** Keşfet'te görünmeyen periyodik tablo artık arka planda kurulmuyor; bileşen aramaları hızlandı.
