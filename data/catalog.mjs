@@ -422,7 +422,7 @@ export const FOODS = [
   F('beyaz_ekmek', 'Beyaz ekmek', 'white bread', 'ekmek', [['taze', '18069', null, 'Taze'], ['pismis', '18070', null, 'Kızarmış (tost)']], { allergens: ['gluten'], note: 'Ticari ekmeklerin bazılarında süt, yumurta veya tereyağı bulunabilir; vegan uygunluğu için etikete bak.' }),
   F('tam_bugday_ekmegi', 'Tam buğday ekmeği', 'whole-wheat bread', 'ekmek', [['taze', '18075', null, 'Taze'], ['pismis', '18076', null, 'Kızarmış (tost)']], { allergens: ['gluten'], note: 'Ticari ekmeklerin bazılarında süt, yumurta veya tereyağı bulunabilir; vegan uygunluğu için etikete bak.' }),
   F('cavdar_ekmegi', 'Çavdar ekmeği', 'rye bread', 'ekmek', [['taze', '18060', null, 'Taze']], { allergens: ['gluten'] }),
-  F('pide_lavas', 'Pide / lavaş (beyaz)', 'pita bread, white', 'ekmek', [['taze', '18041', null, 'Taze']], { allergens: ['gluten'] }),
+  F('pide_lavas', 'Pide / lavaş (beyaz)', 'pita bread, white', 'ekmek', [['taze', '18413', null, 'Taze']], { allergens: ['gluten'] }),
   F('pide_lavas_tam', 'Pide / lavaş (tam buğday)', 'pita bread, whole-wheat', 'ekmek', [['taze', '18042', null, 'Taze']], { allergens: ['gluten'] }),
   F('patlamis_misir', 'Patlamış mısır (yağsız, tuzsuz)', 'air-popped popcorn', 'tahil', [['kavrulmus', '19806', null, 'Yağsız patlatılmış']]),
   F('su', 'İçme suyu (musluk)', 'tap water', 'icecek', [['icecek', '14411', null, 'İçme suyu']], { note: 'Musluk suyunun mineral içeriği bölgeye göre değişir; ambalajlı suda etikete bak.' }),

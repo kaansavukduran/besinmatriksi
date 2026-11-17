@@ -875,3 +875,8 @@
 - Fark: marka 1878 → 1897, bitkisel 1387 → 1371, hayvansal 3919 → 3923; diğer kayıtlar değişmedi (kayıt kayıt karşılaştırıldı).
 - Kanıt: `npm run data`; `npm test` 160/160 (B159: bitkisel kayıtta kolesterol/laktoz sızıntısı 0); build + build:single; diyet/katalog/ağaç/mikro tarayıcı testleri 38/38.
 - Sonraki: **B160** beta.44 (B158+B159) ve veri denetiminin düşük öncelikli kalanları (pide_lavas zenginleştirilmemiş 18413, lor/lor_cottage yinelenen NDB, çapati kopyası).
+
+## B160 · 2026-11-17 · Beyaz pide zenginleştirilmemiş kayıt; 1.1.2-beta.44
+- pide_lavas 18041 (ABD zenginleştirilmiş: folik asit 83 µg, Fe 2,62 mg) → 18413 (zenginleştirilmemiş: folik asit 0, Fe 1,4 mg); un/pirinç/makarnadaki zenginleştirilmemiş seçimle tutarlı. Lor/lor_cottage (aynı NDB) ve çapati kopyası kayıtlı referansları bozmamak için şimdilik korundu (birleştirme ayrı göç ister).
+- Kanıt: `npm run data`; `npm test` 161/161; build + build:single; Playwright tam koşu 306/306.
+- Sürüm 1.1.2-beta.44 (B158 + B159 + B160). Sonraki: **B161** lor/lor_cottage ve çapati yinelenenlerini kimlik göçüyle birleştirmek; sonra kullanıcı önceliklerinden sade UI/UX.

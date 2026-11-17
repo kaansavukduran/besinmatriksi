@@ -383,3 +383,9 @@ test('B158 alkol bileşeni ve USDA varsayılan sıfırları (Src_Cd 7) ayrı eti
   const lentil = g('kirmizi_mercimek').forms[0];
   assert.equal(lentil.s.cholesterol, 'z'); assert.equal(lentil.s.protein, 'u');
 });
+
+test('B160 beyaz pide zenginleştirilmemiş USDA kaydından (Türkiye\'de un zenginleştirmesi zorunlu değil)', () => {
+  const fm = DB.foods.find((x) => x.id === 'pide_lavas').forms[0];
+  assert.equal(fm.usda.ndb, '18413');
+  assert.ok(!(fm.v.folic_acid > 0));
+});
