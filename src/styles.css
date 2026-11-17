@@ -1006,4 +1006,15 @@ button.micro-name:hover { text-decoration-color: currentColor; }
 
 /* B168: dar kutuda (büyük yazı/ölçek) ara ölçek etiketleri üst üste binmesin; uç etiketler kalır */
 .amount:not(.mini) { container-type: inline-size; }
-@container (max-width: 18em) { .slider-scale span:not(:first-child):not(:last-child) { display: none; } }
+@container (max-width: 13em) { .slider-scale span:not(:first-child):not(:last-child) { display: none; } }
+
+/* B169: baloncuk alttaki kontrolleri yutmaz (yalnız kapatma düğmesi tıklanır); dar ekranda kaydırırken Aion kenara çekilir */
+.aion-bubble { pointer-events: none; }
+.aion-bubble .aion-close { pointer-events: auto; }
+.aion { transition: transform .25s ease, opacity .25s ease; }
+.aion.aion-tucked { transform: translateX(55%); opacity: .45; }
+.aion.aion-tucked[data-side="left"] { transform: translateX(-55%); }
+.aion.aion-tucked .aion-body, .aion.aion-tucked .aion-bubble { pointer-events: none; }
+.aion.aion-tucked .aion-bubble { display: none; }
+@media (max-width: 600px) { .aion[data-size="m"] .aion-sprite, .aion[data-size="l"] .aion-sprite { width: 64px; height: 64px; } }
+@media (prefers-reduced-motion: reduce) { .aion { transition: none; } }

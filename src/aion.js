@@ -76,6 +76,10 @@ export function mountAion() {
     if (cfg.tips) { aionSay(t(TIP_KEYS[tipIndex % TIP_KEYS.length])); tipIndex++; }
   });
   window.addEventListener('resize', draw);
+  // B169: Aion birincil kontrolleri engellemez. Dışarıya dokunmak baloncuğu kapatır (dokunuş alttaki kontrole geçer);
+  // dar ekranda kaydırma/dokunma sırasında Aion kenara çekilir ve dokunuşları geçirir, 2,5 sn sonra geri gelir.
+  document.addEventListener('pointerdown', (e) => { if (!root.contains(e.target)) { hideBubble(); tuck(); } }, true);
+  window.addEventListener('scroll', tuck, { passive: true });
   document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); else schedule(); });
   labels();
   draw();
@@ -136,6 +140,15 @@ export function aionSay(text, ms = 6000, { ifIdle = false } = {}) {
   bubble.hidden = false;
   clearTimeout(bubbleTimer);
   bubbleTimer = setTimeout(hideBubble, ms);
+}
+
+let tuckTimer = null;
+const narrow = () => (globalThis.innerWidth || 1024) <= 600;
+function tuck() {
+  if (!root || root.hidden || !narrow()) return;
+  root.classList.add('aion-tucked');
+  clearTimeout(tuckTimer);
+  tuckTimer = setTimeout(() => root?.classList.remove('aion-tucked'), 2500);
 }
 
 function hideBubble() { if (bubble) bubble.hidden = true; clearTimeout(bubbleTimer); }

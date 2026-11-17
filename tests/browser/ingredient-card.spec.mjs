@@ -151,3 +151,35 @@ test('B168 gram kaydırıcısı: sol yarı 1–250 g, dokunuşla küçük miktar
   const h = await page.locator('[data-amount^="rc:"] .slider').evaluate((e) => e.getBoundingClientRect().height);
   expect(h).toBeGreaterThanOrEqual(44);
 });
+
+test('B169 Aion baloncuğu kontrolleri yutmaz; telefonda kaydırınca Aion kenara çekilip dokunuşu geçirir', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 640 });
+  await page.addInitScript(() => { localStorage.setItem('bm.aionOffV1', '1'); localStorage.setItem('bm.settings.v2', JSON.stringify({ version: 2, settings: { language: 'tr', aionEnabled: true, aionTips: true } })); });
+  await page.goto('/');
+  await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  const bubble = page.locator('.aion-bubble');
+  await page.locator('.aion-body').click();
+  await expect(bubble).toBeVisible();
+  // Baloncuğun ortasındaki nokta Aion'a değil alttaki sayfaya aittir
+  const hit = await bubble.evaluate((b) => { const r = b.getBoundingClientRect(); const e = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !!e && !e.closest('.aion'); });
+  expect(hit).toBe(true);
+  await page.locator('#q').evaluate(() => document.querySelector('.slider')?.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })));
+  await expect(bubble).toBeHidden();
+  await page.mouse.wheel(0, 300);
+  await expect(page.locator('#aion')).toHaveClass(/aion-tucked/);
+  const through = await page.locator('.aion-body').evaluate((b) => { const r = b.getBoundingClientRect(); const x = Math.min(innerWidth - 2, r.left + r.width / 2); const e = document.elementFromPoint(x, r.top + r.height / 2); return !!e && !e.closest('.aion'); });
+  expect(through).toBe(true);
+  await expect(page.locator('#aion')).not.toHaveClass(/aion-tucked/, { timeout: 5000 });
+});
+
+test('B169 ölçek etiketleri: 320 px normal yazıda dördü çakışmadan görünür, 28 px + %200 ölçekte yalnız uçlar', async ({ page }) => {
+  const check = async (fs, sc, n) => {
+    await page.addInitScript(([fs, sc]) => localStorage.setItem('bm.settings.v2', JSON.stringify({ version: 2, settings: { language: 'tr', fontSize: fs, uiScale: sc } })), [fs, sc]);
+    await page.goto('/'); await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+    const r = await page.evaluate(() => { const sp = [...document.querySelectorAll('[data-amount="ex"] .slider-scale span')].map((e) => e.getBoundingClientRect()).filter((r) => r.width); return { shown: sp.length, ov: sp.some((a, i) => i && a.left < sp[i - 1].right + 2) }; });
+    expect(r).toEqual({ shown: n, ov: false });
+  };
+  await page.setViewportSize({ width: 320, height: 800 });
+  await check(18, 100, 4);
+  await check(28, 200, 2);
+});
