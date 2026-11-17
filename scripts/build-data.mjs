@@ -44,6 +44,8 @@ for (const n of NUTRIENTS) {
   }
 }
 const fullValues = new Map();
+// USDA Src_Cd 7 = "assumed zero": ölçülmeden 0 kabul edilmiş (ör. bitkide kolesterol, ette lif). Ölçülmüş 0'dan ayrı etiketlenir ('z').
+const assumedZero = new Map();
 const nutrientText = gunzipSync(fs.readFileSync(path.join(root, 'data/raw/NUT_DATA.txt.gz'))).toString('utf8');
 for (const line of nutrientText.split('\n')) {
   if (!line) continue;
@@ -54,6 +56,7 @@ for (const line of nutrientText.split('\n')) {
   if (!Number.isFinite(value) || value < 0) throw new Error('USDA miktarı geçersiz: ' + fields[0] + '/' + fields[1]);
   if (!fullValues.has(fields[0])) fullValues.set(fields[0], {});
   fullValues.get(fields[0])[mapping.key] = Number((value * mapping.factor).toPrecision(12));
+  if (fields[5] === '7' && value === 0) { if (!assumedZero.has(fields[0])) assumedZero.set(fields[0], new Set()); assumedZero.get(fields[0]).add(mapping.key); }
 }
 
 // ---------- USDA flavonoid (3.3) ve izoflavon (2.1) veri tabanları (aynı NDB numaraları) ----------
@@ -175,6 +178,8 @@ const CHILD_GROUPS = [
 ];
 let gateDrops = 0;
 function sanitize(v, s, base = 'u') {
+  // Alkol: USDA'da alkolsüz besinlerin çoğunda ölçülmeden 0 yazılmış (varsayılan sıfır) → yalnız pozitif ölçümler gösterilir
+  if (v.alcohol === 0) { delete v.alcohol; if (s) delete s.alcohol; }
   const tag = (k) => (s && s[k]) || base;
   // Esansiyel amino asitler proteinin %120'sinden fazlaysa (ör. kuru madde bazlı FDC mantar kayıtları) amino asitler gösterilmez
   const eaa = EAA.reduce((a, k) => a + (v[k] ?? 0), 0) / 1000;
@@ -350,7 +355,7 @@ for (const food of FOODS) {
       const d = des.get(ndb);
       if (!d) throw new Error('FOOD_DES kodu yok: ' + ndb);
       Object.assign(v, usdaValues(ndb));
-      for (const k of Object.keys(v)) s[k] = 'u';
+      for (const k of Object.keys(v)) s[k] = assumedZero.get(ndb)?.has(k) && v[k] === 0 ? 'z' : 'u';
       const fl = flavValues.get(ndb);
       if (fl) { Object.assign(v, fl.v); Object.assign(s, fl.s); }
       const ffId = fillFromFoundation(ndb, v, s);
@@ -498,6 +503,7 @@ for (const [ndb, d] of des) {
   const fl = flavValues.get(ndb);
   if (fl) Object.assign(v, fl.v);
   const fsTags = fl ? { ...fl.s } : {};
+  for (const k of assumedZero.get(ndb) || []) if (v[k] === 0 && !fsTags[k]) fsTags[k] = 'z';
   fillFromFoundation(ndb, v, fsTags);
   fillFromExtra(ndb, v, fsTags);
   sanitize(v, fsTags);

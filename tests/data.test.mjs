@@ -19,7 +19,7 @@ test('her formun doğrulanmış değerleri veya açık kaynak boşluğu var', ()
       else if (fm.computed) assert.ok(Object.values(fm.s).every((x) => x === 'd'), `${f.id}/${fm.key}`);
       else assert.ok(fm.v.energy != null && fm.v.protein != null, `${f.id}/${fm.key}`);
       for (const k of Object.keys(fm.v)) assert.ok(keys.has(k), `bilinmeyen anahtar ${k}`);
-      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P', 'U'].includes(s), `${f.id} ${k} ${s}`);
+      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P', 'U', 'z'].includes(s), `${f.id} ${k} ${s}`);
     }
   }
 });
@@ -94,7 +94,7 @@ test('dağıtımda IFCT değerleri, alternatifleri ve bunlardan tahminler bulunm
   for (const food of DB.foods) for (const f of food.forms) {
     assert.equal(f.ifct, null); assert.equal(f.estFrom, null);
     assert.deepEqual(f.alt || {}, {}); assert.deepEqual(f.sd || {}, {});
-    assert.ok(Object.values(f.s).every(s => ['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P', 'U'].includes(s)));
+    assert.ok(Object.values(f.s).every(s => ['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P', 'U', 'z'].includes(s)));
   }
   assert.equal(fs.existsSync(new URL('../data/raw/IFCT2017.csv', import.meta.url)), false);
 });
@@ -370,4 +370,16 @@ test('B157 veri tutarlılık kapıları: amino asit > protein, farklı numune do
   assert.ok(g('simit').forms[0].v.fe < 3);
   assert.equal(g('nohut').forms[0].v.mn, undefined); assert.ok(g('nohut').forms[1].v.mn > 0);
   for (const id of ['peksimet', 'sebze_burger', 'pirinc_pilavi', 'vegan_mayonez']) assert.equal(g(id).animal, true, id);
+});
+
+test('B158 alkol bileşeni ve USDA varsayılan sıfırları (Src_Cd 7) ayrı etiket', () => {
+  const g = (id) => DB.foods.find((x) => x.id === id);
+  const w = g('kirmizi_sarap').forms[0].v;
+  assert.ok(w.alcohol > 9 && w.alcohol < 12);
+  assert.ok(Math.abs(w.water + w.protein + (w.fat ?? 0) + w.carb + (w.ash ?? 0) + w.alcohol - 100) < 1); // kütle dengesi alkolle kapanır
+  assert.equal(g('nohut').forms[1].v.alcohol, undefined); // alkolsüz besinde "veri yok", 0 değil
+  const st = g('seitan').forms[0];
+  assert.equal(st.s.thiamin, 'z'); assert.equal(st.v.thiamin, 0); // ölçülmemiş varsayılan 0, ölçülmüş 0'dan ayrı
+  const lentil = g('kirmizi_mercimek').forms[0];
+  assert.equal(lentil.s.cholesterol, 'z'); assert.equal(lentil.s.protein, 'u');
 });

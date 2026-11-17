@@ -228,6 +228,7 @@ i.sci, .dsub i { font-style: italic; }
 .src-u { color: #2b62c9; background: color-mix(in srgb, #2b62c9 10%, var(--card)); border-color: color-mix(in srgb, #2b62c9 30%, transparent); }
 .src-i { color: #963674; background: color-mix(in srgb, #b0468a 10%, var(--card)); border-color: color-mix(in srgb, #b0468a 30%, transparent); }
 .src-e { color: var(--warn); background: var(--warnbg); border-style: dashed; }
+.src-z { border-style: dashed; }
 .src-d, .src-m { color: var(--ok); background: var(--okbg); }
 .src-k { color: #8a5a00; background: color-mix(in srgb, #d99a00 14%, var(--card)); border-color: color-mix(in srgb, #d99a00 40%, transparent); }
 :root[data-theme="dark"] .src-u, :root[data-theme="oled"] .src-u, :root[data-theme="contrast-dark"] .src-u { color: #8db4ff; }

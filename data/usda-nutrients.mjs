@@ -14,7 +14,7 @@ export const USDA_NUTRIENTS = {
   la: '675', ala_fa: '851', f20d2: '672', f20d3: '853', aa_fa: '855', epa: '629', dpa: '631', dha: '621',
   phytosterols: '636', sitosterol: '641', campesterol: '639', stigmasterol: '638',
   f14d1_total: '625', f16d1_c: '673', f18d1_c: '674', f18d1_trans: '663', f20d1_total: '628', f22d1_c: '676', f24d1_c: '671',
-  mk4: '428', caffeine: '262', theobromine: '263', betaine: '454', fluoride: '313', galactose: '287',
+  mk4: '428', caffeine: '262', theobromine: '263', betaine: '454', fluoride: '313', galactose: '287', alcohol: '221',
 };
 export function unitFactor(from, to) {
   const mass = { g: 0, mg: -3, 'µg': -6 };

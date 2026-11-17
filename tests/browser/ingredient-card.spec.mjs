@@ -46,3 +46,10 @@ test('B156 yeni besinler: sosisli, suşi, buzlu mocha aranır; hayvansallar gizl
     await expect(page.locator(`#foodlist [data-id="${id}"]`), q).toHaveCount(1);
   }
 });
+
+test('seitan: ölçülmemiş B vitaminleri "Varsayılan 0" etiketiyle (B158)', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('seitan');
+  await page.locator('#foodlist [data-id="seitan"]').first().click();
+  await expect(page.locator('#matrix .src-z').first()).toContainText('Varsayılan 0');
+});

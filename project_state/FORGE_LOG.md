@@ -863,3 +863,9 @@
 - Kanıt (B156+B157): `npm run data` (729 besin; tutarlılık kapısı 332 hücre); `npm test` 158/158; build + build:single; 24 bildirim; Playwright tam koşu 302 PASS + 2 FAIL (B120 shiitake beta-glukanı beklentisi, B157'nin beklenen sonucu) → maitake ile 2/2 PASS; yeni tarif kartı geometri + B156 testleri 12/12.
 - Sürüm 1.1.2-beta.43. Sonraki: **B158** veri denetiminin kalanları: USDA "varsayılan sıfır" (Src_Cd 7) değerlerini ayrı etiketle göstermek (seitan B vitaminleri 0 görünüyor), alkol bileşeni (bira/şarap enerjisi), foods-ext'te hayvansal izli ~25 kayıt.
 - Yayın kanıtı: v1.1.2-beta.43 pre-release 2026-11-17T13:05:16Z (release.yml run 44086134328 success); ci.yml run 44086122535 (0faaf7e, Firefox/WebKit/iPhone/iPad + Chromium) success; GitHub Pages PWA run 44086122486 success.
+
+## B158 · 2026-11-17 · Alkol bileşeni; USDA "varsayılan sıfır" ayrı etiket
+- Alkol (etanol, USDA 221) Karbonhidrat bölümünde "Alkol" alt başlığıyla: bira 3,9 g, kırmızı şarap 10,6 g, beyaz şarap 10,3 g; kütle dengesi 89,5 → 100,0 g. Alkolsüz besinlerde USDA'nın varsayılan 0'ları "veri yok" (yalnız pozitif ölçüm gösterilir).
+- NUT_DATA Src_Cd 7 ("assumed zero", ölçülmeden 0 kabul) artık okunur: bu hücreler 'z' etiketi "Varsayılan 0" (kesik çerçeve) taşır, ölçülmüş 0'dan ayrılır. 5.275 küratörlü hücre; ör. seitanın B1/B2/B3/B6/folat/E/K değerleri, bitkilerde kolesterol. Değerler değişmedi (0 kalır), yalnız kaynağı dürüst gösterilir; CSV, tarif kaynak dökümü ve Hakkında etiketleri dahil.
+- Kanıt: `npm run data`; `npm test` 159/159 (B158: alkol/kütle, alkolsüzde veri yok, seitan 'z', mercimek kolesterol 'z'); build + build:single; B158 tarayıcı 2/2 (seitan "Varsayılan 0").
+- Playwright tam koşu 306/306 PASS. Sonraki: **B159** foods-ext bitkisel gruplarda hayvansal izli ~25 kayıt (kolesterol ≥5 mg veya laktoz >0,5 g → hayvansal) ve marka filtresi (USA/AMP/Monster).

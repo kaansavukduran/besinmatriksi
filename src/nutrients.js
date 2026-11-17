@@ -65,6 +65,7 @@ const DEFINITIONS = [
 
   // --- Nişasta ve lif
   N('starch', 'Nişasta (toplam)', 'g', 'karb', 'Nişasta', null, 'starch'),
+  N('alcohol', 'Alkol (etanol)', 'g', 'karb', 'Alkol', null, null),
   N('fiber', 'Diyet lifi (toplam)', 'g', 'lif', null, 8, 'fibtg'),
   N('fiber_sol', 'Çözünür lif', 'g', 'lif', null, null, 'fibsol'),
   N('fiber_insol', 'Çözünmez lif', 'g', 'lif', null, null, 'fibins'),
@@ -323,6 +324,7 @@ export const SOURCES = {
   I: { short: 'USDA İyot', long: 'USDA, FDA ve NIH-ODS, Database for the Iodine Content of Common Foods, Release 4.0 (2024, kamu malı)' },
   C: { short: 'USDA Kolin', long: 'USDA ARS, Database for the Choline Content of Common Foods, Release 2 (2008, kamu malı)' },
   P: { short: 'USDA Proantosiyanidin', long: 'USDA ARS, Database for the Proanthocyanidin Content of Selected Foods, Release 2.1 (2018, kamu malı)' },
+  z: { short: 'Varsayılan 0', long: 'USDA bu değeri ölçmeden 0 kabul etmiş (bu besinde doğal olarak bulunmadığı varsayılan bileşen; ör. bitkide kolesterol, ette lif)' },
   U: { short: 'USDA Pürin', long: 'USDA ve NIH-ODS, Database for the Purine Content of Foods, Release 3 (2026, kamu malı); adla eşlendi, bir kısmı Japonya örnekleri' },
   r: { short: 'Tahmin (tarif)', long: 'USDA malzemelerinden tarif oranıyla hesaplanan tahmin; ölçüm değildir' },
   e: { short: 'Tahmin', long: 'IFCT 2017 profil oranı × USDA formunun toplam protein/yağ değeri (aynı besinin çiğ/kuru ölçümünden ölçeklenmiş tahmin)' },

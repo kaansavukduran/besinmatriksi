@@ -887,5 +887,8 @@ export const UI_EN = {
  "USDA FNDDS kaydı (imitasyon soya mayonezi) 24 mg kolesterol içeriyor, yani yumurta içeriyor olabilir; vegan mayonez için ürün etiketini Kendi besinim olarak ekle.": "The USDA FNDDS record (imitation soy mayonnaise) contains 24 mg cholesterol, so it may contain egg; for vegan mayonnaise add the product label as My own food.",
  "USDA kaydında yumurta/süt göstergeleri var (kolesterol, B12, EPA/DHA). USDA \"rusk toast\" kaydı; ticari peksimetlerde yumurta/süt bulunabilir.": "The USDA record shows egg/milk markers (cholesterol, B12, EPA/DHA). USDA \"rusk toast\" record; commercial rusks may contain egg/milk.",
  "USDA kaydında süt/yumurta göstergeleri var (B12, kolesterol, laktoz). Ticari ürünlerde yumurta veya peynir bulunabilir; etikete bak.": "The USDA record shows milk/egg markers (B12, cholesterol, lactose). Commercial products may contain egg or cheese; check the label.",
- "USDA kaydındaki yağın bir kısmı tereyağı (kolesterol ve bütirik asit). USDA FNDDS tarifi: pişmiş beyaz pirinç + yağ (türü belirtilmemiş; tereyağı olabilir) + tuz.": "Part of the fat in the USDA record is butter (cholesterol and butyric acid). USDA FNDDS recipe: cooked white rice + fat (type not specified; may be butter) + salt."
+ "USDA kaydındaki yağın bir kısmı tereyağı (kolesterol ve bütirik asit). USDA FNDDS tarifi: pişmiş beyaz pirinç + yağ (türü belirtilmemiş; tereyağı olabilir) + tuz.": "Part of the fat in the USDA record is butter (cholesterol and butyric acid). USDA FNDDS recipe: cooked white rice + fat (type not specified; may be butter) + salt.",
+ "Alkol": "Alcohol",
+ "Varsayılan 0": "Assumed 0",
+ "USDA bu değeri ölçmeden 0 kabul etmiş (bu besinde doğal olarak bulunmadığı varsayılan bileşen; ör. bitkide kolesterol, ette lif)": "USDA assumed this value to be 0 without measuring it (a component assumed not to occur naturally in this food, e.g. cholesterol in plants, fibre in meat)"
 };
