@@ -899,5 +899,5 @@
 - Ayarlar → "Varsayılana dön" tek dokunuşla tüm ayarları ve kişisel hedefleri geri dönüşsüz siliyordu → onay penceresi (Vazgeç ayarları korur; tarif/günlük kayıtlarına dokunulmaz).
 - Enerji seçeneği "kcal + kJ" (varsayılan) yalnız kcal gösteriyordu → kalori kutusu ve matriks kalori satırı "89 kcal · 371 kJ"; kJ ölçülmemişse yalnız kcal. 320 px'te taşma yok (doc scrollWidth 320).
 - Kanıt: `npm test` 162/162; `npm run build`; Playwright app + ingredient-card 171/171 (B163 testi eklendi; ilk koşuda telefonda arama kutusu gizli kaldığı için test sayfa yeniden yüklemeye çevrildi). Tam koşuda 28 px yazı + %200 ölçek + 320 px üç testte taşma çıktı (kJ eki `nowrap`) → kırılabilir satır içi blok; micro-catalog + polish + recipe-total 30/30.
-- Sürüm 1.1.2-beta.45 (B161 + B162 + B163).
+- Sürüm 1.1.2-beta.45 (B161 + B162 + B163). Yayın kanıtı: v1.1.2-beta.45 pre-release 2026-11-17T19:00:51Z (release.yml run 44151005276 success).
 - Sonraki: **B164** beta.45 (B161–B163) ve denetim kalanı #8 1000 g sınırı bildirimi.
