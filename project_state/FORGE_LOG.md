@@ -892,5 +892,5 @@
 ## B162 · 2026-11-17 · Unslop: Günlük boş durumu ve tarif düğmeleri
 - Tarif ekranında "Kopyala / Sil" günlük toplam kartının altına yapışık duruyordu (hangi şeye ait olduğu belirsizdi) → tarif başlığına "Tarifi kopyala / Tarifi sil" olarak taşındı.
 - Boş Günlük, telefonda ~6900 px boyunca "Veri yok 0/0" satırları çiziyordu → günde hiç kayıt yokken bileşen matrisi ve kaynak paneli yerine tek satırlık yönlendirme (`.day-empty`, TR/EN). Kayıt varken "yalnız tüketilenler" süzgeci matrisi gizlemez (Veri yok satırları anlamlı kalır).
-- Kanıt: `npm test` 162/162; `npm run build`; Playwright audit-storage + personal + ingredient-card 50/50 (B149 testi yeni boş duruma uyarlandı; B162 testi eklendi).
+- Kanıt: `npm test` 162/162; `npm run build`; Playwright audit-storage + personal + ingredient-card 50/50, tam koşu 308/308 (B149 testi yeni boş duruma uyarlandı; B162 testi eklendi). beta.44 ci.yml run 44114486013 success.
 - Sonraki: **B163** kod denetimi kalanları: "Varsayılana dön" onayı ve kcal+kJ "ikisi" görünümü.
