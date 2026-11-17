@@ -4,7 +4,8 @@ const object = v => v && typeof v === 'object' && !Array.isArray(v);
 const id = v => typeof v === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(v);
 const finite = v => typeof v === 'number' && Number.isFinite(v);
 // Eski sürümlerde ASCII dışı harf taşıyan katalog kimlikleri (kayıtlar bunlarla saklanmış olabilir)
-export const LEGACY_IDS = { 'kudret_narı': 'kudret_nari' };
+// lor (B161): lor_cottage ile aynı USDA kaydıydı (01012, biçim 0) → birleştirildi
+export const LEGACY_IDS = { 'kudret_narı': 'kudret_nari', lor: 'lor_cottage' };
 export function validRef(ref) {
   if (!object(ref)) return null;
   if ((ref.t === 'c') && LEGACY_IDS[ref.id]) ref = { ...ref, id: LEGACY_IDS[ref.id] };

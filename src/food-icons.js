@@ -113,7 +113,7 @@ export const FOOD_ICONS = {
   besin_mayasi: '🍞', maya_ozu: '🫙', hardal: '🟡', balzamik: '🍷', tuz: '🧂',
   // hayvansal
   inek_sutu: '🥛', inek_sutu_yarim: '🥛', inek_sutu_yagsiz: '🥛', yogurt: '🥣', suzme_yogurt: '🥣', beyaz_peynir: '🧀', kasar: '🧀', mozzarella: '🧀',
-  lor: '🧀', ricotta: '🧀', parmesan: '🧀', krem_peynir: '🧀', tereyagi: '🧈', krema: '🥛', yumurta: '🥚', yumurta_aki: '🍳', yumurta_sarisi: '🍳',
+  ricotta: '🧀', parmesan: '🧀', krem_peynir: '🧀', tereyagi: '🧈', krema: '🥛', yumurta: '🥚', yumurta_aki: '🍳', yumurta_sarisi: '🍳',
   dana_kiyma: '🥩', kuzu_but: '🍖', dana_ciger: '🥩', tavuk_gogus: '🍗', hindi: '🦃', somon: '🍣', alabalik: '🐟', hamsi: '🐟', uskumru: '🐟',
   levrek: '🐟', morina: '🐟', sardalya: '🐟', ton_baligi: '🐟', karides: '🦐', midye: '🦪',
   beyaz_ekmek: '🍞', tam_bugday_ekmegi: '🍞', cavdar_ekmegi: '🍞', pide_lavas: '🫓', pide_lavas_tam: '🫓', patlamis_misir: '🍿', su: '💧', uzum_suyu: '🍇',

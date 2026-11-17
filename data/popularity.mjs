@@ -34,7 +34,7 @@ export const POPULAR = {
     'pirinc_sutu', 'hindistancevizi_sutu'],
   tatli: ['seker', 'bal', 'kakao', 'bitter', 'melas', 'keciboynuzu', 'esmer_seker', 'akcaagac', 'jaggery'],
   diger: ['tuz', 'besin_mayasi', 'hardal', 'balzamik', 'maya_ozu'],
-  sut: ['yogurt', 'beyaz_peynir', 'inek_sutu', 'kasar', 'tereyagi', 'suzme_yogurt', 'lor', 'inek_sutu_yarim', 'krema', 'inek_sutu_yagsiz', 'mozzarella', 'krem_peynir', 'parmesan', 'ricotta'],
+  sut: ['yogurt', 'beyaz_peynir', 'inek_sutu', 'kasar', 'tereyagi', 'suzme_yogurt', 'lor_cottage', 'inek_sutu_yarim', 'krema', 'inek_sutu_yagsiz', 'mozzarella', 'krem_peynir', 'parmesan', 'ricotta'],
   yumurta: ['yumurta', 'yumurta_aki', 'yumurta_sarisi'],
   et: ['dana_kiyma', 'dana_biftek', 'kuzu_but', 'dana_ciger'],
   kumes: ['tavuk_gogus', 'tavuk_but', 'hindi'],

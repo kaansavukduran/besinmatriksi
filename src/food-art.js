@@ -412,8 +412,7 @@ export const FOOD_ART = {
   // ---- hayvansal
   inek_sutu: ['cup', '#ffffff', '#1e88e5', 'carton'], inek_sutu_yarim: ['cup', '#ffffff', '#43a047', 'carton'], inek_sutu_yagsiz: ['cup', '#ffffff', '#e53935', 'carton'],
   yogurt: ['bowl', '#ffffff', '#90caf9', 'peak'], suzme_yogurt: ['bowl', '#fffaf0', '#4fc3f7', 'swirl'], beyaz_peynir: ['block', '#ffffff', '#e0e0e0', 'cube'],
-  kasar: ['block', '#ffca28', '#fff3c4', 'wedge'], mozzarella: ['block', '#fffdf2', '#fff', 'ball'], lor: ['block', '#fffef7', '#fff', 'crumble'],
-  ricotta: ['bowl', '#fffdf5', '#d7ccc8', 'dots'], parmesan: ['block', '#f3d77a', '#fff8e1', 'wedge'], krem_peynir: ['bowl', '#ffffff', '#b0bec5', 'swirl'],
+  kasar: ['block', '#ffca28', '#fff3c4', 'wedge'], mozzarella: ['block', '#fffdf2', '#fff', 'ball'], ricotta: ['bowl', '#fffdf5', '#d7ccc8', 'dots'], parmesan: ['block', '#f3d77a', '#fff8e1', 'wedge'], krem_peynir: ['bowl', '#ffffff', '#b0bec5', 'swirl'],
   tereyagi: ['block', '#ffe082', '#fff', 'stick'], krema: ['cup', '#fffdf0', '#ffffff', 'glass'], yumurta: ['egg', '#fff3e0', '#ffb300', 'whole'],
   yumurta_aki: ['egg', '#ffffff', '#ffb300', 'white'], yumurta_sarisi: ['egg', '#ffffff', '#ff8f00', 'yolk'], dana_kiyma: ['meat', '#c62828', '#ffccbc', 'mince'],
   kuzu_but: ['meat', '#d84315', '#ffe0b2', 'leg'], dana_ciger: ['meat', '#6d1b1b', '#fff', 'liver'], tavuk_gogus: ['meat', '#ffccbc', '#ffffff', 'breast'],

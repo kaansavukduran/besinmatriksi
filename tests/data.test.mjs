@@ -389,3 +389,14 @@ test('B160 beyaz pide zenginleştirilmemiş USDA kaydından (Türkiye\'de un zen
   assert.equal(fm.usda.ndb, '18413');
   assert.ok(!(fm.v.folic_acid > 0));
 });
+
+test('B161 yinelenen kayıtlar: lor → lor_cottage göçü, çapatiler ayırt edilir, aynı TR adlı besin yok', async () => {
+  const { validRef, normalizeRecipe } = await import('../src/records.js');
+  assert.equal(DB.foods.find((x) => x.id === 'lor'), undefined);
+  assert.deepEqual(validRef({ t: 'c', id: 'lor', f: 0 }), { t: 'c', id: 'lor_cottage', f: 0 });
+  const r = normalizeRecipe({ id: 'r1', name: 'Eski', items: [{ id: 'i1', ref: { t: 'c', id: 'lor', f: 0 }, g: 100 }] });
+  assert.equal(r.items[0].ref.id, 'lor_cottage');
+  assert.equal(DB.foods.find((x) => x.id === 'lor_cottage').forms[0].usda.ndb, '01012');
+  const names = DB.foods.map((f) => f.tr);
+  assert.equal(new Set(names).size, names.length);
+});

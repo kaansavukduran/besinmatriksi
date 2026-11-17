@@ -881,3 +881,10 @@
 - Kanıt: `npm run data`; `npm test` 161/161; build + build:single; Playwright tam koşu 306/306.
 - Sürüm 1.1.2-beta.44 (B158 + B159 + B160). Sonraki: **B161** lor/lor_cottage ve çapati yinelenenlerini kimlik göçüyle birleştirmek; sonra kullanıcı önceliklerinden sade UI/UX.
 - Yayın kanıtı: v1.1.2-beta.44 pre-release 2026-11-17T15:42:53Z (release.yml run 44114498663 success; derleme işinin içinde Chromium tarayıcı testleri de PASS); GitHub Pages run 44114485946 success; ci.yml run 44114486013 15:54 UTC itibarıyla sürüyor (NOT_RUN sonuç).
+
+## B161 · 2026-11-17 · Yinelenen kayıtlar: lor birleştirildi, çapatiler ayrıldı
+- `lor` ile `lor_cottage` biçim 0'da birebir aynı USDA kaydıydı (01012) → `lor` kaldırıldı; `LEGACY_IDS.lor = 'lor_cottage'` eski tarif/günlük/koleksiyon/yedek kayıtlarını aynı biçim indeksiyle taşır; yaygınlık listesinde yerini aldı. Arama "lor" ile "Cottage peynir (lor benzeri)"yi bulur.
+- İki "Çapati / roti (tam buğday)" farklı kayıtlardı (FNDDS ev tarifi / SR28 ticari donmuş): adlar "ev tarifi, tam buğday" ve "ticari, donmuş" (TR/EN). Artık aynı TR adlı besin yok (test).
+- Kuru meyvelerin taze karşılıklarıyla aynı NDB'yi paylaşması (09163, 09079, 09147) B155'in bilinçli seçimi; değiştirilmedi.
+- Kanıt: `npm run data`; `npm test` 162/162 (B161: göç, ad tekilliği); build + build:single; Playwright 306/306.
+- Sonraki: **B162** kullanıcı önceliği (2) sade UI/UX: Unslop gözüyle Günlük ve Tarif ekranları (telefon 390/320 px).
