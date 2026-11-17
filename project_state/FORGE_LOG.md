@@ -917,5 +917,5 @@
 ## B166 · 2026-11-17 · Görünüm profili hedefleri ezmez; sekmeler arası ayar eşitleme
 - Görünüm profili tüm ayar nesnesini saklayıp aynen geri yüklüyordu: profil kaydedildikten sonra girilen kişisel hedefler, diyet süzgeci, referans (AB/EFSA/özel), sabitlenen besinler ve dil, profil uygulanınca eskisiyle eziliyordu. → `applyProfileSettings`: bu anahtarlar (`PROFILE_PRESERVED_KEYS`) korunur, yalnız görünüm/okuma/erişilebilirlik/matriks gösterimi gelir. Ayarlar'daki açıklama bunu söyler (TR/EN).
 - Başka sekmede değişen ayarlar bu sekmeye gelmiyordu (yalnız tarif/günlük/koleksiyon eşitleniyordu); bu sekme sonraki kayıtta eski ayarlarla diğerinin değişikliğini eziyordu → `storage` olayında `bm.settings.v2` yeniden yüklenir ve uygulanır.
-- Kanıt: `npm test` 163/163 (B166 profil birimi); `npm run build`; Playwright B166 iki sekme 2/2; tam koşu aşağıda.
+- Kanıt: `npm test` 163/163 (B166 profil birimi); `npm run build`; Playwright B166 iki sekme 2/2; tam koşu 316/316.
 - Sonraki: **B167** denetim kalanı #10 "kaynak 0" işaretinin diğer kaynaklar için doğruluğu ve #11 GOS kısmi toplamı; ardından beta.46.
