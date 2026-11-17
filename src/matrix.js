@@ -81,7 +81,10 @@ function section(sec, r, cfg, open) {
       const kj = r.v.energy_kj;
       const ref = referenceFor(n, cfg);
       const p = ref.value ? (r.v.energy / ref.value) * 100 : null;
-      const amount = cfg.energyUnit === 'kj' ? `${fmtNum(kj, cfg.precision)} <span class="unit">kJ</span>` : `${fmtNum(r.v.energy, cfg.precision)} <span class="unit">kcal</span>`;
+      const kcalTxt = `${fmtNum(r.v.energy, cfg.precision)} <span class="unit">kcal</span>`;
+      const kjTxt = kj != null ? `${fmtNum(kj, cfg.precision)} <span class="unit">kJ</span>` : '';
+      // "ikisi" (varsayılan): kcal + kJ birlikte (B163); kJ ölçülmemişse yalnız kcal
+      const amount = cfg.energyUnit === 'kj' && kjTxt ? kjTxt : cfg.energyUnit === 'both' && kjTxt ? `${kcalTxt} <span class="kj-alt">· ${kjTxt}</span>` : kcalTxt;
       html += `<div class="row" role="row"><span class="lbl" role="cell">${L("Kalori")}</span>
         <span class="val" role="cell"><span class="num">${amount}</span></span>
         <span class="pctc" role="cell">${cfg.showNrv && p != null ? `<span class="nrv" title="${esc(ref.title)}; ${ref.label} ${fmtNum(ref.value)} kcal"><span class="bar"><i style="width:${Math.min(100, p).toFixed(1)}%"></i></span><span class="pct">${fmtPct(p)}</span></span>` : ''}</span>
@@ -272,7 +275,8 @@ export function basicCard(r, cfg, title = null, opts = {}) {
     const x = r.v[k];
     const partial = x != null && r.n > 1 && (r.cov?.[k] || 0) < r.n;
     const kj = k === 'energy' && cfg.energyUnit === 'kj' && r.v.energy_kj != null;
-    const val = x == null ? `<b class="miss">${L("veri yok")}</b>` : kj ? `<b>${partial ? '≥ ' : ''}${fmtNum(r.v.energy_kj, cfg.precision)} <span class="unit">kJ</span></b>` : `<b>${partial ? '≥ ' : ''}${fmtAmount(x, n.unit, cfg.precision).n} <span class="unit">${esc(fmtAmount(x, n.unit).u)}</span></b>`;
+    const kjAlt = k === 'energy' && cfg.energyUnit === 'both' && x != null && r.v.energy_kj != null ? ` <span class="kj-alt">· ${fmtNum(r.v.energy_kj, cfg.precision)} kJ</span>` : '';
+    const val = x == null ? `<b class="miss">${L("veri yok")}</b>` : kj ? `<b>${partial ? '≥ ' : ''}${fmtNum(r.v.energy_kj, cfg.precision)} <span class="unit">kJ</span></b>` : `<b>${partial ? '≥ ' : ''}${fmtAmount(x, n.unit, cfg.precision).n} <span class="unit">${esc(fmtAmount(x, n.unit).u)}</span>${kjAlt}</b>`;
     const refs = x == null || !cfg.showNrv ? [] : dailyRefs(k, persona);
     const kind = refKind(k);
     const bars = refs.map((ref) => {

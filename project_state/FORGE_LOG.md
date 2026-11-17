@@ -894,3 +894,9 @@
 - Boş Günlük, telefonda ~6900 px boyunca "Veri yok 0/0" satırları çiziyordu → günde hiç kayıt yokken bileşen matrisi ve kaynak paneli yerine tek satırlık yönlendirme (`.day-empty`, TR/EN). Kayıt varken "yalnız tüketilenler" süzgeci matrisi gizlemez (Veri yok satırları anlamlı kalır).
 - Kanıt: `npm test` 162/162; `npm run build`; Playwright audit-storage + personal + ingredient-card 50/50, tam koşu 308/308 (B149 testi yeni boş duruma uyarlandı; B162 testi eklendi). beta.44 ci.yml run 44114486013 success.
 - Sonraki: **B163** kod denetimi kalanları: "Varsayılana dön" onayı ve kcal+kJ "ikisi" görünümü.
+
+## B163 · 2026-11-17 · "Varsayılana dön" onayı; enerji "kcal + kJ" gerçekten ikisini gösterir
+- Ayarlar → "Varsayılana dön" tek dokunuşla tüm ayarları ve kişisel hedefleri geri dönüşsüz siliyordu → onay penceresi (Vazgeç ayarları korur; tarif/günlük kayıtlarına dokunulmaz).
+- Enerji seçeneği "kcal + kJ" (varsayılan) yalnız kcal gösteriyordu → kalori kutusu ve matriks kalori satırı "89 kcal · 371 kJ"; kJ ölçülmemişse yalnız kcal. 320 px'te taşma yok (doc scrollWidth 320).
+- Kanıt: `npm test` 162/162; `npm run build`; Playwright app + ingredient-card 171/171 (B163 testi eklendi; ilk koşuda telefonda arama kutusu gizli kaldığı için test sayfa yeniden yüklemeye çevrildi).
+- Sonraki: **B164** beta.45 (B161–B163) ve denetim kalanı #8 1000 g sınırı bildirimi.

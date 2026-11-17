@@ -69,3 +69,23 @@ test('B162 boş günde bileşen matrisi yerine kısa yönlendirme; besin eklenin
   await expect(page.locator('.rhead [data-action="rc-delete"]')).toHaveText('Tarifi sil');
   await expect(page.locator('.rlist [data-action="rc-delete"]')).toHaveCount(0);
 });
+
+test('B163 enerji "ikisi" kcal ile kJ birlikte; "Varsayılana dön" onay ister, Vazgeç ayarları korur', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  await expect(page.locator('#matrix [data-basic="energy"]')).toContainText('kcal');
+  await expect(page.locator('#matrix [data-basic="energy"]')).toContainText('kJ');
+  await page.locator('[data-action="tab"][data-tab="ayarlar"]').first().click();
+  await page.locator('[data-k="energyUnit"][data-v=\'"kcal"\']').click();
+  await page.locator('[data-action="preset"][data-p="reset"]').click();
+  await expect(page.locator('.dlg [role="alertdialog"]')).toBeVisible();
+  await page.locator('.dlg [data-r="0"]').click();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('bm.settings.v2') || '{}').settings?.energyUnit)).toBe('kcal');
+  await page.goto('/');
+  await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  await expect(page.locator('#matrix [data-basic="energy"]')).not.toContainText('kJ');
+  await page.locator('[data-action="tab"][data-tab="ayarlar"]').first().click();
+  await page.locator('[data-action="preset"][data-p="reset"]').click();
+  await page.locator('.dlg [data-r="1"]').click();
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('bm.settings.v2') || '{}').settings?.energyUnit)).toBe('both');
+});

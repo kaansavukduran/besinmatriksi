@@ -1367,8 +1367,11 @@ async function onClick(e) {
       setSetting(k, v); render(); break;
     }
     case 'preset': {
-      if (b.dataset.p === 'reset') S.settings = { ...DEFAULT_SETTINGS };
-      else Object.assign(S.settings, PRESETS_UI[b.dataset.p]);
+      if (b.dataset.p === 'reset') {
+        // Tüm görünüm/matriks ayarları ve hedefler sıfırlanır: geri alınamaz, onay ister (B163)
+        if (!(await uiDialog(L("Tüm ayarlar varsayılana dönsün mü? Kişisel hedefler ve görünüm seçimleri sıfırlanır; tarif ve günlük kayıtları korunur."), { ok: L("Varsayılana dön"), cancel: L("Vazgeç") }))) break;
+        S.settings = { ...DEFAULT_SETTINGS };
+      } else Object.assign(S.settings, PRESETS_UI[b.dataset.p]);
       saveSettings(S.settings); applySettings(); render(); toast(L("Ön ayar uygulandı")); break;
     }
     case 'micro-source': {
