@@ -157,4 +157,5 @@ export const FOOD_ICONS = {
   buzlu_cay_limonlu: '🥤',
   soguk_yesil_cay: '🥤',
   limonata: '🥤',
+  sosisli: "🌭", corn_dog: "🌭", vegan_sosisli: "🌭", taco_etli: "🌮", fasulyeli_burrito: "🌯", nachos_peynirli: "🧀", balik_sandvic: "🥪", salamli_sandvic: "🥪", citir_tavuk_sandvic: "🍔", pretzel: "🥨", yumusak_pretzel: "🥨", mikrodalga_misir: "🍿", karamelli_misir: "🍿", pirinc_patlagi: "🍘", misir_patlagi: "🍘", dondurma_cikolata: "🍨", dondurma_cilek: "🍨", yari_tatli_cikolata: "🍫", bademli_sutlu_cikolata: "🍫", sebzeli_susi: "🍣", buzlu_mocha: "🧋", buzlu_mocha_bitkisel: "🧋",
 };

@@ -1037,7 +1037,7 @@ test('kapsam: deniz ürünleri, mantarlar, Türkiye besinleri, protein tozları 
 
 test('Lifler kutusu temel kart ve hesaplanan göstergelerin altında; malzeme ✕ düğmesi sağ üstte sabit (B120)', async ({ page }) => {
   await page.goto('/');
-  await page.locator('#q').fill('shiitake'); await page.locator('#foodlist [data-id="shiitake"]').click();
+  await page.locator('#q').fill('maitake'); await page.locator('#foodlist [data-id="maitake"]').click();
   const order = await page.locator('#matrix > *:not(.src-base)').evaluateAll((els) => els.map((e) => e.dataset.sec || e.className)); // B139: tek kaynak notu bölüm değildir
   expect(order.slice(0, 4)).toEqual([expect.stringContaining('basic-card'), 'hesap', 'micro', 'protein']); // B144: ortak mikro özeti bilimsel biçimlerden önce
   expect(order.indexOf('lif')).toBe(order.indexOf('vitamin') + 1); // B125: Lifler, Vitaminler'in hemen altında

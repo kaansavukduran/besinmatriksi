@@ -875,5 +875,17 @@ export const UI_EN = {
  "Cihazında çalışır. Çevrimdışı da yanında.": "Works on your device. Even offline.",
  "Besinleri keşfet": "Explore foods",
  "{n} besin": "{n} foods",
- "Bir besin bul: mercimek, latte, pizza…": "Find a food: lentils, latte, pizza…"
+ "Bir besin bul: mercimek, latte, pizza…": "Find a food: lentils, latte, pizza…",
+ "USDA FNDDS tarifi: hot dog ekmeği + etsiz sosis. Etsiz sosislerde yumurta akı bulunabilir; vegan uygunluğu için etikete bak.": "USDA FNDDS recipe: hot dog bun + meatless frankfurter. Meatless frankfurters may contain egg white; check the label for vegan suitability.",
+ "USDA FNDDS tarifi: un tortilla + ezme fasulye + siyah fasulye + tuz. Mağaza burritolarında peynir veya domuz yağı olabilir; etikete bak.": "USDA FNDDS recipe: flour tortilla + refried beans + black beans + salt. Store-bought burritos may contain cheese or lard; check the label.",
+ "Bazı ürünlerde süt yağı bulunur; vegan uygunluğu için etikete bak.": "Some products contain milk fat; check the label for vegan suitability.",
+ "USDA FNDDS tarifi: pişmiş yapışkan pirinç + sirke + şeker + tuz + salatalık + avokado + nori.": "USDA FNDDS recipe: cooked glutinous rice + vinegar + sugar + salt + cucumber + avocado + nori.",
+ "USDA FNDDS tarifi: espresso + %2 yağlı süt + çikolata şurubu + su.": "USDA FNDDS recipe: espresso + 2% milk + chocolate syrup + water.",
+ "USDA FNDDS tarifi: espresso + bitkisel süt (türü belirtilmemiş) + çikolata şurubu + su.": "USDA FNDDS recipe: espresso + plant milk (type not specified) + chocolate syrup + water.",
+ "Kuru nohutta USDA manganez ortalaması aykırı bir numune (329 mg) içeriyor; bu nedenle gösterilmez. Haşlanmış nohut değeri güvenilir.": "The USDA manganese mean for dry chickpeas includes an outlier sample (329 mg), so it is not shown. The boiled chickpea value is reliable.",
+ "Soyalı mayonez (imitasyon)": "Soy mayonnaise (imitation)",
+ "USDA FNDDS kaydı (imitasyon soya mayonezi) 24 mg kolesterol içeriyor, yani yumurta içeriyor olabilir; vegan mayonez için ürün etiketini Kendi besinim olarak ekle.": "The USDA FNDDS record (imitation soy mayonnaise) contains 24 mg cholesterol, so it may contain egg; for vegan mayonnaise add the product label as My own food.",
+ "USDA kaydında yumurta/süt göstergeleri var (kolesterol, B12, EPA/DHA). USDA \"rusk toast\" kaydı; ticari peksimetlerde yumurta/süt bulunabilir.": "The USDA record shows egg/milk markers (cholesterol, B12, EPA/DHA). USDA \"rusk toast\" record; commercial rusks may contain egg/milk.",
+ "USDA kaydında süt/yumurta göstergeleri var (B12, kolesterol, laktoz). Ticari ürünlerde yumurta veya peynir bulunabilir; etikete bak.": "The USDA record shows milk/egg markers (B12, cholesterol, lactose). Commercial products may contain egg or cheese; check the label.",
+ "USDA kaydındaki yağın bir kısmı tereyağı (kolesterol ve bütirik asit). USDA FNDDS tarifi: pişmiş beyaz pirinç + yağ (türü belirtilmemiş; tereyağı olabilir) + tuz.": "Part of the fat in the USDA record is butter (cholesterol and butyric acid). USDA FNDDS recipe: cooked white rice + fat (type not specified; may be butter) + salt."
 };

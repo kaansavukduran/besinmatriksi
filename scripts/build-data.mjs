@@ -154,9 +154,42 @@ function fillFromExtra(ndb, v, s) {
   return n;
 }
 
+
+// ---------- Veri tutarlılık kapıları (B157, veri denetimi) ----------
+// 1) FDC dolgusu: aynı NDB'nin FDC numunesi ana bileşimde SR28'den belirgin sapıyorsa (farklı ürün/numune) boş hücre doldurulmaz.
+const deviates = (a, b, rel, abs) => a != null && b != null && Math.abs(a - b) > Math.max(abs, rel * Math.max(a, b));
+const ffMismatch = (ff, v) => deviates(v.fat, ff.v.fat, 0.25, 1) || deviates(v.protein, ff.v.protein, 0.25, 1) || deviates(v.water, ff.v.water, 0, 5);
+// 2) Alt bileşenler üst toplamı aşıyorsa başka kaynaktan (farklı numune) doldurulan alt bileşenler atılır; üstle aynı kaynaktakiler kalır.
+const AA_KEYS = ['his', 'ile', 'leu', 'lys', 'met', 'phe', 'thr', 'trp', 'val', 'cys', 'tyr', 'arg', 'gly', 'pro', 'ala', 'asp', 'glu', 'ser'];
+const EAA = ['his', 'ile', 'leu', 'lys', 'met', 'phe', 'thr', 'trp', 'val'];
+const pairMax = (v, a, b) => Math.max(v[a] ?? 0, v[b] ?? 0);
+const CHILD_GROUPS = [
+  { parent: 'sfa', k: 1000, kids: ['f4d0', 'f6d0', 'f8d0', 'f10d0', 'f11d0', 'f12d0', 'f14d0', 'f15d0', 'f16d0', 'f18d0', 'f20d0', 'f22d0', 'f24d0'] },
+  { parent: 'mufa', k: 1000, kids: ['f14d1', 'f14d1_total', 'f16d1', 'f16d1_c', 'f18d1', 'f18d1_c', 'f20d1', 'f20d1_total', 'f22d1', 'f22d1_c', 'f24d1', 'f24d1_c'],
+    sum: (v) => pairMax(v, 'f14d1', 'f14d1_total') + pairMax(v, 'f16d1', 'f16d1_c') + pairMax(v, 'f18d1', 'f18d1_c') + pairMax(v, 'f20d1', 'f20d1_total') + pairMax(v, 'f22d1', 'f22d1_c') + pairMax(v, 'f24d1', 'f24d1_c') },
+  { parent: 'pufa', k: 1000, kids: ['la', 'ala_fa', 'f20d2', 'f20d3', 'aa_fa', 'epa', 'dpa', 'dha', 'f22d2'] },
+  { parent: 'sugars', k: 1, kids: ['fructose', 'glucose', 'sucrose', 'maltose', 'lactose', 'galactose'] },
+  { parent: 'fiber', k: 1, kids: ['fiber_hmw', 'fiber_lmw'] },
+  { parent: 'fiber', k: 1, kids: ['beta_glucan'] },
+  { parent: 'choline', k: 1, kids: ['choline_free', 'choline_gpc', 'choline_pc', 'choline_ptdcho', 'choline_sm'] },
+];
+let gateDrops = 0;
+function sanitize(v, s, base = 'u') {
+  const tag = (k) => (s && s[k]) || base;
+  // Esansiyel amino asitler proteinin %120'sinden fazlaysa (ör. kuru madde bazlı FDC mantar kayıtları) amino asitler gösterilmez
+  const eaa = EAA.reduce((a, k) => a + (v[k] ?? 0), 0) / 1000;
+  if (v.protein != null && eaa > 1.2 * v.protein + 0.05) for (const k of AA_KEYS) if (v[k] != null) { delete v[k]; if (s) delete s[k]; gateDrops++; }
+  for (const g of CHILD_GROUPS) {
+    if (v[g.parent] == null) continue;
+    const sum = (g.sum ? g.sum(v) : g.kids.reduce((a, k) => a + (v[k] ?? 0), 0)) / g.k;
+    if (sum <= v[g.parent] * 1.1 + 0.05) continue;
+    for (const k of g.kids) if (v[k] != null && tag(k) !== tag(g.parent)) { delete v[k]; if (s) delete s[k]; gateDrops++; }
+  }
+}
 function fillFromFoundation(ndb, v, s) {
   const ff = ffByNdb.get(ndb);
   if (!ff) return null;
+  if (ffMismatch(ff, v)) return null;
   let n = 0;
   for (const [k, x] of Object.entries(ff.v)) if (v[k] == null) { v[k] = x; if (s) s[k] = 'F'; n++; }
   return n ? ff.fdcId : null;
@@ -378,6 +411,11 @@ for (const food of FOODS) {
       ...(Object.keys(sd).length ? { sd } : {}),
     };
   });
+  for (const f of forms) {
+    if (f.v && f.s) sanitize(f.v, f.s, f.s && Object.values(f.s)[0] === 'r' ? 'r' : 'u');
+    // Ham USDA ortalamasında aykırı numune (ör. kuru nohutta 329 mg Mn içeren tek örnek) → katalogda açıkça belirtilen bileşen gösterilmez
+    for (const k of food.drop?.[f.key] || []) { if (f.v) delete f.v[k]; if (f.s) delete f.s[k]; }
+  }
   foods.push({
     id: food.id, tr: food.tr, en: food.en, cat: food.cat,
     sci: forms.find((f) => f.usda?.sci)?.usda.sci || forms.find((f) => f.ifct?.sci)?.ifct.sci || null,
@@ -462,6 +500,7 @@ for (const [ndb, d] of des) {
   const fsTags = fl ? { ...fl.s } : {};
   fillFromFoundation(ndb, v, fsTags);
   fillFromExtra(ndb, v, fsTags);
+  sanitize(v, fsTags);
   const diet = dietOf(d.grp, name, branded, v);
   ext.push({ n: ndb, g: d.grp, en: name, sci: d.sci || null, r: d.refuse, rd: d.refDesc || null, p: usdaPortions(ndb), v,
     diet, ...(Object.keys(fsTags).length ? { fs: fsTags } : {}), ...(diet === 'animal' ? { a: 1 } : {}), ...(branded ? { branded: true } : {}) });
@@ -486,4 +525,4 @@ const meta = {
 };
 fs.writeFileSync(path.join(outDir, 'foods.json'), JSON.stringify({ meta, categories: CATEGORIES, animalCategories: ANIMAL_CATS, foods }));
 fs.writeFileSync(path.join(outDir, 'foods-ext.json'), JSON.stringify({ meta: extMeta, groups: EXT_GROUPS, foods: ext }));
-console.log(meta, 'foods.json', (fs.statSync(path.join(outDir, 'foods.json')).size / 1024).toFixed(0) + ' KB', 'ext', (fs.statSync(path.join(outDir, 'foods-ext.json')).size / 1024).toFixed(0) + ' KB');
+console.log('tutarlılık kapısı: atılan hücre', gateDrops); console.log(meta, 'foods.json', (fs.statSync(path.join(outDir, 'foods.json')).size / 1024).toFixed(0) + ' KB', 'ext', (fs.statSync(path.join(outDir, 'foods-ext.json')).size / 1024).toFixed(0) + ' KB');

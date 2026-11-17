@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 29 · Kısır, piyaz, fava, ezogelin ve zeytinyağlılar
+# 🫐 Besin Matriksi 1.1.2 Beta 43 · Fast food, atıştırmalıklar ve daha temiz veri
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -21,6 +21,9 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
+- **729 besin:** Sosisli, corn dog, vejetaryen sosisli, taco, fasulyeli burrito (peynirsiz), nachos, balık/salamlı/çıtır tavuk sandviç, pretzel, mikrodalga ve karamelli patlamış mısır, pirinç/mısır patlağı, çikolatalı ve çilekli dondurma, yarı tatlı ve bademli sütlü çikolata, sebzeli suşi, buzlu mocha (sütlü ve bitkisel). Hayvansal olanlar etiketli.
+- **Daha temiz veri:** Farklı USDA numunelerinin karıştığı 332 hücre ayıklandı (ör. humus, bazı mantarların amino asitleri); simit, lahmacun ve gözlemede ABD tipi zenginleştirilmiş un yerine zenginleştirilmemiş un; peksimet, sebze burger ve soyalı mayonez hayvansal iz taşıdığı için etiketlendi; kuru nohuttaki aykırı manganez değeri gösterilmiyor.
+- **Önceki beta'lardan (34–42):** Sıcak açık/koyu yeni tema, kahve ve fast food kataloğu, diyet filtreleri, kategori grupları, günlük toplam tarif, mikro besin özeti, kuru meyveler.
 - **Vegan Türk mutfağı (tarif hesabı):** Kısır, piyaz, fava, ezogelin çorbası, zeytinyağlı taze fasulye (domatesli), imam bayıldı, zeytinyağlı enginar, bulgur pilavı. USDA'nın pişmiş/çiğ ölçümlerinden, “Tahmin (tarif)” etiketli; USDA'da olmayan malzemeler (nar ekşisi, biber salçası, nane) notta.
 - **Gözleme (ıspanaklı ve patatesli, peynirsiz):** Tarif hesabı, sacda pişme verimiyle; yalnız ısıya dayanıklı değerler.
 - **Telefonda daha hafif:** Keşfet'te görünmeyen periyodik tablo artık arka planda kurulmuyor; bileşen aramaları hızlandı.

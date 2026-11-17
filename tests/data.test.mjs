@@ -82,7 +82,7 @@ test('hayvansal kayıtlar yalnız hayvansal kategorilerde ve işaretli; bitkisel
   for (const f of DB.foods) {
     if (animalCats.has(f.cat)) assert.equal(f.animal, true, f.id);
     if (f.animal) { animals++; continue; }
-    for (const fm of f.forms) if (fm.usda) assert.ok(!bad.test(fm.usda.desc.replace(/peanut butter|sesame butter|soymilk|almond milk|rice milk|coconut milk|coconut cream|cocoa butter|butternut|butterhead|non-dairy milk|almond butter|cashew butter|sunflower seed butter|oat milk|yogurt, soy|yogurt, coconut milk|yogurt, almond milk/gi, '')), fm.usda.desc);
+    for (const fm of f.forms) if (fm.usda) assert.ok(!bad.test(fm.usda.desc.replace(/peanut butter|sesame butter|soymilk|almond milk|rice milk|coconut milk|coconut cream|cocoa butter|butternut|butterhead|non-dairy milk|almond butter|cashew butter|sunflower seed butter|oat milk|yogurt, soy|yogurt, coconut milk|yogurt, almond milk|no cheese/gi, '')), fm.usda.desc);
   }
   assert.ok(animals >= 30);
   assert.equal(DB.foods.find((f) => f.id === 'bal').animal, true);
@@ -179,7 +179,9 @@ test('protein tozları: whey izolat, soya tozu USDA; bitkisel/kazein/beef etiket
 });
 test('lif türleri: beta-glukan, dirençli nişasta, HMWDF/LMWDF, çözünür lif FDC Foundation\'dan (B119)', () => {
   const v = (id, k) => DB.foods.find((f) => f.id === id).forms[0];
-  const ms = v('shiitake'); assert.ok(ms.v.beta_glucan > 0); assert.equal(ms.s.beta_glucan, 'F');
+  const ms = v('maitake'); assert.ok(ms.v.beta_glucan > 0); assert.equal(ms.s.beta_glucan, 'F');
+  // B157: shiitake'nin FDC numunesindeki beta-glukan (2,92 g) SR28 toplam lifini (2,5 g) aştığı için gösterilmez
+  assert.equal(v('shiitake').v.beta_glucan, undefined);
   assert.ok(DB.foods.some((f) => f.forms.some((fm) => fm.v.fiber_hmw != null && fm.v.fiber_lmw != null)));
 });
 
@@ -337,4 +339,35 @@ test('B141 sütlü kahveler malzeme oranıyla tahmin edilir; ristretto/lungo iç
   assert.ok(get('kahve_kafeinsiz').forms[0].v.caffeine < get('kahve').forms[0].v.caffeine);
   assert.equal(get('latte_sutlu').forms[0].portions[0].g, 180);
   assert.equal(get('cortado').forms[0].portions[0].g, 60);
+});
+
+test('B156 fast food, atıştırmalık ve kahve eklemeleri: hayvansallar işaretli, bitkiseller değil', () => {
+  const g = (id) => DB.foods.find((x) => x.id === id);
+  for (const id of ['sosisli', 'corn_dog', 'taco_etli', 'nachos_peynirli', 'balik_sandvic', 'salamli_sandvic', 'citir_tavuk_sandvic', 'buzlu_mocha', 'dondurma_cikolata', 'bademli_sutlu_cikolata']) assert.equal(g(id).animal, true, id);
+  for (const id of ['vegan_sosisli', 'fasulyeli_burrito', 'pretzel', 'mikrodalga_misir', 'pirinc_patlagi', 'sebzeli_susi', 'buzlu_mocha_bitkisel']) {
+    assert.equal(g(id).animal, false, id);
+    assert.ok(!(g(id).forms[0].v.cholesterol > 0), `${id} kolesterol`);
+  }
+  assert.ok(g('sosisli').forms[0].v.energy > 200);
+});
+
+test('B157 veri tutarlılık kapıları: amino asit > protein, farklı numune dolgusu, zenginleştirilmiş un, aykırı Mn, hayvansal izler', () => {
+  const g = (id) => DB.foods.find((x) => x.id === id);
+  const EAA = ['his', 'ile', 'leu', 'lys', 'met', 'phe', 'thr', 'trp', 'val'];
+  for (const f of DB.foods) for (const fm of f.forms) {
+    const v = fm.v; const eaa = EAA.reduce((a, k) => a + (v[k] ?? 0), 0) / 1000;
+    if (v.protein != null) assert.ok(eaa <= 1.2 * v.protein + 0.05, `${f.id} EAA ${eaa} > protein ${v.protein}`);
+    for (const [p, kids, k] of [['sugars', ['fructose', 'glucose', 'sucrose', 'maltose', 'lactose', 'galactose'], 1], ['pufa', ['la', 'ala_fa', 'f20d2', 'f20d3', 'aa_fa', 'epa', 'dpa', 'dha', 'f22d2'], 1000]]) {
+      if (v[p] == null) continue;
+      const sum = kids.reduce((a, x) => a + (v[x] ?? 0), 0) / k;
+      const mixed = kids.some((x) => v[x] != null && (fm.s[x] || 'u') !== (fm.s[p] || 'u'));
+      assert.ok(!(mixed && sum > v[p] * 1.1 + 0.05), `${f.id} ${p} ${sum} > ${v[p]}`);
+    }
+  }
+  assert.equal(g('aslan_yelesi').forms[0].v.val, undefined);
+  assert.equal(g('humus').forms[0].v.la, undefined); // FDC numunesi (yağ 17 g) SR28'den (9,6 g) sapıyor
+  for (const id of ['simit', 'lahmacun', 'gozleme_ispanakli', 'gozleme_patatesli']) assert.equal(g(id).forms[0].recipeOf[0].ndb, '20481', id);
+  assert.ok(g('simit').forms[0].v.fe < 3);
+  assert.equal(g('nohut').forms[0].v.mn, undefined); assert.ok(g('nohut').forms[1].v.mn > 0);
+  for (const id of ['peksimet', 'sebze_burger', 'pirinc_pilavi', 'vegan_mayonez']) assert.equal(g(id).animal, true, id);
 });
