@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 51 · Bilgi ve Ayarlar telefonda derli toplu
+# 🫐 Besin Matriksi 1.1.2 Beta 52 · Ayarlar telefonda daha toplu
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -21,9 +21,9 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
-- **Bilgi ekranı kısa:** Önce tanıtım ve veri dürüstlüğü; uzun veri kaynakları listesi ve lisanslar sayılarıyla katlanır bölümlerde (telefonda 7600 px → 1700 px).
-- **Ayarlarda bölüm şeridi:** Arama kutusunun altında 16 bölümün adı; dokununca o bölüme atlar. Aramada gizlenen bölümün düğmesi de gizlenir.
-- **Yazı tipi seçimi telefonda iki sütun:** Her ad kendi yazı tipinde; seçili yazı tipi tam örnek ve açıklamayla.
+- **Matriks bölümleri düzgün hizalı:** Uzun bölüm adları ikinci satıra geçince onay kutusunun altına düşmüyor; oklar daha dar.
+- **Kendi temam iki sütun:** Telefonda renk alanları iki sütunda, kart kısaldı.
+- **Beta 51'den:** Kısa Bilgi ekranı, Ayarlar bölüm şeridi, iki sütunlu yazı tipi seçimi.
 - **Beta 50'den:** Kısa Kıyasla kartları, tabloların devam gölgesi, Keşfet sekmesiyle listeye dönüş.
 - **Beta 49'dan:** Arama ilk ekranda, derli toplu Günlük Toplam, sade Aion ayarları.
 - **Beta 48'den:** Koleksiyonlar arasında taşıma, sözcük ortasından bölünmeyen sekme adları, temiz İngilizce arayüz.
