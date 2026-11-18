@@ -1005,5 +1005,5 @@
 ## B180 · 2026-11-18 · Bilgi ekranı telefonda metin duvarı değil
 - Unslop (iPhone SE): Bilgi sayfası 7639 px; 12 maddelik veri kaynakları paragrafları ve 24 lisans başlığı, en önemli kısım olan "Veri dürüstlüğü"nün önünde ekranlarca sürüyordu. → Sıra: tanıtım → sürüm/veri satırı → Veri dürüstlüğü (açık) → "Veri kaynakları 12" ve "Lisanslar ve telif bildirimleri 24" katlanır bölümler (başlık özetin içinde, sayı rozetli). Sayfa 1726 px. İçerik silinmedi; lisanslar çevrimdışı okunmaya devam eder.
 - Lisans testi (app.spec "lisanslar çevrimdışı okunur") katlanır bölümü önce açacak şekilde güncellendi.
-- Kanıt: `npm test` 167/167; build; Playwright B180 2/2 + lisans/B051/i18n/başlık testleri 20/20; ekran görüntüleri incelendi (uzun başlıkta sayı rozeti hizası düzeltildi); tam koşu aşağıda.
+- Kanıt: `npm test` 167/167; build; Playwright B180 2/2 + lisans/B051/i18n/başlık testleri 20/20; ekran görüntüleri incelendi (uzun başlıkta sayı rozeti hizası düzeltildi); Playwright tam koşu 344/344.
 - Sonraki: **B181** kullanıcı önceliği (2) Ayarlar ekranı telefonda Unslop (uzunluk ve gruplama).
