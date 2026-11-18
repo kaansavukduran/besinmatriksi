@@ -1079,5 +1079,6 @@
 
 ## B192 · 2026-11-18 · CoFID eşlemesi ikinci tur: 92 hücre
 - Aynı kurallarla 18 biçim daha (mandalina, dut, ahududu, bektaşi üzümü, mürver, altın çilek, hünnap, kuru erik, salatalık, haşlanmış bezelye ve brokoli, lahana turşusu, havuç, turp, haşlanmış kereviz kökü, tempeh, kuskus, safran). Reddedilen zayıf adaylar: marul (CoFID "ortalama"), taze makarna (USDA kuru makarna), beyaz tortilla (USDA tam buğday), Çin lahanası→beyaz lahana, haşlanmış amarant→çiğ.
-- Kanıt: `npm run data` (CoFID 92 hücre); `npm test` 169/169 (B191 testi tüm eşlemelerde su/protein uyumunu ve değer birebirliğini denetler); tam koşu aşağıda.
-- Sonraki: **B193** amino asit boşlukları (112 proteinli biçim): kullanımı serbest amino asit kaynağı araştırması (Frida lisansı, FAO); bulunamazsa yalnız ısıl işlemsiz akraba biçimden "Tahmin" değerlendirmesi.
+- Kanıt: `npm run data` (CoFID 92 hücre); `npm test` 169/169 (B191 testi tüm eşlemelerde su/protein uyumunu ve değer birebirliğini denetler); Playwright tam koşu 360/360.
+- Amino asit kaynağı araştırması: CoFID'de amino asit yok; Danimarka Frida (amino asit içerir, kullanım koşulu: her gösterimde kaynak belirtme; açık lisans kimliği yok) bu oturumun ağından erişilemiyor (frida.fooddata.dk çözümlenmiyor/izin dışı) ve Kaan ağ izni istemlerini istemiyor → BLOCKED_ENVIRONMENT. Kuru meyveler için taze karşılıktan oransal "Tahmin" kurulmadı: kurutmada lizin (Maillard) değişir, ısıyla değişen bileşen tahmin edilmez kuralı.
+- Sonraki: **B193** CoFID eşlemesi üçüncü tur (baklagil, tahıl, kuruyemiş: farklı adlandırmalar elle aranacak) ve beta.55.
