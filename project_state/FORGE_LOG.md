@@ -1016,5 +1016,6 @@
 ## B182 · 2026-11-18 · Yazı tipi kartı telefonda kısaldı
 - Ölçüm (iPhone SE): "Yazı tipi" kartı 2148 px; 9 yazı tipi kartı tek sütun, her biri ~125 px (ad, örnek cümle iki satır, açıklama iki satır). Telefonda (ölçeklenmemiş düzen) iki sütun, örnek tek satır, açıklama yalnız seçili yazı tipinde; seçili kart tam genişlik (tam örnek + açıklama), boşluklar `dense` ile dolar. Her ad kendi yazı tipinde görünmeye devam eder. Kart 1434 px.
 - İlk denemede "Atkinson Hyperlegibl|e", "OpenDyslex|ic" sözcük ortasından bölündü (ekran görüntüsü) → ad biraz küçüldü, sözcük bölme kapalı; test bunu yakalar.
-- Kanıt: `npm test` 167/167; build; Playwright B182 2/2 (iki sütun, bölünen ad yok, seçili tam genişlik + açıklama); tam koşu aşağıda.
+- Kanıt: `npm test` 167/167; build; Playwright B182 2/2 (iki sütun, bölünen ad yok, seçili tam genişlik + açıklama); Playwright tam koşu 348/348.
+- Sürüm 1.1.2-beta.51 (B180 + B181 + B182).
 - Sonraki: **B183** beta.51 (B180–B182) ve kullanıcı önceliği (2) "Matriks bölümleri" kartı (1450 px) sadeleşmesi.
