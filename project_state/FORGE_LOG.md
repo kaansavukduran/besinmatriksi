@@ -1026,3 +1026,8 @@
 - Yayın: v1.1.2-beta.51 yayımlandı (B182 kaydında kanıt).
 - Kanıt: `npm test` 167/167; build; Playwright B183 2/2; Playwright tam koşu 350/350.
 - Sonraki: **B184** "Kendi temam" kartı (1150 px) telefonda: renk seçicilerin düzeni (Unslop).
+
+## B184 · 2026-11-18 · Kendi temam renkleri telefonda iki sütun
+- Ekran görüntüsü (iPhone SE): 7 renk alanı tek sütun, her biri ~70 px; kart 1150 px. Yalnız tema kartının ızgarasına `theme-colors` sınıfı (`.cu-grid` kendi besin ve profil formlarında da kullanılıyor, onlara dokunulmadı); telefonda iki sütun, nokta ve dolgu biraz küçük. Kart 917 px; adlar sözcük ortasından bölünmüyor.
+- Kanıt: `npm test` 167/167; build; Playwright B184 2/2, düzeltme geri alınınca "cols: 1" ile düşer; ekran görüntüsü incelendi; tam koşu aşağıda.
+- Sonraki: **B185** beta.52 (B183–B184) ve kullanıcı önceliği (3)/(2): Keşfet kategori şeridinde "Koleksiyonlarım" başlığının telefonda görünürlüğü.

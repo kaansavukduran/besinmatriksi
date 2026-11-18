@@ -356,3 +356,17 @@ test('B183 matriks bölümü satırlarında sarılan ad onay kutusunun altına d
   }).map((row) => row.textContent.trim().slice(0, 30)));
   expect(bad).toEqual([]);
 });
+
+test('B184 telefonda Kendi temam renkleri iki sütun; adlar sözcük ortasından bölünmez; diğer formlar etkilenmez', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('/'); await page.evaluate(() => document.fonts.ready);
+  await page.locator('[data-action="tab"][data-tab="ayarlar"]').first().click();
+  const r = await page.evaluate(() => {
+    const f = [...document.querySelectorAll('.theme-colors .color-field')];
+    const cols = new Set(f.map((b) => Math.round(b.getBoundingClientRect().left))).size;
+    const split = f.filter((b) => [...b.querySelectorAll('span, b')].some((el) => [...el.childNodes].some((n) => { if (n.nodeType !== 3 || !n.textContent.trim()) return false; const r = document.createRange(); r.selectNodeContents(n); return new Set([...r.getClientRects()].map((x) => Math.round(x.top))).size > n.textContent.trim().split(/\s+/).length; }))).length;
+    return { n: f.length, cols, split, doc: document.documentElement.scrollWidth <= innerWidth + 1 };
+  });
+  expect(r.n).toBeGreaterThan(4);
+  expect({ cols: r.cols, split: r.split, doc: r.doc }).toEqual({ cols: 2, split: 0, doc: true });
+});
