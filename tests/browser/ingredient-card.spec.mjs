@@ -370,3 +370,15 @@ test('B184 telefonda Kendi temam renkleri iki sütun; adlar sözcük ortasından
   expect(r.n).toBeGreaterThan(4);
   expect({ cols: r.cols, split: r.split, doc: r.doc }).toEqual({ cols: 2, split: 0, doc: true });
 });
+
+test('B185 koleksiyon varsa kategori şeridinde Tümü\'nün hemen ardından gelir; yoksa sıra değişmez', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('/');
+  const firstAfterAll = () => page.evaluate(() => { const kids = [...document.querySelector('.explore .cats').children]; return kids[1]?.className || ''; });
+  expect(await firstAfterAll()).not.toContain('cat-group');
+  await page.evaluate(() => localStorage.setItem('bm.collections.v1', JSON.stringify([{ id: 'a', name: 'Kahvaltı', items: [{ t: 'c', id: 'muz', f: 0 }] }])));
+  await page.reload();
+  expect(await firstAfterAll()).toContain('cat-group');
+  const x = await page.locator('.explore .cats [data-cat="col:a"]').evaluate((e) => e.offsetLeft - e.parentElement.offsetLeft);
+  expect(x).toBeLessThan(400);
+});

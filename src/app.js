@@ -270,7 +270,8 @@ function categoryNav(prefix, current) {
   };
   const tree = collectionTree(S.collections);
   const cols = `<div class="cat-group" role="presentation">${L("Koleksiyonlarım")}</div>${tree.map((c) => colBtn(c, false) + c.children.map((ch) => colBtn(ch, true)).join('')).join('')}${prefix === 'ex' ? `<button class="cat add" data-action="col-new">＋ ${L("Yeni koleksiyon")}</button>` : ''}`;
-  return all + cats + cu + cols + ext;
+  // B185: koleksiyon varsa "Tümü"nün hemen ardından gelir (telefonda şerit ~5950 px; koleksiyonlar 5165. pikseldeydi)
+  return S.collections.length ? all + cols + cats + cu + ext : all + cats + cu + cols + ext;
 }
 
 function refButton(ref, prefix, colId, index = -1, count = 0) {

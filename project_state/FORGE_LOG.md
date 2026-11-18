@@ -1032,3 +1032,8 @@
 - Kanıt: `npm test` 167/167; build; Playwright B184 2/2, düzeltme geri alınınca "cols: 1" ile düşer; ekran görüntüsü incelendi; Playwright tam koşu 352/352.
 - Sürüm 1.1.2-beta.52 (B183 + B184). Yayın kanıtı: v1.1.2-beta.52 pre-release 2026-11-18T14:54:07Z (release.yml run 44324622511 success, ilk denemede).
 - Sonraki: **B185** beta.52 (B183–B184) ve kullanıcı önceliği (3)/(2): Keşfet kategori şeridinde "Koleksiyonlarım" başlığının telefonda görünürlüğü.
+
+## B185 · 2026-11-18 · Koleksiyonlar kategori şeridinin başında
+- Ölçüm (iPhone SE, 1 koleksiyon): Keşfet kategori şeridi 5950 px genişliğinde yana kayıyor; "Koleksiyonlarım" 5165. pikseldeydi (≈17 ekran kaydırma). Kullanıcı önceliği (3) koleksiyonlar: koleksiyon varsa grup "Tümü"nün hemen ardından gelir (153. piksel, ilk ekranda); koleksiyon yoksa sıra değişmez (kategoriler önde, "+ Yeni koleksiyon" sonda). Masaüstünde de aynı sıra (satırlar sarıldığı için yalnız konum değişir).
+- Kanıt: `npm test` 167/167; build; Playwright B185 2/2 (koleksiyonsuz: ikinci öğe kategori; koleksiyonlu: ikinci öğe grup başlığı, "Kahvaltı" <400 px); tam koşu aşağıda.
+- Sonraki: **B186** kullanıcı önceliği (5) Aion: telefonda besin eklendiğinde kutlama baloncuğunun yeri ve süresi (B169 sonrası) denetimi.
