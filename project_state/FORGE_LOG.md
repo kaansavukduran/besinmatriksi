@@ -963,5 +963,5 @@
 - Koleksiyondaki her besinin yanında "Taşı…" seçicisi (yalnız başka koleksiyon varsa; alt kategoriler "↳" ile). `transferRef`: kaynaktan çıkarır, hedefe ekler; hedefte zaten varsa yalnız kaynaktan çıkarır ("zaten vardı"); hedef doluysa (300) hiçbir şey değişmez ve "dolu" der. Saf işlev, girdiyi değiştirmez.
 - Düzen: koleksiyon satırındaki düğmeler (↑ ↓ Taşı… ✕) her genişlikte besin adının altında kendi satırında; ilk denemede masaüstü kart sütunlarında seçici adı tek harf genişliğe sıkıştırdı (ekran görüntüsünde görüldü) → düzeltildi; 1280 px ve iPhone SE ekran görüntüleri temiz, yatay taşma yok.
 - Kanıt: `npm test` 167/167 (transferRef: taşı/birleştir/dolu/aynı/eksik/değişmezlik); build; Playwright B173 2/2; Playwright tam koşu 330/330.
-- Sürüm 1.1.2-beta.48 (B171 + B172 + B173).
+- Sürüm 1.1.2-beta.48 (B171 + B172 + B173). Yayın kanıtı: v1.1.2-beta.48 pre-release 2026-11-18T03:42:40Z (release.yml run 44230270377 success, ilk denemede).
 - Sonraki: **B174** beta.48 (B171–B173) ve kullanıcı önceliği (2) Keşfet ana ekranında boş durum / ilk kullanım akışı denetimi.
