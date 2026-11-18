@@ -956,5 +956,5 @@
 - Koleksiyon ekranını telefonda (iPhone SE, İngilizce) incelerken: alt gezinme çubuğu "Compar|e", "Setting|s" diye sözcük ortasından ikiye bölüyordu (her ekranda görünür). Neden: dar ekran kısa etiketlerinde `overflow-wrap: anywhere`. → Ölçeklenmemiş dar ekranda sözcük bölünmez, yazı 3,1vw ile hafifçe küçülür (10,2–11,9 px; büyük yazı/ölçek düzeni dokunulmadı).
 - Ölçüm (yazı tipi yüklendikten sonra): EN/TR × 320/360/390 px'te en dar pay "Compare" 43/46 px; tek satır, taşma yok. Not: ilk ekran görüntüsü web yazı tipi yüklenmeden alınmıştı (yedek yazı tipi geniş); `document.fonts.ready` sonrası temiz.
 - Koleksiyon ↑/↓ düğmeleri 34×86 px (AA 24 px üstünde; değiştirilmedi). "Alt kategoriye taşı" yok: sonraki adaya.
-- Kanıt: `npm test` 166/166; build; Playwright B172 2/2, düzeltme geri alınınca "Compare satır=2" ile düşer; tam koşu aşağıda.
+- Kanıt: `npm test` 166/166; build; Playwright B172 2/2, düzeltme geri alınınca "Compare satır=2" ile düşer; Playwright tam koşu 328/328.
 - Sonraki: **B173** kullanıcı önceliği (3) koleksiyonda besini alt kategoriye / başka koleksiyona taşı.
