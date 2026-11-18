@@ -333,11 +333,11 @@
     "B127"
   ],
   "latest_release": {
-    "tag": "v1.1.2-beta.50",
-    "commit": "69a0914",
-    "published_at": "2026-11-18T09:49:16Z",
+    "tag": "v1.1.2-beta.51",
+    "commit": "fdabf42",
+    "published_at": "2026-11-18T12:48:13Z",
     "prerelease": true,
-    "release_run": 44276676306
+    "release_run": 44304230078
   },
   "current_forge": {
     "id": "B151",
