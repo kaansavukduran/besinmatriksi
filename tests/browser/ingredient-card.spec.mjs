@@ -235,3 +235,17 @@ test('B175 telefonda Günlük Toplam başlığı tek satır, tarif kartları eş
   });
   expect(r).toEqual({ oneLine: true, uneven: false });
 });
+
+test('B176 Aion kapalıyken işlemeyen seçenekler gösterilmez; açınca gelir', async ({ page }) => {
+  await page.addInitScript(() => { localStorage.setItem('bm.aionOffV1', '1'); localStorage.setItem('bm.settings.v2', JSON.stringify({ version: 2, settings: { language: 'tr', aionEnabled: false } })); });
+  await page.goto('/');
+  await page.locator('[data-action="tab"][data-tab="ayarlar"]').first().click();
+  const sec = page.locator('.aion-settings');
+  await expect(sec.locator('[data-k="aionSize"]')).toHaveCount(0);
+  await expect(sec.locator('[data-action="aion-demo"]')).toHaveCount(0);
+  await sec.locator('label.toggle:has(input[data-setbool="aionEnabled"])').click();
+  await expect(sec.locator('[data-k="aionSize"]')).toHaveCount(3);
+  await expect(sec.locator('[data-action="aion-demo"]')).toBeVisible();
+  await sec.locator('[data-action="aion-demo"]').click();
+  await expect(page.locator('#aion .aion-bubble')).toBeVisible();
+});

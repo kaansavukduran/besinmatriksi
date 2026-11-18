@@ -644,11 +644,11 @@ function renderSettings() {
     <section class="card aion-settings"><h2>${tr('aionTitle')}</h2>
       <p class="hint">${tr('aionHint')}</p>
       ${tog('aionEnabled', tr('aionShow'))}
-      <div class="kv"><span>${tr('aionMotionLabel')}</span><span class="presets">${opt('aionMotion', 'auto', tr('aionMotionAuto'))}${opt('aionMotion', 'animate', tr('aionMotionAnimate'))}${opt('aionMotion', 'still', tr('aionMotionStill'))}</span></div>
+      ${s.aionEnabled ? `<div class="kv"><span>${tr('aionMotionLabel')}</span><span class="presets">${opt('aionMotion', 'auto', tr('aionMotionAuto'))}${opt('aionMotion', 'animate', tr('aionMotionAnimate'))}${opt('aionMotion', 'still', tr('aionMotionStill'))}</span></div>
       <div class="kv"><span>${tr('aionSizeLabel')}</span><span class="presets">${opt('aionSize', 's', tr('sizeS'))}${opt('aionSize', 'm', tr('sizeM'))}${opt('aionSize', 'l', tr('sizeL'))}</span></div>
       <div class="kv"><span>${tr('aionSideLabel')}</span><span class="presets">${opt('aionSide', 'left', tr('sideLeft'))}${opt('aionSide', 'right', tr('sideRight'))}</span></div>
       ${tog('aionTips', tr('aionTipsLabel'))}
-      <div class="presets"><button class="btn" data-action="aion-demo" data-anim="celebrate">${tr('aionTry')}</button><button class="btn ghost" data-action="reset-group" data-group="aion">${tr('aionReset')}</button></div>
+      <div class="presets"><button class="btn" data-action="aion-demo" data-anim="celebrate">${tr('aionTry')}</button><button class="btn ghost" data-action="reset-group" data-group="aion">${tr('aionReset')}</button></div>` : ''}
     </section>
     <section class="card"><h2>${tr('quickPresets')}</h2><div class="presets">
       <button class="btn" data-action="preset" data-p="dyslexia">${tr('dyslexiaPreset')}</button>

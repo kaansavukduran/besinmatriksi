@@ -977,3 +977,8 @@
 - H1 telefonda `clamp(1.35rem, 5.5vw, 2.1rem)` (tek satır; masaüstünde değişmez), tarif kartları dar ekranda iki eşit sütun. Öğün tablosu kendi kaydırılabilir bölgesinde (role=region, tabindex) bilinçli yatay kayar; dokunulmadı. Öğün tablosu ilk ekrana 125 px yaklaştı.
 - Kanıt: `npm test` 167/167; build; Playwright B175 2/2, düzeltme geri alınınca "oneLine: false" ile düşer; ekran görüntüleri incelendi; Playwright tam koşu 334/334.
 - Sonraki: **B176** kullanıcı önceliği (5) Aion özelleştirme: Ayarlar'daki Aion bölümünün sade/anlaşılır olması (seçeneklerin canlı önizlemesi) denetimi.
+
+## B176 · 2026-11-18 · Ayarlar: Aion kapalıyken ölü seçenekler gizli
+- Unslop (iPhone SE ekran görüntüsü): Aion kapalıyken hareket, boyut, konum, ipucu ve "Kutlamayı dene" görünüyor ama hiçbiri etki etmiyordu; "Kutlamayı dene" hiçbir şey yapmıyordu (`aionSay` kapalıyken döner) → sahte etkileşim. Aion kapalıyken yalnız açıklama + "Aion'u göster" anahtarı; açınca seçenekler gelir.
+- Kanıt: `npm test` 167/167; build; Playwright B176 2/2 + mevcut Aion testleri (app + ingredient-card "Aion|B176") 8/8; tam koşu aşağıda.
+- Sonraki: **B177** beta.49 (B174–B176) ve kullanıcı önceliği (2) Kıyasla ekranının telefonda Unslop denetimi.
