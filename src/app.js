@@ -27,7 +27,7 @@ import { renderPersonal, renderEnergy, renderDaySources } from './personal-view.
 import { nutrientLabel } from './i18n-nutrients.js';
 import { getLanguage } from './i18n.js';
 import { SLIDER_STEPS, sliderToGrams, gramsToSlider } from './amount-scale.js';
-import { normalizeCollections, createCollection, renameCollection, deleteCollection, toggleRef, removeRef, collectionTree, collectionRefs, hasRef, moveRef, moveIndex, MAX_COLLECTIONS, MAX_ITEMS } from './collections.js';
+import { normalizeCollections, createCollection, renameCollection, deleteCollection, toggleRef, removeRef, collectionTree, collectionRefs, hasRef, moveRef, moveIndex, transferRef, MAX_COLLECTIONS, MAX_ITEMS } from './collections.js';
 // B165: koleksiyon hatası nedenine göre bildirilir (sınır ≠ boş ad)
 function collectionError(err) {
   if (err?.message === 'too-many') return L("En fazla {m} koleksiyon olabilir; yer açmak için birini sil.", { m: MAX_COLLECTIONS });
@@ -276,7 +276,10 @@ function refButton(ref, prefix, colId, index = -1, count = 0) {
   const item = resolve(ref);
   const nm = item ? item.name : refKey(ref);
   const moves = colId && prefix === 'ex' && index >= 0 ? `<span class="move"><button class="btn ghost" data-action="col-move" data-id="${esc(colId)}" data-i="${index}" data-d="-1" ${index === 0 ? 'disabled' : ''} aria-label="${esc(L("{n} yukarı taşı", { n: nm }))}">↑</button><button class="btn ghost" data-action="col-move" data-id="${esc(colId)}" data-i="${index}" data-d="1" ${index === count - 1 ? 'disabled' : ''} aria-label="${esc(L("{n} aşağı taşı", { n: nm }))}">↓</button></span>` : '';
-  const remove = moves + (colId && prefix === 'ex' ? `<button class="btn ghost danger item-remove" data-action="col-remove-item" data-id="${esc(colId)}" data-ref="${esc(JSON.stringify(ref))}" aria-label="${esc(L("{n} koleksiyondan çıkar", { n: nm }))}">✕</button>` : '');
+  // B173: başka koleksiyona / alt kategoriye taşı (yalnız başka koleksiyon varsa)
+  const targets = colId && prefix === 'ex' ? collectionTree(S.collections).flatMap((c) => [c, ...c.children]).filter((c) => c.id !== colId) : [];
+  const transfer = targets.length ? `<select class="col-transfer" data-col-transfer="${esc(colId)}" data-ref="${esc(JSON.stringify(ref))}" aria-label="${esc(L("{n}: başka koleksiyona taşı", { n: nm }))}"><option value="">${L("Taşı…")}</option>${targets.map((c) => `<option value="${esc(c.id)}">${c.parent ? '↳ ' : ''}${esc(c.name)}</option>`).join('')}</select>` : '';
+  const remove = moves + transfer + (colId && prefix === 'ex' ? `<button class="btn ghost danger item-remove" data-action="col-remove-item" data-id="${esc(colId)}" data-ref="${esc(JSON.stringify(ref))}" aria-label="${esc(L("{n} koleksiyondan çıkar", { n: nm }))}">✕</button>` : '');
   if (!item && ref.t === 'x' && !extLoaded()) return `<div class="food pending-ref"><span class="fn">USDA NDB ${esc(ref.n)}</span>${catalogPending()}${remove}</div>`;
   if (!item) return `<div class="food missing-ref"><span class="fi">❔</span><span class="fn">${L("Kayıt bulunamadı")}</span><span class="ff">${esc(refKey(ref))}</span>${remove}</div>`;
   return `<div class="food-wrap"><button class="food" data-action="${prefix}-pick-ref" data-ref="${esc(JSON.stringify(ref))}"><span class="fi" aria-hidden="true">${item.food ? foodIcon(item.food) : item.custom ? '🏷️' : '🇺🇸'}</span><span class="fn">${esc(item.name)}</span><span class="ff">${esc(item.formLabel)}</span></button>${remove}</div>`;
@@ -1528,6 +1531,17 @@ function onInput(e) {
   if (t.id === 'rc-name') { activeRecipe().name = t.value.slice(0, 80) || L("Adsız tarif"); persistRecipes(); return; }
 }
 function onChange(e) {
+  if (e.target.dataset.colTransfer && e.target.value) {
+    const to = S.collections.find((c) => c.id === e.target.value);
+    const ref = JSON.parse(e.target.dataset.ref);
+    const r = transferRef(S.collections, e.target.dataset.colTransfer, e.target.value, ref);
+    if (r.status === 'full') { toast(L("“{c}” dolu: bir koleksiyonda en fazla {m} besin olabilir.", { c: to.name, m: MAX_ITEMS })); e.target.value = ''; return; }
+    if (r.status === 'moved' || r.status === 'merged') {
+      S.collections = r.list; persistCollections(); render();
+      toast(r.status === 'merged' ? L("“{c}” içinde zaten vardı; buradan çıkarıldı.", { c: to.name }) : L("“{c}” koleksiyonuna taşındı.", { c: to.name }));
+    }
+    return;
+  }
   const changedGroup = e.target.dataset.extgroup;
   if (changedGroup) {
     if (changedGroup === 'ex') { S.extGroup = e.target.value || null; S.extPage = 0; }

@@ -901,5 +901,9 @@ export const UI_EN = {
  "Alt kategori yalnız bir üst koleksiyonun altına eklenebilir.": "A subcategory can only be added under a top-level collection.",
  "“{c}” dolu: bir koleksiyonda en fazla {m} besin olabilir.": "“{c}” is full: a collection can hold at most {m} foods.",
  "Profil uygulanınca hedeflerin, referans ve diyet seçimin, sabitlenen besinler ve dil olduğu gibi kalır.": "Applying a profile keeps your targets, reference and diet choice, pinned nutrients and language as they are.",
- "Rafinoz ailesi (GOS): en az {g} g ({n}/4 şeker ölçülmüş).": "Raffinose family (GOS): at least {g} g ({n}/4 sugars measured)."
+ "Rafinoz ailesi (GOS): en az {g} g ({n}/4 şeker ölçülmüş).": "Raffinose family (GOS): at least {g} g ({n}/4 sugars measured).",
+ "{n}: başka koleksiyona taşı": "{n}: move to another collection",
+ "Taşı…": "Move…",
+ "“{c}” içinde zaten vardı; buradan çıkarıldı.": "Already in “{c}”; removed from here.",
+ "“{c}” koleksiyonuna taşındı.": "Moved to “{c}”."
 };

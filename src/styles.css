@@ -1030,3 +1030,8 @@ button.micro-name:hover { text-decoration-color: currentColor; }
 @media (max-width: 700px) {
   :root:not([data-ui-scaled="true"]) .tab .tt-short { overflow-wrap: normal; word-break: keep-all; hyphens: none; white-space: nowrap; font-size: clamp(.6rem, 3.1vw, .7rem); letter-spacing: -.01em; }
 }
+
+/* B173: koleksiyon öğesini başka koleksiyona taşıma seçicisi */
+.food-wrap .col-transfer { flex: 0 0 auto; width: 5.6em; min-height: var(--tap); padding: 0 .3em; border: 1px solid var(--line); border-radius: calc(var(--radius) * .6); background: var(--card); color: var(--fg); font: inherit; font-size: .85rem; }
+.food-wrap { flex-wrap: wrap; } .food-wrap .food { flex: 1 1 100%; min-width: 0; }
+.food-wrap .col-transfer { flex: 1 1 5.6em; min-width: 0; }

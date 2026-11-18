@@ -96,3 +96,19 @@ export function moveIndex(arr, index, dir) {
 export function moveRef(list, id, index, dir) {
   return list.map((c) => (c.id === id ? { ...c, items: moveIndex(c.items, index, dir) } : c));
 }
+
+// B173: bir kaydı başka koleksiyona / alt kategoriye taşır. Hedefte zaten varsa yalnız kaynaktan çıkar;
+// hedef doluysa (MAX_ITEMS) hiçbir şey değişmez. Dönüş: { list, status: 'moved' | 'merged' | 'full' | 'same' | 'missing' }
+export function transferRef(list, fromId, toId, ref) {
+  const from = list.find((c) => c.id === fromId), to = list.find((c) => c.id === toId);
+  if (!from || !to || !hasRef(from, ref)) return { list, status: 'missing' };
+  if (fromId === toId) return { list, status: 'same' };
+  const already = hasRef(to, ref);
+  if (!already && to.items.length >= MAX_ITEMS) return { list, status: 'full' };
+  const next = list.map((c) => {
+    if (c.id === fromId) return { ...c, items: c.items.filter((r) => refKey(r) !== refKey(ref)) };
+    if (c.id === toId && !already) return { ...c, items: [...c.items, { ...ref }] };
+    return c;
+  });
+  return { list: next, status: already ? 'merged' : 'moved' };
+}

@@ -193,3 +193,16 @@ test('B170 miktar düğmeleri 320 px telefonda tek satırda (+10 alta düşmez);
     expect(r).toEqual({ tops: 1, over: false, doc: true });
   }
 });
+
+test('B173 koleksiyon öğesi alt kategoriye taşınır; hedefte varsa kopya oluşmaz', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('bm.collections.v1', JSON.stringify([{ id: 'a', name: 'Kahvaltı', items: [{ t: 'c', id: 'muz', f: 0 }, { t: 'c', id: 'nohut', f: 0 }] }, { id: 'b', name: 'Meyveler', parent: 'a', items: [{ t: 'c', id: 'nohut', f: 0 }] }])));
+  await page.goto('/');
+  await page.locator('[data-action="ex-cat"][data-cat="col:a"]').first().click();
+  const store = () => page.evaluate(() => JSON.parse(localStorage.getItem('bm.collections.v1')).map((c) => [c.id, c.items.map((i) => i.id)]));
+  await page.locator('[data-col-transfer="a"]').first().selectOption('b');
+  await expect(page.locator('.toast')).toContainText('Meyveler');
+  expect(await store()).toEqual([['a', ['nohut']], ['b', ['nohut', 'muz']]]);
+  await page.locator('[data-col-transfer="a"]').first().selectOption('b');
+  await expect(page.locator('.toast')).toContainText('zaten vardı');
+  expect(await store()).toEqual([['a', []], ['b', ['nohut', 'muz']]]);
+});

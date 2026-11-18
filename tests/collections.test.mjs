@@ -90,3 +90,18 @@ test('sıralama: öğe yukarı/aşağı taşınır, sınırda değişmez', async
   assert.deepEqual(moveRef(list, 'k', 1, -1)[0].items, [yulaf, muz]);
   assert.deepEqual(list[0].items, [muz, yulaf]);
 });
+
+test('B173 transferRef: taşır, hedefte varsa birleştirir, dolu hedefe dokunmaz, girdiyi değiştirmez', async () => {
+  const { transferRef, MAX_ITEMS } = await import('../src/collections.js');
+  const muz = { t: 'c', id: 'muz', f: 0 }, elma = { t: 'c', id: 'elma', f: 0 };
+  const list = [{ id: 'a', name: 'A', parent: null, items: [muz, elma] }, { id: 'b', name: 'B', parent: 'a', items: [elma] }, { id: 'c', name: 'C', parent: null, items: Array.from({ length: MAX_ITEMS }, (_, i) => ({ t: 'c', id: 'f' + i, f: 0 })) }];
+  const snap = JSON.stringify(list);
+  let r = transferRef(list, 'a', 'b', muz);
+  assert.equal(r.status, 'moved'); assert.deepEqual(r.list[0].items, [elma]); assert.deepEqual(r.list[1].items, [elma, muz]);
+  r = transferRef(list, 'a', 'b', elma);
+  assert.equal(r.status, 'merged'); assert.deepEqual(r.list[0].items, [muz]); assert.deepEqual(r.list[1].items, [elma]);
+  r = transferRef(list, 'a', 'c', muz); assert.equal(r.status, 'full'); assert.equal(r.list, list);
+  assert.equal(transferRef(list, 'a', 'a', muz).status, 'same');
+  assert.equal(transferRef(list, 'b', 'a', muz).status, 'missing');
+  assert.equal(JSON.stringify(list), snap);
+});
