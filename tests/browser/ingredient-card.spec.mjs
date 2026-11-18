@@ -395,3 +395,17 @@ test('B186 telefonda Aion konuşunca kenarda beklemez: "Kutlamayı dene" baloncu
   await page.mouse.wheel(0, 200);
   await expect(page.locator('#aion')).toHaveClass(/aion-tucked/);
 });
+
+test('B187 telefonda Günlük: yaş/boy/kilo tek satır, başlık en fazla iki satır, alanlar çalışır', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('/'); await page.evaluate(() => document.fonts.ready);
+  await page.locator('[data-action="tab"][data-tab="gunluk"]').first().click();
+  const r = await page.evaluate(() => {
+    const ins = ['age', 'height', 'weight'].map((k) => document.querySelector(`.profile-basic [data-personal-field="${k}"]`).getBoundingClientRect());
+    const h = document.querySelector('.personal > header h1'); const lh = parseFloat(getComputedStyle(h).lineHeight);
+    return { row: new Set(ins.map((b) => Math.round(b.top))).size, minW: Math.min(...ins.map((b) => b.width)), lines: Math.round(h.getBoundingClientRect().height / lh), doc: document.documentElement.scrollWidth <= innerWidth + 1 };
+  });
+  expect(r.row).toBe(1); expect(r.minW).toBeGreaterThan(60); expect(r.lines).toBeLessThanOrEqual(2); expect(r.doc).toBe(true);
+  await page.locator('.profile-basic [data-personal-field="weight"]').fill('70');
+  await expect(page.locator('.profile-basic [data-personal-field="weight"]')).toHaveValue('70');
+});

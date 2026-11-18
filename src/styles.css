@@ -1103,3 +1103,12 @@ button.micro-name:hover { text-decoration-color: currentColor; }
   :root:not([data-ui-scaled="true"]) .theme-colors .color-dot { width: 1.6rem; height: 1.6rem; }
   :root:not([data-ui-scaled="true"]) .theme-colors .color-field > span:last-child { min-width: 0; overflow-wrap: normal; }
 }
+
+/* B187: Günlük telefonda: başlık ekranı kaplamaz; yaş / boy / kilo tek satırda üç kısa alan, seçimler tam genişlik */
+.personal > header h1 { font-size: clamp(1.45rem, 6vw, 2.3rem); line-height: 1.15; }
+@media (max-width: 600px) {
+  :root:not([data-ui-scaled="true"]) .profile-basic { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 .5rem; }
+  :root:not([data-ui-scaled="true"]) .profile-basic > label:nth-child(n+4) { grid-column: 1 / -1; }
+  :root:not([data-ui-scaled="true"]) .profile-basic > label > span { font-size: .85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  :root:not([data-ui-scaled="true"]) .profile-basic input { min-width: 0; padding-left: .5rem; padding-right: .3rem; }
+}

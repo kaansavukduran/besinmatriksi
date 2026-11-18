@@ -1044,3 +1044,9 @@
 - Kanıt: `npm test` 167/167; build; Playwright B186 2/2 (baloncuk 800 ms içinde görünür, kaydırınca yine çekilir), düzeltme geri alınınca düşer; B169 + B176 testleri birlikte 8/8; Playwright tam koşu 356/356.
 - Sürüm 1.1.2-beta.53 (B185 + B186). Yayın: release.yml run 44347567828 ilk denemede CI tarayıcı testlerinde tek test ("özel hedef, birimler, tema dosyası…", masaüstü) 30 sn zaman aşımı (355/356); yerelde aynı test 20/20 (--repeat-each 10, iki proje) ve önceki CI koşularında geçiyordu → kararsız (flaky) kabul edildi, yalnız düşen iş yeniden çalıştırıldı: deneme 2 success, v1.1.2-beta.53 pre-release 2026-11-18T17:42:06Z.
 - Sonraki: **B187** beta.53 (B185–B186) ve kullanıcı önceliği (2) Günlük ekranı profil formunun telefonda düzeni.
+
+## B187 · 2026-11-18 · Günlük profil formu telefonda kısaldı
+- Ekran görüntüsü (iPhone SE): iki satır dev başlık + profil kartı 1523 px (yaş, boy, kilo her biri tam genişlik satır); günün kaydı (ekranın asıl işi) çok aşağıda. Başlık `clamp(1.45rem, 6vw, 2.3rem)`; yaş / boy / kilo telefonda tek satırda üç kısa alan, seçimler tam genişlik. Sayfa 3057 → 2787 px, profil kartı 1314 px. Hiçbir alan gizlenmedi.
+- Yayın: v1.1.2-beta.53 yayımlandı (B186 kaydında kanıt; ilk denemede CI'da kararsız test).
+- Kanıt: `npm test` 167/167; build; Playwright B187 2/2 (üç alan tek satır, ≥60 px, başlık ≤2 satır, yazma çalışır); ekran görüntüsü incelendi; tam koşu aşağıda.
+- Sonraki: **B188** CI'da kararsız çıkan "özel hedef, birimler, tema dosyası" testinin kök nedeni (izleme dosyası yok; olası bildirim / yeniden çizim yarışı) ve sağlamlaştırma.
