@@ -333,12 +333,11 @@
     "B127"
   ],
   "latest_release": {
-    "tag": "v1.1.2-beta.46",
-    "commit": "a6f590a",
-    "published_at": "2026-11-17T22:17Z",
+    "tag": "v1.1.2-beta.47",
+    "commit": "9d8d13a",
+    "published_at": "2026-11-18T00:45:46Z",
     "prerelease": true,
-    "release_run": 44179695553,
-    "note": "macOS/iOS işleri ilk denemede iptal; rerun_failed_jobs ile success"
+    "release_run": 44207646101
   },
   "current_forge": {
     "id": "B151",
