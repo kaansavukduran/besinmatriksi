@@ -1048,5 +1048,5 @@
 ## B187 · 2026-11-18 · Günlük profil formu telefonda kısaldı
 - Ekran görüntüsü (iPhone SE): iki satır dev başlık + profil kartı 1523 px (yaş, boy, kilo her biri tam genişlik satır); günün kaydı (ekranın asıl işi) çok aşağıda. Başlık `clamp(1.45rem, 6vw, 2.3rem)`; yaş / boy / kilo telefonda tek satırda üç kısa alan, seçimler tam genişlik. Sayfa 3057 → 2787 px, profil kartı 1314 px. Hiçbir alan gizlenmedi.
 - Yayın: v1.1.2-beta.53 yayımlandı (B186 kaydında kanıt; ilk denemede CI'da kararsız test).
-- Kanıt: `npm test` 167/167; build; Playwright B187 2/2 (üç alan tek satır, ≥60 px, başlık ≤2 satır, yazma çalışır); ekran görüntüsü incelendi; tam koşu aşağıda.
+- Kanıt: `npm test` 167/167; build; Playwright B187 2/2 (üç alan tek satır, ≥60 px, başlık ≤2 satır, yazma çalışır); ekran görüntüsü incelendi; Playwright tam koşu 358/358.
 - Sonraki: **B188** CI'da kararsız çıkan "özel hedef, birimler, tema dosyası" testinin kök nedeni (izleme dosyası yok; olası bildirim / yeniden çizim yarışı) ve sağlamlaştırma.
