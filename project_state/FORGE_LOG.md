@@ -999,5 +999,5 @@
 - Karar (kullanıcı önceliği 2, sadelik): telefonda varsayılan "Tümü" iki-üç besinde ~8900 px'lik tablo açıyordu; ilk bakışta istenen kalori/makro karşılaştırması bu yükün içinde kayboluyordu. Dar ekranda (≤600 px) varsayılan "Temel besin değerleri"; masaüstünde geniş tablo sığdığı için "Tümü" kalır. Bölüm şeridi her bölüme tek dokunuşla geçer.
 - B109 testi (tablonun kendi içinde dikey kaydırmaması, sayfa boyu açık) telefonda artık "Tümü"ne açıkça geçerek ölçüyor.
 - Kanıt: `npm test` 167/167; build; Playwright B109 + B179 4/4 (telefonda Temel seçili ve tablo <1500 px, masaüstünde Tümü ve >1500 px); app + polish + ingredient-card ilk koşuda yalnız B109 telefonu düştü → güncellendi; Playwright tam koşu 342/342.
-- Sürüm 1.1.2-beta.50 (B177 + B178 + B179).
+- Sürüm 1.1.2-beta.50 (B177 + B178 + B179). Yayın kanıtı: v1.1.2-beta.50 pre-release 2026-11-18T09:49:16Z (release.yml run 44276676306 success, ilk denemede).
 - Sonraki: **B180** beta.50 (B177–B179) ve kullanıcı önceliği (1)/(2): Hakkında (Bilgi) ekranı telefonda Unslop.
