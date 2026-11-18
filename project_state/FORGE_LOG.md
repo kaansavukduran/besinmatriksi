@@ -1042,5 +1042,5 @@
 - Denetim (iPhone SE): B169'da her dokunuş Aion'u 2,5 sn kenara çekiyor ve baloncuğu gizliyordu. Aion'u konuşturan şey de bir dokunuş olunca ("Kutlamayı dene", Günlük'te hedef kutlaması) baloncuk 2,5 sn hiç görünmüyordu → telefonda düğme tepkisiz görünüyordu. Kutlamalar yalnız Günlük'te hedefe ulaşınca (celebrateGoals); tarife eklemede baloncuk yok, yalnız bildirim (çakışma yok: bildirim 80–240 px, Aion 277–341 px).
 - `aionSay` kenara çekilmeyi hemen kaldırır; kaydırınca yine çekilir (B169 korunur).
 - Kanıt: `npm test` 167/167; build; Playwright B186 2/2 (baloncuk 800 ms içinde görünür, kaydırınca yine çekilir), düzeltme geri alınınca düşer; B169 + B176 testleri birlikte 8/8; Playwright tam koşu 356/356.
-- Sürüm 1.1.2-beta.53 (B185 + B186).
+- Sürüm 1.1.2-beta.53 (B185 + B186). Yayın: release.yml run 44347567828 ilk denemede CI tarayıcı testlerinde tek test ("özel hedef, birimler, tema dosyası…", masaüstü) 30 sn zaman aşımı (355/356); yerelde aynı test 20/20 (--repeat-each 10, iki proje) ve önceki CI koşularında geçiyordu → kararsız (flaky) kabul edildi, yalnız düşen iş yeniden çalıştırıldı (sonuç: NOT_RUN, bir sonraki turda kontrol).
 - Sonraki: **B187** beta.53 (B185–B186) ve kullanıcı önceliği (2) Günlük ekranı profil formunun telefonda düzeni.
