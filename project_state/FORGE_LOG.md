@@ -1010,5 +1010,5 @@
 
 ## B181 · 2026-11-18 · Ayarlar bölüm şeridi
 - Ölçüm (iPhone SE): Ayarlar 12 661 px, 16 kart hep açık (Yazı tipi 2148, Matriks bölümleri 1450, Düzen 1444, Kendi temam 1150 px). Kartları katlanır yapmak onlarca testin doğrudan dokunduğu denetimleri gizleyeceği için tek Forge'a sığmayan risk; bunun yerine arama kutusunun altına bölüm şeridi: 16 kart başlığı, dokununca karta atlar (başlık odaklanır), telefonda yana kayar. Arama bir kartı gizlerse onun düğmesi de gizlenir. Etkin Ayarlar sekmesine yeniden dokunmak zaten başa döner.
-- Kanıt: `npm test` 167/167; build; Playwright B181 2/2 (düğme sayısı = kart sayısı, "Yedekleme" ekranın üstüne gelir, "aion" aramasında Yedekleme düğmesi gizli); ekran görüntüsü incelendi; tam koşu aşağıda.
+- Kanıt: `npm test` 167/167; build; Playwright B181 2/2 (düğme sayısı = kart sayısı, "Yedekleme" ekranın üstüne gelir, "aion" aramasında Yedekleme düğmesi gizli); ekran görüntüsü incelendi; Playwright tam koşu 346/346.
 - Sonraki: **B182** Ayarlar'da en uzun "Yazı tipi" kartı (2148 px): örnek kartlarının telefonda sadeleşmesi.
