@@ -992,5 +992,5 @@
 
 ## B178 · 2026-11-18 · Yana kayan tablolarda devam gölgesi
 - Denetim (iPhone SE, 3 besin): Kıyasla tablosu 468 px / 294 px kutu; ilk sütun zaten yapışkan (kaydırınca 12→13 px, yerinde) ve bölge "yana kaydırılabilir" diye etiketli, ama görsel olarak devamı olduğu belli değildi. → `.tablewrap` ve öğün tablosu (`.meal-overview`) için sağ kenar gölgesi: yerel arka plan örtüsüyle sona gelince kaybolur (JS yok). Ekran görüntüleri: başta gölge görünür, sonda yok.
-- Kanıt: `npm test` 167/167; build; Playwright B178 2/2 (kayar, iki gradyan + local, ilk sütun yapışkan); tam koşu aşağıda.
+- Kanıt: `npm test` 167/167; build; Playwright B178 2/2 (kayar, iki gradyan + local, ilk sütun yapışkan); Playwright tam koşu 340/340.
 - Sonraki: **B179** Kıyasla varsayılan bölümü telefonda "Tümü" (~8900 px tablo) yerine "Temel besin değerleri" olmalı mı: kullanıcı önceliği (2) sadelik; karar ve uygulama.
