@@ -1055,5 +1055,5 @@
 - beta.53 ilk CI koşusunda "özel hedef, birimler, tema dosyası…" (masaüstü) kJ düğmesine tıklarken 30 sn takıldı. Yerelde yeniden üretilemedi: --repeat-each 10 (20/20) ve CPU 8× yavaşlatılmış adım adım betik (6/6, tıklama 320–460 ms). release.yml düşen testin izlerini yüklemiyordu (ci.yml yüklüyordu) → kök neden kanıtı yok.
 - Playwright CI'da `retries: 1` (yerelde 0): kararsız test "flaky" olarak raporlanır, gizlenmez; CI'da iz yalnız ilk başarısızlıkta saklanır (`retain-on-first-failure`). release.yml'e `if: failure()` ile `test-results/` yükleme (7 gün). Sonraki kararsızlıkta iz incelenip kök neden düzeltilecek.
 - Kanıt: `npm test` 168/168 (B188: yapılandırma ve iş akışı denetimi); `playwright test --list` CI=0 ve CI=1 358 test; CI=1 ile hedef test 2/2; release.yml YAML geçerli. Uygulama kodu B187 tam koşusundan (358/358) beri değişmedi.
-- Sürüm 1.1.2-beta.54 (B187 + B188).
+- Sürüm 1.1.2-beta.54 (B187 + B188). Yayın kanıtı: v1.1.2-beta.54 pre-release 2026-11-18T19:39:05Z (release.yml run 44378490063 success, ilk denemede; tarayıcı testleri geçti, iz yükleme adımı doğru biçimde atlandı).
 - Sonraki: **B189** beta.54 (B187–B188) ve kullanıcı önceliği (2) Günlük'te günün kaydı kartı (850 px) telefonda denetimi.

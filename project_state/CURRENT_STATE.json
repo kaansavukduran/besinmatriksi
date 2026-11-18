@@ -333,12 +333,11 @@
     "B127"
   ],
   "latest_release": {
-    "tag": "v1.1.2-beta.53",
-    "commit": "0e071f6",
-    "published_at": "2026-11-18T17:42:06Z",
+    "tag": "v1.1.2-beta.54",
+    "commit": "7f67915",
+    "published_at": "2026-11-18T19:39:05Z",
     "prerelease": true,
-    "release_run": 44347567828,
-    "note": "deneme 1'de CI'da tek kararsız test zaman aşımı; deneme 2 success"
+    "release_run": 44378490063
   },
   "current_forge": {
     "id": "B151",
