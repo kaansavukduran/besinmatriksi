@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 54 · Daha kısa Günlük
+# 🫐 Besin Matriksi 1.1.2 Beta 55 · İngiliz besin tablosundan eksik değerler
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -21,8 +21,10 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
-- **Günlük telefonda kısa:** Başlık küçüldü; yaş, boy ve kilo tek satırda üç kısa alan. Günün kaydı daha yukarıda.
-- **Daha güvenilir derleme:** Otomatik testlerde nadiren takılan bir test artık bir kez yeniden denenir ve iz kaydı saklanır (uygulamayı etkilemez).
+- **Eksik değerler dolduruldu:** USDA'da ölçülmemiş 92 değer, İngiltere'nin resmî besin tablosundan (UK CoFID 2021, açık lisans) eklendi: iyot, biyotin, selenyum, pantotenik asit ve şeker türleri. 40 bitkisel besin biçiminde (ör. portakal suyu, ahududu, dut, kuru erik, havuç, brokoli, bezelye, tempeh, kuskus, kaju). Her eşleme elle doğrulandı (ad, hazırlama biçimi, su ve protein uyumu); “UK CoFID 2021” etiketiyle görünür, iz ve ölçülmemiş değerler 0 yazılmaz.
+- **Bildirimler telefonda düzgün:** Kısa mesajlar ekranın yarısına sıkışıp yuvarlak bir topa dönmüyor.
+- **Daha güzel paylaşım ve açılış:** Web sürümü paylaşılınca önizleme kartı görünür; açılışta uygulama renklerinde logo.
+- **Beta 54'ten:** Kısa Günlük profil formu.
 - **Beta 53'ten:** Koleksiyonlar kategori şeridinin başında, Aion telefonda tepkili.
 - **Beta 52'den:** Hizalı matriks bölümleri, iki sütunlu tema renkleri.
 - **Beta 51'den:** Kısa Bilgi ekranı, Ayarlar bölüm şeridi, iki sütunlu yazı tipi seçimi.

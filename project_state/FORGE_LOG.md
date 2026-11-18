@@ -1086,5 +1086,6 @@
 ## B193 · 2026-11-18 · GitHub Pages: bağlantı önizlemesi ve açılış ekranı (Kaan: "github pages'te güzel gözüksün")
 - Pages iş akışı her push'ta `dist`'i yayımlıyor (son koşular success). Eksikler: bağlantı paylaşılınca önizleme yoktu (Open Graph/Twitter etiketi ve görsel yok); açılışta beyaz zemin üzerinde süssüz "yükleniyor" yazısı.
 - `public/og-image.png` 1200×630 (uygulama renkleri, logo, "Tabağında ne var?", nohut kartı: 378 kcal, 20,5 g protein, 12,2 g lif, 557 µg folat; değerler foods.json'dan), kaynağı `scripts/og-image.html`. index.html: og:title/description/url/image(+boyut, alt), og:locale, twitter:card; başlık "Besin Matriksi · çevrimdışı besin matriksi ve tarif hesaplayıcı". Açılış: uygulama zemin rengi (koyu temada koyu), ortada logo + "yükleniyor"; hareket azaltmada animasyon yok.
-- Kanıt: `npm test` 170/170 (B193: etiketler, görsel boyutu, açılış); build + build:single (`dist/og-image.png`, mutlak og:image); 1920/1440 px masaüstü ve yavaşlatılmış açılış ekran görüntüleri incelendi; tam koşu aşağıda.
+- Kanıt: `npm test` 170/170 (B193: etiketler, görsel boyutu, açılış); build + build:single (`dist/og-image.png`, mutlak og:image); 1920/1440 px masaüstü ve yavaşlatılmış açılış ekran görüntüleri incelendi; Playwright tam koşu 360/360.
+- Sürüm 1.1.2-beta.55 (B189–B193).
 - Sonraki: **B194** beta.55 (B190–B193) ve CoFID eşlemesi üçüncü tur.
