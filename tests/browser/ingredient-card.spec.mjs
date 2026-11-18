@@ -249,3 +249,21 @@ test('B176 Aion kapalıyken işlemeyen seçenekler gösterilmez; açınca gelir'
   await sec.locator('[data-action="aion-demo"]').click();
   await expect(page.locator('#aion .aion-bubble')).toBeVisible();
 });
+
+test('B177 telefonda Kıyasla kartları kısa; Keşfet sekmesine yeniden dokunmak listeye döndürür (arama korunur)', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('/');
+  for (const id of ['muz', 'nohut', 'elma']) {
+    if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="tab"][data-tab="kesfet"]').first().click();
+    await page.locator('#q').fill(id); await page.locator(`#foodlist [data-id="${id}"]`).click();
+    await page.locator('[data-action="ex-add-compare"]').click();
+  }
+  await page.locator('[data-action="tab"][data-tab="kesfet"]').first().click();
+  await expect(page.locator('#q')).toBeVisible();
+  await expect(page.locator('#q')).toHaveValue('elma');
+  await page.locator('[data-action="tab"][data-tab="karsilastir"]').first().click();
+  const r = await page.evaluate(() => ({ h: [...document.querySelectorAll('.cmp-col')].map((e) => e.getBoundingClientRect().height), row: (() => { const m = document.querySelector('.cmp-col .amount.mini'); const n = [...m.querySelectorAll('.nudge')].map((e) => Math.round(e.getBoundingClientRect().top)); const v = Math.round(m.querySelector('.amt-val').getBoundingClientRect().top); return new Set(n).size === 1 && Math.abs(n[0] - v) < 20; })() }));
+  expect(r.h.length).toBe(3);
+  expect(Math.max(...r.h)).toBeLessThan(220);
+  expect(r.row).toBe(true);
+});

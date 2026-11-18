@@ -1173,7 +1173,10 @@ async function onClick(e) {
     }
     case 'personal-raw': try { download('besin-matriksi-personal-raw.txt', localStorage.getItem(PERSONAL_KEY) || '', 'text/plain'); } catch { await uiDialog(tr('storageError'), { ok: tr('ok') }); } break;
     case 'setting-reset': if (Object.hasOwn(DEFAULT_SETTINGS, b.dataset.key)) { setSetting(b.dataset.key, DEFAULT_SETTINGS[b.dataset.key]); render(); } break;
-    case 'tab': S.tab = b.dataset.tab; render(); window.scrollTo(0, 0); break;
+    case 'tab':
+      // B177: etkin Keşfet sekmesine yeniden dokunmak (telefonda besin ayrıntısındayken) listeye döner; kategori ve arama korunur
+      if (S.tab === 'kesfet' && b.dataset.tab === 'kesfet' && S.sel) S.sel = null;
+      S.tab = b.dataset.tab; render(); window.scrollTo(0, 0); break;
     // keşfet
     case 'ex-home': S.tab = 'kesfet'; S.sel = null; S.cat = null; S.q = ''; S.extGroup = null; S.extPage = 0; render(); window.scrollTo(0, 0); break;
     case 'diet-reset': updateDiet(Object.fromEntries(DIET_KEYS.map(k=>[k,DEFAULT_SETTINGS[k]]))); break;

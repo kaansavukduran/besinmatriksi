@@ -983,3 +983,9 @@
 - Kanıt: `npm test` 167/167; build; Playwright B176 2/2 + mevcut Aion testleri (app + ingredient-card "Aion|B176") 8/8; Playwright tam koşu 336/336.
 - Sürüm 1.1.2-beta.49 (B174 + B175 + B176). Yayın kanıtı: v1.1.2-beta.49 pre-release 2026-11-18T06:43:48Z (release.yml run 44251431646 success, ilk denemede).
 - Sonraki: **B177** beta.49 (B174–B176) ve kullanıcı önceliği (2) Kıyasla ekranının telefonda Unslop denetimi.
+
+## B177 · 2026-11-18 · Kıyasla telefonda kısa kartlar; Keşfet sekmesine yeniden dokununca listeye dönüş
+- Unslop (iPhone SE, 3 besin): her kıyas kartı ~250 px (ad, biçim, büyük miktar, iki satır −10/+10, Ayarla); asıl karşılaştırma tablosu ~1500 px aşağıda başlıyordu. Dar kartta (≤280px kap) −10 [g] +10 tek satır, daha az dolgu → kart ~182 px (3 besinde ~200 px kazanç); masaüstü değişmedi.
+- Telefonda besin ayrıntısındayken etkin "Keşfet" sekmesine dokunmak hiçbir şey yapmıyordu (yalnız "← Liste" geri götürüyordu; ölçüm betiği bu yüzden takıldı). Yaygın mobil davranış: etkin sekmeye yeniden dokunmak listeye döner; kategori ve arama korunur.
+- Kanıt: `npm test` 167/167; build; Playwright B177 2/2 (kart <220 px, miktar tek satır, sekme dönüşü, arama değeri korunur), düzeltmeler geri alınınca düşer; ekran görüntüleri incelendi; tam koşu aşağıda.
+- Sonraki: **B178** Kıyasla tablosunun (468 px) telefonda kaydırma ipucu ve ilk sütunun sabitlenmesi denetimi.

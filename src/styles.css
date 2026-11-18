@@ -1042,3 +1042,15 @@ button.micro-name:hover { text-decoration-color: currentColor; }
   .rlist-item:not(.daily-total-entry) { flex: 1 1 calc(50% - 6px); }
   .rlist-item:not(.daily-total-entry) .rname { width: 100%; }
 }
+
+/* B177: Kıyasla telefonda: besin kartları kısa (ad + biçim tek blok, −10 [g] +10 tek satır); karşılaştırma tablosu ilk ekrana yaklaşır */
+@container (max-width: 280px) {
+  .cmp-col .cmp-h > .muted { grid-row: 2; font-size: .85rem; }
+  .cmp-col .amount.mini { grid-template-columns: auto minmax(0, 1fr) auto; margin-top: 8px; }
+  .cmp-col .amount.mini > .nudge:first-child { grid-column: 1; grid-row: 1; }
+  .cmp-col .amount.mini > .amt-val { grid-column: 2; grid-row: 1; }
+  .cmp-col .amount.mini > .nudge:nth-of-type(2) { grid-column: 3; grid-row: 1; }
+  .cmp-col .amount.mini > .ing-adjust { grid-column: 1 / -1; grid-row: 2; min-height: 36px; }
+  .cmp-col .amount.mini > .per-serv { grid-row: 3; }
+}
+@media (max-width: 600px) { .cmp-col { padding: 10px 12px; } .cmp-cols { gap: 6px; } }
