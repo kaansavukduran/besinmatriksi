@@ -1074,5 +1074,10 @@
 - Eşleme elle (`data/cofid-map.mjs`, 22 biçim): ad ve hazırlama biçimi aynı + ana bileşim uyumlu (su ±5 g, protein ±%25/±1 g). Otomatik ad eşleşmesi reddedildi (pak choi→kırmızı lahana, badem→yer fıstığı, tahin→kaju, agar→kombu, taze soğan→turşu soğan, çapati→ekmek pudingi gibi yanlışlar üretti).
 - `build-data.mjs` `fillFromCofid`: yalnız boş hücreler; iyot, Mn, Se, biyotin, pantotenik asit, K1; şekerler yalnız toplam ve alt şekerlerin hepsi boşsa birlikte. 'Tr' (iz) ve 'N' kullanılmaz, 0 yazılmaz. Sonuç: 54 hücre (iyot 17, biyotin 16, şeker grubu 6 biçim, Se 2, pantotenik 1); tutarlılık kapısı değişmedi (332).
 - Kaynak etiketi "B" (UK CoFID 2021): kaynak çipi, dışa aktarma, tarif kaynak dökümü, "kaynak 0" işareti, Bilgi'de kaynak maddesi (TR/EN), meta kaynak satırı, lisans bildirimi (OGL v3 atıf metni; 25 bildirim).
-- Kanıt: `npm run data` (CoFID 54); `npm test` 169/169 (B191: her B hücresi eşlenmiş, değer CoFID ile birebir, hayvansal yok; eşlenen her biçimde su/protein uyumu); build + build:single; tam koşu aşağıda.
+- Kanıt: `npm run data` (CoFID 54); `npm test` 169/169 (B191: her B hücresi eşlenmiş, değer CoFID ile birebir, hayvansal yok; eşlenen her biçimde su/protein uyumu); build + build:single; Playwright tam koşu 360/360 (Bilgi sayfası İngilizce taraması dahil).
 - Sonraki: **B192** CoFID eşlemesini genişletmek (iyot boşluğu %88: sebze, meyve, baklagil, tahıl; her eşleme aynı kurallarla), ardından amino asit boşlukları.
+
+## B192 · 2026-11-18 · CoFID eşlemesi ikinci tur: 92 hücre
+- Aynı kurallarla 18 biçim daha (mandalina, dut, ahududu, bektaşi üzümü, mürver, altın çilek, hünnap, kuru erik, salatalık, haşlanmış bezelye ve brokoli, lahana turşusu, havuç, turp, haşlanmış kereviz kökü, tempeh, kuskus, safran). Reddedilen zayıf adaylar: marul (CoFID "ortalama"), taze makarna (USDA kuru makarna), beyaz tortilla (USDA tam buğday), Çin lahanası→beyaz lahana, haşlanmış amarant→çiğ.
+- Kanıt: `npm run data` (CoFID 92 hücre); `npm test` 169/169 (B191 testi tüm eşlemelerde su/protein uyumunu ve değer birebirliğini denetler); tam koşu aşağıda.
+- Sonraki: **B193** amino asit boşlukları (112 proteinli biçim): kullanımı serbest amino asit kaynağı araştırması (Frida lisansı, FAO); bulunamazsa yalnız ısıl işlemsiz akraba biçimden "Tahmin" değerlendirmesi.

@@ -24,6 +24,25 @@ export const COFID_MAP = {
   kaju: { cig: '14-811' },
   kultur_mantari: { haslanmis: '13-506' },
   dereotu: { taze: '13-824', kurutulmus: '13-825' },
+  // B192: ikinci tur (aynı kurallar)
+  mandalina: { cig: '14-326' },
+  dut: { cig: '14-168' },
+  ahududu: { cig: '14-375' },
+  bektasi: { cig: '14-103' },
+  murver: { cig: '14-089' },
+  altin_cilek: { cig: '14-207' },
+  hunnap: { cig: '14-122' },
+  kuru_erik: { kurutulmus: '14-398' },
+  salatalik: { cig: '13-523' },
+  bezelye: { haslanmis: '13-439' },
+  brokoli: { haslanmis: '13-503' },
+  lahana_tursusu: { konserve: '13-336' },
+  havuc: { cig: '13-448' },
+  turp: { cig: '13-656' },
+  kereviz_kok_haslanmis: { haslanmis: '13-585' },
+  tempeh: { cig: '13-118' },
+  kuskus: { kuru: '11-901' },
+  safran: { kurutulmus: '13-852' },
 };
 // CoFID alanı → uygulama anahtarı (birimler aynı: µg / mg)
 export const COFID_KEYS = { iodine: 'iodine', mn: 'mn', se: 'se', biotin: 'biotin', b5: 'panto', k1: 'vitk' };
