@@ -1035,5 +1035,5 @@
 
 ## B185 · 2026-11-18 · Koleksiyonlar kategori şeridinin başında
 - Ölçüm (iPhone SE, 1 koleksiyon): Keşfet kategori şeridi 5950 px genişliğinde yana kayıyor; "Koleksiyonlarım" 5165. pikseldeydi (≈17 ekran kaydırma). Kullanıcı önceliği (3) koleksiyonlar: koleksiyon varsa grup "Tümü"nün hemen ardından gelir (153. piksel, ilk ekranda); koleksiyon yoksa sıra değişmez (kategoriler önde, "+ Yeni koleksiyon" sonda). Masaüstünde de aynı sıra (satırlar sarıldığı için yalnız konum değişir).
-- Kanıt: `npm test` 167/167; build; Playwright B185 2/2 (koleksiyonsuz: ikinci öğe kategori; koleksiyonlu: ikinci öğe grup başlığı, "Kahvaltı" <400 px); tam koşu aşağıda.
+- Kanıt: `npm test` 167/167; build; Playwright B185 2/2 (koleksiyonsuz: ikinci öğe kategori; koleksiyonlu: ikinci öğe grup başlığı, "Kahvaltı" <400 px); Playwright tam koşu 354/354.
 - Sonraki: **B186** kullanıcı önceliği (5) Aion: telefonda besin eklendiğinde kutlama baloncuğunun yeri ve süresi (B169 sonrası) denetimi.
