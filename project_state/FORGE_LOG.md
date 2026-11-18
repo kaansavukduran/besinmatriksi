@@ -975,5 +975,5 @@
 ## B175 · 2026-11-18 · Tarif "Günlük Toplam" telefonda ilk ekran (Unslop)
 - iPhone SE ekran görüntüsü: seçili "Günlük Toplam Tarif" kartının hemen altında aynı adlı H1 iki satır dev boyutta ilk ekranın üçte birini kaplıyordu; tarif kartları içeriğe göre farklı genişlikteydi.
 - H1 telefonda `clamp(1.35rem, 5.5vw, 2.1rem)` (tek satır; masaüstünde değişmez), tarif kartları dar ekranda iki eşit sütun. Öğün tablosu kendi kaydırılabilir bölgesinde (role=region, tabindex) bilinçli yatay kayar; dokunulmadı. Öğün tablosu ilk ekrana 125 px yaklaştı.
-- Kanıt: `npm test` 167/167; build; Playwright B175 2/2, düzeltme geri alınınca "oneLine: false" ile düşer; ekran görüntüleri incelendi; tam koşu aşağıda.
+- Kanıt: `npm test` 167/167; build; Playwright B175 2/2, düzeltme geri alınınca "oneLine: false" ile düşer; ekran görüntüleri incelendi; Playwright tam koşu 334/334.
 - Sonraki: **B176** kullanıcı önceliği (5) Aion özelleştirme: Ayarlar'daki Aion bölümünün sade/anlaşılır olması (seçeneklerin canlı önizlemesi) denetimi.
