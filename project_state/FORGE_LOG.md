@@ -951,3 +951,10 @@
 - Kalıcı koruma: `tests/browser/i18n-scan.spec.mjs` (masaüstü + telefon); düzeltme geri alınınca "USDA Proantosiyanidin" ile düşer.
 - Kanıt: `npm test` 166/166; build; i18n-scan 2/2; Playwright tam koşu 326/326.
 - Sonraki: **B172** kullanıcı önceliği (3) koleksiyon: koleksiyon içi sürükle-bırak yerine mevcut ↑/↓ taşıma düğmelerinin telefonda dokunma hedefi ve "alt kategoriye taşı" eksikliği denetimi.
+
+## B172 · 2026-11-18 · Alt sekme etiketleri sözcük ortasından bölünmüyor
+- Koleksiyon ekranını telefonda (iPhone SE, İngilizce) incelerken: alt gezinme çubuğu "Compar|e", "Setting|s" diye sözcük ortasından ikiye bölüyordu (her ekranda görünür). Neden: dar ekran kısa etiketlerinde `overflow-wrap: anywhere`. → Ölçeklenmemiş dar ekranda sözcük bölünmez, yazı 3,1vw ile hafifçe küçülür (10,2–11,9 px; büyük yazı/ölçek düzeni dokunulmadı).
+- Ölçüm (yazı tipi yüklendikten sonra): EN/TR × 320/360/390 px'te en dar pay "Compare" 43/46 px; tek satır, taşma yok. Not: ilk ekran görüntüsü web yazı tipi yüklenmeden alınmıştı (yedek yazı tipi geniş); `document.fonts.ready` sonrası temiz.
+- Koleksiyon ↑/↓ düğmeleri 34×86 px (AA 24 px üstünde; değiştirilmedi). "Alt kategoriye taşı" yok: sonraki adaya.
+- Kanıt: `npm test` 166/166; build; Playwright B172 2/2, düzeltme geri alınınca "Compare satır=2" ile düşer; tam koşu aşağıda.
+- Sonraki: **B173** kullanıcı önceliği (3) koleksiyonda besini alt kategoriye / başka koleksiyona taşı.

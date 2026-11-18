@@ -33,3 +33,18 @@ test('B171 İngilizce arayüzde görünür Türkçe metin yok (tüm sekmeler, be
   for (const tab of ['tarif', 'gunluk', 'karsilastir', 'ayarlar', 'hakkinda']) { await page.locator(`[data-action="tab"][data-tab="${tab}"]`).first().click(); add(await scan(page)); }
   expect([...found]).toEqual([]);
 });
+
+test('B172 alt sekme etiketleri sözcük ortasından bölünmez ve düğmesine sığar (EN/TR, 320 ve 390 px)', async ({ page }) => {
+  for (const lang of ['en', 'tr']) for (const width of [320, 390]) {
+    await page.setViewportSize({ width, height: 700 });
+    await page.addInitScript((lang) => localStorage.setItem('bm.settings.v2', JSON.stringify({ version: 2, settings: { language: lang } })), lang);
+    await page.goto('/'); await page.evaluate(() => document.fonts.ready);
+    const bad = await page.evaluate(() => [...document.querySelectorAll('.tabs .tab')].flatMap((t) => {
+      const s = t.querySelector('.tt-short'); const r = document.createRange(); r.selectNodeContents(s);
+      const lines = new Set([...r.getClientRects()].map((x) => Math.round(x.top))).size;
+      const tb = t.getBoundingClientRect(), rb = r.getBoundingClientRect();
+      return lines > 1 || rb.left < tb.left - 1 || rb.right > tb.right + 1 ? [`${s.textContent} satır=${lines}`] : [];
+    }));
+    expect(bad, `${lang} ${width}px`).toEqual([]);
+  }
+});
