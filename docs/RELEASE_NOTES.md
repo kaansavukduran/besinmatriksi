@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 53 · Koleksiyonlar el altında
+# 🫐 Besin Matriksi 1.1.2 Beta 54 · Daha kısa Günlük
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -21,8 +21,9 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
-- **Koleksiyonların önde:** Keşfet'te kendi koleksiyonların varsa kategori şeridinde “Tümü”nün hemen yanında; telefonda artık 17 ekran kaydırmaya gerek yok.
-- **Aion telefonda tepkili:** “Kutlamayı dene” ve hedef kutlaması telefonda hemen görünür (önceki sürümde 2,5 sn gecikiyordu).
+- **Günlük telefonda kısa:** Başlık küçüldü; yaş, boy ve kilo tek satırda üç kısa alan. Günün kaydı daha yukarıda.
+- **Daha güvenilir derleme:** Otomatik testlerde nadiren takılan bir test artık bir kez yeniden denenir ve iz kaydı saklanır (uygulamayı etkilemez).
+- **Beta 53'ten:** Koleksiyonlar kategori şeridinin başında, Aion telefonda tepkili.
 - **Beta 52'den:** Hizalı matriks bölümleri, iki sütunlu tema renkleri.
 - **Beta 51'den:** Kısa Bilgi ekranı, Ayarlar bölüm şeridi, iki sütunlu yazı tipi seçimi.
 - **Beta 50'den:** Kısa Kıyasla kartları, tabloların devam gölgesi, Keşfet sekmesiyle listeye dönüş.
