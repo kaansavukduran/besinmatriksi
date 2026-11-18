@@ -1024,5 +1024,5 @@
 - Ekran görüntüsü (iPhone SE): 15 bölüm satırında sarılan ad onay kutusunun altına düşüyordu ("Protein ve / amino asitler" kutunun altından başlıyor); satırlar 67–93 px. Onay kutusu + ad esnek satır (asılı girinti), oklar dar ve aynı satırda; kart 1450 → 1327 px. Denetimler görünür kaldı (mevcut testler doğrudan dokunuyor).
 - Test ilk yazımda eski hatayı yakalamıyordu (süzgeç sarılan satırı dışarıda bırakıyordu) → yalnız metin düğümleri ölçülerek düzeltildi; şimdi düzeltme geri alınınca "Protein ve amino asitler" vb. ile düşer.
 - Yayın: v1.1.2-beta.51 yayımlandı (B182 kaydında kanıt).
-- Kanıt: `npm test` 167/167; build; Playwright B183 2/2; tam koşu aşağıda.
+- Kanıt: `npm test` 167/167; build; Playwright B183 2/2; Playwright tam koşu 350/350.
 - Sonraki: **B184** "Kendi temam" kartı (1150 px) telefonda: renk seçicilerin düzeni (Unslop).
