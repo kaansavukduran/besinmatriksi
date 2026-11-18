@@ -138,6 +138,8 @@ export function aionSay(text, ms = 6000, { ifIdle = false } = {}) {
   if (ifIdle && !bubble.hidden) return;
   bubbleText.textContent = text;
   bubble.hidden = false;
+  // B186: konuşma bir dokunuşun yanıtıysa (ör. "Kutlamayı dene", hedef kutlaması) kenara çekilme beklemeden kalkar; kaydırınca yine çekilir
+  root.classList.remove('aion-tucked'); clearTimeout(tuckTimer);
   clearTimeout(bubbleTimer);
   bubbleTimer = setTimeout(hideBubble, ms);
 }

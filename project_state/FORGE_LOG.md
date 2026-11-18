@@ -1037,3 +1037,9 @@
 - Ölçüm (iPhone SE, 1 koleksiyon): Keşfet kategori şeridi 5950 px genişliğinde yana kayıyor; "Koleksiyonlarım" 5165. pikseldeydi (≈17 ekran kaydırma). Kullanıcı önceliği (3) koleksiyonlar: koleksiyon varsa grup "Tümü"nün hemen ardından gelir (153. piksel, ilk ekranda); koleksiyon yoksa sıra değişmez (kategoriler önde, "+ Yeni koleksiyon" sonda). Masaüstünde de aynı sıra (satırlar sarıldığı için yalnız konum değişir).
 - Kanıt: `npm test` 167/167; build; Playwright B185 2/2 (koleksiyonsuz: ikinci öğe kategori; koleksiyonlu: ikinci öğe grup başlığı, "Kahvaltı" <400 px); Playwright tam koşu 354/354.
 - Sonraki: **B186** kullanıcı önceliği (5) Aion: telefonda besin eklendiğinde kutlama baloncuğunun yeri ve süresi (B169 sonrası) denetimi.
+
+## B186 · 2026-11-18 · Telefonda Aion konuşurken kenarda beklemiyor (B169 yan etkisi)
+- Denetim (iPhone SE): B169'da her dokunuş Aion'u 2,5 sn kenara çekiyor ve baloncuğu gizliyordu. Aion'u konuşturan şey de bir dokunuş olunca ("Kutlamayı dene", Günlük'te hedef kutlaması) baloncuk 2,5 sn hiç görünmüyordu → telefonda düğme tepkisiz görünüyordu. Kutlamalar yalnız Günlük'te hedefe ulaşınca (celebrateGoals); tarife eklemede baloncuk yok, yalnız bildirim (çakışma yok: bildirim 80–240 px, Aion 277–341 px).
+- `aionSay` kenara çekilmeyi hemen kaldırır; kaydırınca yine çekilir (B169 korunur).
+- Kanıt: `npm test` 167/167; build; Playwright B186 2/2 (baloncuk 800 ms içinde görünür, kaydırınca yine çekilir), düzeltme geri alınınca düşer; B169 + B176 testleri birlikte 8/8; tam koşu aşağıda.
+- Sonraki: **B187** beta.53 (B185–B186) ve kullanıcı önceliği (2) Günlük ekranı profil formunun telefonda düzeni.

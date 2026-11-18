@@ -382,3 +382,16 @@ test('B185 koleksiyon varsa kategori şeridinde Tümü\'nün hemen ardından gel
   const x = await page.locator('.explore .cats [data-cat="col:a"]').evaluate((e) => e.offsetLeft - e.parentElement.offsetLeft);
   expect(x).toBeLessThan(400);
 });
+
+test('B186 telefonda Aion konuşunca kenarda beklemez: "Kutlamayı dene" baloncuğu hemen görünür', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.addInitScript(() => { localStorage.setItem('bm.aionOffV1', '1'); localStorage.setItem('bm.settings.v2', JSON.stringify({ version: 2, settings: { language: 'tr', aionEnabled: true, aionTips: true } })); });
+  await page.goto('/');
+  await page.locator('[data-action="tab"][data-tab="ayarlar"]').first().click();
+  await page.locator('.aion-settings [data-action="aion-demo"]').scrollIntoViewIfNeeded();
+  await page.locator('.aion-settings [data-action="aion-demo"]').click();
+  await expect(page.locator('#aion .aion-bubble')).toBeVisible({ timeout: 800 });
+  await expect(page.locator('#aion')).not.toHaveClass(/aion-tucked/);
+  await page.mouse.wheel(0, 200);
+  await expect(page.locator('#aion')).toHaveClass(/aion-tucked/);
+});
