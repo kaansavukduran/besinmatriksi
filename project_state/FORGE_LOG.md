@@ -939,3 +939,8 @@
 - B168 düzeltmesi: ölçek etiketlerini gizleyen kap eşiği normal yazıda da (iPhone SE) ara etiketleri gizliyordu → 13em; 320 px normal yazıda 4 etiket çakışmasız, 28 px + %200'de yalnız uçlar (test).
 - Kanıt: `npm test` 166/166; build; Playwright B169 2+2 (elementFromPoint ile baloncuk ve kenara çekilmiş Aion altındaki öğe sayfaya ait), app + ingredient-card 180/180; ekran görüntüleri incelendi; Playwright tam koşu 322/322.
 - Sinir: Aion'un üstünde durduğu bir düğmeye kaydırmadan ilk dokunuş hâlâ Aion'a gider (selam). Sonraki: **B170** beta.47 (B168 + B169) ve kullanıcı önceliği (2) Keşfet besin kartında "+10" düğmesinin 320 px'te ikinci satıra düşmesi.
+
+## B170 · 2026-11-18 · Miktar düğmeleri telefonda tek satır; 1.1.2-beta.47
+- 320 px'te "−10 −1 [değer] +1 +10" satırı esnek sarmayla "+10"u ikinci satıra düşürüyordu (B169 ekran görüntüsü). Kap sorgusu (≤26em): beş sütunlu ızgara, değer kalan alanı alır (1000 g'da "g" alt satıra iner, düğmeler yerinde kalır); büyük yazı/%200 ölçek için mevcut iki sütunlu düzen önceliğini korur.
+- Kanıt: `npm test` 166/166; build; Playwright B170 2/2, düzeltme geri alınınca aynı test düşer; 320/390/1280 px ve 22/28 px ölçümleri (taşma yok); 320 px ekran görüntüsü incelendi; tam koşu aşağıda.
+- Sürüm 1.1.2-beta.47 (B168 + B169 + B170). Sonraki: **B171** kullanıcı önceliği (1) B051: eski ekranlarda kalan TR-only metin taraması (i18n testinin yakalamadığı, `L()` dışındaki sabit metinler).

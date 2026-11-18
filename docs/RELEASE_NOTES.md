@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 46 · Sessiz hatalar giderildi
+# 🫐 Besin Matriksi 1.1.2 Beta 47 · Telefonda daha rahat miktar seçimi
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -21,12 +21,10 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
-- **Görünüm profili hedeflerini korur:** Bir görünüm profilini uygulamak artık kişisel hedeflerini, diyet ve referans seçimini, sabitlenen besinleri ve dili değiştirmez; yalnız görünüm gelir.
-- **Sekmeler arası ayar eşitleme:** Uygulama iki sekmede açıkken birinde yaptığın ayar diğerine de gelir; eski ayarla üzerine yazılmaz.
-- **Koleksiyonda USDA besinleri kaybolmaz:** Geniş katalog kapalıyken vegan süzgeci koleksiyondaki USDA kaydını gizliyordu; artık yüklenip görünür.
-- **Sınırlar sessiz değil:** 1000 g'a ulaşan miktar, 60 koleksiyon ve 300 besinlik koleksiyon sınırı nedenini söyleyen bildirimle gösterilir.
-- **“kaynak 0” her ölçüm kaynağında:** FDC, FNDDS, flavonoid, kolin, pürin gibi veritabanlarının ölçülmüş 0'ları da işaretli; tahmin ve “Varsayılan 0” ayrı kalır.
-- **GOS dürüst:** Rafinoz ailesinin yalnız bir kısmı ölçülmüşse toplam yerine “en az X g (n/4 ölçülmüş)” yazar.
+- **Küçük miktarlar kolay:** Gram kaydırıcısı artık karekök ölçekli; sol yarısı 1–250 g. Baharat, yağ, kuruyemiş gibi 5–50 g'lık miktarlar parmakla rahatça seçilir (eskiden 10 g ≈ 3 piksel). Hazır düğmeler aynı grama oturur; ölçek etiketleri gerçek yerlerinde.
+- **Miktar düğmeleri tek satırda:** Telefonda “+10” artık alt satıra düşmüyor; tarif kartındaki kaydırıcı 44 px, parmakla tutması kolay.
+- **Aion yoluna çıkmaz:** Baloncuğu alttaki kontrolleri kapatmaz, dışarıya dokununca kapanır; telefonda kaydırırken Aion kenara çekilir ve dokunuşları geçirir.
+- **Beta 46'dan:** Görünüm profili hedefleri korur, sekmeler arası ayar eşitleme, koleksiyonda USDA besinleri kaybolmaz, sınır bildirimleri, her kaynakta “kaynak 0”, dürüst GOS.
 - **Beta 45'ten:** Sade boş Günlük, başlıkta tarif kopyala/sil, onaylı “Varsayılana dön”, kcal ile kJ birlikte, lor ve çapati yinelenenleri temizlendi.
 - **Beta 44'ten:** Alkol (etanol) satırı, “Varsayılan 0” etiketi, daha doğru diyet sınıfı, zenginleştirilmemiş beyaz pide, 22 yeni fast food ve atıştırmalık, tutarlılık kapısıyla ayıklanan 332 karışık hücre.
 - **Önceki beta'lardan (34–43):** Sıcak açık/koyu yeni tema, kahve ve fast food kataloğu, diyet filtreleri, kategori grupları, günlük toplam tarif, mikro besin özeti, kuru meyveler.

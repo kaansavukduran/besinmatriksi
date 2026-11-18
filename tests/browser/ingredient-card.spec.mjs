@@ -183,3 +183,13 @@ test('B169 ölçek etiketleri: 320 px normal yazıda dördü çakışmadan gör�
   await check(18, 100, 4);
   await check(28, 200, 2);
 });
+
+test('B170 miktar düğmeleri 320 px telefonda tek satırda (+10 alta düşmez); 1000 g taşmaz', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 800 });
+  await page.goto('/'); await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  for (const g of ['100', '1000']) {
+    await page.locator(`[data-amount="ex"] [data-action="amt"][data-val="${g}"]`).click();
+    const r = await page.evaluate(() => { const n = [...document.querySelectorAll('[data-amount="ex"] .amt-main > .nudge')].map((e) => Math.round(e.getBoundingClientRect().top)); const v = document.querySelector('[data-amount="ex"] .amt-val'); return { tops: new Set(n).size, over: v.scrollWidth > v.clientWidth + 1, doc: document.documentElement.scrollWidth <= innerWidth + 1 }; });
+    expect(r).toEqual({ tops: 1, over: false, doc: true });
+  }
+});

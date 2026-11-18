@@ -1018,3 +1018,10 @@ button.micro-name:hover { text-decoration-color: currentColor; }
 .aion.aion-tucked .aion-bubble { display: none; }
 @media (max-width: 600px) { .aion[data-size="m"] .aion-sprite, .aion[data-size="l"] .aion-sprite { width: 64px; height: 64px; } }
 @media (prefers-reduced-motion: reduce) { .aion { transition: none; } }
+
+/* B170: dar kutuda (telefon) −10 −1 [değer] +1 +10 tek satırda; değer kalan alanı alır, "+10" ikinci satıra düşmez */
+@container (max-width: 26em) {
+  .amount:not(.mini):not(.compact) .amt-main { display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto auto; gap: 4px; }
+  .amount:not(.mini):not(.compact) .amt-main > .amt-val { min-width: 0; padding: 0; font-size: 1.05rem; }
+  .amount:not(.mini):not(.compact) .amt-main > .nudge { min-width: 42px; padding: 0 2px; }
+}
