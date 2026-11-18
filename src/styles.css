@@ -1070,3 +1070,10 @@ button.micro-name:hover { text-decoration-color: currentColor; }
 .about-more[open] > summary::before { transform: rotate(90deg); }
 .about-more > summary h3 { margin: 0; display: inline; }
 .about-more > summary .cnt { font-size: .8rem; font-weight: 600; color: var(--muted); }
+
+/* B181: Ayarlar bölüm şeridi (arama altında); telefonda yana kayar, masaüstünde sarar */
+.settings-toc { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.settings-toc .pchip { min-height: 36px; }
+@media (max-width: 600px) { .settings-toc { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; } .settings-toc .pchip { flex-shrink: 0; } }
+.settings > [id^="set-"] { scroll-margin-top: 12px; }
+.settings h2[tabindex="-1"]:focus { outline: none; }

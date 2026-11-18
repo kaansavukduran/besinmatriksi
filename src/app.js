@@ -635,7 +635,7 @@ function renderSettings() {
   const opt = (k, v, label) => `<button class="pchip ${s[k] === v ? 'on' : ''}" data-action="set" data-k="${k}" data-v="${esc(JSON.stringify(v))}">${label}</button>`;
   const tog = (k, label, help = '') => `<label class="toggle"><input type="checkbox" data-setbool="${k}" ${s[k] ? 'checked' : ''}><span class="sw"></span><span>${label}${help ? ` <span class="help" title="${esc(help)}">?</span>` : ''}</span></label>`;
   const step = (k, label, min, max, st, unit) => settingSlider(k, s[k], min, max, st, unit);
-  return `<div class="settings">
+  return withSettingsToc(`<div class="settings">
     <div class="settings-search"><label class="field"><span>🔎 ${L("Ayarlarda ara")}</span><input id="settings-q" type="search" value="${esc(S.settingsQ)}" placeholder="${L("ör. yazı, tema, Aion, yedek")}" autocomplete="off"></label>
       <p class="hint" id="settings-none" role="status" hidden>${L("Bu aramaya uyan ayar yok.")}</p></div>
     <section class="card lang-card" aria-label="Dil / Language"><h2>🌐 ${L("Dil")} / Language</h2>
@@ -755,7 +755,21 @@ function renderSettings() {
       <button class="btn" data-action="open-file" data-id="imp-file">${L("Dosyadan içe aktar")}</button><input type="file" accept="application/json,.json" id="imp-file" hidden>
       <button class="btn" data-action="imp-paste">${L("Yapıştırarak içe aktar")}</button></div>
     </section>
-  </div>`;
+  </div>`);
+}
+
+// B181: Ayarlar telefonda ~12 600 px. Arama kutusunun altında bölüm şeridi: her kart başlığına tek dokunuşla atlar.
+function withSettingsToc(html) {
+  const titles = [];
+  let n = 0;
+  const out = html.replace(/<(section|div) class="card([^"]*)"([^>]*)>(\s*)<h2>([\s\S]*?)<\/h2>/g, (m, tag, cls, rest, ws, h) => {
+    const id = `set-${n++}`;
+    const text = h.replace(/<[^>]*>/g, '').replace(/^[^\p{L}]+/u, '').trim();
+    titles.push([id, text]);
+    return `<${tag} class="card${cls}"${rest} id="${id}">${ws}<h2 tabindex="-1">${h}</h2>`;
+  });
+  const toc = `<nav class="settings-toc" aria-label="${L("Ayar bölümleri")}">${titles.map(([id, t]) => `<button class="pchip" data-action="settings-jump" data-id="${id}">${esc(t)}</button>`).join('')}</nav>`;
+  return out.replace('<p class="hint" id="settings-none"', toc + '<p class="hint" id="settings-none"');
 }
 
 function renderAbout() {
@@ -1113,6 +1127,7 @@ async function onClick(e) {
   const a = b.dataset.action;
   if (!document.querySelector('.modal')) modalOpener = focusSelector(b);
   switch (a) {
+    case 'settings-jump': { const el = document.getElementById(b.dataset.id); if (el) { el.scrollIntoView({ block: 'start' }); el.querySelector('h2')?.focus({ preventScroll: true }); } break; }
     case 'aion-demo': aionPlay(b.dataset.anim || 'celebrate'); aionSay(tr('aionHello'), 4000); break;
     case 'personal-goto-day': if (validDay(b.dataset.day)) { S.personalDay = b.dataset.day; S.personalDayAuto = b.dataset.day === localDay(); render(); } break;
     case 'personal-to-recipe': {
@@ -1484,6 +1499,7 @@ function applySettingsFilter() {
     if (el.classList.contains('settings-search')) continue;
     const hit = !q || norm(el.textContent || '').includes(q);
     el.hidden = !hit; if (hit) shown++;
+    if (el.id) { const chip = root.querySelector(`.settings-toc [data-id="${el.id}"]`); if (chip) chip.hidden = !hit; }
   }
   const none = document.getElementById('settings-none'); if (none) none.hidden = shown > 0;
 }

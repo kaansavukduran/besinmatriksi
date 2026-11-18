@@ -905,5 +905,6 @@ export const UI_EN = {
  "{n}: başka koleksiyona taşı": "{n}: move to another collection",
  "Taşı…": "Move…",
  "“{c}” içinde zaten vardı; buradan çıkarıldı.": "Already in “{c}”; removed from here.",
- "“{c}” koleksiyonuna taşındı.": "Moved to “{c}”."
+ "“{c}” koleksiyonuna taşındı.": "Moved to “{c}”.",
+ "Ayar bölümleri": "Settings sections"
 };

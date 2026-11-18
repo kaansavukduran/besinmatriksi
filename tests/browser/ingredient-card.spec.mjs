@@ -312,3 +312,17 @@ test('B180 Bilgi ekranı kısa: veri dürüstlüğü açık, kaynaklar ve lisans
   await expect(about).toContainText('FoodData Central');
   await expect(more.first().locator('li').first()).toBeVisible();
 });
+
+test('B181 Ayarlar bölüm şeridi: her karta atlar, aramada gizlenen kartın düğmesi de gizlenir', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('/');
+  await page.locator('[data-action="tab"][data-tab="ayarlar"]').first().click();
+  const chips = page.locator('.settings-toc [data-action="settings-jump"]');
+  expect(await chips.count()).toBe(await page.locator('.settings > [id^="set-"]').count());
+  await chips.filter({ hasText: 'Yedekleme' }).click();
+  const top = await page.locator('.settings h2', { hasText: 'Yedekleme' }).evaluate((e) => e.getBoundingClientRect().top);
+  expect(top).toBeGreaterThanOrEqual(0); expect(top).toBeLessThan(300);
+  await page.locator('#settings-q').fill('aion');
+  await expect(chips.filter({ hasText: 'Aion' })).toBeVisible();
+  await expect(chips.filter({ hasText: 'Yedekleme' })).toBeHidden();
+});
