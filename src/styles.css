@@ -1062,3 +1062,11 @@ button.micro-name:hover { text-decoration-color: currentColor; }
     linear-gradient(to left, rgb(0 0 0 / .14), transparent) right center / 12px 100% no-repeat scroll,
     var(--card);
 }
+
+/* B180: Bilgi ekranında katlanır bölümler: başlık özet içinde, sayı rozetiyle */
+.about-more > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: .5rem; min-height: var(--tap); border-top: 1px solid var(--line); padding-top: .4rem; }
+.about-more > summary::-webkit-details-marker { display: none; }
+.about-more > summary::before { content: '▸'; color: var(--muted); transition: transform .15s; }
+.about-more[open] > summary::before { transform: rotate(90deg); }
+.about-more > summary h3 { margin: 0; display: inline; }
+.about-more > summary .cnt { font-size: .8rem; font-weight: 600; color: var(--muted); }

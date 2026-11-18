@@ -296,3 +296,19 @@ test('B179 Kıyasla telefonda Temel besin değerleriyle açılır, masaüstünde
   const h = await page.locator('#cmp-table .tablewrap').evaluate((e) => e.getBoundingClientRect().height);
   if (phone) expect(h).toBeLessThan(1500); else expect(h).toBeGreaterThan(1500);
 });
+
+test('B180 Bilgi ekranı kısa: veri dürüstlüğü açık, kaynaklar ve lisanslar katlanır (sayılarıyla), içerik kaybolmaz', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('/');
+  await page.locator('[data-action="tab"][data-tab="hakkinda"]').first().click();
+  const about = page.locator('.about');
+  await expect(about.getByRole('heading', { name: 'Veri dürüstlüğü' })).toBeVisible();
+  const more = about.locator('details.about-more');
+  await expect(more).toHaveCount(2);
+  for (const d of await more.all()) expect(await d.getAttribute('open')).toBeNull();
+  expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBeLessThan(3000);
+  await expect(more.first().locator('summary .cnt')).toHaveText(/^\d+$/);
+  await more.first().locator('summary').click();
+  await expect(about).toContainText('FoodData Central');
+  await expect(more.first().locator('li').first()).toBeVisible();
+});

@@ -171,6 +171,7 @@ test('A4 çıktısı tabloyu ve tüm değerleri korur, bölüm durumunu geri yü
 test('lisanslar çevrimdışı okunur ve veri kapsamı açıkça belirtilir', async ({ page, context }) => {
   await page.goto('/'); await context.setOffline(true); await tab(page, 'hakkinda');
   await expect(page.locator('.about')).toContainText('NIN ürün kullanım izni doğrulanmadığı için');
+  await page.locator('.license-notices > details.about-more > summary').click(); // B180: lisanslar katlanır
   const font = page.locator('.notice').filter({ has: page.locator('summary', { hasText: '@fontsource/opendyslexic' }) });
   await font.locator('summary').click();
   await expect(font.locator('pre')).toContainText('Abbie Gonzalez');

@@ -759,10 +759,20 @@ function renderSettings() {
 }
 
 function renderAbout() {
+  // B180: telefonda ~7600 px metin duvarıydı. Önce tanıtım, sürüm ve veri dürüstlüğü; uzun kaynak listesi ve lisanslar katlanır.
   return `<div class="about card">
     <h2>Besin Matriksi</h2>
     <p>${L("Çevrimdışı çalışan, ayrıntılı besin bileşimi gezgini ve tarif hesaplayıcı. Bitkisel besinler ağırlıklı; hayvansal besinler ayrı kategorilerde ve etiketli (Ayarlar'dan gizlenebilir). İnternet bağlantısı gerekmez; hiçbir veri cihazdan çıkmaz.")}</p>
-    <h3>${L("Veri kaynakları")}</h3>
+    <p class="hint">${L("Sürüm {v} · veri: {src} · {n} küratörlü besin / {f} biçim.", { v: esc(window.__APP_VERSION__ || ''), src: esc(L(META.sources)), n: META.curated, f: META.forms })}</p>
+    <h3>${L("Veri dürüstlüğü")}</h3>
+    <ul>
+      <li>${L("Ölçülmemiş bileşen <b>“veri yok”</b> olarak gösterilir, asla 0 yazılmaz. 0 yalnızca kaynak 0 bildirdiğinde görünür.")}</li>
+      <li>${L("Veriler kaynakta tanımlanan besin ve hazırlama biçimine aittir; çeşit, toprak, olgunluk ve yöntem değerleri değiştirebilir. Bu sürümde ikinci veri seti yoktur.")}</li>
+      <li>${L("Varlık ≠ ölçülen miktar ≠ emilen miktar ≠ sağlık etkisi. Göstergeler eğitim amaçlıdır, tıbbi tavsiye değildir.")}</li>
+      <li>${L("%BRD, AB/TGK etiket referansıdır; kişisel ihtiyacın yaşa, cinsiyete, sağlık durumuna göre değişir.")}</li>
+      <li>${L("EFSA seçeneği, çocuk/yetişkin grup referanslarındaki PRI ve AI türlerini ayırır; üst sınır veya kişisel hedef önermez. Kaynak koşulları ve görüş yılı Ayarlar'daki referans tablosunda okunur.")}</li>
+    </ul>
+    <details class="about-more"><summary><h3>${L("Veri kaynakları")} <span class="cnt">12</span></h3></summary>
     <ul>
       <li><b>${esc(SOURCES.u.short)}</b>: ${esc(L(SOURCES.u.long))}. ${L("Su, enerji, makrolar, lif, şeker, vitaminler, mineraller, yağ sınıfları; pişmiş formlar dahil.")}</li>
       <li><b>${L("USDA tam bileşim tablosu:")}</b> ${L("Ölçümü bulunan amino asitler, şeker türleri, yağ asitleri, D2/D3, tokoferoller, fitosteroller, kafein ve betain. Eksik değerler sıfıra çevrilmez.")}</li>
@@ -777,19 +787,11 @@ function renderAbout() {
       <li><b>${esc(L(SOURCES.U.short))}</b>: ${esc(L(SOURCES.U.long))}. ${L("Adenin, guanin, hipoksantin, ksantin ve toplamları (gut/ürik asit açısından); USDA kaydına adla eşlendi, Japonya örneklerinden gelen değerler etiketin açıklamasında belirtilir.")}</li>
       <li><b>IFCT 2017:</b> ${L("NIN ürün kullanım izni doğrulanmadığı için veri ve bu veriye dayanan tahminler bu sürümde dağıtılmıyor.")}</li>
     </ul>
-    <h3>${L("Veri dürüstlüğü")}</h3>
-    <ul>
-      <li>${L("Ölçülmemiş bileşen <b>“veri yok”</b> olarak gösterilir, asla 0 yazılmaz. 0 yalnızca kaynak 0 bildirdiğinde görünür.")}</li>
-      <li>${L("Veriler kaynakta tanımlanan besin ve hazırlama biçimine aittir; çeşit, toprak, olgunluk ve yöntem değerleri değiştirebilir. Bu sürümde ikinci veri seti yoktur.")}</li>
-      <li>${L("Varlık ≠ ölçülen miktar ≠ emilen miktar ≠ sağlık etkisi. Göstergeler eğitim amaçlıdır, tıbbi tavsiye değildir.")}</li>
-      <li>${L("%BRD, AB/TGK etiket referansıdır; kişisel ihtiyacın yaşa, cinsiyete, sağlık durumuna göre değişir.")}</li>
-      <li>${L("EFSA seçeneği, çocuk/yetişkin grup referanslarındaki PRI ve AI türlerini ayırır; üst sınır veya kişisel hedef önermez. Kaynak koşulları ve görüş yılı Ayarlar'daki referans tablosunda okunur.")}</li>
-    </ul>
-    <section class="license-notices" aria-label="${L("Lisanslar ve telif bildirimleri")}"><h3>${L("Lisanslar ve telif bildirimleri")}</h3>
+    </details>
+    <section class="license-notices" aria-label="${L("Lisanslar ve telif bildirimleri")}"><details class="about-more"><summary><h3>${L("Lisanslar ve telif bildirimleri")} <span class="cnt">${NOTICES.length}</span></h3></summary>
       <p>${L("Kod MIT lisanslıdır. Veriler, yazı tipleri ve diğer yazılımlar kendi koşullarına tabidir. Aşağıdaki özgün bildirimler internetsiz okunabilir.")}</p>
       ${NOTICES.map(n => `<details class="notice"><summary>${esc(n.name)} · ${esc(n.license)} · ${esc(n.version)}</summary><pre>${esc(n.text)}</pre></details>`).join('')}
-    </section>
-    <p class="hint">${L("Sürüm {v} · veri: {src} · {n} küratörlü besin / {f} biçim.", { v: esc(window.__APP_VERSION__ || ''), src: esc(L(META.sources)), n: META.curated, f: META.forms })}</p>
+    </details></section>
   </div>`;
 }
 

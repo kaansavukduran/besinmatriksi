@@ -1001,3 +1001,9 @@
 - Kanıt: `npm test` 167/167; build; Playwright B109 + B179 4/4 (telefonda Temel seçili ve tablo <1500 px, masaüstünde Tümü ve >1500 px); app + polish + ingredient-card ilk koşuda yalnız B109 telefonu düştü → güncellendi; Playwright tam koşu 342/342.
 - Sürüm 1.1.2-beta.50 (B177 + B178 + B179). Yayın kanıtı: v1.1.2-beta.50 pre-release 2026-11-18T09:49:16Z (release.yml run 44276676306 success, ilk denemede).
 - Sonraki: **B180** beta.50 (B177–B179) ve kullanıcı önceliği (1)/(2): Hakkında (Bilgi) ekranı telefonda Unslop.
+
+## B180 · 2026-11-18 · Bilgi ekranı telefonda metin duvarı değil
+- Unslop (iPhone SE): Bilgi sayfası 7639 px; 12 maddelik veri kaynakları paragrafları ve 24 lisans başlığı, en önemli kısım olan "Veri dürüstlüğü"nün önünde ekranlarca sürüyordu. → Sıra: tanıtım → sürüm/veri satırı → Veri dürüstlüğü (açık) → "Veri kaynakları 12" ve "Lisanslar ve telif bildirimleri 24" katlanır bölümler (başlık özetin içinde, sayı rozetli). Sayfa 1726 px. İçerik silinmedi; lisanslar çevrimdışı okunmaya devam eder.
+- Lisans testi (app.spec "lisanslar çevrimdışı okunur") katlanır bölümü önce açacak şekilde güncellendi.
+- Kanıt: `npm test` 167/167; build; Playwright B180 2/2 + lisans/B051/i18n/başlık testleri 20/20; ekran görüntüleri incelendi (uzun başlıkta sayı rozeti hizası düzeltildi); tam koşu aşağıda.
+- Sonraki: **B181** kullanıcı önceliği (2) Ayarlar ekranı telefonda Unslop (uzunluk ve gruplama).
