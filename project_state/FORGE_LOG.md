@@ -971,3 +971,9 @@
 - Yayın: v1.1.2-beta.48 yayımlandı (B173 kaydında kanıt).
 - Kanıt: `npm test` 167/167; build; Playwright B174 2/2 (320×568'de arama görünür ve diyet süzgecinden önce), düzeltme geri alınınca düşer; Playwright tam koşu 332/332.
 - Sonraki: **B175** kullanıcı önceliği (4) toplam matriks: Tarif ekranında "Günlük toplam" matrisinin telefonda ilk ekran düzeni (Unslop).
+
+## B175 · 2026-11-18 · Tarif "Günlük Toplam" telefonda ilk ekran (Unslop)
+- iPhone SE ekran görüntüsü: seçili "Günlük Toplam Tarif" kartının hemen altında aynı adlı H1 iki satır dev boyutta ilk ekranın üçte birini kaplıyordu; tarif kartları içeriğe göre farklı genişlikteydi.
+- H1 telefonda `clamp(1.35rem, 5.5vw, 2.1rem)` (tek satır; masaüstünde değişmez), tarif kartları dar ekranda iki eşit sütun. Öğün tablosu kendi kaydırılabilir bölgesinde (role=region, tabindex) bilinçli yatay kayar; dokunulmadı. Öğün tablosu ilk ekrana 125 px yaklaştı.
+- Kanıt: `npm test` 167/167; build; Playwright B175 2/2, düzeltme geri alınınca "oneLine: false" ile düşer; ekran görüntüleri incelendi; tam koşu aşağıda.
+- Sonraki: **B176** kullanıcı önceliği (5) Aion özelleştirme: Ayarlar'daki Aion bölümünün sade/anlaşılır olması (seçeneklerin canlı önizlemesi) denetimi.

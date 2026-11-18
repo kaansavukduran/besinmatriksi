@@ -1035,3 +1035,10 @@ button.micro-name:hover { text-decoration-color: currentColor; }
 .food-wrap .col-transfer { flex: 0 0 auto; width: 5.6em; min-height: var(--tap); padding: 0 .3em; border: 1px solid var(--line); border-radius: calc(var(--radius) * .6); background: var(--card); color: var(--fg); font: inherit; font-size: .85rem; }
 .food-wrap { flex-wrap: wrap; } .food-wrap .food { flex: 1 1 100%; min-width: 0; }
 .food-wrap .col-transfer { flex: 1 1 5.6em; min-width: 0; }
+
+/* B175: Günlük Toplam başlığı telefonda ekranı kaplamaz (seçili listede aynı ad zaten görünür); tarif kartları eşit genişlikte */
+.daily-recipe-header h1 { font-size: clamp(1.35rem, 5.5vw, 2.1rem); line-height: 1.15; }
+@media (max-width: 860px) {
+  .rlist-item:not(.daily-total-entry) { flex: 1 1 calc(50% - 6px); }
+  .rlist-item:not(.daily-total-entry) .rname { width: 100%; }
+}

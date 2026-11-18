@@ -219,3 +219,19 @@ test('B174 ilk açılışta arama kutusu ilk ekranda ve diyet süzgecinden önce
   });
   expect(r).toEqual({ visible: true, before: true });
 });
+
+test('B175 telefonda Günlük Toplam başlığı tek satır, tarif kartları eşit genişlikte', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.addInitScript(() => localStorage.setItem('bm.recipes.v1', JSON.stringify([{ id: 'a', name: 'Kahvaltı', servings: 1, items: [{ id: 'i1', ref: { t: 'c', id: 'muz', f: 0 }, g: 120 }] }, { id: 'b', name: 'Öğle', servings: 1, items: [{ id: 'i3', ref: { t: 'c', id: 'nohut', f: 0 }, g: 80 }] }, { id: 'c', name: 'Akşam', servings: 1, items: [{ id: 'i4', ref: { t: 'c', id: 'elma', f: 0 }, g: 80 }] }])));
+  await page.goto('/'); await page.evaluate(() => document.fonts.ready);
+  await page.locator('[data-action="tab"][data-tab="tarif"]').first().click();
+  await page.locator('[data-action="rc-daily-total"]').click();
+  const r = await page.evaluate(() => {
+    const h = document.querySelector('.daily-recipe-header h1'); const lh = parseFloat(getComputedStyle(h).lineHeight);
+    const items = [...document.querySelectorAll('.rlist-item:not(.daily-total-entry)')].map((e) => e.getBoundingClientRect());
+    const rows = {}; for (const b of items) (rows[Math.round(b.top)] ||= []).push(Math.round(b.width));
+    const uneven = Object.values(rows).some((ws) => ws.length > 1 && Math.max(...ws) - Math.min(...ws) > 2);
+    return { oneLine: h.getBoundingClientRect().height < lh * 1.5, uneven };
+  });
+  expect(r).toEqual({ oneLine: true, uneven: false });
+});
