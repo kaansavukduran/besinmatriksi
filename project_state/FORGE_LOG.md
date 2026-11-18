@@ -949,5 +949,5 @@
 - Yöntem: İngilizce modda Keşfet (boş, arama, nohut, kahve, sonuçsuz arama), Tarif (malzeme kartı, günlük toplam), Günlük, Kıyasla, Ayarlar, Bilgi ve kendi besin / koleksiyon / seçici pencereleri açılıp tüm `details` genişletildi; görünür metin, aria-label, title ve placeholder iki ağla tarandı: Türkçe harf (ğşıçöüİ) ve çeviri tablosundaki 918 Türkçe anahtarla birebir eşleşme.
 - Bulgu: tek gerçek kaçak, Bilgi'deki kaynak listesinde "USDA Proantosiyanidin" adı (`SOURCES.P.short` `L()` dışında) → düzeltildi. Diğer iki eşleşme bilerek Türkçe harf gösteren yazı tipi örnekleri (izinli).
 - Kalıcı koruma: `tests/browser/i18n-scan.spec.mjs` (masaüstü + telefon); düzeltme geri alınınca "USDA Proantosiyanidin" ile düşer.
-- Kanıt: `npm test` 166/166; build; i18n-scan 2/2; tam koşu aşağıda.
+- Kanıt: `npm test` 166/166; build; i18n-scan 2/2; Playwright tam koşu 326/326.
 - Sonraki: **B172** kullanıcı önceliği (3) koleksiyon: koleksiyon içi sürükle-bırak yerine mevcut ↑/↓ taşıma düğmelerinin telefonda dokunma hedefi ve "alt kategoriye taşı" eksikliği denetimi.
