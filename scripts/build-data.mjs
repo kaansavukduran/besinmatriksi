@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url';
 import { NUTRIENTS } from '../src/nutrients.js';
 import { FOODS, CATEGORIES, FORM_LABELS, ANIMAL_CATS } from '../data/catalog.mjs';
 import { POPULAR, NICHE } from '../data/popularity.mjs';
+import { COFID_MAP, COFID_KEYS, COFID_SUGARS } from '../data/cofid-map.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const raw = (f) => fs.readFileSync(path.join(root, 'data/raw', f), 'utf8');
@@ -157,6 +158,22 @@ function fillFromExtra(ndb, v, s) {
   return n;
 }
 
+
+// ---------- UK CoFID 2021 (B191): yalnız elle eşlenmiş besinlerde, yalnız boş hücreler ----------
+const cofid = JSON.parse(gunzipSync(fs.readFileSync(path.join(root, 'data/raw/CoFID_2021_SUBSET.json.gz'))).toString('utf8'));
+const cofNum = (x) => (typeof x === 'number' ? x : typeof x === 'string' && /^-?\d+(\.\d+)?$/.test(x.trim()) ? Number(x) : null);
+let cofidFills = 0;
+function fillFromCofid(foodId, formKey, v, s) {
+  const code = COFID_MAP[foodId]?.[formKey];
+  if (!code) return 0;
+  const c = cofid[code];
+  if (!c) throw new Error('CoFID kodu yok: ' + code + ' (' + foodId + ')');
+  let n = 0;
+  for (const [ck, key] of Object.entries(COFID_KEYS)) { const x = cofNum(c.v[ck]); if (x != null && v[key] == null) { v[key] = x; s[key] = 'B'; n++; } }
+  if (Object.values(COFID_SUGARS).every((k) => v[k] == null)) for (const [ck, key] of Object.entries(COFID_SUGARS)) { const x = cofNum(c.v[ck]); if (x != null) { v[key] = x; s[key] = 'B'; n++; } }
+  cofidFills += n;
+  return n;
+}
 
 // ---------- Veri tutarlılık kapıları (B157, veri denetimi) ----------
 // 1) FDC dolgusu: aynı NDB'nin FDC numunesi ana bileşimde SR28'den belirgin sapıyorsa (farklı ürün/numune) boş hücre doldurulmaz.
@@ -360,6 +377,7 @@ for (const food of FOODS) {
       if (fl) { Object.assign(v, fl.v); Object.assign(s, fl.s); }
       const ffId = fillFromFoundation(ndb, v, s);
       fillFromExtra(ndb, v, s);
+      fillFromCofid(food.id, key, v, s);
       usda = { ndb, desc: d.long, refuse: d.refuse, refDesc: d.refDesc || null, sci: d.sci || null, ...(ffId ? { fdc: ffId } : {}) };
     }
     if (!ndb && food.recipe) {
@@ -522,7 +540,7 @@ if (extMeta.coveredSourceRecords !== extMeta.sourceRecords) throw new Error('USD
 const outDir = path.join(root, 'src/data');
 fs.mkdirSync(outDir, { recursive: true });
 const meta = {
-  sources: 'USDA SR28 (2015) tam ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015); USDA SR Legacy (2018); USDA İyot 4.0 (2024); USDA Kolin 2 (2008); USDA Proantosiyanidin 2.1 (2018); USDA Pürin 3 (2026)',
+  sources: 'USDA SR28 (2015) tam ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015); USDA SR Legacy (2018); USDA İyot 4.0 (2024); USDA Kolin 2 (2008); USDA Proantosiyanidin 2.1 (2018); USDA Pürin 3 (2026); UK CoFID 2021 (boşluk doldurma)',
   dataPolicy: 'USDA public domain / CC0; IFCT ve IFCT tabanlı tahminler dağıtıma dahil değil',
   unavailableForms: foods.flatMap(f => f.forms).filter(f => f.unavailable).length,
   curated: foods.length,
@@ -531,4 +549,4 @@ const meta = {
 };
 fs.writeFileSync(path.join(outDir, 'foods.json'), JSON.stringify({ meta, categories: CATEGORIES, animalCategories: ANIMAL_CATS, foods }));
 fs.writeFileSync(path.join(outDir, 'foods-ext.json'), JSON.stringify({ meta: extMeta, groups: EXT_GROUPS, foods: ext }));
-console.log('tutarlılık kapısı: atılan hücre', gateDrops); console.log(meta, 'foods.json', (fs.statSync(path.join(outDir, 'foods.json')).size / 1024).toFixed(0) + ' KB', 'ext', (fs.statSync(path.join(outDir, 'foods-ext.json')).size / 1024).toFixed(0) + ' KB');
+console.log('CoFID doldurulan hücre', cofidFills); console.log('tutarlılık kapısı: atılan hücre', gateDrops); console.log(meta, 'foods.json', (fs.statSync(path.join(outDir, 'foods.json')).size / 1024).toFixed(0) + ' KB', 'ext', (fs.statSync(path.join(outDir, 'foods-ext.json')).size / 1024).toFixed(0) + ' KB');

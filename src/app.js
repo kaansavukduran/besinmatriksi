@@ -800,6 +800,7 @@ function renderAbout() {
       <li><b>${esc(L(SOURCES.C.short))}</b>: ${esc(L(SOURCES.C.long))}. ${L("Kolin türleri (serbest kolin, fosfatidilkolin…) ve betain; SR28 toplam kolini değiştirilmez.")}</li>
       <li><b>${esc(L(SOURCES.P.short))}</b>: ${esc(L(SOURCES.P.long))}. ${L("Proantosiyanidin (yoğunlaşmış tanen) fraksiyonları; 0 = saptanmadı, bazı iz değerler tespit sınırından tahmin edilmiştir.")}</li>
       <li><b>${esc(L(SOURCES.U.short))}</b>: ${esc(L(SOURCES.U.long))}. ${L("Adenin, guanin, hipoksantin, ksantin ve toplamları (gut/ürik asit açısından); USDA kaydına adla eşlendi, Japonya örneklerinden gelen değerler etiketin açıklamasında belirtilir.")}</li>
+      <li><b>${esc(SOURCES.B.short)}</b>: ${esc(L(SOURCES.B.long))}. ${L("İyot, biyotin, selenyum, pantotenik asit ve şeker türleri; yalnız ad, hazırlama biçimi ve ana bileşimi (su, protein) uyuşan besinlerde. İz (Tr) ve ölçülmemiş (N) değerler kullanılmaz.")}</li>
       <li><b>IFCT 2017:</b> ${L("NIN ürün kullanım izni doğrulanmadığı için veri ve bu veriye dayanan tahminler bu sürümde dağıtılmıyor.")}</li>
     </ul>
     </details>

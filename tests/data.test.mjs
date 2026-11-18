@@ -19,7 +19,7 @@ test('her formun doğrulanmış değerleri veya açık kaynak boşluğu var', ()
       else if (fm.computed) assert.ok(Object.values(fm.s).every((x) => x === 'd'), `${f.id}/${fm.key}`);
       else assert.ok(fm.v.energy != null && fm.v.protein != null, `${f.id}/${fm.key}`);
       for (const k of Object.keys(fm.v)) assert.ok(keys.has(k), `bilinmeyen anahtar ${k}`);
-      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P', 'U', 'z'].includes(s), `${f.id} ${k} ${s}`);
+      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P', 'U', 'z', 'B'].includes(s), `${f.id} ${k} ${s}`);
     }
   }
 });
@@ -94,7 +94,7 @@ test('dağıtımda IFCT değerleri, alternatifleri ve bunlardan tahminler bulunm
   for (const food of DB.foods) for (const f of food.forms) {
     assert.equal(f.ifct, null); assert.equal(f.estFrom, null);
     assert.deepEqual(f.alt || {}, {}); assert.deepEqual(f.sd || {}, {});
-    assert.ok(Object.values(f.s).every(s => ['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P', 'U', 'z'].includes(s)));
+    assert.ok(Object.values(f.s).every(s => ['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P', 'U', 'z', 'B'].includes(s)));
   }
   assert.equal(fs.existsSync(new URL('../data/raw/IFCT2017.csv', import.meta.url)), false);
 });
@@ -399,4 +399,30 @@ test('B161 yinelenen kayıtlar: lor → lor_cottage göçü, çapatiler ayırt e
   assert.equal(DB.foods.find((x) => x.id === 'lor_cottage').forms[0].usda.ndb, '01012');
   const names = DB.foods.map((f) => f.tr);
   assert.equal(new Set(names).size, names.length);
+});
+
+test('B191 UK CoFID 2021 dolgusu: yalnız elle eşlenen biçimlerde, yalnız sayısal ölçüm, etiket "B"; ölçülmüş USDA hücresinin üzerine yazmaz', async () => {
+  const zlib = await import('node:zlib');
+  const { COFID_MAP, COFID_KEYS, COFID_SUGARS } = await import('../data/cofid-map.mjs');
+  const cof = JSON.parse(zlib.gunzipSync(fs.readFileSync(new URL('../data/raw/CoFID_2021_SUBSET.json.gz', import.meta.url))).toString('utf8'));
+  const inv = { ...Object.fromEntries(Object.entries(COFID_KEYS).map(([c, k]) => [k, c])), ...Object.fromEntries(Object.entries(COFID_SUGARS).map(([c, k]) => [k, c])) };
+  let n = 0;
+  for (const f of DB.foods) for (const fm of f.forms) for (const [k, t] of Object.entries(fm.s || {})) {
+    if (t !== 'B') continue; n++;
+    const code = COFID_MAP[f.id]?.[fm.key];
+    assert.ok(code, `${f.id}/${fm.key} eşlemesiz B`);
+    assert.equal(fm.v[k], Number(cof[code].v[inv[k]]), `${f.id}/${fm.key}/${k}`);
+    assert.ok(!f.animal, 'hayvansal besine CoFID dolgusu yok');
+  }
+  assert.ok(n >= 40, `B hücre ${n}`);
+  const oj = DB.foods.find((f) => f.id === 'portakal').forms.find((x) => x.key === 'suyu');
+  assert.equal(oj.s.iodine, 'B'); assert.equal(oj.v.iodine, Number(cof['14-369'].v.iodine));
+  // eşlenen her biçimde ana bileşim USDA ile uyuşur (su ±5 g, protein ±%25 veya ±1 g)
+  for (const [id, forms] of Object.entries(COFID_MAP)) for (const [key, code] of Object.entries(forms)) {
+    const fm = DB.foods.find((f) => f.id === id)?.forms.find((x) => x.key === key);
+    assert.ok(fm, `${id}/${key} katalogda yok`);
+    const c = cof[code].v, w = Number(c.water), p = Number(c.protein);
+    assert.ok(Math.abs(w - fm.v.water) <= 5, `${id} su ${fm.v.water}/${w}`);
+    assert.ok(Math.abs(p - fm.v.protein) <= 1 || Math.abs(p - fm.v.protein) / fm.v.protein <= 0.25, `${id} protein ${fm.v.protein}/${p}`);
+  }
 });

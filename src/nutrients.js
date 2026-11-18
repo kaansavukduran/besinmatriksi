@@ -326,6 +326,7 @@ export const SOURCES = {
   P: { short: 'USDA Proantosiyanidin', long: 'USDA ARS, Database for the Proanthocyanidin Content of Selected Foods, Release 2.1 (2018, kamu malı)' },
   z: { short: 'Varsayılan 0', long: 'USDA bu değeri ölçmeden 0 kabul etmiş (bu besinde doğal olarak bulunmadığı varsayılan bileşen; ör. bitkide kolesterol, ette lif)' },
   U: { short: 'USDA Pürin', long: 'USDA ve NIH-ODS, Database for the Purine Content of Foods, Release 3 (2026, kamu malı); adla eşlendi, bir kısmı Japonya örnekleri' },
+  B: { short: 'UK CoFID 2021', long: "McCance and Widdowson's The Composition of Foods Integrated Dataset 2021 (UK, Open Government Licence v3); yalnız USDA'da ölçülmemiş değerler için, elle doğrulanmış besin eşlemesiyle" },
   r: { short: 'Tahmin (tarif)', long: 'USDA malzemelerinden tarif oranıyla hesaplanan tahmin; ölçüm değildir' },
   e: { short: 'Tahmin', long: 'IFCT 2017 profil oranı × USDA formunun toplam protein/yağ değeri (aynı besinin çiğ/kuru ölçümünden ölçeklenmiş tahmin)' },
 };

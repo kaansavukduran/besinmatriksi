@@ -906,5 +906,9 @@ export const UI_EN = {
  "Taşı…": "Move…",
  "“{c}” içinde zaten vardı; buradan çıkarıldı.": "Already in “{c}”; removed from here.",
  "“{c}” koleksiyonuna taşındı.": "Moved to “{c}”.",
- "Ayar bölümleri": "Settings sections"
+ "Ayar bölümleri": "Settings sections",
+ "McCance and Widdowson's The Composition of Foods Integrated Dataset 2021 (UK, Open Government Licence v3); yalnız USDA'da ölçülmemiş değerler için, elle doğrulanmış besin eşlemesiyle": "McCance and Widdowson's The Composition of Foods Integrated Dataset 2021 (UK, Open Government Licence v3); only for values not measured by USDA, with manually verified food matches",
+ "İyot, biyotin, selenyum, pantotenik asit ve şeker türleri; yalnız ad, hazırlama biçimi ve ana bileşimi (su, protein) uyuşan besinlerde. İz (Tr) ve ölçülmemiş (N) değerler kullanılmaz.": "Iodine, biotin, selenium, pantothenic acid and sugar types; only for foods whose name, preparation and main composition (water, protein) match. Trace (Tr) and not-measured (N) values are not used.",
+ "UK CoFID 2021": "UK CoFID 2021",
+ "USDA SR28 (2015) tam ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015); USDA SR Legacy (2018); USDA İyot 4.0 (2024); USDA Kolin 2 (2008); USDA Proantosiyanidin 2.1 (2018); USDA Pürin 3 (2026); UK CoFID 2021 (boşluk doldurma)": "USDA SR28 (2015) full ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA Isoflavone 2.1 (2015); USDA SR Legacy (2018); USDA Iodine 4.0 (2024); USDA Choline 2 (2008); USDA Proanthocyanidin 2.1 (2018); USDA Purine 3 (2026); UK CoFID 2021 (gap filling)"
 };
