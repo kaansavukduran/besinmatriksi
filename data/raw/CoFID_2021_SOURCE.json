@@ -1,0 +1,12 @@
+{
+  "name": "McCance and Widdowson's The Composition of Foods Integrated Dataset (CoFID) 2021",
+  "publisher": "Public Health England / Office for Health Improvement and Disparities (UK government)",
+  "url": "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/971018/McCance_Widdowsons_Composition_of_Foods_Integrated_Dataset_2021..xlsx",
+  "xlsx_sha256": "436e9445ef2adb2a75f3d7edd51302de3adad25385f9795fc94ba58bd030e97d",
+  "license": "Open Government Licence v3.0 (UK); kaynak gösterilerek serbest kullanım",
+  "license_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+  "checked_on": "2026-11-18",
+  "subset": "CoFID_2021_SUBSET.json.gz: 2886 besin; Proximates (su, protein, yağ, şekerler, AOAC lif), Inorganics (Na, K, Ca, Mg, P, Fe, Cu, Zn, Mn, Se, I, klorür), Vitamins (biotin, pantotenat, K1, folat, B6). Hücre metni korunur: sayı = ölçüm, 'Tr' = iz (tespit sınırının altında, 0 DEĞİL), 'N' = ölçülmemiş/veri yok.",
+  "extract_script": "scripts/extract-cofid.py",
+  "note": "Amino asit içermez (CoFID'de amino asit tablosu yok). Değerler yalnız USDA'da ölçülmemiş hücreleri doldurmak için ve elle doğrulanmış besin eşlemesiyle kullanılacak (B191)."
+}
