@@ -417,10 +417,10 @@ function renderExplore() {
     <nav class="cats ${S.settings.catGrid ? 'cats-grid' : ''}" aria-label="${L("Kategoriler")}">${categoryNav('ex', S.cat)}</nav>
     <section class="list" aria-label="${L("Besinler")}">
       ${!item && !S.cat && !S.q ? welcome() : ''}
-      ${renderDietFilter(S.settings,'ex',S.dietOpen.ex)}
       <div class="searchbar"><input type="search" id="q" placeholder="${L("Bir besin bul: mercimek, latte, pizza…")}" value="${esc(S.q)}" autocomplete="off" aria-label="${L("Besin ara")}">
       ${S.q ? `<button class="btn ghost" data-action="ex-clear">${L("Temizle")}</button>` : ''}</div>
       ${S.searches.length ? `<div class="recent-searches" aria-label="${L("Son aramalar")}"><span class="hint">${L("Son aramalar")}</span><div class="presets">${S.searches.map(q => `<button class="pchip" data-action="search-recent" data-q="${esc(q)}">${esc(q)}</button>`).join('')}<button class="btn ghost" data-action="search-clear">${L("Geçmişi temizle")}</button></div></div>` : ''}
+      ${renderDietFilter(S.settings,'ex',S.dietOpen.ex)}
       <div id="foodlist">${foodList('ex', S.cat, S.q, S.extGroup)}</div>
     </section>
     <section class="detail" aria-label="${L("Besin matriksi")}">${detail}</section>

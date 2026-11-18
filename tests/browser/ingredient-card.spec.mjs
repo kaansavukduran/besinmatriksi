@@ -206,3 +206,16 @@ test('B173 koleksiyon öğesi alt kategoriye taşınır; hedefte varsa kopya olu
   await expect(page.locator('.toast')).toContainText('zaten vardı');
   expect(await store()).toEqual([['a', []], ['b', ['nohut', 'muz']]]);
 });
+
+test('B174 ilk açılışta arama kutusu ilk ekranda ve diyet süzgecinden önce (iPhone SE boyu)', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('/');
+  const r = await page.evaluate(() => {
+    const q = document.querySelector('#q').getBoundingClientRect();
+    const nav = document.querySelector('.tabs').getBoundingClientRect();
+    const diet = document.querySelector('.list select, .list [class*="diet"]');
+    const before = diet ? !!(document.querySelector('#q').compareDocumentPosition(diet) & Node.DOCUMENT_POSITION_FOLLOWING) : true;
+    return { visible: q.bottom <= Math.min(innerHeight, nav.top > 0 ? nav.top : innerHeight), before };
+  });
+  expect(r).toEqual({ visible: true, before: true });
+});
