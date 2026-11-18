@@ -340,3 +340,19 @@ test('B182 telefonda yazı tipi kartları iki sütun, adlar sözcük ortasından
   });
   expect(r).toEqual({ cols: 2, split: [], onFull: true, onDesc: true });
 });
+
+test('B183 matriks bölümü satırlarında sarılan ad onay kutusunun altına düşmez; oklar aynı satırda', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('/');
+  await page.locator('[data-action="tab"][data-tab="ayarlar"]').first().click();
+  const bad = await page.evaluate(() => [...document.querySelectorAll('.section-option')].filter((row) => {
+    const box = row.querySelector('input').getBoundingClientRect();
+    const label = row.querySelector('label');
+    const texts = [...label.childNodes].filter((n) => n.nodeType === 3 && n.textContent.trim());
+    const textRects = texts.flatMap((n) => { const r = document.createRange(); r.selectNodeContents(n); return [...r.getClientRects()].filter((x) => x.width > 2); });
+    const under = textRects.some((x) => x.left < box.right);
+    const arrows = [...row.querySelectorAll('[data-action="section-move"]')].map((b) => Math.round(b.getBoundingClientRect().top));
+    return under || new Set(arrows).size > 1;
+  }).map((row) => row.textContent.trim().slice(0, 30)));
+  expect(bad).toEqual([]);
+});

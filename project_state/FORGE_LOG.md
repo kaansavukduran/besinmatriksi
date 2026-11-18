@@ -1019,3 +1019,10 @@
 - Kanıt: `npm test` 167/167; build; Playwright B182 2/2 (iki sütun, bölünen ad yok, seçili tam genişlik + açıklama); Playwright tam koşu 348/348.
 - Sürüm 1.1.2-beta.51 (B180 + B181 + B182). Yayın kanıtı: v1.1.2-beta.51 pre-release 2026-11-18T12:48:13Z (release.yml run 44304230078 success, ilk denemede).
 - Sonraki: **B183** beta.51 (B180–B182) ve kullanıcı önceliği (2) "Matriks bölümleri" kartı (1450 px) sadeleşmesi.
+
+## B183 · 2026-11-18 · Matriks bölümleri satırları asılı girintili
+- Ekran görüntüsü (iPhone SE): 15 bölüm satırında sarılan ad onay kutusunun altına düşüyordu ("Protein ve / amino asitler" kutunun altından başlıyor); satırlar 67–93 px. Onay kutusu + ad esnek satır (asılı girinti), oklar dar ve aynı satırda; kart 1450 → 1327 px. Denetimler görünür kaldı (mevcut testler doğrudan dokunuyor).
+- Test ilk yazımda eski hatayı yakalamıyordu (süzgeç sarılan satırı dışarıda bırakıyordu) → yalnız metin düğümleri ölçülerek düzeltildi; şimdi düzeltme geri alınınca "Protein ve amino asitler" vb. ile düşer.
+- Yayın: v1.1.2-beta.51 yayımlandı (B182 kaydında kanıt).
+- Kanıt: `npm test` 167/167; build; Playwright B183 2/2; tam koşu aşağıda.
+- Sonraki: **B184** "Kendi temam" kartı (1150 px) telefonda: renk seçicilerin düzeni (Unslop).
