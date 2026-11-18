@@ -969,5 +969,5 @@
 ## B174 · 2026-11-18 · Keşfet ilk açılış: arama kutusu ilk ekranda
 - Unslop (iPhone SE + 1280 px ekran görüntüleri): ilk açılışta en önemli eylem olan arama kutusu tanıtım ve diyet süzgecinin altında kalıyordu (telefonda y=471, alt sekme çubuğunun altında yarı gizli; masaüstünde ekranın dibinde); tanıtımla diyet süzgeci arasında iki çizgi üst üste duruyordu. → Sıra: tanıtım → arama → son aramalar → diyet süzgeci → liste. Telefonda arama y=334 (ilk ekranda), çift çizgi kalmadı.
 - Yayın: v1.1.2-beta.48 yayımlandı (B173 kaydında kanıt).
-- Kanıt: `npm test` 167/167; build; Playwright B174 2/2 (320×568'de arama görünür ve diyet süzgecinden önce), düzeltme geri alınınca düşer; tam koşu aşağıda.
+- Kanıt: `npm test` 167/167; build; Playwright B174 2/2 (320×568'de arama görünür ve diyet süzgecinden önce), düzeltme geri alınınca düşer; Playwright tam koşu 332/332.
 - Sonraki: **B175** kullanıcı önceliği (4) toplam matriks: Tarif ekranında "Günlük toplam" matrisinin telefonda ilk ekran düzeni (Unslop).
