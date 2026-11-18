@@ -1082,3 +1082,9 @@
 - Kanıt: `npm run data` (CoFID 92 hücre); `npm test` 169/169 (B191 testi tüm eşlemelerde su/protein uyumunu ve değer birebirliğini denetler); Playwright tam koşu 360/360.
 - Amino asit kaynağı araştırması: CoFID'de amino asit yok; Danimarka Frida (amino asit içerir, kullanım koşulu: her gösterimde kaynak belirtme; açık lisans kimliği yok) bu oturumun ağından erişilemiyor (frida.fooddata.dk çözümlenmiyor/izin dışı) ve Kaan ağ izni istemlerini istemiyor → BLOCKED_ENVIRONMENT. Kuru meyveler için taze karşılıktan oransal "Tahmin" kurulmadı: kurutmada lizin (Maillard) değişir, ısıyla değişen bileşen tahmin edilmez kuralı.
 - Sonraki: **B193** CoFID eşlemesi üçüncü tur (baklagil, tahıl, kuruyemiş: farklı adlandırmalar elle aranacak) ve beta.55.
+
+## B193 · 2026-11-18 · GitHub Pages: bağlantı önizlemesi ve açılış ekranı (Kaan: "github pages'te güzel gözüksün")
+- Pages iş akışı her push'ta `dist`'i yayımlıyor (son koşular success). Eksikler: bağlantı paylaşılınca önizleme yoktu (Open Graph/Twitter etiketi ve görsel yok); açılışta beyaz zemin üzerinde süssüz "yükleniyor" yazısı.
+- `public/og-image.png` 1200×630 (uygulama renkleri, logo, "Tabağında ne var?", nohut kartı: 378 kcal, 20,5 g protein, 12,2 g lif, 557 µg folat; değerler foods.json'dan), kaynağı `scripts/og-image.html`. index.html: og:title/description/url/image(+boyut, alt), og:locale, twitter:card; başlık "Besin Matriksi · çevrimdışı besin matriksi ve tarif hesaplayıcı". Açılış: uygulama zemin rengi (koyu temada koyu), ortada logo + "yükleniyor"; hareket azaltmada animasyon yok.
+- Kanıt: `npm test` 170/170 (B193: etiketler, görsel boyutu, açılış); build + build:single (`dist/og-image.png`, mutlak og:image); 1920/1440 px masaüstü ve yavaşlatılmış açılış ekran görüntüleri incelendi; tam koşu aşağıda.
+- Sonraki: **B194** beta.55 (B190–B193) ve CoFID eşlemesi üçüncü tur.

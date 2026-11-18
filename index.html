@@ -12,11 +12,33 @@
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icon-192.png">
   <link rel="manifest" href="./manifest.webmanifest">
-  <title>Besin Matriksi</title>
+  <title>Besin Matriksi · çevrimdışı besin matriksi ve tarif hesaplayıcı</title>
+  <!-- B193: bağlantı önizlemesi (GitHub Pages paylaşımı); görsel scripts/og-image.html'den üretilir -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Besin Matriksi">
+  <meta property="og:title" content="Besin Matriksi · Tabağında ne var?">
+  <meta property="og:description" content="690+ besinin ayrıntılı besin matriksi, tarif ve günlük hesabı. USDA ölçümleri, amino asitler; internetsiz çalışır.">
+  <meta property="og:url" content="https://kaansavukduran.github.io/besinmatriksi/">
+  <meta property="og:image" content="https://kaansavukduran.github.io/besinmatriksi/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Besin Matriksi: nohut için enerji, protein, lif ve folat kartı">
+  <meta property="og:locale" content="tr_TR">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    /* B193: açılışta beyaz parlama ve süssüz "yükleniyor" yazısı yerine uygulama renklerinde sade açılış */
+    html { background: #f7f4ec; color: #29372a; }
+    @media (prefers-color-scheme: dark) { html { background: #1b211b; color: #f1eee3; } }
+    .boot { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; font-family: system-ui, sans-serif; }
+    .boot img { width: 72px; height: 72px; border-radius: 18px; animation: boot 1.2s ease-in-out infinite alternate; }
+    .boot span { font-size: 15px; opacity: .7; }
+    @keyframes boot { from { transform: scale(.94); opacity: .75; } to { transform: scale(1); opacity: 1; } }
+    @media (prefers-reduced-motion: reduce) { .boot img { animation: none; } }
+  </style>
 </head>
 <body>
   <div id="ruler" aria-hidden="true"></div>
-  <div id="app"><p style="padding:2rem;font-family:sans-serif">Besin Matriksi yükleniyor…</p></div>
+  <div id="app"><div class="boot" role="status"><img src="./icon.svg" alt=""><span>Besin Matriksi yükleniyor…</span></div></div>
   <noscript>Bu uygulama JavaScript gerektirir.</noscript>
   <script>
     // Açılış bekçisi: uygulama 10 sn'de açılmazsa (ör. tarayıcıda bozuk/eski önbellek) boş ekran yerine kurtarma düğmesi

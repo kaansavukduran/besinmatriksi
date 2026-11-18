@@ -50,3 +50,14 @@ test('B188 CI tarayıcı testleri: kararsız test bir kez yeniden denenir, yerel
   assert.ok(i > 0 && j > i);
   assert.match(wf.slice(i, j), /if: failure\(\)[\s\S]*path: test-results\//);
 });
+
+test('B193 GitHub Pages: bağlantı önizlemesi (Open Graph) ve 1200×630 görsel; açılış ekranı uygulama renklerinde', () => {
+  const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  for (const p of ['og:title', 'og:description', 'og:image', 'og:url']) assert.match(html, new RegExp(`property="${p}" content="[^"]+"`), p);
+  assert.match(html, /og:image" content="https:\/\/[^"]+\/og-image\.png"/);
+  assert.match(html, /name="twitter:card" content="summary_large_image"/);
+  const png = fs.readFileSync(new URL('../public/og-image.png', import.meta.url));
+  assert.equal(png.readUInt32BE(16), 1200); assert.equal(png.readUInt32BE(20), 630);
+  assert.match(html, /<div class="boot" role="status">/);
+  assert.match(html, /html \{ background: #f7f4ec;/);
+});
