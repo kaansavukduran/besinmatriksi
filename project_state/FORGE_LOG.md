@@ -989,3 +989,8 @@
 - Telefonda besin ayrıntısındayken etkin "Keşfet" sekmesine dokunmak hiçbir şey yapmıyordu (yalnız "← Liste" geri götürüyordu; ölçüm betiği bu yüzden takıldı). Yaygın mobil davranış: etkin sekmeye yeniden dokunmak listeye döner; kategori ve arama korunur.
 - Kanıt: `npm test` 167/167; build; Playwright B177 2/2 (kart <220 px, miktar tek satır, sekme dönüşü, arama değeri korunur), düzeltmeler geri alınınca düşer; ekran görüntüleri incelendi; Playwright tam koşu 338/338.
 - Sonraki: **B178** Kıyasla tablosunun (468 px) telefonda kaydırma ipucu ve ilk sütunun sabitlenmesi denetimi.
+
+## B178 · 2026-11-18 · Yana kayan tablolarda devam gölgesi
+- Denetim (iPhone SE, 3 besin): Kıyasla tablosu 468 px / 294 px kutu; ilk sütun zaten yapışkan (kaydırınca 12→13 px, yerinde) ve bölge "yana kaydırılabilir" diye etiketli, ama görsel olarak devamı olduğu belli değildi. → `.tablewrap` ve öğün tablosu (`.meal-overview`) için sağ kenar gölgesi: yerel arka plan örtüsüyle sona gelince kaybolur (JS yok). Ekran görüntüleri: başta gölge görünür, sonda yok.
+- Kanıt: `npm test` 167/167; build; Playwright B178 2/2 (kayar, iki gradyan + local, ilk sütun yapışkan); tam koşu aşağıda.
+- Sonraki: **B179** Kıyasla varsayılan bölümü telefonda "Tümü" (~8900 px tablo) yerine "Temel besin değerleri" olmalı mı: kullanıcı önceliği (2) sadelik; karar ve uygulama.

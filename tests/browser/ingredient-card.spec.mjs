@@ -267,3 +267,18 @@ test('B177 telefonda Kıyasla kartları kısa; Keşfet sekmesine yeniden dokunma
   expect(Math.max(...r.h)).toBeLessThan(220);
   expect(r.row).toBe(true);
 });
+
+test('B178 yana kayan tablolar devam gölgesi taşır; ilk sütun kayarken yerinde kalır', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('/');
+  for (const id of ['muz', 'nohut']) {
+    if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="tab"][data-tab="kesfet"]').first().click();
+    await page.locator('#q').fill(id); await page.locator(`#foodlist [data-id="${id}"]`).click();
+    await page.locator('[data-action="ex-add-compare"]').click();
+  }
+  await page.locator('[data-action="tab"][data-tab="karsilastir"]').first().click();
+  const wrap = page.locator('#cmp-table .tablewrap');
+  await expect(wrap).toBeVisible();
+  const r = await wrap.evaluate((e) => { const cs = getComputedStyle(e); const before = e.querySelector('tbody th[scope="row"]').getBoundingClientRect().left; e.scrollLeft = 120; const after = e.querySelector('tbody th[scope="row"]').getBoundingClientRect().left; return { scrolls: e.scrollWidth > e.clientWidth, grads: (cs.backgroundImage.match(/linear-gradient/g) || []).length, local: cs.backgroundAttachment.includes('local'), sticky: Math.abs(after - before) < 2 }; });
+  expect(r).toEqual({ scrolls: true, grads: 2, local: true, sticky: true });
+});

@@ -1054,3 +1054,11 @@ button.micro-name:hover { text-decoration-color: currentColor; }
   .cmp-col .amount.mini > .per-serv { grid-row: 3; }
 }
 @media (max-width: 600px) { .cmp-col { padding: 10px 12px; } .cmp-cols { gap: 6px; } }
+
+/* B178: yana kaydırılabilir tablolarda sağ kenar gölgesi: devamı olduğunu gösterir, sona gelince kaybolur (yerel arka plan örtüsü) */
+.tablewrap, .meal-overview {
+  background:
+    linear-gradient(to left, var(--card) 40%, transparent) right center / 28px 100% no-repeat local,
+    linear-gradient(to left, rgb(0 0 0 / .14), transparent) right center / 12px 100% no-repeat scroll,
+    var(--card);
+}
