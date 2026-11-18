@@ -69,7 +69,8 @@ const S = {
   recipeSource: 'energy',
   recipeSourcesOpen: false,
   compare: [],
-  cmpSection: 'all',
+  // B179: telefonda Kıyasla temel değerlerle açılır ("Tümü" ~8900 px tablo); masaüstünde geniş tablo sığar, tümü açık
+  cmpSection: typeof innerWidth === 'number' && innerWidth <= 600 ? 'temel' : 'all',
   picker: null, // { target, cat, q, sel, amount }
   customEdit: null, // { id?, name, liquid, portion, v: {} }
   themeEditor: null,

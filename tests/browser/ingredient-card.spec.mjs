@@ -282,3 +282,17 @@ test('B178 yana kayan tablolar devam gölgesi taşır; ilk sütun kayarken yerin
   const r = await wrap.evaluate((e) => { const cs = getComputedStyle(e); const before = e.querySelector('tbody th[scope="row"]').getBoundingClientRect().left; e.scrollLeft = 120; const after = e.querySelector('tbody th[scope="row"]').getBoundingClientRect().left; return { scrolls: e.scrollWidth > e.clientWidth, grads: (cs.backgroundImage.match(/linear-gradient/g) || []).length, local: cs.backgroundAttachment.includes('local'), sticky: Math.abs(after - before) < 2 }; });
   expect(r).toEqual({ scrolls: true, grads: 2, local: true, sticky: true });
 });
+
+test('B179 Kıyasla telefonda Temel besin değerleriyle açılır, masaüstünde Tümü', async ({ page }, info) => {
+  const phone = (page.viewportSize()?.width || 1280) <= 600;
+  await page.goto('/');
+  for (const id of ['muz', 'nohut']) {
+    if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="tab"][data-tab="kesfet"]').first().click();
+    await page.locator('#q').fill(id); await page.locator(`#foodlist [data-id="${id}"]`).click();
+    await page.locator('[data-action="ex-add-compare"]').click();
+  }
+  await page.locator('[data-action="tab"][data-tab="karsilastir"]').first().click();
+  await expect(page.locator(`[data-action="cmp-sec"][data-s="${phone ? 'temel' : 'all'}"]`)).toHaveClass(/\bon\b/);
+  const h = await page.locator('#cmp-table .tablewrap').evaluate((e) => e.getBoundingClientRect().height);
+  if (phone) expect(h).toBeLessThan(1500); else expect(h).toBeGreaterThan(1500);
+});

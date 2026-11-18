@@ -972,6 +972,7 @@ test('Kıyasla tablosu kendi içinde dikey kaydırmaz; sayfa boyunca açık (B10
     if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
   }
   await tab(page, 'karsilastir');
+  await page.locator('[data-action="cmp-sec"][data-s="all"]').click(); // B179: telefonda varsayılan "Temel"
   const w = page.locator('.tablewrap');
   expect(await w.evaluate((e) => e.scrollHeight - e.clientHeight)).toBeLessThanOrEqual(1);
   expect(await w.evaluate((e) => e.clientHeight)).toBeGreaterThan(1000);

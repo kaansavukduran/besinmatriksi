@@ -994,3 +994,9 @@
 - Denetim (iPhone SE, 3 besin): Kıyasla tablosu 468 px / 294 px kutu; ilk sütun zaten yapışkan (kaydırınca 12→13 px, yerinde) ve bölge "yana kaydırılabilir" diye etiketli, ama görsel olarak devamı olduğu belli değildi. → `.tablewrap` ve öğün tablosu (`.meal-overview`) için sağ kenar gölgesi: yerel arka plan örtüsüyle sona gelince kaybolur (JS yok). Ekran görüntüleri: başta gölge görünür, sonda yok.
 - Kanıt: `npm test` 167/167; build; Playwright B178 2/2 (kayar, iki gradyan + local, ilk sütun yapışkan); Playwright tam koşu 340/340.
 - Sonraki: **B179** Kıyasla varsayılan bölümü telefonda "Tümü" (~8900 px tablo) yerine "Temel besin değerleri" olmalı mı: kullanıcı önceliği (2) sadelik; karar ve uygulama.
+
+## B179 · 2026-11-18 · Kıyasla telefonda "Temel besin değerleri" ile açılır
+- Karar (kullanıcı önceliği 2, sadelik): telefonda varsayılan "Tümü" iki-üç besinde ~8900 px'lik tablo açıyordu; ilk bakışta istenen kalori/makro karşılaştırması bu yükün içinde kayboluyordu. Dar ekranda (≤600 px) varsayılan "Temel besin değerleri"; masaüstünde geniş tablo sığdığı için "Tümü" kalır. Bölüm şeridi her bölüme tek dokunuşla geçer.
+- B109 testi (tablonun kendi içinde dikey kaydırmaması, sayfa boyu açık) telefonda artık "Tümü"ne açıkça geçerek ölçüyor.
+- Kanıt: `npm test` 167/167; build; Playwright B109 + B179 4/4 (telefonda Temel seçili ve tablo <1500 px, masaüstünde Tümü ve >1500 px); app + polish + ingredient-card ilk koşuda yalnız B109 telefonu düştü → güncellendi; tam koşu aşağıda.
+- Sonraki: **B180** beta.50 (B177–B179) ve kullanıcı önceliği (1)/(2): Hakkında (Bilgi) ekranı telefonda Unslop.
