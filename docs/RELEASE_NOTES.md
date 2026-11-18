@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 48 · Koleksiyonlarda taşıma
+# 🫐 Besin Matriksi 1.1.2 Beta 49 · Daha derli toplu ilk ekranlar
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -21,9 +21,10 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
-- **Koleksiyonlar arasında taşı:** Koleksiyondaki her besinin altında “Taşı…” seçicisi; besini başka koleksiyona ya da alt kategoriye tek dokunuşla taşı. Hedefte zaten varsa kopya oluşmaz; dolu koleksiyon uyarır.
-- **Telefonda düzgün sekme adları:** Alt çubukta İngilizce “Compare / Settings” gibi adlar artık sözcük ortasından bölünmüyor.
-- **İngilizce arayüz temiz:** Tüm ekranlar tarandı; kalan tek Türkçe kaynak adı çevrildi ve bir test bundan sonra kaçakları yakalıyor.
+- **Arama ilk ekranda:** Keşfet açılınca besin arama kutusu tanıtımın hemen altında; telefonda alt çubuğun arkasında kalmıyor. Gereksiz çift çizgi kalktı.
+- **Günlük Toplam telefonda derli toplu:** Dev başlık tek satıra indi; tarif kartları eşit genişlikte, öğün tablosu ilk ekrana yaklaştı.
+- **Aion ayarları sade:** Aion kapalıyken işe yaramayan seçenekler gizli; açınca boyut, konum ve “Kutlamayı dene” gelir.
+- **Beta 48'den:** Koleksiyonlar arasında taşıma, sözcük ortasından bölünmeyen sekme adları, temiz İngilizce arayüz.
 - **Beta 47'den:** Karekök ölçekli gram kaydırıcısı (küçük miktarlar kolay), tek satır miktar düğmeleri, Aion'un kontrolleri engellememesi.
 - **Beta 46'dan:** Görünüm profili hedefleri korur, sekmeler arası ayar eşitleme, koleksiyonda USDA besinleri kaybolmaz, sınır bildirimleri, her kaynakta “kaynak 0”, dürüst GOS.
 - **Beta 45'ten:** Sade boş Günlük, başlıkta tarif kopyala/sil, onaylı “Varsayılana dön”, kcal ile kJ birlikte, lor ve çapati yinelenenleri temizlendi.

@@ -980,5 +980,6 @@
 
 ## B176 · 2026-11-18 · Ayarlar: Aion kapalıyken ölü seçenekler gizli
 - Unslop (iPhone SE ekran görüntüsü): Aion kapalıyken hareket, boyut, konum, ipucu ve "Kutlamayı dene" görünüyor ama hiçbiri etki etmiyordu; "Kutlamayı dene" hiçbir şey yapmıyordu (`aionSay` kapalıyken döner) → sahte etkileşim. Aion kapalıyken yalnız açıklama + "Aion'u göster" anahtarı; açınca seçenekler gelir.
-- Kanıt: `npm test` 167/167; build; Playwright B176 2/2 + mevcut Aion testleri (app + ingredient-card "Aion|B176") 8/8; tam koşu aşağıda.
+- Kanıt: `npm test` 167/167; build; Playwright B176 2/2 + mevcut Aion testleri (app + ingredient-card "Aion|B176") 8/8; Playwright tam koşu 336/336.
+- Sürüm 1.1.2-beta.49 (B174 + B175 + B176).
 - Sonraki: **B177** beta.49 (B174–B176) ve kullanıcı önceliği (2) Kıyasla ekranının telefonda Unslop denetimi.
