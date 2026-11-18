@@ -409,3 +409,13 @@ test('B187 telefonda Günlük: yaş/boy/kilo tek satır, başlık en fazla iki s
   await page.locator('.profile-basic [data-personal-field="weight"]').fill('70');
   await expect(page.locator('.profile-basic [data-personal-field="weight"]')).toHaveValue('70');
 });
+
+test('B189 bildirim telefonda ekranın yarısına sıkışmaz: uzun mesaj geniş ve en fazla üç satır, ekrandan taşmaz', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('/');
+  await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  await page.locator('[data-action="ex-add-day"]').click();
+  const t = page.locator('.toast'); await expect(t).toBeVisible();
+  const r = await t.evaluate((e) => { const b = e.getBoundingClientRect(); const lh = parseFloat(getComputedStyle(e).lineHeight); const pad = parseFloat(getComputedStyle(e).paddingTop) * 2; return { w: b.width, lines: Math.round((b.height - pad) / lh), inside: b.left >= 0 && b.right <= innerWidth }; });
+  expect(r.w).toBeGreaterThan(220); expect(r.lines).toBeLessThanOrEqual(3); expect(r.inside).toBe(true);
+});

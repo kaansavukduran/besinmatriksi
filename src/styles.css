@@ -1112,3 +1112,6 @@ button.micro-name:hover { text-decoration-color: currentColor; }
   :root:not([data-ui-scaled="true"]) .profile-basic > label > span { font-size: .85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   :root:not([data-ui-scaled="true"]) .profile-basic input { min-width: 0; padding-left: .5rem; padding-right: .3rem; }
 }
+
+/* B189: bildirim telefonda yuvarlak bir topa dönüşüyordu: left:50% ile küçült-sığdır genişliği ekranın yarısıyla sınırlıydı (~160 px, 5 satır). Genişlik içeriğe göre, en fazla ekran − 32 px; çok satırda yuvarlak dikdörtgen */
+.toast { width: max-content; border-radius: 1.4em; line-height: 1.35; }

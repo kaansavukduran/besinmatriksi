@@ -1057,3 +1057,8 @@
 - Kanıt: `npm test` 168/168 (B188: yapılandırma ve iş akışı denetimi); `playwright test --list` CI=0 ve CI=1 358 test; CI=1 ile hedef test 2/2; release.yml YAML geçerli. Uygulama kodu B187 tam koşusundan (358/358) beri değişmedi.
 - Sürüm 1.1.2-beta.54 (B187 + B188). Yayın kanıtı: v1.1.2-beta.54 pre-release 2026-11-18T19:39:05Z (release.yml run 44378490063 success, ilk denemede; tarayıcı testleri geçti, iz yükleme adımı doğru biçimde atlandı).
 - Sonraki: **B189** beta.54 (B187–B188) ve kullanıcı önceliği (2) Günlük'te günün kaydı kartı (850 px) telefonda denetimi.
+
+## B189 · 2026-11-18 · Bildirim telefonda yuvarlak topa dönüşmüyor
+- Günlük gün kartı denetimi (iPhone SE, 2 kayıt: kart 9373 px; mikro özet 2273, protein 2127, mineral 1525 px açık geliyor; varsayılan açık bölümler testlerle bağlı, bu Forge'da değiştirilmedi). Ekran görüntülerinde asıl kusur: bildirim (toast) ~160 px genişliğinde 5 satırlık koyu bir topa dönüşüp içeriği kapatıyordu (önceki ekran görüntülerinde de vardı). Neden: `left: 50%` + `translateX(-50%)` küçült-sığdır genişliğini ekranın yarısıyla sınırlıyor. → `width: max-content` (en fazla ekran − 32 px), çok satırda yuvarlak dikdörtgen. Telefonda 288 px × 2 satır, masaüstünde tek satır.
+- Kanıt: `npm test` 168/168; build; Playwright B189 2/2 (>220 px, ≤3 satır, ekrandan taşmaz), düzeltme geri alınınca düşer; ekran görüntüsü incelendi; tam koşu aşağıda.
+- Sonraki: **B190** Günlük gün kartında telefonda varsayılan açık bölümler (mikro özet / protein / mineral) ve ilgili testlerin güncellenmesi.
