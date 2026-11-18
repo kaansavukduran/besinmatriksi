@@ -1050,3 +1050,9 @@
 - Yayın: v1.1.2-beta.53 yayımlandı (B186 kaydında kanıt; ilk denemede CI'da kararsız test).
 - Kanıt: `npm test` 167/167; build; Playwright B187 2/2 (üç alan tek satır, ≥60 px, başlık ≤2 satır, yazma çalışır); ekran görüntüsü incelendi; Playwright tam koşu 358/358.
 - Sonraki: **B188** CI'da kararsız çıkan "özel hedef, birimler, tema dosyası" testinin kök nedeni (izleme dosyası yok; olası bildirim / yeniden çizim yarışı) ve sağlamlaştırma.
+
+## B188 · 2026-11-18 · CI kararsız test: yeniden deneme + iz yükleme
+- beta.53 ilk CI koşusunda "özel hedef, birimler, tema dosyası…" (masaüstü) kJ düğmesine tıklarken 30 sn takıldı. Yerelde yeniden üretilemedi: --repeat-each 10 (20/20) ve CPU 8× yavaşlatılmış adım adım betik (6/6, tıklama 320–460 ms). release.yml düşen testin izlerini yüklemiyordu (ci.yml yüklüyordu) → kök neden kanıtı yok.
+- Playwright CI'da `retries: 1` (yerelde 0): kararsız test "flaky" olarak raporlanır, gizlenmez; CI'da iz yalnız ilk başarısızlıkta saklanır (`retain-on-first-failure`). release.yml'e `if: failure()` ile `test-results/` yükleme (7 gün). Sonraki kararsızlıkta iz incelenip kök neden düzeltilecek.
+- Kanıt: `npm test` 168/168 (B188: yapılandırma ve iş akışı denetimi); `playwright test --list` CI=0 ve CI=1 358 test; CI=1 ile hedef test 2/2; release.yml YAML geçerli.
+- Sonraki: **B189** beta.54 (B187–B188) ve kullanıcı önceliği (2) Günlük'te günün kaydı kartı (850 px) telefonda denetimi.

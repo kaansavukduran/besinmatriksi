@@ -41,3 +41,12 @@ test('release eksik pakette durur; adlar, kaynak SHA ve özetler gerçek dosyala
     }
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
+
+test('B188 CI tarayıcı testleri: kararsız test bir kez yeniden denenir, yerelde denenmez; release.yml düşen testin izlerini yükler', async () => {
+  const cfg = fs.readFileSync(new URL('../playwright.config.mjs', import.meta.url), 'utf8');
+  assert.match(cfg, /retries:\s*process\.env\.CI\s*\?\s*1\s*:\s*0/);
+  const wf = fs.readFileSync(new URL('../.github/workflows/release.yml', import.meta.url), 'utf8');
+  const i = wf.indexOf('npm run test:browser'); const j = wf.indexOf('name: Paketle', i);
+  assert.ok(i > 0 && j > i);
+  assert.match(wf.slice(i, j), /if: failure\(\)[\s\S]*path: test-results\//);
+});

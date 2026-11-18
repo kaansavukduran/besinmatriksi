@@ -12,8 +12,9 @@ const extra = [
   { name: 'ipad', use: { ...devices['iPad (gen 7)'] } },
 ];
 export default defineConfig({
-  testDir: './tests/browser', fullyParallel: false, workers: 1, timeout: 30000,
-  use: { baseURL: 'http://127.0.0.1:4173', locale: 'tr-TR', trace: 'retain-on-failure' },
+  // B188: CI'da kararsız bir test bir kez yeniden denenir (Playwright "flaky" diye raporlar, gizlemez); yeniden denemede iz kaydedilir. Yerelde yeniden deneme yok.
+  testDir: './tests/browser', fullyParallel: false, workers: 1, timeout: 30000, retries: process.env.CI ? 1 : 0,
+  use: { baseURL: 'http://127.0.0.1:4173', locale: 'tr-TR', trace: process.env.CI ? 'retain-on-first-failure' : 'retain-on-failure' },
   projects: process.env.PW_BROWSERS === 'all' ? [...base, ...extra] : base,
   webServer: { command: 'npm run preview -- --host 127.0.0.1 --port 4173 --strictPort', url: 'http://127.0.0.1:4173', reuseExistingServer: false },
 });
