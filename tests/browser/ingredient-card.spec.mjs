@@ -326,3 +326,17 @@ test('B181 Ayarlar bölüm şeridi: her karta atlar, aramada gizlenen kartın d�
   await expect(chips.filter({ hasText: 'Aion' })).toBeVisible();
   await expect(chips.filter({ hasText: 'Yedekleme' })).toBeHidden();
 });
+
+test('B182 telefonda yazı tipi kartları iki sütun, adlar sözcük ortasından bölünmez, seçili tam genişlik', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.goto('/'); await page.evaluate(() => document.fonts.ready);
+  await page.locator('[data-action="tab"][data-tab="ayarlar"]').first().click();
+  const r = await page.evaluate(() => {
+    const btns = [...document.querySelectorAll('.fonts .fontbtn')];
+    const cols = new Set(btns.filter((b) => !b.classList.contains('on')).map((b) => Math.round(b.getBoundingClientRect().left))).size;
+    const split = btns.map((b) => b.querySelector('b')).filter((b) => { const r = document.createRange(); r.selectNodeContents(b); return new Set([...r.getClientRects()].map((x) => Math.round(x.top))).size > b.textContent.trim().split(/\s+/).length; }).map((b) => b.textContent);
+    const on = document.querySelector('.fonts .fontbtn.on'); const grid = document.querySelector('.fonts').getBoundingClientRect();
+    return { cols, split, onFull: !on || Math.abs(on.getBoundingClientRect().width - grid.width) < 2, onDesc: !on || getComputedStyle(on.querySelector('small')).display !== 'none' };
+  });
+  expect(r).toEqual({ cols: 2, split: [], onFull: true, onDesc: true });
+});
