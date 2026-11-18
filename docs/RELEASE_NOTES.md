@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 49 · Daha derli toplu ilk ekranlar
+# 🫐 Besin Matriksi 1.1.2 Beta 50 · Telefonda daha rahat Kıyasla
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -21,9 +21,10 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
-- **Arama ilk ekranda:** Keşfet açılınca besin arama kutusu tanıtımın hemen altında; telefonda alt çubuğun arkasında kalmıyor. Gereksiz çift çizgi kalktı.
-- **Günlük Toplam telefonda derli toplu:** Dev başlık tek satıra indi; tarif kartları eşit genişlikte, öğün tablosu ilk ekrana yaklaştı.
-- **Aion ayarları sade:** Aion kapalıyken işe yaramayan seçenekler gizli; açınca boyut, konum ve “Kutlamayı dene” gelir.
+- **Kıyasla telefonda kısa ve öz:** Besin kartları kısaldı (−10 [g] +10 tek satır); tablo telefonda “Temel besin değerleri” ile açılır, “Tümü” tek dokunuşla. Masaüstünde değişiklik yok.
+- **Yana kayan tablolar belli:** Kıyasla ve öğün tablolarının sağ kenarında devamı olduğunu gösteren gölge; sona gelince kaybolur. İlk sütun kayarken yerinde kalır.
+- **Keşfet sekmesi listeye döndürür:** Telefonda besin ayrıntısındayken alttaki “Keşfet”e yeniden dokununca listeye dönersin; arama ve kategori korunur.
+- **Beta 49'dan:** Arama ilk ekranda, derli toplu Günlük Toplam, sade Aion ayarları.
 - **Beta 48'den:** Koleksiyonlar arasında taşıma, sözcük ortasından bölünmeyen sekme adları, temiz İngilizce arayüz.
 - **Beta 47'den:** Karekök ölçekli gram kaydırıcısı (küçük miktarlar kolay), tek satır miktar düğmeleri, Aion'un kontrolleri engellememesi.
 - **Beta 46'dan:** Görünüm profili hedefleri korur, sekmeler arası ayar eşitleme, koleksiyonda USDA besinleri kaybolmaz, sınır bildirimleri, her kaynakta “kaynak 0”, dürüst GOS.
