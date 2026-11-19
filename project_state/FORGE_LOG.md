@@ -1217,4 +1217,17 @@
 - `src/settings-toc.js`: Ayarlar içindekiler (saf işlev) app.js'ten ayrıldı; birim testi. app.js 1.790 satır.
 - app.js'in geri kalanı (liste, detay, tarif, kıyas, günlük) tek bir paylaşılan durum nesnesi `S` ve `render()` ile sıkı bağlı; davranışsız bölmek için önce durum modülü (`state.js`) gerekir. Ayrı Forge olarak planlandı.
 - Kanıt: `npm test` 181/181 (styles dizini, settings-toc); Playwright tam koşu 47: 377/377.
-- Sonraki: **B215** beta.58 yayını (B212–B214) ve state.js ile app.js bölmenin ilk adımı.
+- Sonraki: **B215**.
+- Yayın kanıtı (B196–B211): v1.1.2-beta.57 pre-release 2026-11-19T17:03:54Z (release.yml run 44567233736 success, ilk denemede; kaynak 9991dc6; 23 dosya, yeni `…-offline-lite.html` 4,5 MB). CI 251 (9991dc6): Chromium işi yeşil; tarayıcı uyumu 744 geçti / 4 düştü, dördü de B212'de düzeltilen `mouse.wheel` Aion testleri (iPhone/iPad); yeni B205–B211 testleri Firefox/WebKit/iPhone/iPad'de geçti.
+
+## B215 · 2026-11-19 · Paylaşılan durum src/state.js'te
+- `S` (uygulama durumu) ve açılış yükleme sırası (ayarlar → kişisel → kendi besinler → ayar göçleri → dil → ilk tarif) `src/state.js`'e taşındı; app.js `S`'i içe aktarır. ESM değerlendirme sırası korunsun diye `state.js` app.js'in son içe aktarımı (eski düzende de durum, tüm modüller değerlendirildikten sonra kuruluyordu). `lastSavedPersonal` app.js'te kaldı (yalnız kayıt akışı kullanıyor). Görünüm modülleri artık `S`'e app.js'e dairesel bağımlılık olmadan erişebilir; sonraki adım görünümleri tek tek ayırmak.
+- Kanıt: `npm test` 181/181; build + build:single; Playwright tam koşu 48: 377/377 (davranış değişmedi).
+
+## B216 · 2026-11-19 · Balkan, Slav, Orta Asya, yerli Amerikan tarifleri
+- 7 ev tarifi hesabı (tahmin): ajvar, pasulj (etsiz), vinegret, plov (kuzu etli, hayvansal), succotash ("üç kız kardeş": mısır + lima fasulyesi + bal kabağı), frybread (kızartma varsayımı notta), şopska salatası (beyaz peynirli, hayvansal).
+- Diyet sınıfı: kabartma tozu/karbonat (SR28 1800 grubu, mineral) bitkisel sayılır; frybread vegan filtresine girdi. Kaşa zaten karabuğday "kavrulmuş, pişmiş" biçimi; eş anlamlı eklendi (kaşa, kasha, grechka). Diğer eş anlamlılar: ayvar, shopska, palov/osh/özbek pilavı.
+- Katalog 806 besin. Kanıt: `npm run data`; `npm test` 182/182 (B216 veri testi).
+- Sürüm 1.1.2-beta.58 (B212–B216).
+- Kanıt (B215 + B216 + sürüm): build + build:single; Playwright tam koşu 49: 377/377. CI 252 (d9a05da): Chromium + Firefox/WebKit/iPhone/iPad işleri ikisi de yeşil (Öncelik 0 kapandı).
+- Sonraki: **B217** görünümleri app.js'ten tek tek ayırma (önce Kıyasla: renderCompare + compareResults → src/views/compare.js), ardından yeni yemek turu.

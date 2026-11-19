@@ -17,13 +17,14 @@ export const SEARCH_ALIASES = {
 
   kuru_kayisi: ['kayısı kurusu', 'kükürtlü kuru kayısı', 'dried apricots', 'sulphured', 'sulfured'],
   // B210 dünya mutfağı: yaygın yazımlar
+  karabugday: ['greçka', 'kaşa', 'kasha', 'grechka'], ajvar: ['ayvar'], sopska: ['shopska', 'çoban salatası balkan'], plov: ['palov', 'osh', 'özbek pilavı'],
   maya_ozu: ['vegemite', 'marmite', 'maya ekstresi'], grits: ['mısır lapası'], latke: ['patates mücveri', 'draniki'],
   susi_somonlu: ['sushi', 'salmon roll', 'maki'], susi_california: ['sushi', 'california roll', 'maki'], borscht: ['borş', 'barszcz', 'borsch'],
   pierogi: ['pirogi', 'varenik', 'vareniki'], fasulye_ezmesi_meksika: ['frijoles refritos', 'meksika fasulyesi ezmesi'], congee: ['jook', 'pirinç lapası'],
   gnocchi: ['nyoki'], mercimek_korisi: ['dal', 'dhal', 'daal'], lahana_sarmasi_etli: ['golubtsy', 'kapuska sarma'], injera: ['enjera'], pad_thai: ['padthai', 'tay eriştesi'],
   sebze_tempura: ['tenpura'], pho_etsiz: ['fo çorbası', 'pho'], ramen_vejetaryen: ['ramen'], guacamole: ['avokado ezmesi', 'guakamole'],
   salatalik: ['hıyar'], yabanmersini: ['yabanmersini', 'blueberry'],
-  ahududu: ['frambuaz'], karabugday: ['greçka'], brokoli: ['brokkoli'],
+  ahududu: ['frambuaz'], brokoli: ['brokkoli'],
   keten: ['flaxseed'], kirmizi_fasulye: ['meksika fasulyesi'],
   soya_sutu: ['soya içeceği'], soya_sutu_z: ['soya içeceği'],
   badem_sutu: ['badem içeceği'], pirinc_sutu: ['pirinç içeceği'],

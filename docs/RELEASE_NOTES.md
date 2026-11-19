@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 57 · Dünya mutfağı, grafikler, ferah açılış
+# 🫐 Besin Matriksi 1.1.2 Beta 58 · Dünya mutfağı ikinci tur, düzenli Ayarlar
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -22,6 +22,10 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
+- **21 yeni yemek:** Güney Hint (sambar, dosa, masala dosa, idli, pakora, papad, paratha, palak paneer), Doğu Avrupa (latke, knish, vinegret), Balkanlar (ajvar, pasulj, şopska), Orta Asya (plov), Amerika yerli halkları (succotash “üç kız kardeş”, frybread), Latin (chilaquiles, yuca kızartması), grits, kuru bezelye çorbası.
+- **Ayarlar dört grupta:** Genel · Görünüm ve yazı · Erişilebilirlik · Veri ve matriks. Aradığın bölüm tek bakışta.
+- **Arama:** “vegemite”, “marmite”, “kaşa”, “ayvar”, “osh” gibi yazımlar doğru besini bulur.
+- **Beta 57'den:** 47 dünya ve Anadolu yemeği, vegan filtresinde bitkisel tarifler, tek satırlık kategori şeridi, besin bağlantıları ve Geri tuşu, klavye kısayolları, Kıyasla grafikleri, 10 kg miktar, hafif tek dosya.
 - **Dünya mutfağı (39 yemek, USDA ölçülmüş tarifleri):** suşi, pad thai, köri, samosa, biryani, ramen, pho, bibimbap, borş, pierogi, gazpacho, minestrone, ratatouille, guacamole, tamale, pupusa, fufu, injera ve daha fazlası. Yumurta, balık sosu, ghee, et veya peynir içerenler “Hayvansal” etiketli.
 - **Anadolu mutfağı:** içli köfte (etsiz cevizli ve etli), pilaki, türlü, muhammara, zeytinyağlı biber dolması, nohut yemeği, zeytinyağlı bamya (tarif hesabı, “Tahmin” etiketli).
 - **Vegan filtresi:** malzemeleri tamamen bitkisel olan tarifler (kısır, piyaz, çiğ köfte, pilaki, guacamole…) artık vegan filtresinde görünüyor.

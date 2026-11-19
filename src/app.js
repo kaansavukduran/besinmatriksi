@@ -47,50 +47,12 @@ import { withSettingsToc } from './settings-toc.js';
 import { compareChart, compareAminoChart } from './compare-chart.js';
 import { brandMark, plateIllustration } from './kitchen-art.js';
 import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS, shortcutKey, migrateFontV2, migrateAionOff, applyProfileSettings } from './settings.js';
+import { S } from './state.js'; // B215: en son içe aktarılır; durum, diğer modüller değerlendirildikten sonra kurulur (eski sıra)
 
 const PRESETS = [1, 5, 10, 25, 50, 100, 150, 200, 250, 500, 750, 1000, 2000, 5000, 10000];
 const MAX_G = MAX_GRAMS; // B197: 10 kg
 
-const S = {
-  tab: 'kesfet',
-  searches: loadSearches(),
-  profiles: loadProfiles(),
-  collections: loadCollections(), colPicker: false, sort: 'default', multi: false, picked: [], ingOpen: new Set(), settingsQ: '', rcQ: '', rcSort: 'manual', recent: loadRecent((r) => !!FOODS.find((f) => f.id === r.id)?.forms[r.f]),
-  dietOpen: { ex: false, pk: false },
-  cat: null,
-  extGroup: null,
-  extPage: 0,
-  extError: false,
-  q: '',
-  sel: null, // ref
-  amount: 100,
-  closed: new Set(),
-  settings: loadSettings(),
-  recipes: loadRecipes(),
-  activeRecipe: null,
-  recipeDaily: false,
-  basis: 'total',
-  recipeSource: 'energy',
-  recipeSourcesOpen: false,
-  compare: [],
-  // B179: telefonda Kıyasla temel değerlerle açılır ("Tümü" ~8900 px tablo); masaüstünde geniş tablo sığar, tümü açık
-  cmpQ: '',
-  cmpSection: typeof innerWidth === 'number' && innerWidth <= 600 ? 'temel' : 'all',
-  picker: null, // { target, cat, q, sel, amount }
-  customEdit: null, // { id?, name, liquid, portion, v: {} }
-  themeEditor: null,
-  efsaTableOpen: false,
-  personal: null, personalDraft: null, personalReadError: false, personalDay: localDay(), personalDayAuto: true, consumedOnly: false, personalSource: 'energy', personalSourceOpen: false, personalUndo: null,
-};
-const personalLoaded = loadPersonal();
-let lastSavedPersonal = structuredClone(personalLoaded.state);
-S.personal = personalLoaded.state; S.personalDraft = structuredClone(S.personal.profile); S.personalReadError = personalLoaded.error;
-setCustomFoods(loadCustom());
-{ const m = migrateAionOff(migrateFontV2(S.settings)); if (m !== S.settings) { S.settings = m; saveSettings(S.settings); } }
-S.amount = S.settings.defaultAmount;
-setLanguage(preferredLanguage(S.settings.language)); // varsayılan metinler doğru dilde oluşsun
-if (!S.recipes.length) S.recipes = [newRecipe(L("İlk tarifim"))];
-S.activeRecipe = S.recipes[0].id;
+let lastSavedPersonal = structuredClone(S.personal); // B215: durum src/state.js'te
 
 const $ = (sel, el = document) => el.querySelector(sel);
 const app = () => $('#app');

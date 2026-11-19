@@ -119,9 +119,10 @@ const ffByNdb = new Map();
 // tatlandırıcılarda bal/jelatin, içeceklerde süt elenir). Unlu mamuller (1800) içerik belirsiz olduğu için kabul edilmez.
 const PLANT_GRPS = new Set(['0200', '0400', '0900', '1100', '1200', '1400', '1600', '1900', '2000']);
 const NOT_PLANT = /\b(lard|tallow|butter|ghee|chicken fat|fish oil|egg|eggs|honey|gelatin|whey|milk chocolate|cheese|cream|yogurt|animal)\b|(?<!(almond|soy|coconut|oat|rice) )\bmilk\b/i;
+const LEAVENING = new Set(['18369', '18371', '18372']); // kabartma tozu / karbonat (mineral)
 function recipeAllPlant(food) {
   if (!food.recipe || food.animal) return false;
-  return food.recipe.every(([code]) => { const d = des.get(code); return !!d && PLANT_GRPS.has(d.grp) && !NOT_PLANT.test(d.long); });
+  return food.recipe.every(([code]) => { const d = des.get(code); return !!d && (LEAVENING.has(code) || PLANT_GRPS.has(d.grp)) && !NOT_PLANT.test(d.long); });
 }
 // ---------- USDA FNDDS 2021-2023 (CC0): SR28'de kaydı olmayan hazır içecekler (Türk kahvesi, bitkisel sütlü latte...) ----------
 const fndds = new Map(JSON.parse(gunzipSync(fs.readFileSync(path.join(root, 'data/raw/USDA_FNDDS_2021-2023_SUBSET.json.gz'))).toString('utf8')).map((f) => [f.code, f]));

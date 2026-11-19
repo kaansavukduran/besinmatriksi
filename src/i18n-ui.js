@@ -1005,5 +1005,12 @@ export const UI_EN = {
  "Görünüm ve yazı": "Look & type",
  "Erişilebilirlik": "Accessibility",
  "Veri ve matriks": "Data & matrix",
- "Diğer": "Other"
+ "Diğer": "Other",
+ "Ölçüm değil, tarif hesabı (tahmin): %55 kırmızı biber (közlenmiş yerine haşlanmış USDA kaydı) + %20 patlıcan + %15 ayçiçek yağı + sarımsak, sirke, tuz (USDA kayıtlarından).": "Not a measurement; a recipe calculation (estimate): 55% red pepper (boiled USDA record in place of roasted) + 20% aubergine + 15% sunflower oil + garlic, vinegar, salt (from USDA records).",
+ "Ölçüm değil, tarif hesabı (tahmin), pişmiş ağırlıkla: %52 haşlanmış kuru fasulye + soğan, havuç, ayçiçek yağı, toz kırmızı biber, sarımsak, salça, su, tuz. Geleneksel tarifte füme et de kullanılır; bu etsiz türüdür.": "Not a measurement; a recipe calculation (estimate) by cooked weight: 52% boiled white beans + onion, carrot, sunflower oil, paprika, garlic, tomato paste, water, salt. Traditional recipes also use smoked meat; this is the meatless version.",
+ "Ölçüm değil, tarif hesabı (tahmin): haşlanmış pancar, patates, havuç + salatalık turşusu, lahana turşusu, soğan, ayçiçek yağı (USDA kayıtlarından).": "Not a measurement; a recipe calculation (estimate): boiled beetroot, potato, carrot + dill pickles, sauerkraut, onion, sunflower oil (from USDA records).",
+ "Ölçüm değil, tarif hesabı (tahmin), pişmiş ağırlıkla: %50 pirinç pilavı + %18 kuzu eti + %14 havuç + soğan, %8 ayçiçek yağı, sarımsak, kimyon, tuz (USDA kayıtlarından).": "Not a measurement; a recipe calculation (estimate) by cooked weight: 50% cooked rice + 18% lamb + 14% carrot + onion, 8% sunflower oil, garlic, cumin, salt (from USDA records).",
+ "Ölçüm değil, tarif hesabı (tahmin): Kuzey Amerika yerli halklarının 'üç kız kardeş' bitkileri: %35 mısır + %30 lima fasulyesi + %25 bal kabağı + soğan, ayçiçek yağı (USDA kayıtlarından).": "Not a measurement; a recipe calculation (estimate): the 'three sisters' crops of Indigenous North American peoples: 35% corn + 30% lima beans + 25% winter squash + onion, sunflower oil (from USDA records).",
+ "Ölçüm değil, tarif hesabı (tahmin): un, su, kabartma tozu, tuz; ayçiçek yağında kızartma. Emilen yağ %15, su kaybı %15 varsayıldı.": "Not a measurement; a recipe calculation (estimate): flour, water, baking powder, salt; fried in sunflower oil. 15% absorbed oil and 15% water loss assumed.",
+ "Ölçüm değil, tarif hesabı (tahmin): domates, salatalık, biber, soğan, %12 beyaz peynir (feta USDA kaydı), zeytinyağı, sirke (USDA kayıtlarından).": "Not a measurement; a recipe calculation (estimate): tomato, cucumber, pepper, onion, 12% white cheese (USDA feta record), olive oil, vinegar (from USDA records)."
 };

@@ -454,3 +454,10 @@ test('B210/B211 dünya ve Anadolu yemekleri: FNDDS kaynağı, hayvansal işaret,
     assert.ok(Object.values(fm.s).every((t) => t === 'r'), id + ' tarif tahmini etiketi');
   }
 });
+
+test('B216 Balkan/Slav/Orta Asya/yerli Amerikan tarifleri: tarif etiketi, diyet sınıfı, kabartma tozu bitkisel', () => {
+  const by = (id) => DB.foods.find((f) => f.id === id);
+  for (const id of ['ajvar', 'pasulj', 'vinegret', 'succotash', 'frybread']) { assert.equal(by(id).dietary.kind, 'plant', id); assert.ok(Object.values(by(id).forms[0].s).every((t) => t === 'r'), id); }
+  for (const id of ['plov', 'sopska']) { assert.equal(by(id).animal, true, id); assert.notEqual(by(id).dietary.kind, 'plant', id); }
+  assert.ok(by('frybread').forms[0].v.energy > 300 && by('frybread').forms[0].v.energy < 450); // kızartma varsayımı makul aralıkta
+});
