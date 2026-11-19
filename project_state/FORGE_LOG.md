@@ -1089,3 +1089,8 @@
 - Kanıt: `npm test` 170/170 (B193: etiketler, görsel boyutu, açılış); build + build:single (`dist/og-image.png`, mutlak og:image); 1920/1440 px masaüstü ve yavaşlatılmış açılış ekran görüntüleri incelendi; Playwright tam koşu 360/360.
 - Sürüm 1.1.2-beta.55 (B189–B193).
 - Sonraki: **B194** beta.55 (B190–B193) ve CoFID eşlemesi üçüncü tur.
+
+## B194 · 2026-11-19 · Kıyasla'da doğrudan arama (Kaan: "2 besini kıyaslayacaktım, bulamadım")
+- Kıyasla sekmesinde besin eklemenin tek yolu küçük "＋ Besin ekle" kutusu ve açılan seçici penceresiydi; sekme boşken ne yapılacağı belli değildi. Sekmenin en üstüne görünür arama kutusu: yazarken (yeniden çizmeden, odak kaybolmadan) en fazla 10 sonuç, her biçim ayrı satır (ör. Nohut · Kuru / Haşlanmış / Konserve, kcal ile); dokununca varsayılan miktarla eklenir, kutu boşalır ve odakta kalır; eklenmiş biçim ✓ ve pasif; 4 besinde arama yerine "birini çıkar" uyarısı. Boşken kısa yönlendirme. Eski seçici penceresi duruyor.
+- Kanıt: `npm test` 170/170; build; Playwright B194 2/2 (iki besin → tablo, eklenmiş biçim pasif, 4'te arama kalkar); iPhone SE ve 1440 px ekran görüntüleri incelendi; tam koşu aşağıda.
+- Sonraki: **B195** veri boşlukları (Kaan: eksikleri bul ve tamamla): CoFID eşlemesi genişletme + yeni serbest kaynak araması.

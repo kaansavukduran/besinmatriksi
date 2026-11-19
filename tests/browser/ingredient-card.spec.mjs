@@ -419,3 +419,22 @@ test('B189 bildirim telefonda ekranın yarısına sıkışmaz: uzun mesaj geniş
   const r = await t.evaluate((e) => { const b = e.getBoundingClientRect(); const lh = parseFloat(getComputedStyle(e).lineHeight); const pad = parseFloat(getComputedStyle(e).paddingTop) * 2; return { w: b.width, lines: Math.round((b.height - pad) / lh), inside: b.left >= 0 && b.right <= innerWidth }; });
   expect(r.w).toBeGreaterThan(220); expect(r.lines).toBeLessThanOrEqual(3); expect(r.inside).toBe(true);
 });
+
+test('B194 Kıyasla sekmesinde doğrudan arama: yaz, dokun, iki besin yan yana; 4 sınırında arama yerine uyarı', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('[data-action="tab"][data-tab="karsilastir"]').first().click();
+  const q = page.locator('#cmp-q');
+  await expect(q).toBeVisible();
+  await q.fill('nohut');
+  await expect(page.locator('[data-action="cmp-pick"]').first()).toContainText('Nohut');
+  await page.locator('[data-action="cmp-pick"]').first().click();
+  await expect(q).toHaveValue('');
+  await q.fill('yulaf'); await page.locator('[data-action="cmp-pick"]').first().click();
+  await expect(page.locator('.cmp-col')).toHaveCount(2);
+  await expect(page.locator('#cmp-table table')).toHaveCount(1);
+  await q.fill('nohut');
+  await expect(page.locator('[data-action="cmp-pick"]').first()).toBeDisabled(); // zaten eklenmiş biçim
+  for (const id of ['elma', 'muz']) { await q.fill(id); await page.locator('[data-action="cmp-pick"]:not([disabled])').first().click(); }
+  await expect(page.locator('.cmp-col')).toHaveCount(4);
+  await expect(page.locator('#cmp-q')).toHaveCount(0);
+});

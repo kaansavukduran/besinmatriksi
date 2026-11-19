@@ -1115,3 +1115,17 @@ button.micro-name:hover { text-decoration-color: currentColor; }
 
 /* B189: bildirim telefonda yuvarlak bir topa dönüşüyordu: left:50% ile küçült-sığdır genişliği ekranın yarısıyla sınırlıydı (~160 px, 5 satır). Genişlik içeriğe göre, en fazla ekran − 32 px; çok satırda yuvarlak dikdörtgen */
 .toast { width: max-content; border-radius: 1.4em; line-height: 1.35; }
+
+/* B194: Kıyasla'da doğrudan arama */
+.cmp-search { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: var(--pad); margin-bottom: 10px; }
+.cmp-search .field { margin: 0; }
+.cmp-search input { width: 100%; font-size: 1.05rem; }
+.cmp-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 6px; margin-top: 8px; }
+.cmp-result { display: flex; align-items: center; gap: .6rem; text-align: left; min-height: var(--tap); padding: .45rem .6rem; border: 1px solid var(--line); border-radius: calc(var(--radius) * .7); background: var(--card); color: var(--fg); font: inherit; cursor: pointer; }
+.cmp-result:hover:not(:disabled) { border-color: var(--acc); }
+.cmp-result > span:nth-child(2) { flex: 1; min-width: 0; }
+.cmp-result b { display: block; overflow-wrap: anywhere; }
+.cmp-result small { color: var(--muted); }
+.cmp-result .cmp-plus { font-weight: 700; color: var(--acc); }
+.cmp-result.on { background: var(--card2); }
+.cmp-result:disabled { cursor: default; opacity: .75; }

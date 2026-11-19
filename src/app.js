@@ -70,6 +70,7 @@ const S = {
   recipeSourcesOpen: false,
   compare: [],
   // B179: telefonda Kıyasla temel değerlerle açılır ("Tümü" ~8900 px tablo); masaüstünde geniş tablo sığar, tümü açık
+  cmpQ: '',
   cmpSection: typeof innerWidth === 'number' && innerWidth <= 600 ? 'temel' : 'all',
   picker: null, // { target, cat, q, sel, amount }
   customEdit: null, // { id?, name, liquid, portion, v: {} }
@@ -572,6 +573,22 @@ function renderRecipeGaps(r, daily = false) {
 }
 
 // ---------------------------------------------------------------- KARŞILAŞTIR
+// B194: Kıyasla'da doğrudan arama. Her biçim ayrı sonuç (ör. Nohut · Kuru, Nohut · Haşlanmış); dokununca 100 g eklenir.
+function compareResults(q) {
+  const k = (q || '').trim();
+  if (!k) return '';
+  const rows = [];
+  for (const f of search(k).curated) {
+    f.forms.forEach((fm, i) => { if (fm.v && Object.keys(fm.v).length && rows.length < 10) rows.push({ f, i, fm }); });
+    if (rows.length >= 10) break;
+  }
+  if (!rows.length) return `<p class="empty">${L("Bu aramaya uyan besin yok.")}</p>`;
+  return `<div class="cmp-results" role="list">${rows.map(({ f, i, fm }) => {
+    const on = S.compare.some((c) => c.ref.t === 'c' && c.ref.id === f.id && c.ref.f === i);
+    return `<button class="cmp-result ${on ? 'on' : ''}" role="listitem" data-action="cmp-pick" data-id="${esc(f.id)}" data-f="${i}" ${on || S.compare.length >= 4 ? 'disabled' : ''}><span class="fi" aria-hidden="true">${foodIcon(f, 24)}</span><span><b>${esc(foodName(f))}</b><small>${esc(formName(fm.label))}${fm.v.energy != null ? ` · ${fmtNum(fm.v.energy)} kcal` : ''}</small></span><span class="cmp-plus" aria-hidden="true">${on ? '✓' : '＋'}</span></button>`;
+  }).join('')}</div>`;
+}
+
 function renderCompare() {
   const items = S.compare.map((c, i) => ({ c, i, item: resolve(c.ref) })).filter((x) => x.item); // i: S.compare'deki gerçek konum
   const cols = items.map(({ c, i, item }) => `<div class="cmp-col">
@@ -627,7 +644,8 @@ function renderCompare() {
   } else {
     table = `<p class="empty">${L("İki ile dört besini yan yana koy. Keşfet'te “Karşılaştır”a tıklayarak da ekleyebilirsin.")}</p>`;
   }
-  return `<div class="compare"><div class="cmp-cols">${cols}${addBtn}</div><div id="cmp-table">${table}</div></div>`;
+  const searchBox = S.compare.length < 4 ? `<div class="cmp-search"><label class="field"><span>${L("Kıyaslamak için besin ara")}</span><input id="cmp-q" type="search" autocomplete="off" value="${esc(S.cmpQ || '')}" placeholder="${L("ör. nohut, mercimek, yulaf")}"></label><div id="cmp-found">${compareResults(S.cmpQ)}</div>${!items.length && !S.cmpQ ? `<p class="hint">${L("İki ya da daha fazla besini yan yana görmek için ara ve dokun (en fazla 4).")}</p>` : ''}</div>` : `<p class="hint">${L("En fazla 4 besin kıyaslanır; yeni eklemek için birini çıkar.")}</p>`;
+  return `<div class="compare">${searchBox}<div class="cmp-cols">${cols}${addBtn}</div><div id="cmp-table">${table}</div></div>`;
 }
 
 // ---------------------------------------------------------------- AYARLAR
@@ -1325,6 +1343,12 @@ async function onClick(e) {
     case 'rc-cw-set': { const rc = activeRecipe(); rc.cookedWeight = rc.items.reduce((a, i) => a + i.g, 0); persistRecipes(); render(); break; }
     case 'rc-cw-clear': { const rc = activeRecipe(); rc.cookedWeight = null; persistRecipes(); render(); break; }
     // karşılaştır
+    case 'cmp-pick': {
+      const f = FOODS.find((x) => x.id === b.dataset.id); const i = Number(b.dataset.f);
+      if (!f || !f.forms[i]) break;
+      if (addToCompare({ t: 'c', id: f.id, f: i }, S.settings.defaultAmount || 100)) { S.cmpQ = ''; render(); setTimeout(() => document.getElementById('cmp-q')?.focus(), 0); }
+      break;
+    }
     case 'cmp-add': S.picker = { target: 'compare', cat: null, q: '', sel: null, amount: S.settings.defaultAmount }; render(); break;
     case 'cmp-del': S.compare.splice(+b.dataset.i, 1); [...S.ingOpen].filter((k) => k.startsWith('cmp:')).forEach((k) => S.ingOpen.delete(k)); render(); break;
     case 'cmp-sec': S.cmpSection = b.dataset.s; render(); break;
@@ -1510,6 +1534,7 @@ function onInput(e) {
   const t = e.target;
   if (t.id === 'rc-q') { S.rcQ = t.value; applyRecipeFilter(); return; }
   if (t.id === 'settings-q') { S.settingsQ = t.value; applySettingsFilter(); return; }
+  if (t.id === 'cmp-q') { S.cmpQ = t.value; const box = document.getElementById('cmp-found'); if (box) box.innerHTML = compareResults(S.cmpQ); return; }
   if (t.dataset.personalField) { updatePersonalDraft(t); return; }
   if (t.dataset.settingRange || t.dataset.settingNumber) { updateNumericSetting(t); return; }
   if (S.themeEditor && ['theme-color-picker', 'theme-color-hex'].includes(t.id)) {
