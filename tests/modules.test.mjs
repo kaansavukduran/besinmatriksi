@@ -20,3 +20,18 @@ test('B212/B214 ayar içindekiler: kartlara kimlik, bilinen başlıklar gruplara
   assert.deepEqual(groups, ['Görünüm ve yazı', 'Veri ve matriks', 'Diğer']);
   assert.equal((html.match(/data-action="settings-jump"/g) || []).length, 3);
 });
+
+test('B218 görünüm modülleri: her çağrılan ad içe aktarılmış ya da tanımlı (yorum/metin dışı)', () => {
+  const globals = new Set(['String', 'Number', 'Math', 'Object', 'Array', 'JSON', 'Map', 'Set', 'Boolean', 'Date', 'Intl', 'RegExp', 'Promise', 'window', 'document', 'structuredClone', 'matchMedia', 'encodeURIComponent', 'if', 'for', 'while', 'switch', 'return', 'typeof', 'catch', 'function']);
+  for (const file of ['compare.js', 'amount.js', 'common.js']) {
+    let src = fs.readFileSync(new URL(`../src/views/${file}`, import.meta.url), 'utf8');
+    src = src.replace(/\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '');
+    // şablon metnin düz kısmını at, ${…} ifadelerini koru
+    src = src.replace(/`(?:[^`\\]|\\.)*`/gs, (m) => ' ' + [...m.matchAll(/\$\{((?:[^{}]|\{[^{}]*\})*)\}/g)].map((x) => x[1]).join(' ; ') + ' ').replace(/(["'])(?:\\.|(?!\1).)*\1/g, '""');
+    const known = new Set([...src.matchAll(/import \{([^}]+)\}/g)].flatMap((m) => m[1].split(',').map((x) => x.trim().split(' as ').pop())));
+    for (const m of src.matchAll(/(?:function|const|let|var)\s+([A-Za-z_$][\w$]*)/g)) known.add(m[1]);
+    for (const m of src.matchAll(/\(([^()]*)\)\s*=>/g)) for (const x of m[1].split(/[,{}\s=[\]]+/)) if (x) known.add(x);
+    const missing = [...src.matchAll(/(?<![.\w$])([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1]).filter((x) => !known.has(x) && !globals.has(x) && x !== 'L');
+    assert.deepEqual([...new Set(missing)], [], file);
+  }
+});

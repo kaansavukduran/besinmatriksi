@@ -48,10 +48,11 @@ import { compareChart, compareAminoChart } from './compare-chart.js';
 import { brandMark, plateIllustration } from './kitchen-art.js';
 import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS, shortcutKey, migrateFontV2, migrateAionOff, applyProfileSettings } from './settings.js';
 import { S } from './state.js';
+import { catIcon, foodIcon, persona, isPhone } from './views/common.js';
+import { PRESETS, MAX_G, amountControls, perServing, miniAmount } from './views/amount.js';
+import { compareResults, renderCompare } from './views/compare.js';
 import { shiftMonth } from './history.js'; // B215: en son içe aktarılır; durum, diğer modüller değerlendirildikten sonra kurulur (eski sıra)
 
-const PRESETS = [1, 5, 10, 25, 50, 100, 150, 200, 250, 500, 750, 1000, 2000, 5000, 10000];
-const MAX_G = MAX_GRAMS; // B197: 10 kg
 
 let lastSavedPersonal = structuredClone(S.personal); // B215: durum src/state.js'te
 
@@ -153,42 +154,8 @@ function foodCategoryPath(food){
  if(parent&&child&&parent.id!==child.id)return categoryName(parent)+' › '+categoryName(child);
  return parent?categoryName(parent):catName(food.cat);
 }
-const catIcon = (id) => (S.settings.emoji ? CATEGORIES.find((c) => c.id === id)?.icon || '📦' : '');
-// Besinin kendi simgesi; yoksa kategori simgesi
-const foodIcon = (f, size = 28) => (S.settings.emoji ? foodArt(f?.id, size) || FOOD_ICONS[f?.id] || catIcon(f?.cat) : '');
 
-function amountControls(target, g, portions = [], { compact = false, liquid = false } = {}) {
-  const oz = S.settings.amountUnit === 'oz';
-  const unit = oz ? `oz (≈ ${fmtNum(g)} g)` : liquid ? 'g ≈ mL' : 'g';
-  const presets = compact ? [10, 25, 50, 100, 200, 500, 1000, 2000, 5000] : PRESETS;
-  return `<div class="amount ${compact ? 'compact' : ''}" data-amount="${esc(target)}">
-    <div class="amt-main">
-      <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="-10" aria-label="${L("10 gram azalt")}">−10</button>
-      <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="-1" aria-label="${L("1 gram azalt")}">−1</button>
-      <output class="amt-val" data-amtval="${esc(target)}"><b>${fmtNum(oz ? g / 28.349523125 : g)}</b> <span class="amount-unit">${unit}</span></output>
-      <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="1" aria-label="${L("1 gram artır")}">+1</button>
-      <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="10" aria-label="${L("10 gram artır")}">+10</button>
-    </div>
-    <input type="range" class="slider" min="0" max="${SLIDER_STEPS}" step="1" value="${gramsToSlider(g, MAX_G)}" style="--fill:${gramsToSlider(g, MAX_G) / SLIDER_STEPS * 100}%" data-slider="${esc(target)}" aria-valuetext="${fmtNum(g)} g" aria-label="${L("Miktar (gram)")}">
-    ${compact ? '' : `<div class="slider-scale" aria-hidden="true">${[[1, '1 g'], [100, '100'], [1000, '1 kg'], [MAX_G, '10 kg']].map(([v, t]) => `<span style="left:${gramsToSlider(v, MAX_G) / SLIDER_STEPS * 100}%">${t}</span>`).join('')}</div>`}
-    <div class="presets">${presets.map((p) => `<button class="pchip ${p === g ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p}">${kgLabel(p)}</button>`).join('')}</div>
-    ${portions.length ? `<div class="portions">${portions.map((p) => `<button class="pchip por ${Math.abs(p.g - g) < 0.01 ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p.g}" title="${esc(p.r ? L("Tarif porsiyonu; ölçüm değil") : p.d ? L("USDA “{u}” ölçüsünden hacimle hesaplandı; yaklaşık", { u: p.src }) : p.en + ' (USDA)')}">${esc(getLanguage() === 'en' && p.en ? p.en : p.label)} · ${p.d ? '≈ ' : ''}${fmtNum(p.g)} g</button>`).join('')}</div>` : ''}
-  </div>`;
-}
 
-// Tarif malzemesi kapalıyken tek satır: −10 · gram · +10 · porsiyon başı · Ayarla
-function perServing(g, servings) {
-  return servings > 1 ? `<span class="per-serv" data-perserv="${servings}">${L("porsiyon başı {g} g", { g: fmtNum(g / servings) })}</span>` : '';
-}
-function miniAmount(target, g, servings, id, name) {
-  return `<div class="amount mini" data-amount="${esc(target)}">
-    <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="-10" aria-label="${esc(L("{n}: 10 gram azalt", { n: name }))}">−10</button>
-    <output class="amt-val"><b>${fmtNum(g)}</b> <span class="amount-unit">g</span></output>
-    <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="10" aria-label="${esc(L("{n}: 10 gram artır", { n: name }))}">+10</button>
-    ${perServing(g, servings)}
-    <button class="btn ghost ing-adjust" data-action="ing-open" data-id="${esc(id)}" aria-expanded="false">⚙ ${L("Ayarla")}</button>
-  </div>`;
-}
 
 function foodButton(f, action, extra = '') {
   const multi = S.multi && action === 'ex-pick', on = multi && S.picked.includes(f.id);
@@ -454,12 +421,6 @@ function persistRecipes() {
   return true;
 }
 
-// Temel değer yüzdeleri için kişi: profilde cinsiyet ve enerji tahmini varsa onlar, yoksa ortalama kadın/erkek
-function persona() {
-  const p = S.personal?.profile || {};
-  let energy = null; try { const e = energyEstimate(p); if (e.status === 'ready') energy = e.daily; } catch {}
-  return { sex: ['female', 'male'].includes(p.sex) ? p.sex : null, energy };
-}
 
 function recipeResult(rc) {
   const scaled = rc.items.map((it) => { const item = resolve(it.ref); return item ? scaleItem(item, it.g) : { v: {}, s: {}, grams: it.g, name: refKey(it.ref) }; });
@@ -563,82 +524,7 @@ function renderRecipeGaps(r, daily = false) {
 
 // ---------------------------------------------------------------- KARŞILAŞTIR
 // B194: Kıyasla'da doğrudan arama. Her biçim ayrı sonuç (ör. Nohut · Kuru, Nohut · Haşlanmış); dokununca 100 g eklenir.
-function compareResults(q) {
-  const k = (q || '').trim();
-  if (!k) return '';
-  const rows = [];
-  for (const f of search(k).curated) {
-    f.forms.forEach((fm, i) => { if (fm.v && Object.keys(fm.v).length && rows.length < 10) rows.push({ f, i, fm }); });
-    if (rows.length >= 10) break;
-  }
-  if (!rows.length) return `<p class="empty">${L("Bu aramaya uyan besin yok.")}</p>`;
-  return `<div class="cmp-results" role="list">${rows.map(({ f, i, fm }) => {
-    const on = S.compare.some((c) => c.ref.t === 'c' && c.ref.id === f.id && c.ref.f === i);
-    return `<button class="cmp-result ${on ? 'on' : ''}" role="listitem" data-action="cmp-pick" data-id="${esc(f.id)}" data-f="${i}" ${on || S.compare.length >= 4 ? 'disabled' : ''}><span class="fi" aria-hidden="true">${foodIcon(f, 24)}</span><span><b>${esc(foodName(f))}</b><small>${esc(formName(fm.label))}${fm.v.energy != null ? ` · ${fmtNum(fm.v.energy)} kcal` : ''}</small></span><span class="cmp-plus" aria-hidden="true">${on ? '✓' : '＋'}</span></button>`;
-  }).join('')}</div>`;
-}
 
-function renderCompare() {
-  const items = S.compare.map((c, i) => ({ c, i, item: resolve(c.ref) })).filter((x) => x.item); // i: S.compare'deki gerçek konum
-  const cols = items.map(({ c, i, item }) => `<div class="cmp-col">
-      <div class="cmp-h"><b><i class="cc-sw s${items.findIndex((x) => x.i === i) + 1}" aria-hidden="true"></i>${esc(item.name)}</b>${item.food && item.food.forms.length > 1 ? `<select class="cmp-form" data-cmpform="${i}" aria-label="${esc(L("{n} için tüketim biçimi", { n: item.name }))}">${item.food.forms.map((fm, k) => `<option value="${k}" ${k === c.ref.f ? 'selected' : ''}>${esc(formName(fm.label))}</option>`).join('')}</select>` : `<span class="muted">${esc(item.formLabel)}</span>`}
-      <button class="btn ghost danger" data-action="cmp-del" data-i="${i}" aria-label="${L("Çıkar")}">✕</button></div>
-      ${S.ingOpen.has('cmp:' + i) ? `${amountControls('cmp:' + i, c.g, item.portions || [], { compact: true, liquid: item.liquid })}<button class="btn ghost" data-action="ing-open" data-id="cmp:${i}" aria-expanded="true">${L("Kapat")}</button>` : miniAmount('cmp:' + i, c.g, 1, 'cmp:' + i, item.name)}
-    </div>`).join('');
-  const addBtn = S.compare.length < 4 ? `<button class="cmp-add" data-action="cmp-add">＋ ${L("Besin ekle")}<br><span class="muted">${S.compare.length}/4</span></button>` : '';
-  let table = '';
-  if (items.length) {
-    const rs = items.map(({ c, item }) => scaleItem(item, c.g));
-    const secChips = [['all', L("Tümü")], ['temel', L("Temel besin değerleri")], ...SECTIONS.filter((s) => s.id !== 'enerji').map((s) => [s.id, L(s.title)])].map(([id, t]) => `<button class="pchip ${S.cmpSection === id ? 'on' : ''}" data-action="cmp-sec" data-s="${id}">${esc(t)}</button>`).join('');
-    const rows = [];
-    let lastSec = null;
-    const pr = persona();
-    const cmpRow = (n, vals, basic = false) => {
-      const max = Math.max(...vals.filter((x) => x != null));
-      const refs = basic && S.settings.showNrv ? dailyRefs(n.key, { ...pr, custom: S.settings.referenceMode === 'custom' ? S.settings.targets : null }) : [];
-      const pcts = (x) => refs.length ? `<small class="cpct">${refs.map((ref) => `${refs.length > 1 ? L(ref.who === 'female' ? "K" : "E") + ' ' : ''}${fmtPct((x / ref.value) * 100)}`).join(' · ')}</small>` : '';
-      return `<tr><th scope="row">${esc(nutrientLabel(n))} <span class="unit">${esc(n.unit)}</span></th>${vals.map((x) => {
-        if (x == null) return `<td class="miss">${L("veri yok")}</td>`;
-        const w = max > 0 ? (x / max) * 100 : 0;
-        return `<td class="${x === max && items.length > 1 && max > 0 ? 'best' : ''}"><span class="cbar"><i style="width:${w.toFixed(1)}%"></i></span>${fmtAmount(x, n.unit, S.settings.precision).n}${fmtAmount(x, n.unit).u !== n.unit ? ' ' + fmtAmount(x, n.unit).u : ''}${pcts(x)}</td>`;
-      }).join('')}</tr>`;
-    };
-    // Önce temel değerler (kalori, protein, karbonhidrat, şeker, yağ, doymuş yağ, lif, tuz), sonra ayrıntılı bölümler
-    const showBasic = S.cmpSection === 'all' || S.cmpSection === 'temel';
-    if (showBasic) {
-      rows.push(`<tr class="secrow basic"><th colspan="${items.length + 1}">${L("Temel besin değerleri")}${S.settings.showNrv ? ` <small class="muted">${pr.sex || S.settings.referenceMode === 'custom' ? L("% günlük referans") : L("% günlük referans · K: ortalama kadın, E: ortalama erkek")}</small>` : ''}</th></tr>`);
-      for (const k of BASIC_KEYS) { const key = k === 'energy' && S.settings.energyUnit === 'kj' ? 'energy_kj' : k; const n = NUTRIENT_BY_KEY[key]; if (n) rows.push(cmpRow(n, rs.map((r) => r.v[key]), key !== 'energy_kj')); }
-    }
-    const secIdx = new Map(SECTIONS.map((x, i) => [x.id, i]));
-    const cmpNutrients = NUTRIENTS.slice().sort((a, b) => secIdx.get(a.section) - secIdx.get(b.section)); // bölüm sırası matrisle aynı
-    for (const n of S.cmpSection === 'temel' ? [] : cmpNutrients) {
-      // Kalori kutusu yalnız kaloriyi gösterir (su, kül, ayrıca kJ satırı yok; kJ seçiliyse kcal yerine kJ)
-      if (['ash', 'water'].includes(n.key)) continue;
-      if (n.section === 'enerji') continue; // kalori Temel besin değerleri satırında
-      if (n.key === 'energy_kj' && S.settings.energyUnit !== 'kj') continue;
-      if (n.key === 'energy_kj' && S.settings.energyUnit === 'kcal') continue;
-      if (n.key === 'energy' && S.settings.energyUnit === 'kj') continue;
-      if (S.cmpSection !== 'all' && n.section !== S.cmpSection) continue;
-      if (S.cmpSection === 'all' && BASIC_KEYS.includes(n.key)) continue;
-      const vals = rs.map((r) => r.v[n.key]);
-      if (vals.every((x) => x == null)) continue;
-      if (n.section !== lastSec) { lastSec = n.section; rows.push(`<tr class="secrow"><th colspan="${items.length + 1}">${esc(L(SECTIONS.find((s) => s.id === n.section).title))}</th></tr>`); }
-      rows.push(cmpRow(n, vals));
-    }
-    const pies = `<section class="card cmp-pies" aria-label="${L("Kalori nereden geliyor?")}"><h3>${L("Kalori nereden geliyor?")}</h3><div class="cmp-pie-row">${items.map(({ c, item }, i) => macroPie(rs[i], S.settings, { compact: true, title: `${item.name} · ${fmtNum(c.g)} g` })).join('')}</div><p class="hint">${L("Kalorinin yüzde kaçının protein, karbonhidrat, yağ ve liften geldiği (Atwater genel faktörleri 4 / 4 / 9 / 2 kcal/g; yaklaşık).")}</p></section>`;
-    const chartRows = BASIC_KEYS.map((k) => NUTRIENT_BY_KEY[k === 'energy' && S.settings.energyUnit === 'kj' ? 'energy_kj' : k]).filter(Boolean).map((n) => ({ key: n.key, label: nutrientLabel(n), unit: n.unit }));
-    const chart = compareChart(items.map(({ item }, j) => ({ name: item.name, form: item.formLabel, v: rs[j].v })), chartRows, (x, unit) => { const a = fmtAmount(x, unit, S.settings.precision); return `${a.n} ${a.u}`; });
-    const aminoChart = compareAminoChart(items.map(({ item }, j) => ({ name: item.name, amino: assessAmino(rs[j]) })), (x) => fmtPct(x), (x) => L(x), S.cmpAminoOpen ?? !isPhone());
-    table = pies + chart + aminoChart + `<div class="presets cmp-secs" role="group" aria-label="${L("Bölüm")}">${secChips}</div>
-      <div class="tablewrap" tabindex="0" role="region" aria-label="${L("Karşılaştırma tablosu (yana kaydırılabilir)")}"><table class="cmp" style="--cmp-n:${items.length}"><thead><tr><th>${L("Bileşen")}</th>${items.map(({ c, item }) => `<th class="cmp-food">${esc(item.name)}<br><span class="muted">${esc(item.formLabel)} · ${fmtNum(c.g)} g</span></th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>
-      <p class="hint">${L("Aynı miktar ve biçimde karşılaştırmak için miktarları eşitle:")} <button class="btn ghost" data-action="cmp-same" data-g="100">${L("Hepsi 100 g")}</button> <button class="btn ghost" data-action="cmp-same" data-g="50">${L("Hepsi 50 g")}</button>. ${L("Satırdaki en yüksek değer vurgulanır; “yüksek = iyi” anlamına gelmez (sodyum, toksik mineraller, antinutrientler).")}</p>
-      <p class="hint basic-src">${L("Temel değer yüzdeleri: PHE Government Dietary Recommendations (2016, 19–64 yaş); şeker için AB 1169/2011. Kişisel ihtiyaç veya tıbbi öneri değildir.")}</p>`;
-  } else {
-    table = `<p class="empty">${L("İki ile dört besini yan yana koy. Keşfet'te “Karşılaştır”a tıklayarak da ekleyebilirsin.")}</p>`;
-  }
-  const searchBox = S.compare.length < 4 ? `<div class="cmp-search"><label class="field"><span>${L("Kıyaslamak için besin ara")}</span><input id="cmp-q" type="search" autocomplete="off" value="${esc(S.cmpQ || '')}" placeholder="${L("ör. nohut, mercimek, yulaf")}"></label><div id="cmp-found">${compareResults(S.cmpQ)}</div>${!items.length && !S.cmpQ ? `<p class="hint">${L("İki ya da daha fazla besini yan yana görmek için ara ve dokun (en fazla 4).")}</p>` : ''}</div>` : `<p class="hint">${L("En fazla 4 besin kıyaslanır; yeni eklemek için birini çıkar.")}</p>`;
-  return `<div class="compare">${searchBox}<div class="cmp-cols">${cols}${addBtn}</div><div id="cmp-table">${table}</div></div>`;
-}
 
 // ---------------------------------------------------------------- AYARLAR
 function renderSettings() {
@@ -938,7 +824,6 @@ export function render() {
   });
 }
 
-const isPhone = () => !!window.matchMedia?.('(max-width: 700px)').matches;
 
 // B206: hızlı klavye: "/" aramaya, ↑/↓ sonuçlarda gezin, Esc aramayı temizler ya da besin detayını kapatır (Enter = düğmeyi aç)
 function quickKeys(e) {

@@ -1242,3 +1242,9 @@
 - Kanıt: `tests/history.test.mjs` (kayıtsız gün ≠ 0, ortalama yalnız bilinen günlerden, ≥ işareti, en sık yenenler sırası, yalnız tüketilenler, ay ızgarası Pzt başlangıç, Şubat 28, yıl geçişi); Playwright B217 (7/30/takvim, 2 kayıtlı gün ortalaması 134 kcal, takvimde 3 dolu gün, gelecek ay pasif, güne git, önceki ay, sık yeneni aç → #/food/muz; boş durum); B072 ve B201 eski grafik testleri değişmeden geçti; iPhone 390 px ve 1280 px ekran görüntüleri incelendi (telefonda hücre sayıları bölünüyordu → kısa yazım).
 - Playwright tam koşu 50: 381/381. Sonraki: **B218** beta.58 yayınını doğrula (B212–B216; takvim beta.59'da), Kıyasla görünümünü src/views/compare.js'e ayır, yeni yemek turu.
 - Yayın kanıtı (B212–B216): v1.1.2-beta.58 pre-release 2026-11-19T18:05:31Z (release.yml run 44579042060 success, ilk denemede; kaynak 7c5e410; 23 dosya). B217 takvimi Pages'te (de10c74), sürüm dosyalarında beta.59 ile gelecek.
+
+## B218 · 2026-11-19 · Kıyasla görünümü ve ortak yardımcılar app.js'ten ayrıldı
+- `src/views/compare.js` (Kıyasla: arama sonuçları + sekme), `src/views/amount.js` (miktar denetimleri, hazır miktarlar, porsiyon, tarifteki kısa denetim), `src/views/common.js` (simge, kişi bilgisi, telefon algısı). Hepsi `S`'i `state.js`'ten alır; app.js'e geri bağımlılık yok. app.js 1.790 → 1.642 satır.
+- Taşırken iki eksik içe aktarma yakalandı (`foodName`, `getLanguage`): derleme bunları yakalamıyordu (ESM'de tanımsız ad çalışırken patlar). Kalıcı koruma: `tests/modules.test.mjs` görünüm modüllerinde çağrılan her adın içe aktarılmış ya da tanımlı olduğunu denetler (yorum ve metin dışı); deneme olarak bir içe aktarma silindiğinde test düştü.
+- Kanıt: `npm test` 185/185; build + build:single; Playwright ilgili 39 test + tam koşu 51: 381/381.
+- Sonraki: **B219** sıradaki görünümü ayır (Ayarlar ya da Tarif) ve yeni yemek turu; 2–3 Forge sonra beta.59 (takvim dahil).
