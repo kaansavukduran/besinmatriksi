@@ -917,5 +917,20 @@ export const UI_EN = {
  "İki ya da daha fazla besini yan yana görmek için ara ve dokun (en fazla 4).": "To see foods side by side, search and tap (up to 4).",
  "En fazla 4 besin kıyaslanır; yeni eklemek için birini çıkar.": "Up to 4 foods can be compared; remove one to add another.",
  "En fazla {m} g (10 kg) seçilebilir.": "At most {m} g (10 kg) can be selected.",
- "1 oz = 28,349523125 g. Seçim düğmeleri ve hesap tabanı 1 g – 10 kg aralığında kalır. Sıvılarda yaklaşık mL, yoğunluk 1 varsayımıdır.": "1 oz = 28.349523125 g. Selectors and the calculation base stay within 1 g – 10 kg. For liquids, mL is approximate, assuming density 1."
+ "1 oz = 28,349523125 g. Seçim düğmeleri ve hesap tabanı 1 g – 10 kg aralığında kalır. Sıvılarda yaklaşık mL, yoğunluk 1 varsayımıdır.": "1 oz = 28.349523125 g. Selectors and the calculation base stay within 1 g – 10 kg. For liquids, mL is approximate, assuming density 1.",
+ "{n} besin daha göster": "Show {n} more foods",
+ "{n} için tüketim biçimi": "Consumption form for {n}",
+ "Son 7 gün {n} ({u})": "Last 7 days: {n} ({u})",
+ "Grafikte gösterilecek değer": "Value shown in the chart",
+ "≥: bazı kayıtlarda bu değerin verisi yok; gerçek değer daha yüksek olabilir.": "≥: some entries have no data for this value; the real value may be higher.",
+ "Temel değerler grafiği": "Key values chart",
+ "Temel değerler, satırdaki en yüksek değere göre": "Key values, scaled to the highest in each row",
+ "Her satır kendi içinde ölçeklenir; tam sayılar aşağıdaki tabloda.": "Each row is scaled on its own; exact numbers are in the table below.",
+ "sınırlayıcı: {a}": "limiting: {a}",
+ "Amino asit profili": "Amino acid profile",
+ "Amino asit profili (% referans)": "Amino acid profile (% of reference)",
+ "Çizgi = referans (%100), mg/g protein, WHO/FAO/UNU 2007. Sindirilebilirlik düzeltmesi yok; ≥ = bazı ölçümler eksik, alt sınır.": "Line = reference (100%), mg/g protein, WHO/FAO/UNU 2007. No digestibility correction; ≥ = some measurements missing, lower bound.",
+ "Bu hafif tek dosya sürümünde 8.000 kaydı aşan USDA tam kataloğu yok; küratörlü besinlerin hepsi var. Tam katalog için uygulamayı ya da büyük tek dosyayı kullan.": "This light single-file version leaves out the full USDA catalogue of 8,000+ records; every curated food is included. For the full catalogue, use the app or the large single file.",
+ "Karambola oksalat ve karamboksin (nörotoksin) içerir; böbrek hastalığı olanlarda zehirlenme bildirilmiştir, bu durumda tüketilmemelidir.": "Carambola contains oxalate and caramboxin (a neurotoxin); poisoning has been reported in people with kidney disease, who should not eat it.",
+ "Çiğ bambu filizi siyanojenik glikozit içerir; haşlanarak tüketilir.": "Raw bamboo shoots contain cyanogenic glycosides; eat them boiled."
 };

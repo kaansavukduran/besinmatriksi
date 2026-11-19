@@ -41,7 +41,7 @@ export const POPULAR = {
   balik: ['hamsi', 'levrek', 'somon', 'uskumru', 'ton_baligi', 'alabalik', 'sardalya', 'midye', 'karides', 'morina'],
 };
 
-export const NICHE = new Set(['jackfruit', 'demirhindi', 'plantain', 'guava', 'carkifelek', 'lici', 'papaya', 'murver', 'bektasi', 'frenk_uzumu',
+export const NICHE = new Set(['karambola', 'kumkat', 'cerimoya', 'nopal', 'lotus_koku', 'bambu_filizi', 'jackfruit', 'demirhindi', 'plantain', 'guava', 'carkifelek', 'lici', 'papaya', 'murver', 'bektasi', 'frenk_uzumu',
   'kudret_nari', 'yonca_filizi', 'collard', 'pak_choi', 'amarant_yapragi', 'manyok', 'taro', 'yam', 'yaban_havucu', 'urad',
   'guvercin_bezelyesi', 'pinto', 'hardal_tohumu',
   'cemen', 'kereviz_tohumu', 'karaman_kimyonu', 'aspir_yagi', 'pirinc_kepegi_yagi', 'hardal_yagi', 'palm_yagi', 'jaggery', 'akcaagac', 'maya_ozu', 'kuru_muz',

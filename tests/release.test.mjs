@@ -29,12 +29,13 @@ test('release eksik pakette durur; adlar, kaynak SHA ve özetler gerçek dosyala
   fs.mkdirSync(input);
   try {
     assert.throws(() => prepareReleaseAssets(input, output, '1.1.2-beta.1', 'a'.repeat(40)), /Paket eksik/);
-    const names = ['App_1.1.2_x64-setup.exe', 'App.msi', 'BesinMatriksi-portable-x64.exe', 'App.AppImage', 'App.deb', 'App.rpm', 'App_universal.dmg', 'BesinMatriksi.apk', 'BesinMatriksi-unsigned.ipa', 'besin-matriksi-tek-dosya.html', 'besin-matriksi-web-pwa.zip', 'LICENSE.txt', 'THIRD_PARTY_NOTICES.txt', 'THIRD_PARTY_NOTICES-RUST-windows.txt', 'THIRD_PARTY_NOTICES-RUST-macos.txt', 'THIRD_PARTY_NOTICES-RUST-linux.txt', 'KURULUM.md', 'ANDROID-SIGNING.txt'];
+    const names = ['App_1.1.2_x64-setup.exe', 'App.msi', 'BesinMatriksi-portable-x64.exe', 'App.AppImage', 'App.deb', 'App.rpm', 'App_universal.dmg', 'BesinMatriksi.apk', 'BesinMatriksi-unsigned.ipa', 'besin-matriksi-tek-dosya.html', 'besin-matriksi-hafif.html', 'besin-matriksi-web-pwa.zip', 'LICENSE.txt', 'THIRD_PARTY_NOTICES.txt', 'THIRD_PARTY_NOTICES-RUST-windows.txt', 'THIRD_PARTY_NOTICES-RUST-macos.txt', 'THIRD_PARTY_NOTICES-RUST-linux.txt', 'KURULUM.md', 'ANDROID-SIGNING.txt'];
     for (const name of names) fs.writeFileSync(path.join(input, name), 'content:' + name);
     const files = prepareReleaseAssets(input, output, '1.1.2-beta.1', 'a'.repeat(40));
     prepareReleaseAssets(input, output, '1.1.2-beta.1', 'a'.repeat(40));
     assert.ok(files.includes('BesinMatriksi-1.1.2-beta.1-windows-x64-Setup.exe'));
     assert.ok(files.includes('BesinMatriksi-1.1.2-beta.1-ios-UNSIGNED-NOT-INSTALLABLE.ipa'));
+    assert.ok(files.includes('BesinMatriksi-1.1.2-beta.1-offline-lite.html')); // B202 hafif tek dosya
     assert.equal(JSON.parse(fs.readFileSync(path.join(output, 'BUILD_INFO.json'))).source_sha, 'a'.repeat(40));
     for (const line of fs.readFileSync(path.join(output, 'SHA256SUMS.txt'), 'utf8').trim().split('\n')) {
       const [digest, file] = line.split('  '); assert.equal(digest, createHash('sha256').update(fs.readFileSync(path.join(output, file))).digest('hex'));
@@ -60,4 +61,14 @@ test('B193 GitHub Pages: bağlantı önizlemesi (Open Graph) ve 1200×630 görse
   assert.equal(png.readUInt32BE(16), 1200); assert.equal(png.readUInt32BE(20), 630);
   assert.match(html, /<div class="boot" role="status">/);
   assert.match(html, /html \{ background: #f7f4ec;/);
+});
+
+test('B202 hafif tek dosya: release.yml derler ve paketler; vite veriyi JSON.parse ile açar', () => {
+  const yml = fs.readFileSync('.github/workflows/release.yml', 'utf8');
+  assert.match(yml, /npm run build:lite/);
+  assert.match(yml, /dist-lite\/besin-matriksi-hafif\.html out\/besin-matriksi-hafif\.html/);
+  const cfg = fs.readFileSync('vite.config.js', 'utf8');
+  assert.match(cfg, /json: \{ stringify: true \}/);
+  assert.match(cfg, /foods-ext-lite\.json/);
+  assert.deepEqual(JSON.parse(fs.readFileSync('src/foods-ext-lite.json', 'utf8')).foods, []);
 });

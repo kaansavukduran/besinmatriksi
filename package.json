@@ -1,7 +1,7 @@
 {
   "name": "besin-matriksi",
   "private": true,
-  "version": "1.1.2-beta.56",
+  "version": "1.1.2-beta.57",
   "description": "Çevrimdışı, özelleştirilebilir bitkisel besin matriksi ve tarif hesaplayıcı",
   "type": "module",
   "scripts": {
@@ -9,6 +9,7 @@
     "dev": "vite",
     "build": "npm run notices && vite build && node scripts/postbuild.mjs",
     "build:single": "npm run notices && vite build --mode single && node scripts/postbuild.mjs --single",
+    "build:lite": "npm run notices && vite build --mode lite && node scripts/postbuild.mjs --lite",
     "preview": "vite preview",
     "test": "node --test tests/*.test.mjs",
     "tauri": "tauri",

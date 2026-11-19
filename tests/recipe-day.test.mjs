@@ -56,3 +56,21 @@ test('7 günlük seri: kayıtsız gün null, kısmi kapsam işaretli, ay geçiş
   assert.equal(s[5].v, null); assert.equal(s[5].n, 0);
   assert.equal(weekSeries(st, '2026-11-12', resolve, 'energy', true)[4].v, null);
 });
+
+import { renderWeek } from '../src/personal-view.js';
+test('B201 haftalık grafik protein/lif seçimi: ölçümsüz gün "—", seçili değer işaretli', () => {
+  const items = { a: { v: { energy: 100, protein: 10 }, s: {} }, b: { v: { energy: 50 }, s: {} } };
+  const resolve = (r) => items[r.id] ? { ...items[r.id], name: r.id, formLabel: '', cat: 'x', portions: [] } : null;
+  const st = { entries: [
+    { id: '1', day: '2026-11-12', ref: { t: 'c', id: 'a', f: 0 }, g: 200, consumed: true },
+    { id: '2', day: '2026-11-11', ref: { t: 'c', id: 'b', f: 0 }, g: 100, consumed: true },
+  ] };
+  const html = renderWeek(st, '2026-11-12', resolve, false, 'protein');
+  assert.match(html, /data-week-key="protein"/);
+  assert.match(html, /aria-pressed="true" data-action="week-key" data-key="protein"/);
+  assert.match(html, /<span class="wk-v">20<\/span>/);
+  assert.equal((html.match(/<span class="wk-v">0<\/span>/g) || []).length, 0); // ölçümsüz gün 0 değil
+  const fib = renderWeek(st, '2026-11-12', resolve, false, 'fiber');
+  assert.equal((fib.match(/<span class="wk-v">—<\/span>/g) || []).length, 7);
+  assert.match(renderWeek(st, '2026-11-12', resolve, false, 'bogus'), /data-week-key="energy"/);
+});

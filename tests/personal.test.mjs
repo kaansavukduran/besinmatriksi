@@ -6,7 +6,7 @@ import { NUTRIENTS } from '../src/nutrients.js';
 import { EN_NUTRIENTS } from '../src/i18n-nutrients.js';
 import { preferredLanguage, setLanguage, t } from '../src/i18n.js';
 import { normalizeSettings, DEFAULT_SETTINGS, resetSettingGroup } from '../src/settings.js';
-import { renderPersonal } from '../src/personal-view.js';
+import { renderPersonal, daySectionOpen } from '../src/personal-view.js';
 const profile = { ...emptyProfile(), age: 35, height: 172, weight: 80, sex: 'male', activity: 1.6, bodyFat: 25 };
 const nutrient = key => NUTRIENTS.find(n => n.key === key);
 test('kalori tahmini birincil denklem katsayılarını ve seçilmiş PAL çarpanını kullanır', () => {
@@ -76,4 +76,14 @@ test('kişisel yedekte özel besin çakışması mevcut ölçümü ezmez; tekrar
   assert.equal(once.state.entries.find(e => e.id === 'new').ref.id, 'new-food');
   const twice = mergePersonalFoods(once.state, incoming, once.custom, [newFood], () => 'unneeded-id');
   assert.equal(twice.custom.length, 2); assert.equal(twice.state.entries.length, 2);
+});
+
+test('B200 Günlük bölümleri: telefonda yalnız Enerji açık, seçim hatırlanır', () => {
+  assert.equal(daySectionOpen('enerji', {}, true), true);
+  assert.equal(daySectionOpen('protein', {}, true), false);
+  assert.equal(daySectionOpen('mineral', {}, true), false);
+  assert.equal(daySectionOpen('protein', {}, false), true);
+  assert.equal(daySectionOpen('vitamin', {}, false), false);
+  assert.equal(daySectionOpen('protein', { protein: true }, true), true);
+  assert.equal(daySectionOpen('enerji', { enerji: false }, true), false);
 });

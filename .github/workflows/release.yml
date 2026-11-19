@@ -30,6 +30,7 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run build:single
+      - run: npm run build:lite
       # apt aynası geçici olarak çözülemezse (runner DNS) sistem paketleri olmadan tarayıcıyı kur; testler yine koşar.
       - run: npx playwright install --with-deps chromium || (echo "::warning::apt bağımlılıkları kurulamadı; yalnız Chromium kuruluyor" && npx playwright install chromium)
       - run: npm run test:browser
@@ -41,6 +42,7 @@ jobs:
         run: |
           mkdir -p out
           cp dist-single/besin-matriksi.html out/besin-matriksi-tek-dosya.html
+          cp dist-lite/besin-matriksi-hafif.html out/besin-matriksi-hafif.html
           cp public/THIRD_PARTY_NOTICES.txt out/THIRD_PARTY_NOTICES.txt
           cp LICENSE out/LICENSE.txt
           cp docs/INSTALL.md out/KURULUM.md

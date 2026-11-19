@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 56 · Kolay kıyaslama, daha dolu veri
+# 🫐 Besin Matriksi 1.1.2 Beta 57 · Grafikler, 10 kg, daha hızlı telefon
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -15,14 +15,22 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 | macOS (Intel + M çip) | `…-macos-universal-unsigned.dmg` | Aç, uygulamayı **Uygulamalar** klasörüne sürükle. İlk açılışta sağ tık → **Aç**. |
 | Linux | `…-linux-x86_64.AppImage` | `chmod +x` ile çalıştırılabilir yap, çift tıkla. (`.deb` / `.rpm` da var.) |
 | **Her bilgisayar (kurulumsuz)** | `…-offline.html` | Çift tıkla, tarayıcıda açılır. İnternet gerekmez. |
+| Yavaş telefon / az yer | `…-offline-lite.html` (~4 MB) | Aynı uygulama; 8.000 kayıtlık USDA tam kataloğu hariç, tüm küratörlü besinler var. |
 | iPhone | Şimdilik `offline.html` dosyasını Dosyalar uygulamasından Safari ile aç | Apple imzası olmadan `.ipa` kurulamaz; App Store/TestFlight sürümü bekliyor. |
 
 `SHA256SUMS.txt` dosya bütünlüğünü, `BUILD_INFO.json` kaynak commit'ini kaydeder.
 
 ## ✨ Bu sürümde yeni
 
-- **Kıyasla'da arama kutusu:** Sekmenin en üstünde “Kıyaslamak için besin ara”. Yaz, sonuçtaki biçime (kuru, haşlanmış, konserve…) dokun; iki besin saniyeler içinde yan yana. En fazla 4 besin.
-- **Daha fazla eksik değer dolduruldu:** UK CoFID 2021'den toplam 161 değer (önceki sürümde 92): iyot, biyotin, selenyum, pantotenik asit, şeker türleri. 106 bitkisel besin biçimi, her biri elle eşlenip su ve protein uyumuyla doğrulandı (ör. mercimek, fasulye, pirinç, bulgur, kinoa, lahana, karnabahar, avokado, mango, fındık, tahin).
+- **Kıyasla'da grafikler:** Temel değerler yan yana çubuklarla (her satır kendi içinde ölçekli, ölçülmemiş değer “veri yok”). Amino asit profili, %100 referans çizgisiyle ve sınırlayıcı amino asitle.
+- **Kıyasla kartında biçim değiştir:** Nohutu kuru ↔ haşlanmış ↔ konserve arasında silmeden değiştir; miktar korunur.
+- **Miktar 10 kg'a kadar:** Kaydırıcı, 2 kg / 5 kg / 10 kg hazır düğmeleri, tarif ve Günlük.
+- **Günlük grafiği:** Son 7 gün için Enerji, Protein veya Lif seç. Telefonda yalnız Enerji bölümü açık gelir; sayfa yarı yarıya kısaldı.
+- **Daha hızlı telefon:** Ana liste parça parça yüklenir (açılış 2,8 → 1,6 sn, yavaş telefon öykünmesinde); miktar değişince matris baştan çizilmez, açık bölümler yerinde kalır.
+- **Yağ asitleri:** USDA'nın C18:2 ve C18:3 toplamları eklendi (eksik oranı %89 → %9).
+- **10 yeni besin:** Karambola, kumkat, çerimoya, hindiba yaprağı, lima fasulyesi, bambu filizi, nopal, İsveç şalgamı, lotus kökü, okara.
+- **Hafif tek dosya:** `…-offline-lite.html`, 4 MB.
+- **Beta 56'dan:** Kıyasla'da arama kutusu, UK CoFID 2021'den 161 eksik değer.
 - **Beta 55'ten:** İlk CoFID değerleri, telefonda düzgün bildirimler, paylaşım önizlemesi ve açılış ekranı.
 - **Beta 54'ten:** Kısa Günlük profil formu.
 - **Beta 53'ten:** Koleksiyonlar kategori şeridinin başında, Aion telefonda tepkili.

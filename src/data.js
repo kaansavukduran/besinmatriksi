@@ -18,11 +18,14 @@ export const FOODS = DB.foods;
 const byId = new Map(FOODS.map((f) => [f.id, f]));
 for (const f of FOODS) f._k = searchKey(f) + ' ' + norm(EN_FOODS[f.id] || ''); // ekranda görünen İngilizce adla da bulunur
 
+const LITE = typeof __LITE__ !== 'undefined' && __LITE__ === true;
 let EXT = null, EXT_REQUEST = null; // geniş katalog tembel yüklenir; eşzamanlı çağrılar aynı yüklemeyi kullanır
 const extByNdb = new Map();
 
 export async function loadExt() {
   if (EXT) return EXT;
+  // B202: hafif tek dosya sürümünde geniş katalog paketlenmez (dal derlemede silinir)
+  if (LITE) return Promise.reject(Object.assign(new Error('lite'), { lite: true }));
   if (!EXT_REQUEST) EXT_REQUEST = import('./data/foods-ext.json').then((mod) => {
     const next = mod.default;
     for (const f of next.foods) { f._k = norm(`${f.en} ${f.sci || ''} ${f.n} ${next.groups[f.g] || ''}`); extByNdb.set(f.n, f); }
@@ -32,6 +35,7 @@ export async function loadExt() {
   return EXT_REQUEST;
 }
 export const extLoaded = () => !!EXT;
+export const isLite = () => LITE;
 export const extMeta = () => EXT?.meta || {};
 export const extGroups = () => (EXT ? EXT.groups : {});
 export const extFoods = () => (EXT ? (SHOW_ANIMAL ? EXT.foods : EXT.foods.filter((f) => !f.a && f.diet !== 'unknown')).filter(eligibleExtFood) : []);

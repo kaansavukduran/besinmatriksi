@@ -1,9 +1,9 @@
 import { catalogGroup, categoryContains, catalogSections, DRINK_GROUPS } from './catalog-tree.js';
 import { DIET_KEYS, dietActive } from './diet.js';
 import { renderDietFilter } from './diet-view.js';
-import { setDietSettings, eligibleFood, eligibleRef, setNicheVisible, extAnimalGroup, setAnimalVisible, visibleFoods, ANIMAL_CATS, foodName, categoryName, formName, CATEGORIES, NAV_CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, extGroups, extMeta, extFoods, setCustomFoods, customFoods } from './data.js';
+import { setDietSettings, eligibleFood, eligibleRef, setNicheVisible, extAnimalGroup, setAnimalVisible, visibleFoods, ANIMAL_CATS, foodName, categoryName, formName, CATEGORIES, NAV_CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, isLite, extGroups, extMeta, extFoods, setCustomFoods, customFoods } from './data.js';
 import { NUTRIENTS, NUTRIENT_BY_KEY, SECTIONS, SOURCES } from './nutrients.js';
-import { scaleItem, aggregate, scaleAggregate } from './calc.js';
+import { scaleItem, aggregate, scaleAggregate, assessAmino } from './calc.js';
 import { combineRecipes } from './recipe-total.js';
 import { renderRecipeTotal } from './recipe-total-view.js';
 import { renderMatrix, basicCard, BASIC_KEYS, macroPie } from './matrix.js';
@@ -41,6 +41,8 @@ import { recipeGaps } from './gaps.js';
 import { similarFoods } from './similar.js';
 import { FOOD_ICONS } from './food-icons.js';
 import { foodArt } from './food-art.js';
+import { morphHtml } from './morph.js';
+import { compareChart, compareAminoChart } from './compare-chart.js';
 import { brandMark, plateIllustration } from './kitchen-art.js';
 import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS, shortcutKey, migrateFontV2, migrateAionOff, applyProfileSettings } from './settings.js';
 
@@ -169,6 +171,7 @@ function requestExtCatalog() {
 
 function catalogPending() {
   requestExtCatalog();
+  if (isLite()) return `<span class="catalog-pending" role="status">${L("Bu hafif tek dosya sürümünde 8.000 kaydı aşan USDA tam kataloğu yok; küratörlü besinlerin hepsi var. Tam katalog için uygulamayı ya da büyük tek dosyayı kullan.")}</span>`;
   return S.extError
     ? `<span class="catalog-pending" role="alert">${L("USDA kataloğu yüklenemedi. Bağlantını kontrol edip sayfayı yenile; kayıtların korunur.")} <button class="btn" data-action="ext-reload">${L("Sayfayı yenile")}</button></span>`
     : `<span class="catalog-pending" role="status">${L("USDA kataloğu yükleniyor…")}</span>`;
@@ -323,6 +326,18 @@ function recentRow(prefix) {
     <div class="presets recent">${items.map(({ r, f }) => `<button class="pchip" data-action="ex-pick-ref" data-ref='${esc(JSON.stringify(r))}'>${S.settings.emoji ? foodIcon(f) + ' ' : ''}${esc(foodName(f))}${f.forms.length > 1 ? ` <span class="muted">${esc(formName(f.forms[r.f].label))}</span>` : ''}</button>`).join('')}</div>`;
 }
 
+// B198: uzun listeler (ana sayfa ~690 kart, ~8700 DOM öğesi) parça parça çizilir; arama/kategori/sıralama değişince sıfırlanır
+const LIST_CHUNK = 60;
+function listLimit(prefix, key) {
+  S.listLimit ||= {};
+  const cur = S.listLimit[prefix];
+  if (!cur || cur.key !== key) S.listLimit[prefix] = { key, n: LIST_CHUNK };
+  return S.listLimit[prefix].n;
+}
+function moreButton(prefix, rest) {
+  return rest > 0 ? `<button class="btn block list-more" data-action="list-more" data-prefix="${prefix}">${L("{n} besin daha göster", { n: fmtNum(rest) })}</button>` : '';
+}
+
 function foodList(prefix, cat, q, extGroup) {
   if (cat?.startsWith('col:')) return collectionList(prefix, cat, q);
   if (cat === 'custom') {
@@ -354,15 +369,22 @@ function foodList(prefix, cat, q, extGroup) {
   let html = (prefix === 'ex' ? catalogHeading(cat, q, res.curated.length + res.ext.length + res.custom.length) : '') + (!q && !cat ? recentRow(prefix) : '') + sortBar(prefix);
   const groupedCategory = ['meyve','sebze','baklagil','icecek'].includes(cat);
   if (prefix==='ex' && groupedCategory && !q && S.sort!=='default') html += `<p class="hint">${L("Her alt başlık kendi içinde sıralanır.")}</p>`;
+  const capped = !cat; // kategori listeleri kısa (≤ ~90); ana sayfa ve kategorisiz aramalar uzun
+  let budget = capped ? listLimit(prefix, `${q}|${S.sort}`) : Infinity;
+  const total = res.curated.length;
   if (groupedCategory || (!q && !cat && S.sort === 'default')) {
     for (const group of catalogSections(res.curated,CATEGORIES)) {
+      if (budget <= 0) break;
       const title=categoryName(group);
       const heading=prefix==='ex' && !q && cat && title===catName(cat) ? '' : `<h3 class="grp">${esc(title)}</h3>`;
-      html += `<section class="catalog-section" data-catalog-group="${group.id}" aria-label="${esc(title)}">${heading}<div class="foods">${(q?group.foods:sortFoods(group.foods)).map(f=>foodButton(f,prefix+'-pick')).join('')}</div></section>`;
+      const gf = (q?group.foods:sortFoods(group.foods)).slice(0, budget); budget -= gf.length;
+      html += `<section class="catalog-section" data-catalog-group="${group.id}" aria-label="${esc(title)}">${heading}<div class="foods">${gf.map(f=>foodButton(f,prefix+'-pick')).join('')}</div></section>`;
     }
   } else {
-    html += `<div class="foods">${(q ? res.curated : sortFoods(res.curated)).map((f) => foodButton(f, prefix + '-pick')).join('')}</div>`;
+    const list = (q ? res.curated : sortFoods(res.curated)).slice(0, budget); budget -= list.length;
+    html += `<div class="foods">${list.map((f) => foodButton(f, prefix + '-pick')).join('')}</div>`;
   }
+  if (capped && Number.isFinite(budget)) html += moreButton(prefix, total - (S.listLimit[prefix].n - Math.max(0, budget)));
   if (res.custom.length) html += `<h3 class="grp">${L("Kendi besinlerim")}</h3><div class="foods">${res.custom.map((f) => customButton(f, prefix + '-pick-custom')).join('')}</div>`;
   if (res.ext.length) html += `<h3 class="grp">${L("Geniş katalog (USDA)")}</h3><div class="foods">${res.ext.slice(0, 80).map((f) => extButton(f, prefix + '-pick-ext')).join('')}</div>`;
   if (res.ext.length > 80) html += `<p class="hint">${L("USDA sonuçlarının ilk 80 kaydı gösteriliyor. Tüm sonuçları sayfalı katalogda aç.")}</p>`;
@@ -592,7 +614,7 @@ function compareResults(q) {
 function renderCompare() {
   const items = S.compare.map((c, i) => ({ c, i, item: resolve(c.ref) })).filter((x) => x.item); // i: S.compare'deki gerçek konum
   const cols = items.map(({ c, i, item }) => `<div class="cmp-col">
-      <div class="cmp-h"><b>${esc(item.name)}</b><span class="muted">${esc(item.formLabel)}</span>
+      <div class="cmp-h"><b><i class="cc-sw s${items.findIndex((x) => x.i === i) + 1}" aria-hidden="true"></i>${esc(item.name)}</b>${item.food && item.food.forms.length > 1 ? `<select class="cmp-form" data-cmpform="${i}" aria-label="${esc(L("{n} için tüketim biçimi", { n: item.name }))}">${item.food.forms.map((fm, k) => `<option value="${k}" ${k === c.ref.f ? 'selected' : ''}>${esc(formName(fm.label))}</option>`).join('')}</select>` : `<span class="muted">${esc(item.formLabel)}</span>`}
       <button class="btn ghost danger" data-action="cmp-del" data-i="${i}" aria-label="${L("Çıkar")}">✕</button></div>
       ${S.ingOpen.has('cmp:' + i) ? `${amountControls('cmp:' + i, c.g, item.portions || [], { compact: true, liquid: item.liquid })}<button class="btn ghost" data-action="ing-open" data-id="cmp:${i}" aria-expanded="true">${L("Kapat")}</button>` : miniAmount('cmp:' + i, c.g, 1, 'cmp:' + i, item.name)}
     </div>`).join('');
@@ -637,7 +659,10 @@ function renderCompare() {
       rows.push(cmpRow(n, vals));
     }
     const pies = `<section class="card cmp-pies" aria-label="${L("Kalori nereden geliyor?")}"><h3>${L("Kalori nereden geliyor?")}</h3><div class="cmp-pie-row">${items.map(({ c, item }, i) => macroPie(rs[i], S.settings, { compact: true, title: `${item.name} · ${fmtNum(c.g)} g` })).join('')}</div><p class="hint">${L("Kalorinin yüzde kaçının protein, karbonhidrat, yağ ve liften geldiği (Atwater genel faktörleri 4 / 4 / 9 / 2 kcal/g; yaklaşık).")}</p></section>`;
-    table = pies + `<div class="presets cmp-secs" role="group" aria-label="${L("Bölüm")}">${secChips}</div>
+    const chartRows = BASIC_KEYS.map((k) => NUTRIENT_BY_KEY[k === 'energy' && S.settings.energyUnit === 'kj' ? 'energy_kj' : k]).filter(Boolean).map((n) => ({ key: n.key, label: nutrientLabel(n), unit: n.unit }));
+    const chart = compareChart(items.map(({ item }, j) => ({ name: item.name, form: item.formLabel, v: rs[j].v })), chartRows, (x, unit) => { const a = fmtAmount(x, unit, S.settings.precision); return `${a.n} ${a.u}`; });
+    const aminoChart = compareAminoChart(items.map(({ item }, j) => ({ name: item.name, amino: assessAmino(rs[j]) })), (x) => fmtPct(x), (x) => L(x), S.cmpAminoOpen ?? !isPhone());
+    table = pies + chart + aminoChart + `<div class="presets cmp-secs" role="group" aria-label="${L("Bölüm")}">${secChips}</div>
       <div class="tablewrap" tabindex="0" role="region" aria-label="${L("Karşılaştırma tablosu (yana kaydırılabilir)")}"><table class="cmp" style="--cmp-n:${items.length}"><thead><tr><th>${L("Bileşen")}</th>${items.map(({ c, item }) => `<th class="cmp-food">${esc(item.name)}<br><span class="muted">${esc(item.formLabel)} · ${fmtNum(c.g)} g</span></th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>
       <p class="hint">${L("Aynı miktar ve biçimde karşılaştırmak için miktarları eşitle:")} <button class="btn ghost" data-action="cmp-same" data-g="100">${L("Hepsi 100 g")}</button> <button class="btn ghost" data-action="cmp-same" data-g="50">${L("Hepsi 50 g")}</button>. ${L("Satırdaki en yüksek değer vurgulanır; “yüksek = iyi” anlamına gelmez (sodyum, toksik mineraller, antinutrientler).")}</p>
       <p class="hint basic-src">${L("Temel değer yüzdeleri: PHE Government Dietary Recommendations (2016, 19–64 yaş); şeker için AB 1169/2011. Kişisel ihtiyaç veya tıbbi öneri değildir.")}</p>`;
@@ -923,7 +948,7 @@ export function render() {
   const selStart = document.activeElement?.selectionStart;
   let view = '';
   if (S.tab === 'kesfet') view = renderExplore();
-  else if (S.tab === 'gunluk') view = renderPersonal(S.personal, S.personalDraft, S.personalDay, S.consumedOnly, S.settings, resolve, S.personalSource, S.personalSourceOpen, S.personalUndo, S.personalReadError, !S.closed.has('micro'));
+  else if (S.tab === 'gunluk') view = renderPersonal(S.personal, S.personalDraft, S.personalDay, S.consumedOnly, S.settings, resolve, S.personalSource, S.personalSourceOpen, S.personalUndo, S.personalReadError, isPhone() ? (S.dayMicroOpen ?? false) : !S.closed.has('micro'), S.daySecOpen, isPhone(), S.weekKey);
   else if (S.tab === 'tarif') view = renderRecipe();
   else if (S.tab === 'karsilastir') view = renderCompare();
   else if (S.tab === 'ayarlar') view = renderSettings();
@@ -947,18 +972,23 @@ export function render() {
   if (focusedId) {
     const el = document.getElementById(focusedId);
     if (el) { el.focus(); if (selStart != null && el.setSelectionRange) try { el.setSelectionRange(selStart, selStart); } catch {} }
-  }
+  }  // B198: "daha göster" düğmesi görünür alana yaklaşınca kendiliğinden yükle (düğme klavye/ekran okuyucu için de kalır)
+  if ('IntersectionObserver' in window) document.querySelectorAll('.list-more').forEach((btn) => {
+    const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); btn.click(); } }, { rootMargin: '600px 0px' });
+    io.observe(btn);
+  });
 }
 
+const isPhone = () => !!window.matchMedia?.('(max-width: 700px)').matches;
 function refreshMatrix() {
   const m = $('#matrix');
   if (!m) return render();
-  if (S.tab === 'kesfet' && S.sel) m.innerHTML = matrixForExplore(resolve(S.sel));
+  if (S.tab === 'kesfet' && S.sel) morphHtml(m, matrixForExplore(resolve(S.sel)));
   else if (S.tab === 'tarif') {
     if (S.recipeDaily) return render();
     const rc = activeRecipe();
     const { r, basisLabel, factor } = recipeResult(rc);
-    m.innerHTML = renderMatrix(r, S.settings, { recipe: rc, basisLabel, closed: S.closed, aminoProfile: S.personal.profile });
+    morphHtml(m, renderMatrix(r, S.settings, { recipe: rc, basisLabel, closed: S.closed, aminoProfile: S.personal.profile }));
     const summary = $('#recipe-summary'); if (summary) summary.innerHTML = renderRecipeSummary(rc, r);
     const gapsEl = $('#recipe-gaps'); if (gapsEl) gapsEl.innerHTML = renderRecipeGaps(r);
     const sources = $('#recipe-sources'); if (sources) sources.innerHTML = renderRecipeSources(rc, resolve, { key: S.recipeSource, factor, basisLabel, open: S.recipeSourcesOpen, precision: S.settings.precision });
@@ -1324,6 +1354,7 @@ async function onClick(e) {
     }
     // tarif
     case 'rc-new': { const r = newRecipe(L("Tarif {n}", { n: S.recipes.length + 1 })); S.recipeDaily = false; S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); render(); break; }
+    case 'week-key': S.weekKey = b.dataset.key; render(); document.querySelector(`[data-action="week-key"][data-key="${b.dataset.key}"]`)?.focus(); break;
     case 'rc-daily-total': S.recipeDaily = true; render(); break;
     case 'daily-recipe-basis': setSetting('recipeTotalBasis', b.dataset.b); render(); break;
     case 'rc-open': S.recipeDaily = false; S.activeRecipe = b.dataset.id; render(); break;
@@ -1343,6 +1374,10 @@ async function onClick(e) {
     case 'rc-cw-set': { const rc = activeRecipe(); rc.cookedWeight = rc.items.reduce((a, i) => a + i.g, 0); persistRecipes(); render(); break; }
     case 'rc-cw-clear': { const rc = activeRecipe(); rc.cookedWeight = null; persistRecipes(); render(); break; }
     // karşılaştır
+    case 'list-more': {
+      const pre = b.dataset.prefix; if (S.listLimit?.[pre]) S.listLimit[pre].n += 180;
+      const y = window.scrollY; render(); window.scrollTo(0, y); break;
+    }
     case 'cmp-pick': {
       const f = FOODS.find((x) => x.id === b.dataset.id); const i = Number(b.dataset.f);
       if (!f || !f.forms[i]) break;
@@ -1580,6 +1615,8 @@ function onInput(e) {
   if (t.id === 'rc-name') { activeRecipe().name = t.value.slice(0, 80) || L("Adsız tarif"); persistRecipes(); return; }
 }
 function onChange(e) {
+  // B200: Kıyasla kartında biçim (çiğ/pişmiş…) yerinde değişir; miktar korunur
+  if (e.target.dataset.cmpform != null) { const c = S.compare[+e.target.dataset.cmpform]; const f = +e.target.value; if (c?.ref?.t === 'c' && FOODS.find((x) => x.id === c.ref.id)?.forms[f]) { c.ref = { ...c.ref, f }; render(); $(`[data-cmpform="${e.target.dataset.cmpform}"]`)?.focus(); } return; }
   if (e.target.dataset.colTransfer && e.target.value) {
     const to = S.collections.find((c) => c.id === e.target.value);
     const ref = JSON.parse(e.target.dataset.ref);
@@ -1690,6 +1727,9 @@ export function start() {
         if (progress) { progress.value = done; progress.setAttribute('aria-label', tr('progressCount', { done })); $('.exploration-progress p').textContent = tr('progressCount', { done }); }
       }
     }
+    if (d.isConnected && d.matches?.('details.cmp-amino')) S.cmpAminoOpen = d.open;
+    if (d.isConnected && d.matches?.('details.personal-section')) { S.daySecOpen ||= {}; S.daySecOpen[d.dataset.psec] = d.open; }
+    if (d.isConnected && d.matches?.('.personal details.micro-overview') && isPhone()) { S.dayMicroOpen = d.open; return; }
     if (!printController.active && d.isConnected && d.matches?.('details.sec, details.micro-overview')) { if (d.open) S.closed.delete(d.dataset.sec); else S.closed.add(d.dataset.sec); }
   }, true);
   document.addEventListener('keydown', (e) => {

@@ -1,16 +1,19 @@
 import { defineConfig } from 'vite';
 import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8'));
 
 export default defineConfig(({ mode }) => {
-  const single = mode === 'single';
+  const lite = mode === 'lite';
+  const single = mode === 'single' || lite;
   return {
     base: './',
-    define: { __APP_VERSION__: JSON.stringify(pkg.version), __SINGLE__: JSON.stringify(single) },
+    define: { __APP_VERSION__: JSON.stringify(pkg.version), __SINGLE__: JSON.stringify(single), __LITE__: JSON.stringify(lite) },
+    json: { stringify: true }, // B202: veri JSON.parse ile açılır (JS nesne değişmezinden hızlı)
     publicDir: single ? false : 'public',
     build: {
-      outDir: single ? 'dist-single' : 'dist',
+      outDir: lite ? 'dist-lite' : single ? 'dist-single' : 'dist',
       emptyOutDir: true,
       assetsInlineLimit: single ? 100_000_000 : 4096,
       cssCodeSplit: false,
@@ -18,6 +21,8 @@ export default defineConfig(({ mode }) => {
       chunkSizeWarningLimit: 5000,
       rollupOptions: single ? { output: { codeSplitting: false } } : {},
     },
+    // B202: hafif sürümde geniş katalog yerine boş taslak paketlenir
+    resolve: lite ? { alias: [{ find: /^\.\/data\/foods-ext\.json$/, replacement: fileURLToPath(new URL('./src/foods-ext-lite.json', import.meta.url)) }] } : {},
     server: { port: 5173, strictPort: true, host: true },
     clearScreen: false,
   };

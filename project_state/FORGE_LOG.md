@@ -1105,7 +1105,7 @@
 ## B196 · 2026-11-19 · Yağ asitleri: USDA 18:2 / 18:3 toplamları görünür (plan A1)
 - Bulgu (B195 sonrası analiz): linoleik (LA) %89, ALA %84 eksik görünüyordu; omega-3/6 toplamları hiç yok. Neden: yalnız izomer-özel USDA kodları (675, 851; SR28'de ~1900 kayıt) okunuyordu; USDA'nın ölçtüğü 18:2 / 18:3 toplamları (618, 619; ~7200 kayıt) hiç kullanılmıyordu.
 - İki yeni satır: "C18:2 toplamı (linoleik ağırlıklı, izomer ayrıştırılmamış)" ve "C18:3 toplamı (bitkilerde çoğunlukla ALA, izomer ayrıştırılmamış)", etiket USDA (u). Bitkisel boşluk %9 / %10. LA ve ALA satırları ayrı kalır; toplamlar LA/ALA'ya kopyalanmadı (izomer ayrımı yok). Omega-3/6 toplamı türetilmedi: 18:3 toplamı GLA gibi n-6 izomerleri de içerebilir; ölçüm olmayan "omega-3 toplamı" yazılmaz (karar: dürüstlük > dolu görünüm).
-- Kanıt: `npm run data`; `npm test` 171/171 (B196: boşluk <%15, ceviz 18:2 38,1 g / 18:3 9,08 g USDA, 18:2+18:3 ≤ çoklu doymamış); tarayıcıda ceviz matrisi açılıp satırlar doğrulandı; tam koşu B197 ile birlikte (aşağıda).
+- Kanıt: `npm run data`; `npm test` 171/171 (B196: boşluk <%15, ceviz 18:2 38,1 g / 18:3 9,08 g USDA, 18:2+18:3 ≤ çoklu doymamış); tarayıcıda ceviz matrisi açılıp satırlar doğrulandı; Playwright tam koşu 41 (B196 + B197): 358/358.
 - Sonraki: **B197** miktar sınırı 1 kg → 10 kg (Kaan isteği).
 
 ## B197 · 2026-11-19 · Miktar üst sınırı 1 kg → 10 kg (Kaan isteği)
@@ -1113,5 +1113,42 @@
 - Kaydırıcı küp ölçeğe geçti (karekökte 10 kg küçük miktarları yine sıkıştırırdı): 10 g ≈ %10, 100 g ≈ %22, 1 kg ≈ %46, 10 kg uç; adımlar 1/5/10/50/100 g; tüm hazır miktarlar gidiş-dönüşte aynı gram. Ölçek etiketleri 1 g · 100 · 1 kg · 10 kg. Hazır düğmelere 2 kg, 5 kg, 10 kg eklendi.
 - Hata düzeltmesi: hazır düğme etiketi 1000 g ve üstündeki her değeri "1 kg" yazıyordu → `kgLabel` (2 kg, 2,5 kg, 10 kg).
 - Testler yeni sınıra uyarlandı (recipe-day bölme 10 kg + 3,5 kg, birleştirme sınırı, records sıkıştırma 10 kg, B164 10 kg bildirimi, B168 küp ölçek konumları); amount-scale birim testleri yeniden yazıldı (+kg etiketi).
-- Kanıt: `npm test` 172/172; build; Playwright B164/B168/B169/B170/B089 12/12; iPhone SE ekran görüntüsü (2 kg seçili, karpuz 2 kg = 600 kcal); tam koşu aşağıda. Not: önceki tam koşu (B196) bu Forge'un yeniden derlemesiyle çakıştı; düşen 3 test bu çakışmadandı (eski test dosyası / derleme sırasında sayfa yüklenemedi).
+- Kanıt: `npm test` 172/172; build; Playwright B164/B168/B169/B170/B089 12/12; iPhone SE ekran görüntüsü (2 kg seçili, karpuz 2 kg = 600 kcal); Playwright tam koşu 41: 358/358 (11,5 dk). Not: önceki tam koşu (B196) bu Forge'un yeniden derlemesiyle çakıştı; düşen 3 test bu çakışmadandı (eski test dosyası / derleme sırasında sayfa yüklenemedi).
 - Sonraki: **B198** ana sayfa hızı (691 kart yerine parça parça çizim).
+
+## B198 · 2026-11-19 · Ana sayfa parça parça çizilir (plan B1)
+- Ana listede (kategori seçili değilken) ilk 60 kart çizilir; altında "{n} besin daha göster" düğmesi. Düğme görünür alana 600 px yaklaşınca IntersectionObserver kendiliğinden 180 kart daha ekler (kaydırma kesintisiz); düğme klavye ve ekran okuyucu için yerinde kalır. Arama metni veya sıralama değişince sınır 60'a döner; kategori görünümü tam liste.
+- Kanıt (iPhone SE öykünmesi, CPU ×4, aynı ölçüm betiği): ana sayfa DOM 8682 → 1095 düğüm; açılış 2,8 sn → 1,6 sn; arama 225 ms. Playwright B198 (60'tan az/eşit ilk kart, kaydırınca artar, arama bulur ve sıfırlar) masaüstü + telefon geçti.
+- Sonraki: **B199**.
+
+## B199 · 2026-11-19 · Miktar değişince matris yamanır (plan B2)
+- `src/morph.js`: yeni HTML bir şablona çözülür, eski ağaçla düğüm düğüm karşılaştırılır; yalnız değişen metin ve öznitelik yazılır, yapı farklıysa o alt ağaç değişir. `open` özniteliğine dokunulmaz (açık bölümler açık kalır). Keşfet ve tarif matrisinde `innerHTML` yerine kullanılır.
+- Kanıt: +10 g dokunuşu (CPU ×4, aynı betik) 275 → 210 ms; sayfa içi tıklamadan yamaya 49–108 ms. Hedef <50 ms tam tutmadı: kalan süre matris HTML'inin üretimi; ileride satır bazlı hesapla düşürülebilir. Playwright B199: enerji hücresi ve kimlik kartı aynı DOM düğümü kalır, değer değişir, 100 g'a dönünce ilk değer geri gelir.
+- Sonraki: **B200**.
+
+## B200 · 2026-11-19 · Günlük ve Kıyasla sadeleşti (plan C1)
+- Günlük, telefonda (≤700 px): bileşen bölümlerinden yalnız "Su ve enerji" açık, mikro besin özeti kapalı gelir; açıp kapattığın bölüm oturum boyunca hatırlanır. Masaüstü eskisi gibi (enerji, protein, mineral açık). İki besinli günde telefon sayfası 9373 → 4879 px.
+- Kıyasla kartında biçim seçimi: çok biçimli besinde (ör. nohut kuru / haşlanmış / konserve) kartın başlığında açılır liste; besini silip yeniden eklemeden biçim değişir, miktar korunur.
+- Kanıt: `daySectionOpen` birim testi; Playwright B200 2 test × (masaüstü + telefon).
+- Sonraki: **B201**.
+
+## B201 · 2026-11-19 · Grafikler (plan C2)
+- Kıyasla "Temel değerler" grafiği: her satır bir değer (kalori, protein, karbonhidrat, şeker, yağ, doymuş yağ, lif, tuz), çubuklar satırdaki en yüksek değere göre (birimler farklı, tek eksen yok); ölçülmemiş = "veri yok" yazısı, çubuk yok; satırın en yükseği kalın. Renkler besin sırasını izler (açık ve koyu tema için ayrı adımlar; dataviz doğrulayıcısı: CVD ΔE en kötü 9,1 / 8,4, geçti; açık temada kontrast uyarısı değer yazılarıyla karşılandı).
+- Kıyasla "Amino asit profili": WHO/FAO/UNU 2007 mg/g protein referansına göre %, %100 çizgisi, sınırlayıcı amino asit lejantta; eksik ölçüm "veri yok", kısmi "≥". Telefonda kapalı gelir (sayfa uzamasın).
+- Günlük 7 günlük grafik: Enerji / Protein / Lif seçimi; kayıtsız veya ölçümsüz gün "—", 0 değil.
+- Kanıt: `tests/compare-chart.test.mjs` (satır içi ölçek, veri yok, tek besinde grafik yok, %100 çizgisi), `renderWeek` testi (protein, lifte 7 "—"); Playwright B201 masaüstü + telefon; telefon ve 1280 px ekran görüntüleri incelendi.
+- Sonraki: **B202**.
+
+## B202 · 2026-11-19 · Hafif tek dosya HTML + JSON.parse ile veri (plan B3)
+- `npm run build:lite` → `dist-lite/besin-matriksi-hafif.html` 4,14 MB (tam tek dosya 12,56 MB). Geniş USDA kataloğu (8053 kayıt) yerine boş taslak paketlenir; küratörlü besinlerin hepsi var. Hafif sürümde "Tam Katalog" açıklama gösterir (yükleniyor/hata yerine). release.yml derler; yayında `…-offline-lite.html` adıyla.
+- Vite `json.stringify`: veri JS nesnesi yerine `JSON.parse` dizesi olarak paketlenir (ayrıştırma daha hızlı).
+- Plan maddesi "veriyi koddan ayır" tam yapılmadı: ana paket hâlâ küratörlü veriyi içerir (2,58 MB); geniş katalog zaten ayrı ve tembel yükleniyor. Tam ayrım açılışı eşzamansız yapmayı gerektirir; risk/fayda için ayrı Forge.
+- Kanıt: release testi (paket adı, release.yml adımları, vite ayarı, boş taslak); hafif dosya file:// ile açıldı: 0,6–0,9 sn, 60 kart, ceviz 654 kcal, Tam Katalog açıklaması, sayfa hatası yok.
+- Sonraki: **B203**.
+
+## B203 · 2026-11-19 · 10 yeni bitkisel besin (USDA SR28)
+- Karambola (09060), kumkat (09149), çerimoya (09062), hindiba yaprağı (11152), lima fasulyesi kuru/haşlanmış (16071/16072), bambu filizi çiğ/haşlanmış (11026/11027), nopal çiğ/pişmiş (11963/11964), İsveç şalgamı çiğ/haşlanmış (11435/11436), lotus kökü çiğ/haşlanmış (11254/11255), okara (16130). Az bilinenler "niş" işaretli; her birine simge ve SVG çizimi, İngilizce ad.
+- Güvenlik notları: karambola (oksalat + karamboksin; böbrek hastalığında zehirlenme bildirimleri), çiğ bambu filizi (siyanojenik glikozit; haşlanarak).
+- Okara'da lif USDA'da ölçülmemiş: "veri yok" kalır. Katalog 738 besin / 889 biçim.
+- Kanıt: `npm run data`; `npm test` 177/177 (simge, SVG, İngilizce not testleri dahil).
+- Sonraki: **B204** beta.57 yayını (B196–B203), sonra veri: tam kod/veri ayrımı ya da yeni serbest kaynakla amino asit boşlukları.

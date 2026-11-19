@@ -5,7 +5,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 
-const single = process.argv.includes('--single');
+const lite = process.argv.includes('--lite');
+const single = process.argv.includes('--single') || lite;
 
 function walk(dir, base = dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
@@ -65,7 +66,7 @@ self.addEventListener('fetch', (e) => {
   fs.writeFileSync(path.join(dir, 'sw.js'), sw);
   console.log(`sw.js: ${files.length} dosya, önbellek ${version}`);
 } else {
-  const dir = 'dist-single';
+  const dir = lite ? 'dist-lite' : 'dist-single';
   let html = fs.readFileSync(path.join(dir, 'index.html'), 'utf8');
   html = html.replace(/<script type="module" crossorigin src="\.\/([^"]+)"><\/script>/g, (_, src) => {
     const js = fs.readFileSync(path.join(dir, src), 'utf8').replace(/<\/script/gi, '<\\/script');
@@ -78,9 +79,10 @@ self.addEventListener('fetch', (e) => {
     .replace(/<link rel="apple-touch-icon"[^>]*>\s*/, '')
     .replace(/<link rel="manifest"[^>]*>\s*/, '');
   if (/src="\.\/assets|href="\.\/assets/.test(html)) throw new Error('Tek dosyada dış bağlantı kaldı');
-  const out = path.join(dir, 'besin-matriksi.html');
+  const name = lite ? 'besin-matriksi-hafif.html' : 'besin-matriksi.html';
+  const out = path.join(dir, name);
   fs.writeFileSync(out, html);
-  for (const f of walk(dir)) if (f !== 'besin-matriksi.html') fs.rmSync(path.join(dir, f));
+  for (const f of walk(dir)) if (f !== name) fs.rmSync(path.join(dir, f));
   for (const d of fs.readdirSync(dir)) if (fs.statSync(path.join(dir, d)).isDirectory()) fs.rmSync(path.join(dir, d), { recursive: true });
   console.log(`${out}: ${(fs.statSync(out).size / 1024 / 1024).toFixed(2)} MB`);
 }

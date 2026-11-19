@@ -209,7 +209,7 @@ export const EN_FOODS = {
   bogurtlen: 'Blackberry', dut: 'Black mulberry', frenk_uzumu: 'Blackcurrant', bektasi: 'Gooseberry', kizilcik: 'Cranberry', murver: 'Elderberry',
   portakal: 'Orange', mandalina: 'Mandarin', greyfurt: 'Grapefruit (pink/red)', limon: 'Lemon', misket_limonu: 'Lime', kivi: 'Kiwifruit (green)',
   nar: 'Pomegranate', incir: 'Fig', trabzon_hurmasi: 'Persimmon (Japanese)', karpuz: 'Watermelon', kavun: 'Cantaloupe', kavun_balli: 'Honeydew melon',
-  ananas: 'Pineapple', mango: 'Mango', papaya: 'Papaya', guava: 'Guava', avokado: 'Avocado', carkifelek: 'Passion fruit', lici: 'Lychee',
+  ananas: 'Pineapple', mango: 'Mango', papaya: 'Papaya', guava: 'Guava', avokado: 'Avocado', carkifelek: 'Passion fruit', lici: 'Lychee', karambola: 'Carambola (star fruit)', kumkat: 'Kumquat', cerimoya: 'Cherimoya', hindiba_yapragi: 'Chicory greens', lima_fasulyesi: 'Lima beans (large, dry)', bambu_filizi: 'Bamboo shoots', nopal: 'Nopales (cactus pads)', isvec_salgami: 'Rutabaga (swede)', lotus_koku: 'Lotus root', okara: 'Okara (soy pulp)',
   jackfruit: 'Jackfruit', demirhindi: 'Tamarind', plantain: 'Plantain (cooking banana)', zeytin_siyah: 'Olives (black, canned)', zeytin_yesil: 'Olives (green, brined)',
   kuru_kayisi: 'Dried apricots', kuru_incir: 'Dried figs', kuru_uzum: 'Raisins (seedless)', hurma: 'Dates (Deglet Noor)', hurma_medjool: 'Dates (Medjool)',
   kuru_erik: 'Prunes', goji: 'Goji berries', kuru_muz: 'Banana powder / dried banana',

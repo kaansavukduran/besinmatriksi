@@ -19,6 +19,7 @@ export function prepareReleaseAssets(input, output, version, sha, branch = proce
     [/^BesinMatriksi\.apk$/, `${prefix}-android.apk`],
     [/^BesinMatriksi-unsigned\.ipa$/, `${prefix}-ios-UNSIGNED-NOT-INSTALLABLE.ipa`],
     [/^besin-matriksi-tek-dosya\.html$/, `${prefix}-offline.html`],
+    [/^besin-matriksi-hafif\.html$/, `${prefix}-offline-lite.html`],
     [/^besin-matriksi-web-pwa\.zip$/, `${prefix}-web-pwa.zip`],
   ];
   for (const [pattern, destination] of required) {

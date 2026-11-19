@@ -7,3 +7,4 @@ dist-single/
 .DS_Store
 /test-results/
 /playwright-report/
+dist-lite/

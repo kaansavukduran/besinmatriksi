@@ -44,7 +44,7 @@ export const FOOD_ICONS = {
   elma: '🍎', armut: '🍐', ayva: '🍐', muz: '🍌', kayisi: '🍑', seftali: '🍑', nektarin: '🍑', erik: '🟣', kiraz: '🍒', visne: '🍒',
   uzum: '🍇', cilek: '🍓', yabanmersini: '🫐', ahududu: '🍓', bogurtlen: '🫐', dut: '🫐', frenk_uzumu: '🫐', bektasi: '🟢', kizilcik: '🔴', murver: '🫐',
   portakal: '🍊', mandalina: '🍊', greyfurt: '🍊', limon: '🍋', misket_limonu: '🍋', kivi: '🥝', nar: '🔴', incir: '🟤', trabzon_hurmasi: '🟠',
-  karpuz: '🍉', kavun: '🍈', kavun_balli: '🍈', ananas: '🍍', mango: '🥭', papaya: '🥭', guava: '🍈', avokado: '🥑', carkifelek: '🟣', lici: '🔴',
+  karpuz: '🍉', kavun: '🍈', kavun_balli: '🍈', ananas: '🍍', mango: '🥭', papaya: '🥭', guava: '🍈', avokado: '🥑', carkifelek: '🟣', lici: '🔴', karambola: '⭐', kumkat: '🍊', cerimoya: '💚',
   jackfruit: '🍈', demirhindi: '🟤', plantain: '🍌', zeytin_siyah: '🫒', zeytin_yesil: '🫒',
   // kuru meyveler
   gun_kurusu_kayisi: "🟤",
@@ -66,20 +66,20 @@ export const FOOD_ICONS = {
   // sebzeler
   domates: '🍅', domates_salcasi: '🥫', salatalik: '🥒', biber_yesil: '🫑', biber_kirmizi: '🫑', aci_biber: '🌶️', patlican: '🍆', kabak: '🥒',
   balkabagi: '🎃', brokoli: '🥦', karnabahar: '🥦', brokselahanasi: '🥬', lahana: '🥬', kirmizi_lahana: '🥬', lahana_tursusu: '🫙', salatalik_tursusu: '🥒',
-  bamya: '🌶️', taze_fasulye: '🫘', bezelye: '🟢', taze_bakla: '🫘', edamame: '🫘', misir: '🌽', enginar: '🌿', kuskonmaz: '🌱', sogan: '🧅', sarimsak: '🧄',
+  bamya: '🌶️', bambu_filizi: '🎋', nopal: '🌵', taze_fasulye: '🫘', bezelye: '🟢', taze_bakla: '🫘', edamame: '🫘', misir: '🌽', enginar: '🌿', kuskonmaz: '🌱', sogan: '🧅', sarimsak: '🧄',
   pirasa: '🧅', kereviz_sap: '🌿', rezene: '🌿', alabas: '🥬', kudret_nari: '🥒', fasulye_filizi: '🌱', yonca_filizi: '🌱', mercimek_filizi: '🌱',
   // yeşil yapraklılar
   ispanak: '🥬', karalahana: '🥬', collard: '🥬', pazi: '🥬', pancar_yapragi: '🥬', roka: '🌿', marul: '🥬', aysberg: '🥬', semizotu: '🌿', tere: '🌱',
-  su_teresi: '🌿', hardal_yesili: '🥬', karahindiba: '🌼', asma_yapragi: '🍃', pak_choi: '🥬', moringa: '🍃', amarant_yapragi: '🍃',
+  su_teresi: '🌿', hardal_yesili: '🥬', karahindiba: '🌼', asma_yapragi: '🍃', pak_choi: '🥬', hindiba_yapragi: '🥬', moringa: '🍃', amarant_yapragi: '🍃',
   // kök ve yumrular
   patates: '🥔', tatli_patates: '🍠', havuc: '🥕', pancar: '🟣', turp: '🔴', bayir_turpu: '⚪', salgam: '🟣', kereviz_kok: '⚪', yaban_havucu: '🥕',
-  yer_elmasi: '🥔', zencefil: '🟡', manyok: '🥔', taro: '🥔', yam: '🍠',
+  yer_elmasi: '🥔', zencefil: '🟡', manyok: '🥔', isvec_salgami: '🟡', lotus_koku: '⚪', taro: '🥔', yam: '🍠',
   // baklagiller
   kirmizi_mercimek: '🟠', yesil_mercimek: '🟤', nohut: '🟡', humus: '🥣', kuru_fasulye: '⚪', dermason: '⚪', barbunya: '🫘', kirmizi_fasulye: '🫘',
-  siyah_fasulye: '⚫', pinto: '🫘', borulce: '⚪', kuru_bakla: '🫘', mas: '🟢', urad: '⚫', adzuki: '🔴', kuru_bezelye: '🟢', guvercin_bezelyesi: '🟡',
+  siyah_fasulye: '⚫', pinto: '🫘', borulce: '⚪', kuru_bakla: '🫘', mas: '🟢', lima_fasulyesi: '⚪', urad: '⚫', adzuki: '🔴', kuru_bezelye: '🟢', guvercin_bezelyesi: '🟡',
   aci_bakla: '🟡', yerfistigi: '🥜', fistik_ezmesi: '🥜',
   // soya
-  soya_fasulyesi: '🫘', tofu_sert: '⬜', tofu_normal: '⬜', tofu_nigari: '⬜', tempeh: '🟫', natto: '🫘', miso: '🥣', soya_sosu: '🍶', soya_sutu: '🥛',
+  soya_fasulyesi: '🫘', tofu_sert: '⬜', tofu_normal: '⬜', okara: '🟨', tofu_nigari: '⬜', tempeh: '🟫', natto: '🫘', miso: '🥣', soya_sosu: '🍶', soya_sutu: '🥛',
   soya_sutu_z: '🥛', soya_unu: '🌾', soya_izolat: '💪',
   // tahıllar
   yulaf: '🥣', yulaf_kepegi: '🥣', bulgur: '🌾', pirinc_beyaz: '🍚', pirinc_esmer: '🍚', yabani_pirinc: '🍚', kinoa: '🌾', karabugday: '🌾', amarant: '🌾',
