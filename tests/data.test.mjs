@@ -478,3 +478,10 @@ test('B224 günlük yaygın yemekler: FNDDS kaynağı, hayvansal işaret, bitkis
   assert.equal(by('tofu_sote_bitkisel').dietary.kind, 'plant');
   const oat = by('yulaf_lapasi'); assert.equal(oat.forms.length, 2); assert.ok(Object.values(oat.forms[1].s).every((t) => t === 'N'));
 });
+
+test('B226 Türk ev yemekleri, onigiri, damper, wojapi: diyet sınıfı; pişirme kayıplı tarifte ısıya duyarlı değer yok', () => {
+  const by = (id) => DB.foods.find((f) => f.id === id);
+  for (const id of ['kuru_fasulye_yemegi', 'yesil_mercimek_yemegi', 'domates_corbasi', 'saksuka', 'coban_salatasi', 'onigiri', 'wojapi']) assert.equal(by(id).dietary.kind, 'plant', id);
+  assert.equal(by('damper').animal, true);
+  for (const id of ['damper', 'wojapi']) assert.equal(by(id).forms[0].v.vitc, undefined, id + ': C vitamini ısıyla azalır, tahmin edilmez');
+});

@@ -1286,3 +1286,15 @@
 - Katalog 824 besin. Kanıt: `npm run data`; `npm test` 250/250 (B224 veri testi).
 - Sürüm 1.1.2-beta.60 (B221–B224).
 - Playwright tam koşu 56 (B224 + beta.60): 383/383.
+- Yayın kanıtı (B221–B224): v1.1.2-beta.60 pre-release (release.yml run 44601356032 success, ilk denemede; kaynak 77bb51d). CI 259–261 (B221–B223) iki işte de yeşil. Pages 110 (6f8c9a3) GitHub tarafı geçici hata ("No artifacts named github-pages … githubstatus.com"); sonraki Pages 111 (77bb51d) başarılı, canlı site güncel.
+
+## B225 · 2026-11-19 · Ayarlar ve Bilgi görünümleri ayrıldı; içe aktarma–dışa aktarma denetimi
+- `src/views/settings.js`: Ayarlar + Bilgi sekmeleri; `RELEASES_URL` buraya taşındı (app.js buradan alır). app.js 1.530 → 1.366 satır.
+- Taşırken yakalanan hata: ilk denemede `RELEASES_URL` app.js'ten içe aktarılıyordu (app.js dışa aktarmıyor + döngüsel bağımlılık → tarayıcı modülü bağlarken açılmazdı). Kalıcı koruma: `tests/undefined-names.test.mjs` artık her göreli içe aktarmanın hedef dosyada var olduğunu ve adın gerçekten dışa aktarıldığını denetler (60 dosya); deneme olarak var olmayan bir dışa aktarma eklenince yakaladı. Hiçbir modül app.js'ten içe aktarmıyor.
+- Kanıt: `npm test` 312/312; Ayarlar/Bilgi testleri 13/13; Playwright tam koşu 57: 383/383.
+
+## B226 · 2026-11-19 · Yaygın Türk ev yemekleri + Japon, Avustralya, Lakota
+- Ev tarifi hesabı (tahmin): kuru fasulye yemeği (etsiz), yeşil mercimek yemeği, domates çorbası (sütsüz), şakşuka (kızartma yağı %12 varsayımı), çoban salatası, onigiri (sade, norili), damper (tereyağlı, hayvansal; fırında %20 su kaybı), wojapi (Lakota yaban mersini sosu; kaynatmada %15 su kaybı). Pişirme kayıplı tariflerde ısıya duyarlı değerler (C vitamini) tahmin edilmez (mevcut kural; testle doğrulandı).
+- 7'si malzeme doğrulamasıyla vegan filtresinde. Çizim benzersizliği testi gazpacho ile çoban salatasının aynı çizimini yakaladı → renk değişti.
+- Katalog 832 besin. Kanıt: `npm run data`; `npm test` 313/313 (B226 veri testi).
+- Playwright tam koşu 58 (B226): 383/383.

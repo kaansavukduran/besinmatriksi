@@ -50,3 +50,34 @@ function check(file) {
 const FILES = [...fs.readdirSync(new URL('../src/', import.meta.url)).filter((f) => f.endsWith('.js')),
   ...fs.readdirSync(new URL('../src/views/', import.meta.url)).filter((f) => f.endsWith('.js')).map((f) => 'views/' + f)];
 for (const file of FILES) test(`B223 tanımsız ad yok: ${file}`, () => assert.deepEqual(check(file), []));
+
+// B225: içe aktarılan her ad, hedef modülde gerçekten dışa aktarılıyor mu (yoksa tarayıcı modül bağlarken patlar)
+function exportsOf(file) {
+  const ast = parseAst(fs.readFileSync(new URL(`../src/${file}`, import.meta.url), 'utf8'));
+  const names = new Set();
+  for (const n of ast.body) {
+    if (n.type === 'ExportDefaultDeclaration') names.add('default');
+    if (n.type === 'ExportNamedDeclaration') {
+      if (n.declaration?.declarations) n.declaration.declarations.forEach((d) => d.id?.name && names.add(d.id.name));
+      else if (n.declaration?.id) names.add(n.declaration.id.name);
+      n.specifiers?.forEach((sp) => names.add(sp.exported.name));
+    }
+  }
+  return names;
+}
+for (const file of FILES) test(`B225 içe aktarılan adlar dışa aktarılmış: ${file}`, () => {
+  const ast = parseAst(fs.readFileSync(new URL(`../src/${file}`, import.meta.url), 'utf8'));
+  const dir = file.includes('/') ? file.slice(0, file.lastIndexOf('/') + 1) : '';
+  const bad = [];
+  for (const n of ast.body) {
+    if (n.type !== 'ImportDeclaration' || !n.source.value.startsWith('.') || !n.source.value.endsWith('.js')) continue;
+    const target = new URL(n.source.value, new URL(`file:///${dir}`)).pathname.slice(1);
+    assert.ok(fs.existsSync(new URL(`../src/${target}`, import.meta.url)), `${file}: ${n.source.value} yok`);
+    const ex = exportsOf(target);
+    for (const sp of n.specifiers) {
+      const name = sp.type === 'ImportDefaultSpecifier' ? 'default' : sp.type === 'ImportSpecifier' ? (sp.imported.name ?? sp.imported.value) : null;
+      if (name && !ex.has(name)) bad.push(`${target}:${name}`);
+    }
+  }
+  assert.deepEqual(bad, []);
+});
