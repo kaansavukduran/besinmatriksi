@@ -1271,3 +1271,4 @@
 - Kanıt: `loggingStreak`, `periodDelta` birim testleri (bugün kayıtsız seri, yalnız tüketilenler, önceki dönem boşken null); Playwright: 2 günlük seri ve "önceki 7 güne göre" satırı; 1280 px ekran görüntüsü.
 - Tarif görünümünü ayırma ertelendi: bildirim (`toast`), etkin tarif, katalog yükleme gibi uygulama düzeyi yardımcılara bağlı; önce bunlar ortak bir `ui.js`'e alınmalı.
 - Kanıt (B221 + B222): `npm test` 189/189; Playwright tam koşu 54: 383/383. Sonraki: **B223** ortak ui.js (toast, etkin tarif, katalog yükleme) → Tarif görünümünü ayırma; yeni yemek turu; beta.60.
+- Yayın kanıtı (B217–B220): v1.1.2-beta.59 pre-release (release.yml run 44591406391 success, ilk denemede; kaynak 8a3899e). B221–B222 bir sonraki sürümde.
