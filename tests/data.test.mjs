@@ -485,3 +485,9 @@ test('B226 Türk ev yemekleri, onigiri, damper, wojapi: diyet sınıfı; pişirm
   assert.equal(by('damper').animal, true);
   for (const id of ['damper', 'wojapi']) assert.equal(by(id).forms[0].v.vitc, undefined, id + ': C vitamini ısıyla azalır, tahmin edilmez');
 });
+
+test('B228 vegan ağırlıklı Anadolu/Kore/İtalya/Fas yemekleri; ölçülmemiş lif toplamı 0 değil "veri yok"', () => {
+  const by = (id) => DB.foods.find((f) => f.id === id);
+  for (const id of ['patates_salatasi', 'gavurdagi', 'zeytinyagli_borulce', 'kimbap', 'pasta_e_fagioli', 'harira', 'zaalouk']) assert.equal(by(id).dietary.kind, 'plant', id);
+  assert.equal(by('kimbap').forms[0].v.fiber, undefined); // kısa taneli pirinçte lif ölçülmemiş → toplam bilinmiyor
+});

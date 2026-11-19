@@ -1304,3 +1304,11 @@
 - Kanıt: `summarize` olağan miktar birim testi (104,3 → 105 g; 1 g sıfıra yuvarlanmaz); Playwright B227 (110 + 130 g → 120 g eklenir, geri al → boş); iPhone 375 px ekran görüntüsü, taşma yok.
 - Sürüm 1.1.2-beta.61 (B225–B227).
 - Playwright tam koşu 59 (B227 + beta.61): 385/385.
+- Yayın kanıtı (B225–B227): v1.1.2-beta.61 pre-release (release.yml run 44618874914 success, ilk denemede; kaynak 2887bfe). CI 263 (5652fff) ve 264 (2887bfe): Chromium + tarayıcı uyumu yeşil. Pages 112 (5652fff) aynı geçici GitHub hatası ("Found 0 artifact(s)" — paket yüklendikten hemen sonra listelenemiyor); Pages 113 (2887bfe) başarılı, canlı site güncel. pages.yml doğru (upload-pages-artifact → deploy-pages), kod değişikliği gerekmedi.
+
+## B228 · 2026-11-19 · Vegan ağırlıklı Anadolu, Kore, İtalya, Fas yemekleri
+- Ev tarifi hesabı (tahmin): patates salatası, gavurdağı salatası (nar ekşisi yerine limon), zeytinyağlı börülce, kimbap (sebzeli; danmuji USDA'da yok), pasta e fagioli, harira (etsiz), zaalouk. Hepsi malzeme doğrulamasıyla vegan filtresinde.
+- Kimbap'ta lif "veri yok": USDA kısa taneli pişmiş pirinç kaydında lif ölçülmemiş; tarif toplamı yalnız tüm bileşenler ölçülmüşse yazılır (0 değil). Testle sabitlendi.
+- Eş anlamlılar: gimbap, zalouk, gavurdağı, pasta fagioli. Katalog 839 besin.
+- Kanıt: `npm run data`; `npm test` 315/315 (B228 veri testi).
+- Playwright tam koşu 60 (B228): 385/385.

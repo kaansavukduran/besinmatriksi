@@ -4,9 +4,9 @@
   "product_version": "1.1.2-beta.61",
   "development_state": "IN_PROGRESS",
   "last_forge_at": "2026-11-19",
-  "last_completed_forge": "B227",
+  "last_completed_forge": "B228",
   "active_forge": null,
-  "next_recommended_forge": "B228 beta.61 doğrulama; Keşfet/Günlük görünümlerini ayırma; yeni yemek turu",
+  "next_recommended_forge": "B229 Keşfet/Günlük görünümlerini ayırma; yeni yemek turu; beta.62",
   "branch": "ccr-1e1934aa-iv8aev",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
   "validated_code_commit": null,
@@ -333,11 +333,11 @@
     "B127"
   ],
   "latest_release": {
-    "tag": "v1.1.2-beta.60",
-    "run": 44601356032,
-    "source_sha": "77bb51d",
+    "tag": "v1.1.2-beta.61",
+    "run": 44618874914,
+    "source_sha": "2887bfe",
     "assets": 23,
-    "contains": "B196–B224"
+    "contains": "B196–B227"
   },
   "current_forge": {
     "id": "B151",
@@ -364,7 +364,7 @@
     "curated_source_records": 713,
     "extended_records": 8076,
     "covered_source_records": 8789,
-    "curated_foods": 832,
+    "curated_foods": 839,
     "curated_forms": 936,
     "cronometer_exact_parity": "NOT_VERIFIED"
   },
