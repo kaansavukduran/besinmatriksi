@@ -86,6 +86,8 @@ for (const language of ['tr', 'en']) {
     await expect(page.locator('#recipe-source-rows .source-total')).toContainText(language === 'en' ? 'Iron' : 'Demir');
 
     await tab(page, 'gunluk');
+    // B200: telefonda Günlük mikro özeti kapalı gelir; kullanıcı gibi aç
+    if (!(await page.locator('.personal .micro-overview').getAttribute('open') !== null)) await page.locator('.personal .micro-overview > summary').click();
     await expect(micro(page, 'vitc')).toHaveAttribute('data-micro-status', 'partial');
     await micro(page, 'vitc').locator('button').click();
     await expect(page.locator('#personal-source-key')).toHaveValue('vitc');

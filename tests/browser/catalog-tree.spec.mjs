@@ -4,6 +4,8 @@ const choose=(p,id)=>p.locator(`.explore>.cats [data-cat="${id}"]`).click();
 for(const language of ['tr','en']){
  test(`B152 legumes ${language}: soy child, counts, search, sorting and saved recipe picker`,async({page})=>{
   const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.addInitScript(language=>{if(!localStorage.getItem('bm.settings.v2'))localStorage.setItem('bm.settings.v2',JSON.stringify({version:2,settings:{language}}));},language);await page.goto('/');
+  // B198: ana liste parça parça yüklenir; grup sırasını görmek için hepsini aç
+  await expect.poll(()=>page.evaluate(()=>{const b=document.querySelector('#foodlist .list-more');b?.click();return !!document.querySelector('#foodlist .list-more');})).toBe(false);
   const soy=page.locator('#foodlist [data-catalog-group="soya"]');await expect(page.locator('.explore>.cats [data-cat="soya"]')).toHaveCount(0);
   const groups=await page.locator('#foodlist [data-catalog-group]').evaluateAll(els=>els.map(el=>el.dataset.catalogGroup));expect(groups.indexOf('soya')).toBe(groups.indexOf('baklagil')+1);await expect(page.locator('#foodlist [data-id="tofu_sert"]')).toHaveCount(1);
   await choose(page,'baklagil');expect(await page.locator('#foodlist [data-catalog-group]').evaluateAll(els=>els.map(el=>el.dataset.catalogGroup))).toEqual(['baklagil','soya']);await expect(soy.locator('.grp')).toHaveText(language==='tr'?'Soya ürünleri':'Soy foods');await expect(page.locator('#foodlist [data-id="nohut"]')).toHaveCount(1);await expect(soy.locator('[data-id="tempeh"]')).toHaveCount(1);

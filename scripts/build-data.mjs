@@ -115,6 +115,14 @@ const ffByNdb = new Map();
     if (Object.keys(v).length) ffByNdb.set(f.ndb, { v, fdcId: f.fdcId, desc: f.desc });
   }
 }
+// B211: tarif malzemelerinin hepsi bitkisel mi? SR28 besin grubu + açıklama (yağ grubunda hayvansal yağlar, tahıllarda yumurtalı erişte,
+// tatlandırıcılarda bal/jelatin, içeceklerde süt elenir). Unlu mamuller (1800) içerik belirsiz olduğu için kabul edilmez.
+const PLANT_GRPS = new Set(['0200', '0400', '0900', '1100', '1200', '1400', '1600', '1900', '2000']);
+const NOT_PLANT = /\b(lard|tallow|butter|ghee|chicken fat|fish oil|egg|eggs|honey|gelatin|whey|milk chocolate|cheese|cream|yogurt|animal)\b|(?<!(almond|soy|coconut|oat|rice) )\bmilk\b/i;
+function recipeAllPlant(food) {
+  if (!food.recipe || food.animal) return false;
+  return food.recipe.every(([code]) => { const d = des.get(code); return !!d && PLANT_GRPS.has(d.grp) && !NOT_PLANT.test(d.long); });
+}
 // ---------- USDA FNDDS 2021-2023 (CC0): SR28'de kaydı olmayan hazır içecekler (Türk kahvesi, bitkisel sütlü latte...) ----------
 const fndds = new Map(JSON.parse(gunzipSync(fs.readFileSync(path.join(root, 'data/raw/USDA_FNDDS_2021-2023_SUBSET.json.gz'))).toString('utf8')).map((f) => [f.code, f]));
 function fnddsForm(code) {
@@ -443,7 +451,7 @@ for (const food of FOODS) {
     id: food.id, tr: food.tr, en: food.en, cat: food.cat,
     sci: forms.find((f) => f.usda?.sci)?.usda.sci || forms.find((f) => f.ifct?.sci)?.ifct.sci || null,
     allergens: food.allergens || [],
-    dietary: curatedDietProfile(food),
+    dietary: curatedDietProfile(food, { recipePlant: recipeAllPlant(food) }),
     animal: !!food.animal || ANIMAL_CATS.includes(food.cat),
     ...(NICHE.has(food.id) ? { niche: true } : {}),
     note: food.note || null,

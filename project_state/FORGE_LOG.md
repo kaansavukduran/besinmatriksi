@@ -1152,3 +1152,50 @@
 - Okara'da lif USDA'da ölçülmemiş: "veri yok" kalır. Katalog 738 besin / 889 biçim.
 - Kanıt: `npm run data`; `npm test` 177/177 (simge, SVG, İngilizce not testleri dahil).
 - Sonraki: **B204** beta.57 yayını (B196–B203), sonra veri: tam kod/veri ayrımı ya da yeni serbest kaynakla amino asit boşlukları.
+
+## B204 · 2026-11-19 · CI yeşil: 47aecca'daki kırmızıların nedeni ve düzeltme
+- Neden (yerel tam koşu 42: 361 geçti / 7 düştü; CI aynı testler): (1) B198 parça parça liste, ana sayfada tüm grupları bekleyen B152 testini kırdı → test listeyi sonuna dek açıyor (yarışa dayanıklı, `expect.poll`); (2) Kıyasla grafiği 28 px yazı + %200 ölçekte 320 ve 768 px'te yana taşıyordu (grid min-content) → GERÇEK HATA, CSS düzeltildi (`minmax(0, …)`, etiket sütunu en çok %38); (3) telefonda Günlük mikro özeti kapalı gelince Günlük'te kapatılan özetin Tarif'e taşınması kopmuştu → GERÇEK HATA, paylaşım geri getirildi, test özeti kullanıcı gibi açıyor.
+- Kanıt: ilgili testler 40/40; tam koşu 43: 368 geçti / 5 düştü (yenileme varsayımı, B205), 44: 371 / 2 (B185, B207), 45: 375/375.
+
+## B205 · 2026-11-19 · Hash yönlendirmesi, Geri/İleri, besin bağlantısı
+- `src/route.js`: `#/food/<id>[/<biçim>]`, `#/usda/<ndb>`, `#/recipes`, `#/diary`, `#/compare`, `#/about`, `#/settings`, `#/`. Her çizimden sonra adres durumu izler (aynıysa dokunmaz; ilk açılış `replaceState`, sonrası `pushState`); `popstate` durumu geri yükler. Bilinmeyen bağlantı Keşfet'e düşer; kendi besinler (cihaza özel) bağlantı almaz. file://, tek dosya ve paketli uygulamada da çalışır (yalnız hash). Android'de donanım Geri tuşu da artık sekmeler/besin arasında geri gider.
+- Detayda "🔗 Bağlantı" (yalnız http(s)): bağlantıyı kopyalar; pano yoksa seçilebilir kutuda gösterir.
+- Davranış değişikliği: sayfa yenilenince açık sekme/besin korunur (önceden hep Keşfet). Bu varsayıma dayanan 4 test ana adrese gidecek biçimde güncellendi; kalıcılık yine sınanıyor.
+- Kanıt: `tests/route.test.mjs` (gidiş-dönüş, bozuk kodlama, bilinmeyen kimlik); Playwright B205 (besin → Kıyasla → Geri → Geri → İleri, `#/food/nohut/1` doğrudan açılış Haşlanmış seçili, `#/settings`, bilinmeyen kimlik).
+
+## B206 · 2026-11-19 · Klavye ve dokunma
+- `/` aramaya odaklanır (başka sekmedeysen Keşfet'e geçer); arama kutusunda ↓ ilk sonuca, sonuçlarda ↑/↓ gezinir (ilk sonuçta ↑ aramaya döner); Enter açar (düğme); Esc aramayı temizler, detaydaysa detayı kapatıp odağı listede o besine verir. Yazı alanında ve diyaloglarda kısayollar devre dışı.
+- Dokunmatik ekranda (`pointer: coarse`) `--tap` 44 px (yoğunluk "sıkı"/"geniş" seçimi korunur).
+- "Son bakılanlar" zaten Keşfet'te arama boşken görünüyordu (B061); ayrı çip eklenmedi.
+- Kanıt: Playwright B206 klavye akışı; telefon projesinde `--tap` 44 px, 320 ve 375 px'te yatay taşma yok (liste + detay).
+
+## B207 · 2026-11-19 · Ferah açılış: tek satırlık kategori şeridi
+- Keşfet açılışında kategoriler tek satır, yatay kaydırılır, sağ kenarı yumuşak solar; baştaki "Tüm kategoriler ▾" çipi satırlara açar ("Daha az" ile kapanır). Çip şeridin başında: yapışık sağ düğme denendi, son kategorinin üstüne biniyordu (büyük yazı + %200'de tıklanamıyordu) → bırakıldı. Seçili kategori şeritte görünür alana kaydırılır (yalnız şerit). "Kategori ızgarası" tercihi aynen çalışır.
+- Karşılama alanı masaüstünde sıkılaştı (tabak 280 → 210 px, boşluklar).
+- Kanıt (1440×900): ilk besin kartının üstü 963 → 753 px (artık ilk ekranda); kategori alanı 4 satır → 1 satır. B153 satır testi yeni davranışa çevrildi (B207: tek satır, açınca taşmasız satırlar); %200/28 px reflow testleri geçti.
+
+## B208 · 2026-11-19 · Detay görünümünde tek kaydırma, kart özeti
+- Masaüstü detay görünümünde kategori sütunu artık sayfayla akar (kendi kaydırması yok); liste sütunu kendi içinde kayar, çubuğu yalnız üzerine gelince/odakta görünür. Ölçüm: kaydırılabilir alan 2 → 1 (+ sayfa).
+- Diyet seçicisi: `min-width: 0`, metin kırpılırsa üç nokta; genişlik sınırı korunur.
+- Kart özeti: ölçümü olmayan 38 besin (ör. beluga mercimeği, siyez bulguru, sumak) artık boş kalmıyor, "ölçüm yok" yazıyor (0 değil). Çok biçimli besinde özet ilk ölçümlü biçimden.
+- Kanıt: 1440 px ve iPhone SE ekran görüntüleri (öncesi/sonrası) incelendi.
+
+## B209 · 2026-11-19 · Tembel yükleme değerlendirmesi, i18n
+- Fontlar zaten tembel: `?url` + `FontFace` ile yalnız seçili font indirilir (web derlemesinde 9 font ayrı dosya; tek dosyada çevrimdışı için gömülü). Değişiklik gerekmedi.
+- Lisans metinlerini (54 KB) tembel yükleme denendi ve GERİ ALINDI: ilk açılıştan hemen sonra çevrimdışı kalınca Bilgi sayfası açılmıyordu (test yakaladı). Çevrimdışı-önce ilkesi küçük kazançtan önemli. Diğer ikincil görünümler toplam ~30 KB; ana paketin 2,6 MB'ı veri (foods.json). Kod bölme bu yüzden anlamlı kazanç getirmez; geniş katalog (8,2 MB) zaten ayrı ve tembel.
+- Ayarlar'da "Language / Language" tekrarı → dile göre "Dil / Language" ya da "Language / Dil" (aria etiketleri dahil).
+- Ayarlar'ı daraltılabilir gruplara bölmek ertelendi: mevcut bölüm şeridi + arama var; çok sayıda test ayar denetimlerine doğrudan erişiyor, ayrı Forge.
+
+## B210 · 2026-11-19 · Dünya mutfağı: 39 yemek (USDA FNDDS 2021-2023, CC0)
+- `scripts/extract-fndds.py` (yeni, tekrar üretilebilir): resmî zip SHA-256 doğrulanır, istenen kodlar alt kümeye eklenir (41 → 80 kayıt).
+- Asya: sebze/mercimek körisi, dal (ghee'li), samosa, sebzeli ve kuzu etli biryani, pad thai, lo mein, egg roll, vejetaryen ramen, etsiz pho, miso çorbası, bibimbap, somonlu ve California suşi, sebze tempura, congee. Latin Amerika: Meksika fasulye ezmesi, siyah fasulye + pirinç, fasulyeli taco, burrito kâsesi, tamale, pupusa, empanada, guacamole, mole, pozole, vejetaryen chili. Avrupa/Slav/Akdeniz: borş, pierogi, gnocchi, etli lahana sarması, gazpacho, minestrone, ratatouille, paella. Afrika: fufu, injera.
+- Her yemekte USDA tarif malzemeleri notta. Hayvansal girdi (yumurta, balık sosu, ghee, peynir, et, bal) içerenler `animal: true` + alerjen. Malzeme kontrolünde "egg" araması "eggplant"i yakaladı; ratatouille elle doğrulandı (bitkisel).
+- Arama eş anlamlıları: sushi, maki, borş/barszcz, varenik, frijoles refritos, nyoki, dal/dhal, golubtsy, enjera, tay eriştesi, avokado ezmesi. "Meksika fasulyesi" zaten kırmızı fasulyeyi buluyordu.
+
+## B211 · 2026-11-19 · Anadolu mutfağı + vegan filtresinde tarifler
+- 8 ev tarifi hesabı (tahmin, "Tahmin (tarif)" etiketi, malzeme oranları notta): kuru fasulye pilaki, türlü, muhammara, zeytinyağlı biber dolması, nohut yemeği, zeytinyağlı bamya, içli köfte (etsiz, cevizli) ve içli köfte (etli). Kızartmada %8 yağ emilimi ve %15 su kaybı varsayımı notta.
+- Vegan filtresi: daha önce TÜM karışık yemekler "bilinmiyor" sayıldığı için kısır, piyaz, fava, çiğ köfte vb. vegan filtresinde görünmüyordu. Artık tarif malzemelerinin hepsi bitkisel USDA kaydıysa (SR28 besin grubu + açıklama süzgeci: hayvansal yağ, yumurta, süt, bal, jelatin elenir; unlu mamuller kabul edilmez) bitkisel sayılır. FNDDS'den yalnız girdi listesi tek tek incelenen 9 yemek bitkisel (guacamole, ratatouille, gazpacho, congee, vejetaryen chili, pho, ramen, minestrone, borş); hazır/restoran bileşenli olanlar (tamale, lo mein, miso çorbası, mole…) bilinmiyor kalır. Sonuç: 27 yemek vegan filtresinde.
+- Katalog 785 besin / 936 biçim (B203'te 738 / 889).
+- Kanıt: `npm run data`; `npm test` 179/179 (B210/B211 veri testi: FNDDS etiketi, hayvansal işaret, diyet sınıfı, tarif etiketi); Playwright world-foods (sushi, içli köfte, vegan filtresi etsizi gösterir etliyi gizler, "meksika fasulyesi"). Playwright tam koşu 45 (B204–B211 birlikte): 375/375.
+- Paket (öncesi 47aecca → sonrası): ana JS 2.575.196 → 2.695.865 bayt (+121 KB = 47 yeni besin verisi; gzip 508 KB), CSS 73,7 → 76,2 KB, tek dosya 12,56 → 12,68 MB, hafif tek dosya ~4,2 MB. Kod tarafı kazanımlar boyut değil çalışma zamanı: ana sayfa DOM 8682 → ~1100, miktar değişiminde yalnız yama.
+- Sonraki: **B212** beta.57 yayını (B196–B211), sonra Ayarlar grupları ve app.js/styles.css modülerleştirmesi (davranışsız, ayrı Forge'lar).

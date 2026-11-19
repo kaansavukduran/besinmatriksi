@@ -1164,3 +1164,48 @@ button.micro-name:hover { text-decoration-color: currentColor; }
 .cmp-amino:not([open]) > summary { margin-bottom: 0; }
 .cc-bar.under .cc-v { color: var(--fg); }
 .cmp-chart .cc-body, .cmp-chart .cc-legend { max-width: 860px; }
+/* B204: dar ekran + büyük yazıda grafik taşmasın (grid min-content genişliği) */
+.cmp-chart { min-width: 0; }
+.cc-body, .cc-bars { grid-template-columns: minmax(0, 1fr); }
+.cc-row { grid-template-columns: minmax(0, min(11em, 38%)) minmax(0, 1fr); }
+.cc-bar { grid-template-columns: minmax(0, 1fr) auto; }
+.cc-label { overflow-wrap: anywhere; min-width: 0; }
+@media (max-width: 700px) { .cc-row { grid-template-columns: minmax(0, 1fr); } }
+/* B206: dokunmatik ekranda en az 44 px dokunma hedefi (Apple HIG / WCAG 2.5.5); yoğun ve geniş seçimler korunur */
+@media (pointer: coarse) {
+  :root:not([data-density="compact"]):not([data-density="large"]) { --tap: 44px; }
+}
+/* B207: Keşfet açılışında kategoriler tek satırlık kaydırılabilir şerit; baştaki "Tüm kategoriler" çipi satırlara açar.
+   Besin kartları ilk ekranda görünür; seçili kategori şeritte görünür alana kaydırılır (app.js). Düğme hiçbir çipin üstünü örtmez. */
+.cats-toggle { display: none; }
+.explore:not(.has-sel) > .cats:not(.cats-grid) .cats-toggle {
+  display: inline-flex; align-items: center; gap: .35rem; order: -1; flex: 0 0 auto; min-height: calc(var(--tap) - 4px); padding: .3rem .9rem;
+  border: 1px dashed var(--line); border-radius: calc(var(--radius) * .7); background: transparent; color: var(--fg); font-weight: 650; white-space: nowrap; cursor: pointer;
+}
+.cats-toggle::after { content: '▾'; font-size: .85em; transition: transform .2s; }
+.cats-toggle[aria-expanded="true"]::after { transform: rotate(180deg); }
+.explore:not(.has-sel) > .cats[data-strip="true"] { flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: thin; gap: 6px; padding-bottom: 6px;
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent); }
+.explore:not(.has-sel) > .cats[data-strip="true"] .cat { flex: 0 0 auto; white-space: nowrap; }
+.explore:not(.has-sel) > .cats[data-strip="true"] .cat-group { flex: 0 0 auto; align-self: center; white-space: nowrap; }
+.explore:not(.has-sel) > .cats[data-strip="false"] { flex-wrap: wrap; overflow: visible; }
+.facts.nodata { font-style: italic; }
+/* B208: detay görünümü — kategori sütunu sayfayla akar (kendi kaydırması yok); liste sütunu kendi içinde kayar ama
+   kaydırma çubuğu yalnız üzerine gelince görünür; dar sütunlarda içerik (diyet seçici) kırpılmaz */
+@media (min-width: 901px) {
+  :root:not([data-ui-narrow="true"]) .explore.has-sel > .cats { position: static; max-height: none; overflow: visible; }
+}
+.explore.has-sel > .list { scrollbar-width: thin; scrollbar-color: transparent transparent; scrollbar-gutter: stable; }
+.explore.has-sel > .list:hover, .explore.has-sel > .list:focus-within { scrollbar-color: var(--line) transparent; }
+.explore > .list, .explore > .list > * { min-width: 0; }
+.diet-filter select, .diet-filter .field, .diet-filter label { min-width: 0; }
+.diet-filter select { text-overflow: ellipsis; }
+/* B207: karşılama alanı daha sıkı; masaüstünde ilk besin kartları ilk ekrana girer */
+@media (min-width: 901px) {
+  .welcome { grid-template-columns: minmax(0, 1fr) 210px; padding: 0 0 18px; margin-bottom: 18px; }
+  .kitchen-plate { max-width: 210px; }
+  .welcome h1 { margin-bottom: 10px; }
+  .welcome-copy > p { margin-bottom: 12px; }
+  .welcome-copy .welcome-meta { margin-top: 12px; }
+}
+.explore.has-sel .recent-row .grp { font-size: 1rem; }

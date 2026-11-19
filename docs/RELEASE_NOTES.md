@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 57 · Grafikler, 10 kg, daha hızlı telefon
+# 🫐 Besin Matriksi 1.1.2 Beta 57 · Dünya mutfağı, grafikler, ferah açılış
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -22,6 +22,13 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
+- **Dünya mutfağı (39 yemek, USDA ölçülmüş tarifleri):** suşi, pad thai, köri, samosa, biryani, ramen, pho, bibimbap, borş, pierogi, gazpacho, minestrone, ratatouille, guacamole, tamale, pupusa, fufu, injera ve daha fazlası. Yumurta, balık sosu, ghee, et veya peynir içerenler “Hayvansal” etiketli.
+- **Anadolu mutfağı:** içli köfte (etsiz cevizli ve etli), pilaki, türlü, muhammara, zeytinyağlı biber dolması, nohut yemeği, zeytinyağlı bamya (tarif hesabı, “Tahmin” etiketli).
+- **Vegan filtresi:** malzemeleri tamamen bitkisel olan tarifler (kısır, piyaz, çiğ köfte, pilaki, guacamole…) artık vegan filtresinde görünüyor.
+- **Ferah açılış:** kategoriler tek satırlık kaydırılabilir şeritte; “Tüm kategoriler” ile açılır. Besin kartları ilk ekranda.
+- **Adres çubuğu ve Geri tuşu:** her besinin kendi bağlantısı var (🔗 Bağlantı); tarayıcı/Android Geri tuşu sekmeler ve besinler arasında geri gider.
+- **Klavye:** `/` ara, ↓/↑ sonuçlarda gez, Enter aç, Esc kapat/temizle. Dokunmatik ekranda daha büyük (44 px) dokunma alanları.
+- **Detay görünümü:** üç ayrı kaydırma çubuğu yerine tek liste kaydırması; ölçümü olmayan besinlerde “ölçüm yok”.
 - **Kıyasla'da grafikler:** Temel değerler yan yana çubuklarla (her satır kendi içinde ölçekli, ölçülmemiş değer “veri yok”). Amino asit profili, %100 referans çizgisiyle ve sınırlayıcı amino asitle.
 - **Kıyasla kartında biçim değiştir:** Nohutu kuru ↔ haşlanmış ↔ konserve arasında silmeden değiştir; miktar korunur.
 - **Miktar 10 kg'a kadar:** Kaydırıcı, 2 kg / 5 kg / 10 kg hazır düğmeleri, tarif ve Günlük.

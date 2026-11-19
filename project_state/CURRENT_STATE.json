@@ -4,9 +4,9 @@
   "product_version": "1.1.2-beta.57",
   "development_state": "IN_PROGRESS",
   "last_forge_at": "2026-11-19",
-  "last_completed_forge": "B203",
+  "last_completed_forge": "B211",
   "active_forge": null,
-  "next_recommended_forge": "B204 beta.57 yayını (B196–B203), ardından tam kod/veri ayrımı veya yeni serbest kaynakla amino asit boşlukları",
+  "next_recommended_forge": "B212 beta.57 yayını (B196–B211); ardından Ayarlar daraltılabilir grupları, app.js/styles.css modülerleştirme",
   "branch": "ccr-1e1934aa-iv8aev",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
   "validated_code_commit": null,
@@ -364,8 +364,8 @@
     "curated_source_records": 713,
     "extended_records": 8076,
     "covered_source_records": 8789,
-    "curated_foods": 738,
-    "curated_forms": 889,
+    "curated_foods": 785,
+    "curated_forms": 936,
     "cronometer_exact_parity": "NOT_VERIFIED"
   },
   "resolved_blockers": [

@@ -435,3 +435,22 @@ test('B196 USDA 18:2 / 18:3 toplamları (618/619) gösterilir; çoklu doymamış
   assert.equal(walnut.s.f18d2_t, 'u'); assert.ok(walnut.v.f18d2_t > 30000 && walnut.v.f18d3_t > 8000);
   for (const fm of plant) if (fm.v.pufa != null && fm.v.f18d2_t != null && fm.v.f18d3_t != null) assert.ok((fm.v.f18d2_t + fm.v.f18d3_t) / 1000 <= fm.v.pufa * 1.1 + 0.05, `${fm.label} ${fm.v.f18d2_t}+${fm.v.f18d3_t} > ${fm.v.pufa}`);
 });
+
+test('B210/B211 dünya ve Anadolu yemekleri: FNDDS kaynağı, hayvansal işaret, tarif tahmini etiketi', () => {
+  const by = (id) => DB.foods.find((f) => f.id === id);
+  for (const id of ['susi_somonlu', 'pad_thai', 'borscht', 'ratatouille', 'guacamole', 'pierogi', 'injera', 'mercimek_korisi', 'tamale_etsiz', 'fufu']) {
+    const f = by(id); assert.ok(f, id);
+    assert.ok(f.forms[0].v.energy > 0, id);
+    assert.ok(Object.values(f.forms[0].s).every((t) => t === 'N'), id + ' yalnız FNDDS etiketi');
+  }
+  for (const id of ['susi_somonlu', 'pad_thai', 'samosa', 'pierogi', 'paella', 'bibimbap', 'icli_kofte', 'injera']) assert.equal(by(id).animal, true, id);
+  for (const id of ['ratatouille', 'gazpacho', 'guacamole', 'borscht', 'icli_kofte_etsiz', 'turlu']) assert.ok(!by(id).animal, id);
+  // bitkisel görünen ama hazır bileşeni belirsiz tarifler vegan filtresine girmez (bilinmiyor)
+  for (const id of ['tamale_etsiz', 'miso_corbasi', 'fasulye_ezmesi_meksika', 'lo_mein', 'muhammara', 'simit']) assert.equal(by(id).dietary.kind, 'unknown', id);
+  for (const id of ['guacamole', 'ratatouille', 'kisir', 'pilaki', 'icli_kofte_etsiz', 'cig_kofte']) assert.equal(by(id).dietary.kind, 'plant', id);
+  for (const id of ['icli_kofte', 'pad_thai', 'lahmacun']) assert.notEqual(by(id).dietary.kind, 'plant', id);
+  for (const id of ['pilaki', 'turlu', 'muhammara', 'biber_dolmasi', 'nohut_yemegi', 'bamya_yemegi', 'icli_kofte_etsiz', 'icli_kofte']) {
+    const fm = by(id).forms[0]; assert.ok(fm.v.energy > 0, id);
+    assert.ok(Object.values(fm.s).every((t) => t === 'r'), id + ' tarif tahmini etiketi');
+  }
+});

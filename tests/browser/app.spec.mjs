@@ -41,7 +41,7 @@ test('v1 ayarları taşınır; bölümler, sabitler, profil ve ayar dosyası kal
   await expect(page.locator('.profile-bar')).toContainText('Gece okuma');
   const downloadPromise = page.waitForEvent('download'); await page.locator('[data-action="settings-export"]').click();
   expect((await downloadPromise).suggestedFilename()).toBe('besin-matriksi-ayarlar.json');
-  await page.reload(); await pickBanana(page);
+  await page.goto('/'); await pickBanana(page); // B205: yenileme sekmeyi korur; ana adres Keşfet'i açar
   await expect(page.locator('.pinned')).toContainText('Demir'); await expect(page.locator('[data-sec="hesap"]')).toHaveCount(0);
   await tab(page, 'ayarlar');
   await page.locator('#settings-file').setInputFiles({ name: 'ayarlar.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify({ app: 'besin-matriksi-ayarlar', version: 2, settings: { theme: 'forest', fontSize: 18 } })) });
@@ -53,7 +53,7 @@ test('eş anlamlı ve Türkçe arama geçmişi cihazda çalışır', async ({ pa
   await page.goto('/'); await page.locator('#q').fill('HIYAR');
   await expect(page.locator('#foodlist')).toContainText('Salatalık');
   await page.locator('#foodlist [data-id="salatalik"]').click();
-  await page.reload(); await expect(page.locator('.recent-searches')).toContainText('HIYAR');
+  await page.goto('/'); await expect(page.locator('.recent-searches')).toContainText('HIYAR');
   await page.locator('[data-action="search-recent"]').click(); await expect(page.locator('#q')).toHaveValue('HIYAR');
   await page.locator('[data-action="search-clear"]').click(); await expect(page.locator('.recent-searches')).toHaveCount(0);
 });
@@ -514,7 +514,7 @@ test('Keşfet son bakılan besinleri gösterir, kalıcıdır ve temizlenir (B061
     if (await page.locator('.back').isVisible()) await page.locator('.back').click();
     await page.locator('#q').fill(id); await page.locator(`#foodlist [data-id="${id}"]`).click();
   }
-  await page.reload();
+  await page.goto('/'); // B205: yenileme açık besini korur; kalıcılığı ana adresten sına
   const row = page.locator('.presets.recent .pchip');
   await expect(row).toHaveCount(2);
   await expect(row.first()).toContainText('Yulaf');

@@ -9,7 +9,10 @@ const PLANT_MILKS = new Set(['badem_sutu','soya_sutu','soya_sutu_z','pirinc_sutu
 const PLAIN_DAIRY = new Set(['inek_sutu','inek_sutu_yarim','inek_sutu_yagsiz','keci_sutu','koyun_sutu','manda_sutu','yogurt','yogurt_yagsiz','suzme_yogurt','suzme_yogurt_yagsiz','kefir','ayran','ayran_yayik','ayran_yagsiz','sut_tozu','kondanse_sut','tereyagi','krema','eksi_krema','sade_yag']);
 const SOY_EXCEPT = new Set(['sebze_burger']);
 const SINGLE_SWEETENERS = new Set(['kakao','keciboynuzu','akcaagac','melas','seker','esmer_seker','jaggery','uzum_pekmezi','agave']);
-export function curatedDietProfile(food) {
+// B211: USDA FNDDS tarifleri; girdi listesi (inputFoods) tek tek incelendi (2026-11-19), hepsi bitkisel.
+// Restoran/hazır bileşenli olanlar burada yok (bilinmiyor kalır). Alerjen yokluğu iddia edilmez (freeFrom boş).
+const FNDDS_PLANT = new Set(['guacamole','ratatouille','gazpacho','congee','vejetaryen_chili','pho_etsiz','ramen_vejetaryen','minestrone','borscht']);
+export function curatedDietProfile(food, ctx = {}) {
  const allergens = new Set(food.allergens || []);
  if(food.cat==='soya'||food.id==='soya_filizi')allergens.add('soya');
  if(food.id==='siyez_bulguru')allergens.add('gluten');
@@ -25,6 +28,9 @@ export function curatedDietProfile(food) {
   if(food.cat==='kahve'&&food.recipe&&food.recipe.every(([n])=>['14210','01211','14411','19165','19335'].includes(n)))return {kind:'dairy',freeFrom:[]};
   return {kind:'unknown',freeFrom:[]};
  }
+ if(FNDDS_PLANT.has(food.id))return {kind:'plant',freeFrom:[]};
+ // Ev tarifi hesabı: tüm malzemeler bitkisel USDA kayıtlarıysa (derlemede SR28 grubundan doğrulanır) bitkiseldir
+ if(food.recipe&&ctx.recipePlant)return simple('plant');
  if(SIMPLE_PLANT.has(food.cat)||food.cat==='tahil'&&!SIMPLE_GRAINS_EXCEPT.has(food.id)||PLAIN_DRINKS.has(food.id)||SINGLE_SWEETENERS.has(food.id)||food.cat==='yag'&&food.id!=='margarin'||food.id==='tuz')return simple('plant');
  if(food.cat==='soya'&&!SOY_EXCEPT.has(food.id))return {kind:'plant',freeFrom:['lactose']};
  return {kind:'unknown',freeFrom:[]};

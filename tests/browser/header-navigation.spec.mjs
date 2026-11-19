@@ -11,8 +11,13 @@ for(const language of ['tr','en']){
   for(const key of ['Enter','Space']){await tab(page,'tarif');await page.keyboard.press('Tab');await home.focus();await expect(home).toBeFocused();expect(await home.evaluate(el=>getComputedStyle(el).outlineStyle)).not.toBe('none');await home.press(key);await expect(page.locator('.view-kesfet')).toBeVisible();await expect(home).toBeFocused();}
   expect(await page.evaluate(()=>[localStorage.getItem('bm.recipes.v1'),localStorage.getItem('bm.settings.v2')])).toEqual(saved);await page.reload();await tab(page,'tarif');await expect(page.locator('.ing')).toHaveCount(1);expect(errors).toEqual([]);
  });
- test(`B153 category rows ${language}: all desktop categories fit without horizontal scrolling`,async({page})=>{
+ test(`B207 category strip ${language}: one row on open, "all categories" expands rows that fit without horizontal scrolling`,async({page})=>{
   await page.addInitScript(language=>localStorage.setItem('bm.settings.v2',JSON.stringify({version:2,settings:{language}})),language);await page.goto('/');
+  await page.setViewportSize({width:1440,height:900});
+  const strip=await page.locator('.explore>.cats').evaluate(el=>({wrap:getComputedStyle(el).flexWrap,h:el.getBoundingClientRect().height,card:document.querySelector('#foodlist button.food').getBoundingClientRect().top}));
+  expect(strip.wrap).toBe('nowrap');expect(strip.h).toBeLessThan(90);expect(strip.card).toBeLessThan(900); // ilk besin kartı ilk ekranda
+  await cat(page,'atistirmalik').click();await expect(cat(page,'atistirmalik')).toBeInViewport();await cat(page,'').click();
+  await page.locator('.cats-toggle').click();await expect(page.locator('.cats-toggle')).toHaveAttribute('aria-expanded','true');
   for(const width of [1440,1024,768]){
    await page.setViewportSize({width,height:1000});const nav=page.locator('.explore>.cats');
    const layout=await nav.evaluate(el=>({width:el.clientWidth,scroll:el.scrollWidth,wrap:getComputedStyle(el).flexWrap,boxes:[...el.querySelectorAll('.cat')].map(b=>{const r=b.getBoundingClientRect();return {top:r.top,left:r.left,right:r.right};})}));

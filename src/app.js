@@ -1,3 +1,4 @@
+import NOTICES from './data/notices.json'; // B209 değerlendirmesi: tembel yükleme ilk açılıştan hemen sonra çevrimdışı kalınca Bilgi sayfasını kırıyordu; gömülü kalır
 import { catalogGroup, categoryContains, catalogSections, DRINK_GROUPS } from './catalog-tree.js';
 import { DIET_KEYS, dietActive } from './diet.js';
 import { renderDietFilter } from './diet-view.js';
@@ -7,7 +8,6 @@ import { scaleItem, aggregate, scaleAggregate, assessAmino } from './calc.js';
 import { combineRecipes } from './recipe-total.js';
 import { renderRecipeTotal } from './recipe-total-view.js';
 import { renderMatrix, basicCard, BASIC_KEYS, macroPie } from './matrix.js';
-import NOTICES from './data/notices.json';
 import { createPrintController } from './print.js';
 import { FONTS, fontStack, ensureFont, headingFont, ensureHeadingFont } from './fonts.js';
 import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, mergeImport, saveImportState, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles, loadCollections, saveCollections, loadRecent, saveRecent, pushRecent } from './store.js';
@@ -42,6 +42,7 @@ import { similarFoods } from './similar.js';
 import { FOOD_ICONS } from './food-icons.js';
 import { foodArt } from './food-art.js';
 import { morphHtml } from './morph.js';
+import { routeOf, parseRoute } from './route.js';
 import { compareChart, compareAminoChart } from './compare-chart.js';
 import { brandMark, plateIllustration } from './kitchen-art.js';
 import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS, shortcutKey, migrateFontV2, migrateAionOff, applyProfileSettings } from './settings.js';
@@ -231,7 +232,7 @@ function foodButton(f, action, extra = '') {
   return `<button class="food ${on ? 'picked' : S.sel?.id === f.id ? 'selected' : ''}" data-action="${action}" data-id="${esc(f.id)}" ${extra}>
     <span class="fi" aria-hidden="true">${on ? '✓' : foodIcon(f)}</span>
     <span class="fn">${esc(foodName(f))}${f.animal ? ` <span class="tag-animal">${L("Hayvansal")}</span>` : ''}</span>
-    <span class="ff">${f.forms.length > 1 ? L("{n} biçim", { n: f.forms.length }) : esc(formName(f.forms[0].label))}${quickFacts(f.forms[0].v)}</span>
+    <span class="ff">${f.forms.length > 1 ? L("{n} biçim", { n: f.forms.length }) : esc(formName(f.forms[0].label))}${quickFacts((f.forms.find((fm) => fm.v?.energy != null) || f.forms[0]).v || {})}</span>
   </button>`;
 }
 // Kartta tek bakışta: 100 g ilk biçim için enerji, protein, lif (veri yoksa yazılmaz)
@@ -241,7 +242,8 @@ function quickFacts(v) {
   if (v.energy != null) parts.push(`${fmtNum(v.energy, 'low')} kcal`);
   if (v.protein != null) parts.push(`${fmtNum(v.protein, 'low')} g ${L("prot.")}`);
   if (v.fiber != null) parts.push(`${fmtNum(v.fiber, 'low')} g ${L("lif")}`);
-  return parts.length ? `<span class="facts"> · ${parts.join(' · ')}</span>` : '';
+  // B208: hiç ölçüm yoksa boş bırakma; kart dürüstçe "ölçüm yok" der (0 değil)
+  return parts.length ? `<span class="facts"> · ${parts.join(' · ')}</span>` : `<span class="facts nodata"> · ${L("ölçüm yok")}</span>`;
 }
 const SORTS = { default: () => 0, name: (a, b) => foodName(a).localeCompare(foodName(b), getLanguage() === 'en' ? 'en' : 'tr'),
   energy: (a, b) => (b.forms[0].v.energy ?? -1) - (a.forms[0].v.energy ?? -1), protein: (a, b) => (b.forms[0].v.protein ?? -1) - (a.forms[0].v.protein ?? -1), fiber: (a, b) => (b.forms[0].v.fiber ?? -1) - (a.forms[0].v.fiber ?? -1) };
@@ -432,6 +434,7 @@ function renderExplore() {
           ${item.custom ? `<button class="btn icon" data-action="cu-edit" title="${L("Düzenle")}" aria-label="${L("Düzenle")}">✎<span class="lbl-opt"> ${L("Düzenle")}</span></button>` : ''}
           <button class="btn icon ghost" data-action="csv" title="${L("Matriksi tablo (CSV) olarak indir")}" aria-label="${L("Matriksi tablo (CSV) olarak indir")}">⬇<span class="lbl-opt"> CSV</span></button>
           <button class="btn icon ghost" data-action="print" title="${L("Yazdır veya PDF olarak kaydet")}" aria-label="${L("Yazdır veya PDF olarak kaydet")}">🖨<span class="lbl-opt"> ${L("Yazdır")}</span></button>
+          ${location.protocol.startsWith('http') && !item.custom ? `<button class="btn icon ghost" data-action="copy-link" title="${L("Bu besinin bağlantısını kopyala")}" aria-label="${L("Bu besinin bağlantısını kopyala")}">🔗<span class="lbl-opt"> ${L("Bağlantı")}</span></button>` : ''}
         </span>
       </div>
       ${item.food && !Object.keys(item.v || {}).length ? `<div class="card unavail"><p>${esc(item.note || '')}</p><button class="btn primary" data-action="cu-new" data-name="${esc(item.name)}">＋ ${L("Etiketten kendi besinim olarak ekle")}</button></div>` : ''}
@@ -439,10 +442,10 @@ function renderExplore() {
       <div id="matrix" class="matrix">${matrixForExplore(item)}</div>`
     : '';
   return `<div class="explore ${item ? 'has-sel' : ''}">
-    <nav class="cats ${S.settings.catGrid ? 'cats-grid' : ''}" aria-label="${L("Kategoriler")}">${categoryNav('ex', S.cat)}</nav>
+    <nav class="cats ${S.settings.catGrid ? 'cats-grid' : ''}" aria-label="${L("Kategoriler")}" data-strip="${!S.settings.catGrid && !S.catsOpen}">${categoryNav('ex', S.cat)}${S.settings.catGrid ? '' : `<button class="cats-toggle" data-action="cats-toggle" aria-expanded="${!!S.catsOpen}">${S.catsOpen ? L("Daha az") : L("Tüm kategoriler")}</button>`}</nav>
     <section class="list" aria-label="${L("Besinler")}">
       ${!item && !S.cat && !S.q ? welcome() : ''}
-      <div class="searchbar"><input type="search" id="q" placeholder="${L("Bir besin bul: mercimek, latte, pizza…")}" value="${esc(S.q)}" autocomplete="off" aria-label="${L("Besin ara")}">
+      <div class="searchbar"><input type="search" id="q" placeholder="${L("Bir besin bul: mercimek, latte, pizza…")}" value="${esc(S.q)}" autocomplete="off" aria-label="${L("Besin ara")}" aria-keyshortcuts="/" title="${L("Kısayol: / ara · ↓ sonuçlara geç · Esc temizle")}">
       ${S.q ? `<button class="btn ghost" data-action="ex-clear">${L("Temizle")}</button>` : ''}</div>
       ${S.searches.length ? `<div class="recent-searches" aria-label="${L("Son aramalar")}"><span class="hint">${L("Son aramalar")}</span><div class="presets">${S.searches.map(q => `<button class="pchip" data-action="search-recent" data-q="${esc(q)}">${esc(q)}</button>`).join('')}<button class="btn ghost" data-action="search-clear">${L("Geçmişi temizle")}</button></div></div>` : ''}
       ${renderDietFilter(S.settings,'ex',S.dietOpen.ex)}
@@ -682,8 +685,8 @@ function renderSettings() {
   return withSettingsToc(`<div class="settings">
     <div class="settings-search"><label class="field"><span>🔎 ${L("Ayarlarda ara")}</span><input id="settings-q" type="search" value="${esc(S.settingsQ)}" placeholder="${L("ör. yazı, tema, Aion, yedek")}" autocomplete="off"></label>
       <p class="hint" id="settings-none" role="status" hidden>${L("Bu aramaya uyan ayar yok.")}</p></div>
-    <section class="card lang-card" aria-label="Dil / Language"><h2>🌐 ${L("Dil")} / Language</h2>
-      <div class="presets lang-pick" role="group" aria-label="Dil / Language">${[['tr', '🇹🇷 Türkçe'], ['en', '🇬🇧 English'], ['auto', L("Cihaz dili")]].map(([v, name]) => `<button class="pchip ${s.language === v ? 'on' : ''}" aria-pressed="${s.language === v}" data-action="set" data-k="language" data-v='"${v}"' lang="${v === 'auto' ? '' : v}">${name}</button>`).join('')}</div>
+    <section class="card lang-card" aria-label="${tr('language')}"><h2>🌐 ${tr('language')}</h2>
+      <div class="presets lang-pick" role="group" aria-label="${tr('language')}">${[['tr', '🇹🇷 Türkçe'], ['en', '🇬🇧 English'], ['auto', L("Cihaz dili")]].map(([v, name]) => `<button class="pchip ${s.language === v ? 'on' : ''}" aria-pressed="${s.language === v}" data-action="set" data-k="language" data-v='"${v}"' lang="${v === 'auto' ? '' : v}">${name}</button>`).join('')}</div>
       <p class="hint">${L("Şimdilik Türkçe ve İngilizce. Besin adları, matriks, tarif ve dışa aktarma seçilen dile geçer.")}</p></section>
     ${renderAppearance(s)}
     <section class="card aion-settings"><h2>${tr('aionTitle')}</h2>
@@ -972,7 +975,12 @@ export function render() {
   if (focusedId) {
     const el = document.getElementById(focusedId);
     if (el) { el.focus(); if (selStart != null && el.setSelectionRange) try { el.setSelectionRange(selStart, selStart); } catch {} }
-  }  // B198: "daha göster" düğmesi görünür alana yaklaşınca kendiliğinden yükle (düğme klavye/ekran okuyucu için de kalır)
+  }
+  syncRoute();
+  // B207: şeritte seçili kategori görünür kalsın (yalnız şeridi kaydırır, sayfayı değil)
+  const strip = document.querySelector('.explore > .cats[data-strip="true"]'), onCat = strip?.querySelector('.cat.on');
+  if (onCat) { const a = strip.getBoundingClientRect(), b = onCat.getBoundingClientRect(); if (b.right > a.right - 48) strip.scrollLeft += b.left - a.left - 48; }
+  // B198: "daha göster" düğmesi görünür alana yaklaşınca kendiliğinden yükle (düğme klavye/ekran okuyucu için de kalır)
   if ('IntersectionObserver' in window) document.querySelectorAll('.list-more').forEach((btn) => {
     const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); btn.click(); } }, { rootMargin: '600px 0px' });
     io.observe(btn);
@@ -980,6 +988,50 @@ export function render() {
 }
 
 const isPhone = () => !!window.matchMedia?.('(max-width: 700px)').matches;
+
+// B206: hızlı klavye: "/" aramaya, ↑/↓ sonuçlarda gezin, Esc aramayı temizler ya da besin detayını kapatır (Enter = düğmeyi aç)
+function quickKeys(e) {
+  if (document.querySelector('.modal') || e.altKey || e.ctrlKey || e.metaKey || e.defaultPrevented) return false;
+  const t = e.target, typing = !!t.closest?.('input, textarea, select, [contenteditable="true"]');
+  if (e.key === '/' && !typing) {
+    e.preventDefault();
+    if (S.tab !== 'kesfet') { S.tab = 'kesfet'; render(); }
+    $('#q')?.focus(); $('#q')?.select(); return true;
+  }
+  if (S.tab !== 'kesfet') return false;
+  const cards = () => [...document.querySelectorAll('#foodlist button.food')].filter((b) => b.offsetParent);
+  if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && (t.id === 'q' || t.matches?.('#foodlist button.food'))) {
+    const list = cards(); if (!list.length) return false;
+    const i = list.indexOf(t);
+    const next = t.id === 'q' ? (e.key === 'ArrowDown' ? list[0] : null) : e.key === 'ArrowDown' ? list[Math.min(list.length - 1, i + 1)] : i <= 0 ? $('#q') : list[i - 1];
+    if (!next) return false;
+    e.preventDefault(); next.focus(); next.scrollIntoView?.({ block: 'nearest' }); return true;
+  }
+  if (e.key === 'Escape') {
+    if (t.id === 'q' && t.value) { e.preventDefault(); t.value = ''; t.dispatchEvent(new Event('input', { bubbles: true })); return true; }
+    if (S.sel && !typing) { e.preventDefault(); const id = S.sel.id; S.sel = null; render(); (document.querySelector(`#foodlist [data-id="${CSS.escape(id || '')}"]`) || $('#q'))?.focus(); return true; }
+  }
+  return false;
+}
+
+// B205: adres çubuğu durumu izler (Geri/İleri, paylaşılabilir besin bağlantısı)
+let routeReady = false;
+function applyRoute(hash) {
+  const r = parseRoute(hash, (id, f) => !!FOODS.find((x) => x.id === id)?.forms[f]);
+  S.tab = r.tab;
+  if (r.tab === 'kesfet') {
+    const same = r.sel && S.sel && refKey(r.sel) === refKey(S.sel);
+    S.sel = r.sel;
+    if (r.sel && !same) S.amount = S.settings.defaultAmount;
+    if (r.sel?.t === 'x') requestExtCatalog();
+  }
+}
+function syncRoute() {
+  const want = routeOf(S.tab, S.sel?.t === 'u' ? null : S.sel);
+  const cur = location.hash || '#/';
+  if (want !== cur) try { history[routeReady ? 'pushState' : 'replaceState'](null, '', want); } catch {}
+  routeReady = true;
+}
 function refreshMatrix() {
   const m = $('#matrix');
   if (!m) return render();
@@ -1339,6 +1391,8 @@ async function onClick(e) {
     case 'print': try { printController.print(); } catch { toast(L("Yazdırma bu ortamda kullanılamıyor; CSV olarak indirebilirsin")); } break;
     case 'ex-form': S.sel = { ...S.sel, f: +b.dataset.f }; render(); break;
     case 'ex-back': S.sel = null; render(); break;
+    case 'cats-toggle': S.catsOpen = !S.catsOpen; render(); $('.cats-toggle')?.focus(); break;
+    case 'copy-link': { const url = location.href; (navigator.clipboard?.writeText(url) || Promise.reject()).then(() => toast(L("Bağlantı kopyalandı"))).catch(() => uiDialog(L("Bağlantıyı kopyala:"), { input: url, line: true })); break; }
     case 'search-recent': S.q = b.dataset.q; S.cat = null; render(); break;
     case 'search-clear': S.searches = []; saveSearches([]); render(); break;
     case 'ex-clear': S.q = ''; render(); break;
@@ -1684,6 +1738,8 @@ export function start() {
   if (S.collections.some(c => c.items.some(r => r.t === 'x'))) requestExtCatalog(); // B165
   window.addEventListener('resize', () => { document.documentElement.dataset.uiNarrow = String(window.innerWidth / (S.settings.uiScale / 100) < 900); });
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (S.settings.theme === 'system') applySettings(); });
+  if (location.hash && location.hash !== '#/') applyRoute(location.hash);
+  window.addEventListener('popstate', () => { applyRoute(location.hash); render(); window.scrollTo(0, 0); });
   mountAion();
   configureAion(S.settings);
   render();
@@ -1729,10 +1785,11 @@ export function start() {
     }
     if (d.isConnected && d.matches?.('details.cmp-amino')) S.cmpAminoOpen = d.open;
     if (d.isConnected && d.matches?.('details.personal-section')) { S.daySecOpen ||= {}; S.daySecOpen[d.dataset.psec] = d.open; }
-    if (d.isConnected && d.matches?.('.personal details.micro-overview') && isPhone()) { S.dayMicroOpen = d.open; return; }
+    if (d.isConnected && d.matches?.('.personal details.micro-overview') && isPhone()) S.dayMicroOpen = d.open; // seçim diğer sekmelerle de paylaşılır (aşağıda)
     if (!printController.active && d.isConnected && d.matches?.('details.sec, details.micro-overview')) { if (d.open) S.closed.delete(d.dataset.sec); else S.closed.add(d.dataset.sec); }
   }, true);
   document.addEventListener('keydown', (e) => {
+    if (quickKeys(e)) return;
     if (!document.querySelector('.modal') && !e.target.closest('input, textarea, select, [contenteditable="true"]') && e.altKey && !e.ctrlKey && !e.metaKey) {
       const key = shortcutKey(e); const target = Object.keys(SHORTCUT_ACTIONS).find(id => S.settings.shortcuts[id] === `Alt+${key}`);
       if (target) { e.preventDefault(); S.tab = target; render(); window.scrollTo(0, 0); document.querySelector(`[data-tab="${target}"]`)?.focus(); return; }

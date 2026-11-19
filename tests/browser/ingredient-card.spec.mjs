@@ -354,7 +354,8 @@ test('B185 koleksiyon varsa kategori şeridinde Tümü\'nün hemen ardından gel
   await page.evaluate(() => localStorage.setItem('bm.collections.v1', JSON.stringify([{ id: 'a', name: 'Kahvaltı', items: [{ t: 'c', id: 'muz', f: 0 }] }])));
   await page.reload();
   expect(await firstAfterAll()).toContain('cat-group');
-  const x = await page.locator('.explore .cats [data-cat="col:a"]').evaluate((e) => e.offsetLeft - e.parentElement.offsetLeft);
+  // B207: şeridin başında "Tüm kategoriler" çipi var; koleksiyon "Tümü"ye yakın kalmalı
+  const x = await page.locator('.explore .cats [data-cat="col:a"]').evaluate((e) => e.getBoundingClientRect().left - e.parentElement.querySelector('[data-cat=""]').getBoundingClientRect().left);
   expect(x).toBeLessThan(400);
 });
 

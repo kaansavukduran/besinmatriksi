@@ -51,6 +51,7 @@ test('Pages alt yolunda açılır, kayıtlı tarif ve çevrimdışı besin veris
   await page.locator('[data-action="tab"][data-tab="tarif"]').click();
   await expect(page.locator('.ings')).toContainText('Muz');
   await page.locator('[data-action="tab"][data-tab="kesfet"]').click();
+  if (await page.locator('.back').isVisible()) await page.locator('.back').click(); // B205: yenileme açık besini korur
   await page.locator('#q').fill('nohut');
   await page.locator('#foodlist [data-id="nohut"]').click();
   await expect(page.locator('#matrix')).toContainText('Nohut');
