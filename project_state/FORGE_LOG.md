@@ -1098,5 +1098,6 @@
 ## B195 · 2026-11-19 · CoFID üçüncü tur: 161 hücre
 - Aday arama İngilizce besin adıyla (USDA açıklaması yerine); aynı kurallar (ad + biçim aynı, su ±5 g, protein ±%25/±1 g), elle seçim. 44 biçim eklendi (karpuz, şeftali, armut, avokado, ananas, mango, frenk üzümü, papaya, haşlanmış soğan, çiğ taze fasulye, lahana, karnabahar, bamya, balkabağı, enginar, Brüksel lahanası, kuşkonmaz, edamame, kara lahana, hindiba, pancar, kırmızı/yeşil mercimek, kırmızı fasulye, maş, urad, beyaz/esmer pirinç, bulgur, kinoa, buğday kepeği, fındık, badem, kestane, Brezilya cevizi, tahin, maydanoz, havuç suyu…). Reddedilenler: kabuklu limon, kiraz domates, yalnız soğanı olan taze soğan, dondurulmuş/bebek ıspanak, yarı haşlanmış esmer pirinç, çiğ tempeh↔pişmiş.
 - Toplam CoFID hücresi 161 (iyot 38, biyotin 66, şekerler 19 biçim + alt şekerler, Se 3, pantotenik 2, Mn 1). Boşluk: iyot 523→485, şeker 92→73. CoFID'de bitkisel iyot çoğunlukla "N"; bu kaynakla ulaşılabilecek sınır bu.
-- Kanıt: `npm run data` (CoFID 161); `npm test` 170/170 (B191 testi tüm 106 eşlemede su/protein uyumu ve değer birebirliği); tam koşu aşağıda.
+- Kanıt: `npm run data` (CoFID 161); `npm test` 170/170 (B191 testi tüm 106 eşlemede su/protein uyumu ve değer birebirliği); Playwright tam koşu 362/362.
+- Sürüm 1.1.2-beta.56 (B194 + B195), Kaan'ın "Yayınla" isteğiyle.
 - Sonraki: **B196** beta.56 (B194–B195).

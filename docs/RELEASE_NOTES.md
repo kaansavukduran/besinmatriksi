@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 55 · İngiliz besin tablosundan eksik değerler
+# 🫐 Besin Matriksi 1.1.2 Beta 56 · Kolay kıyaslama, daha dolu veri
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -21,9 +21,9 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
-- **Eksik değerler dolduruldu:** USDA'da ölçülmemiş 92 değer, İngiltere'nin resmî besin tablosundan (UK CoFID 2021, açık lisans) eklendi: iyot, biyotin, selenyum, pantotenik asit ve şeker türleri. 40 bitkisel besin biçiminde (ör. portakal suyu, ahududu, dut, kuru erik, havuç, brokoli, bezelye, tempeh, kuskus, kaju). Her eşleme elle doğrulandı (ad, hazırlama biçimi, su ve protein uyumu); “UK CoFID 2021” etiketiyle görünür, iz ve ölçülmemiş değerler 0 yazılmaz.
-- **Bildirimler telefonda düzgün:** Kısa mesajlar ekranın yarısına sıkışıp yuvarlak bir topa dönmüyor.
-- **Daha güzel paylaşım ve açılış:** Web sürümü paylaşılınca önizleme kartı görünür; açılışta uygulama renklerinde logo.
+- **Kıyasla'da arama kutusu:** Sekmenin en üstünde “Kıyaslamak için besin ara”. Yaz, sonuçtaki biçime (kuru, haşlanmış, konserve…) dokun; iki besin saniyeler içinde yan yana. En fazla 4 besin.
+- **Daha fazla eksik değer dolduruldu:** UK CoFID 2021'den toplam 161 değer (önceki sürümde 92): iyot, biyotin, selenyum, pantotenik asit, şeker türleri. 106 bitkisel besin biçimi, her biri elle eşlenip su ve protein uyumuyla doğrulandı (ör. mercimek, fasulye, pirinç, bulgur, kinoa, lahana, karnabahar, avokado, mango, fındık, tahin).
+- **Beta 55'ten:** İlk CoFID değerleri, telefonda düzgün bildirimler, paylaşım önizlemesi ve açılış ekranı.
 - **Beta 54'ten:** Kısa Günlük profil formu.
 - **Beta 53'ten:** Koleksiyonlar kategori şeridinin başında, Aion telefonda tepkili.
 - **Beta 52'den:** Hizalı matriks bölümleri, iki sütunlu tema renkleri.
