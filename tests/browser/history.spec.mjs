@@ -18,6 +18,9 @@ test('B217 Günlük geçmişi: 7 gün / 30 gün / takvim, ortalama yalnız kayı
   await expect(hist.locator('.hist-tiles .ht').first()).toContainText('2'); // 7 günde 2 kayıtlı gün
   await expect(hist.locator('.hist-tiles .ht').nth(1)).toContainText('134'); // (89 + 178) / 2 ≈ 133,5 → 134
   await expect(hist.locator('.hist-top li').first()).toContainText('Muz');
+  // B222: 18 ve 19 Kasım kayıtlı → 2 günlük seri; önceki 7 günde (10 Kasım) kayıt var → enerji farkı
+  await expect(hist.locator('.ht-streak')).toContainText(/2 gündür|2-day/);
+  await expect(hist.locator('.hist-tiles .ht').nth(1).locator('.ht-d')).toContainText(/önceki 7 güne göre|vs previous 7 days/);
 
   await hist.locator('[data-action="hist-mode"][data-mode="30"]').click();
   await expect(page.locator('.history .week-bars .wk')).toHaveCount(30);
@@ -39,6 +42,13 @@ test('B217 Günlük geçmişi: 7 gün / 30 gün / takvim, ortalama yalnız kayı
   await page.locator('.history [data-action="hist-month"][data-d="1"]').click();
   await page.locator('.history .cal-cell[data-day="2026-11-19"]').click(); // bugüne dön
   await page.locator('.history [data-action="hist-mode"][data-mode="7"]').click();
+  // B221: aralık CSV olarak iner; kayıtsız gün satırı boş değerli
+  const dl = page.waitForEvent('download'); await page.locator('.history [data-action="hist-csv"]').click();
+  const file = await dl; expect(file.suggestedFilename()).toBe('besin-gecmisi-2026-11-13_2026-11-19.csv');
+  const csv = (await import('node:fs')).readFileSync(await file.path(), 'utf8');
+  expect(csv.split('\r\n')).toHaveLength(8);
+  expect(csv).toContain('2026-11-17;0;;;;;');
+  expect(csv).toMatch(/2026-11-18;1;178;/);
   await page.locator('.history [data-action="hist-open"]').first().click();
   await expect(page).toHaveURL(/#\/food\/muz$/);
   expect(errors).toEqual([]);

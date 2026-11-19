@@ -1046,5 +1046,16 @@ export const UI_EN = {
  "Ölçüm değil, tarif hesabı (tahmin), pişmiş ağırlıkla: %60 kabak + soğan, domates, az pirinç, %7 zeytinyağı, dereotu yerine maydanoz, su, tuz (USDA kayıtlarından).": "Not a measurement; a recipe calculation (estimate) by cooked weight: 60% courgette + onion, tomato, a little rice, 7% olive oil, parsley in place of dill, water, salt (from USDA records).",
  "Ölçüm değil, tarif hesabı (tahmin), pişmiş ağırlıkla: %60 haşlanmış patates + soğan, salça, domates, %6 zeytinyağı, yeşil biber, su, tuz (USDA kayıtlarından).": "Not a measurement; a recipe calculation (estimate) by cooked weight: 60% boiled potato + onion, paste, tomato, 6% olive oil, green pepper, water, salt (from USDA records).",
  "Bu günü bugüne kopyala": "Copy this day to today",
- "{n} kayıt bugüne plan olarak eklendi; yedikçe “Tüketildi” diye işaretle.": "{n} entries added to today as a plan; mark them “Consumed” as you eat."
+ "{n} kayıt bugüne plan olarak eklendi; yedikçe “Tüketildi” diye işaretle.": "{n} entries added to today as a plan; mark them “Consumed” as you eat.",
+ "Bu aralığı tablo (CSV) olarak indir": "Download this range as a table (CSV)",
+ "Tarih": "Date",
+ "Kayıt": "Entries",
+ "Enerji (kcal)": "Energy (kcal)",
+ "Protein (g)": "Protein (g)",
+ "Lif (g)": "Fibre (g)",
+ "Eksik ölçüm (≥)": "Missing measurements (≥)",
+ "{n} gündür kesintisiz": "{n}-day streak",
+ "önceki aya göre": "vs previous month",
+ "önceki 30 güne göre": "vs previous 30 days",
+ "önceki 7 güne göre": "vs previous 7 days"
 };

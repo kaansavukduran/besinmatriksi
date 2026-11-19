@@ -1259,3 +1259,15 @@
 - `copyDayEntries` (src/personal.js) saf işlev; birim testi (yeni kimlik, hedef gün, planlandı, kaynak değişmez, aynı güne kopya yok, süzgeç).
 - Kanıt: `npm test` 187/187; Playwright B220 (kopyala → bugün, 2 kayıt planlandı, geri al → boş); iPhone 390 px ekran görüntüsü.
 - Playwright tam koşu 52 (B219 + B220): 383/383. Sürüm 1.1.2-beta.59 (B217–B220).
+
+## B221 · 2026-11-19 · Geçmişi CSV olarak indir
+- Geçmiş bölümünde "⬇ Bu aralığı tablo (CSV) olarak indir": görünen aralık (7 gün / 30 gün / takvimdeki ay) gün gün iner: tarih, kayıt sayısı, enerji, protein, lif, eksik ölçüm notu (≥), besinler ("ad g; …"). Türkçe Excel uyumlu (UTF-8 BOM, ; ayraç, ondalık virgül), formül enjeksiyonu engelli, kayıtsız gün satırı boş hücreli (0 değil). Dosya adı tarih aralığını taşır (`besin-gecmisi-2026-11-13_2026-11-19.csv`). Görünüm ve CSV aynı aralık işlevini (`historyRange`) kullanır.
+- Kanıt: `historyCSV` birim testi; Playwright B217'ye indirme adımı (dosya adı, 8 satır, kayıtsız gün boş, 178 kcal'lik gün); tam koşu 53: 383/383.
+
+## B222 · 2026-11-19 · Takipte seri ve önceki dönemle fark
+- "Kayıtlı gün" kutucuğunda kesintisiz kayıt serisi (≥ 2 gün: "🔥 3 gündür kesintisiz"; bugün henüz kayıt yoksa seri dünden sayılır, kırılmaz).
+- Ortalama kutucuklarında önceki eşit döneme göre fark: "▲ 234 kcal · önceki 7 güne göre" (30 gün ve takvimde önceki 30 gün / önceki ay). Yargısız gösterim (iyi/kötü rengi yok); iki dönemden birinde değer yoksa fark gösterilmez (0 değil); eksik ölçüm varsa "≈".
+- Hata düzeltmesi: Günlük boş durum metni hâlâ "1–1000 g" diyordu → "miktar (1 g – 10 kg)" (TR/EN).
+- Kanıt: `loggingStreak`, `periodDelta` birim testleri (bugün kayıtsız seri, yalnız tüketilenler, önceki dönem boşken null); Playwright: 2 günlük seri ve "önceki 7 güne göre" satırı; 1280 px ekran görüntüsü.
+- Tarif görünümünü ayırma ertelendi: bildirim (`toast`), etkin tarif, katalog yükleme gibi uygulama düzeyi yardımcılara bağlı; önce bunlar ortak bir `ui.js`'e alınmalı.
+- Kanıt (B221 + B222): `npm test` 189/189; Playwright tam koşu 54: 383/383. Sonraki: **B223** ortak ui.js (toast, etkin tarif, katalog yükleme) → Tarif görünümünü ayırma; yeni yemek turu; beta.60.

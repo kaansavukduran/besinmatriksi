@@ -51,7 +51,8 @@ import { S } from './state.js';
 import { catIcon, foodIcon, persona, isPhone } from './views/common.js';
 import { PRESETS, MAX_G, amountControls, perServing, miniAmount } from './views/amount.js';
 import { compareResults, renderCompare } from './views/compare.js';
-import { shiftMonth } from './history.js'; // B215: en son içe aktarılır; durum, diğer modüller değerlendirildikten sonra kurulur (eski sıra)
+import { shiftMonth, historyCSV } from './history.js';
+import { historyRange } from './history-view.js'; // B215: en son içe aktarılır; durum, diğer modüller değerlendirildikten sonra kurulur (eski sıra)
 
 
 let lastSavedPersonal = structuredClone(S.personal); // B215: durum src/state.js'te
@@ -1257,6 +1258,12 @@ async function onClick(e) {
     // B217: Günlük geçmişi: aralık, ay gezinme, sık yenen besini Keşfet'te aç
     case 'hist-mode': S.hist = { ...(S.hist || {}), mode: b.dataset.mode }; render(); document.querySelector(`[data-action="hist-mode"][data-mode="${b.dataset.mode}"]`)?.focus(); break;
     case 'hist-month': { S.hist ||= {}; const cur = S.hist.month || S.personalDay.slice(0, 7); const next = shiftMonth(cur, Number(b.dataset.d)); if (next <= localDay().slice(0, 7)) S.hist.month = next; render(); document.querySelector(`[data-action="hist-month"][data-d="${b.dataset.d}"]`)?.focus(); break; }
+    case 'hist-csv': {
+      const h = S.hist || {}, sum = historyRange(S.personal, S.personalDay, resolve, S.consumedOnly, h);
+      const first = sum.days[0]?.day, last = sum.days.at(-1)?.day;
+      download(`besin-gecmisi-${first}_${last}.csv`, historyCSV(sum.days, resolve, { date: L("Tarih"), entries: L("Kayıt"), energy: L("Enerji (kcal)"), protein: L("Protein (g)"), fiber: L("Lif (g)"), partial: L("Eksik ölçüm (≥)"), foods: L("Besinler") }), 'text/csv;charset=utf-8');
+      break;
+    }
     case 'hist-open': { const ref = JSON.parse(b.dataset.ref); S.tab = 'kesfet'; selectFood('ex', ref); window.scrollTo(0, 0); break; }
     case 'week-key': S.weekKey = b.dataset.key; render(); document.querySelector(`[data-action="week-key"][data-key="${b.dataset.key}"]`)?.focus(); break;
     case 'rc-daily-total': S.recipeDaily = true; render(); break;

@@ -48,3 +48,32 @@ test('B220 günü kopyala: yeni kimlik, hedef gün, planlandı; aynı güne kopy
   assert.deepEqual(copyDayEntries(st.entries, '2026-11-19', '2026-11-19'), []);
   assert.equal(copyDayEntries(st.entries, '2026-11-17', '2026-11-20', { consumedOnly: true }).length, 0);
 });
+
+import { historyCSV } from '../src/history.js';
+test('B221 geçmiş CSV: BOM, ; ayraç, ondalık virgül, kayıtsız gün boş (0 değil), formül enjeksiyonu yok', () => {
+  const r = rangeSummary(st, '2026-11-19', 3, resolve);
+  const csv = historyCSV(r.days, resolve);
+  assert.ok(csv.startsWith('﻿Tarih;Kayıt;Enerji (kcal);Protein (g)'));
+  const lines = csv.slice(1).split('\r\n');
+  assert.equal(lines.length, 4);
+  assert.equal(lines[2], '2026-11-18;0;;;;;'); // kayıt yok: boş hücreler
+  assert.match(lines[3], /^2026-11-19;2;250;20;4;protein fiber;"A 200 g; B 100 g"$/);
+  const evil = historyCSV([{ day: '2026-11-19', n: 1, v: {}, partial: {}, entries: [{ ref: { id: 'x' }, g: 5 }] }], () => ({ name: '=HYPERLINK("x")' }));
+  assert.ok(evil.includes(`"'=HYPERLINK(""x"") 5 g"`));
+});
+
+import { loggingStreak, periodDelta } from '../src/history.js';
+test('B222 kayıt serisi ve önceki dönemle fark', () => {
+  const e = (day, consumed = true) => ({ day, consumed, ref: { id: 'a' }, g: 100 });
+  assert.equal(loggingStreak([e('2026-11-19'), e('2026-11-18'), e('2026-11-17'), e('2026-11-15')], '2026-11-19'), 3);
+  assert.equal(loggingStreak([e('2026-11-18'), e('2026-11-17')], '2026-11-19'), 2); // bugün henüz kayıt yok: seri dünden sayılır
+  assert.equal(loggingStreak([e('2026-11-16')], '2026-11-19'), 0);
+  assert.equal(loggingStreak([e('2026-11-19', false)], '2026-11-19', true), 0); // yalnız tüketilenler
+  assert.equal(loggingStreak([], '2026-11-19'), 0);
+  const cur = rangeSummary(st, '2026-11-19', 7, resolve), prev = rangeSummary(st, '2026-11-12', 7, resolve);
+  assert.equal(periodDelta(cur, prev).energy, null); // önceki 7 günde kayıt yok → fark yok (0 değil)
+  const d = periodDelta(rangeSummary(st, '2026-11-19', 1, resolve), rangeSummary(st, '2026-11-18', 1, resolve));
+  assert.equal(d.energy, null);
+  const d2 = periodDelta(rangeSummary(st, '2026-11-19', 1, resolve), rangeSummary(st, '2026-11-17', 1, resolve));
+  assert.equal(d2.energy.value, 150); // 250 − 100
+});

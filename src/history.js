@@ -65,3 +65,35 @@ export function shiftMonth(ym, delta) {
   const d = new Date(y, m - 1 + delta, 1, 12);
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
 }
+
+// B221: aralığı Türkçe Excel uyumlu CSV'ye çevirir (; ayraç, ondalık virgül, UTF-8 BOM). Kayıtsız gün satırı boş değerli (0 değil).
+// Sütunlar: tarih, kayıt sayısı, enerji, protein, lif, eksik ölçüm notu, besinler (ad g; …)
+export function historyCSV(list, resolve, labels = {}) {
+  const t = (k, d) => labels[k] || d;
+  const num = (x) => (x == null ? '' : String(Math.round(x * 10) / 10).replace('.', ','));
+  const safe = (s) => (/^[=+\-@\t\r]/.test(String(s)) ? "'" + s : String(s));
+  const cell = (s) => { s = safe(s); return /[;"\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+  const head = [t('date', 'Tarih'), t('entries', 'Kayıt'), t('energy', 'Enerji (kcal)'), t('protein', 'Protein (g)'), t('fiber', 'Lif (g)'), t('partial', 'Eksik ölçüm (≥)'), t('foods', 'Besinler')];
+  const rows = list.map((d) => [d.day, d.n, num(d.v.energy), num(d.v.protein), num(d.v.fiber),
+    HISTORY_KEYS.filter(([k]) => d.partial[k]).map(([k]) => k).join(' '),
+    d.entries.map((e) => `${resolve(e.ref)?.name || '?'} ${Math.round(e.g)} g`).join('; ')]);
+  return '﻿' + [head, ...rows].map((r) => r.map((c) => cell(c ?? '')).join(';')).join('\r\n');
+}
+
+// B222: kesintisiz kayıt serisi: bugünden (bugün henüz kayıt yoksa dünden) geriye, en az bir kaydı olan ardışık gün sayısı
+export function loggingStreak(entries, today, consumedOnly = false) {
+  const days = new Set(entries.filter((e) => !consumedOnly || e.consumed).map((e) => e.day));
+  let d = days.has(today) ? today : shiftDay(today, -1), n = 0;
+  while (days.has(d) && n < 3660) { n++; d = shiftDay(d, -1); }
+  return n;
+}
+
+// B222: önceki eşit uzunluktaki dönemle ortalama farkı; iki tarafta da bilinen değer yoksa null
+export function periodDelta(cur, prev) {
+  const out = {};
+  for (const [key] of HISTORY_KEYS) {
+    const a = cur.avg[key], b = prev.avg[key];
+    out[key] = a.value == null || b.value == null ? null : { value: a.value - b.value, partial: a.partial || b.partial };
+  }
+  return out;
+}
