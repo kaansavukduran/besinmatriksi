@@ -1230,4 +1230,14 @@
 - Katalog 806 besin. Kanıt: `npm run data`; `npm test` 182/182 (B216 veri testi).
 - Sürüm 1.1.2-beta.58 (B212–B216).
 - Kanıt (B215 + B216 + sürüm): build + build:single; Playwright tam koşu 49: 377/377. CI 252 (d9a05da): Chromium + Firefox/WebKit/iPhone/iPad işleri ikisi de yeşil (Öncelik 0 kapandı).
-- Sonraki: **B217** görünümleri app.js'ten tek tek ayırma (önce Kıyasla: renderCompare + compareResults → src/views/compare.js), ardından yeni yemek turu.
+- Sonraki: **B217** (Kaan isteğiyle değişti: Günlük takip takvimi).
+
+## B217 · 2026-11-19 · Günlük takip: Geçmiş (Son 7 gün · Son 30 gün · Takvim) (Kaan: "track edebilme eksik, takvim gibi bir şey lazım; haftalık ne yedik, son 7 gün, son 1 ay")
+- Günlük'teki 7 günlük grafik "📅 Geçmiş" bölümüne dönüştü: aralık seçimi Son 7 gün / Son 30 gün / Takvim; grafikte Enerji / Protein / Lif (B201 seçimi korunur).
+- Özet kutucukları: kayıtlı gün (ör. 5 / 7), ortalama enerji, protein, lif (gün başına). Ortalama yalnız kaydı olan günlerden; boş gün 0 sayılmaz; eksik ölçümlü değer "≥". Seçili değerin kutucuğu vurgulu.
+- "En sık yediklerin": aralıktaki ilk 5 besin (kaç gün, toplam gram); dokununca besin Keşfet'te açılır (bağlantısıyla, #/food/…).
+- Takvim: Pazartesi başlangıçlı ay ızgarası; her gün değeri (1000+ kısa yazım, tam değer ekran okuyucuda), renk koyuluğu değerle artar, kayıtsız gün boş, bugün kesikli çerçeve, seçili gün kalın kenar, gelecek günler pasif; ‹ › ile ay gezilir (gelecek ay kapalı); güne dokununca o günün kartına kayar. Kayıt yoksa rehber + "Keşfet'e git".
+- 30 günde çubuklar ince, telefonda yana kayar. "Yalnız tüketilenler" süzgeci geçmişe de uygulanır.
+- Kod: saf hesaplar `src/history.js` (daySummary, rangeSummary, summarize, monthGrid, shiftMonth), görünüm `src/history-view.js`. Çeviri hatası yakalandı: yeni "{n} kayıt" İngilizcesi katalogdaki "8.038 kayıt"ı "entries" yapacaktı → takvimde ayrı "{n} besin kaydı".
+- Kanıt: `tests/history.test.mjs` (kayıtsız gün ≠ 0, ortalama yalnız bilinen günlerden, ≥ işareti, en sık yenenler sırası, yalnız tüketilenler, ay ızgarası Pzt başlangıç, Şubat 28, yıl geçişi); Playwright B217 (7/30/takvim, 2 kayıtlı gün ortalaması 134 kcal, takvimde 3 dolu gün, gelecek ay pasif, güne git, önceki ay, sık yeneni aç → #/food/muz; boş durum); B072 ve B201 eski grafik testleri değişmeden geçti; iPhone 390 px ve 1280 px ekran görüntüleri incelendi (telefonda hücre sayıları bölünüyordu → kısa yazım).
+- Playwright tam koşu 50: 381/381. Sonraki: **B218** beta.58 yayınını doğrula (B212–B216; takvim beta.59'da), Kıyasla görünümünü src/views/compare.js'e ayır, yeni yemek turu.

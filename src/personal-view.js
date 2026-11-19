@@ -57,7 +57,9 @@ function renderNutrients(result, settings, energyTarget, profile, secOpen = {}, 
 }
 // Son 7 gün enerji: kayıtsız gün çubuksuz "—", kısmi kapsam "≥" ve açık renkli; çubuğa dokununca o gün açılır
 // B201: grafikte gösterilecek besin seçilebilir (enerji, protein, lif); kayıtsız/ölçümsüz gün çubuksuz "—"
-export const WEEK_KEYS = [['energy', 'kcal', "Enerji"], ['protein', 'g', "Protein"], ['fiber', 'g', "Lif"]];
+import { WEEK_KEYS } from './history.js';
+import { renderHistory } from './history-view.js';
+export { WEEK_KEYS };
 export function renderWeek(state, day, resolve, consumedOnly, weekKey = 'energy') {
   // Seçili gün son 7 gün içindeyse pencere bugünde biter (çubuğa dokununca grafik kaymaz)
   const today = localDay(), end = day <= today && day > shiftDay(today, -7) ? today : day;
@@ -76,7 +78,7 @@ export function renderWeek(state, day, resolve, consumedOnly, weekKey = 'energy'
       <span class="wk-v">${label}</span><span class="wk-bar"><i style="height:${h.toFixed(1)}%"></i></span><span class="wk-d">${esc(name)}</span></button>`;
   }).join('')}</div>${s.some((x) => x.partial) ? `<p class="hint">${L("≥: bazı kayıtlarda bu değerin verisi yok; gerçek değer daha yüksek olabilir.")}</p>` : ''}</div>`;
 }
-export function renderPersonal(state, draft, day, consumedOnly, settings, resolve, sourceKey, sourceOpen, undo, readError, microOpen = true, secOpen = {}, phone = false, weekKey = 'energy') {
+export function renderPersonal(state, draft, day, consumedOnly, settings, resolve, sourceKey, sourceOpen, undo, readError, microOpen = true, secOpen = {}, phone = false, weekKey = 'energy', hist = {}) {
   const { entries, result } = dayResult(state, day, resolve, consumedOnly);
   // Boş durum yalnız günde hiç kayıt yokken; "yalnız tüketilenler" süzgeci matrisi gizlemez (Veri yok satırları anlamlıdır)
   const dayHasEntries = state.entries.some((e) => e.day === day);
@@ -95,7 +97,7 @@ export function renderPersonal(state, draft, day, consumedOnly, settings, resolv
     <p>${t('loggedEnergy')}: <b>${amount(result.v.energy, 'kcal')}</b> · ${t('coverage', { known: result.cov.energy || 0, total: result.n })}</p><p>${t('dailyEnergy')}: <b>${target == null ? t('unknown') : amount(target, 'kcal')}</b> · ${t('energyGap')}: <b>${difference == null ? t(target == null ? 'noReference' : 'partial') : (difference > 0 ? '+' : '') + amount(difference, 'kcal')}</b></p><p class="hint">${t(manual ? 'manualEnergyHint' : state.profile.energySource === 'device' ? 'deviceEstimateHint' : 'estimateHint')}</p>
     ${entries.length ? renderMicronutrients(result, settings, { open: microOpen, contributions: 'day' }) : ''}
     ${entries.length ? `<ul class="source-ingredients">${entries.map(entry => { const item = resolve(entry.ref); return `<li><b>${item ? esc(foodName(item)) : t('missingRecord')}</b> · ${fmtNum(entry.g)} g<div class="presets"><button class="btn" data-action="personal-consumed" data-id="${entry.id}" aria-pressed="${entry.consumed}">${t(entry.consumed ? 'markPlanned' : 'markConsumed')}</button><button class="btn" data-action="personal-remove" data-id="${entry.id}">${t('remove')}</button></div></li>`; }).join('')}</ul>` : `<p>${t('emptyDay')}</p>`}
-    ${renderWeek(state, day, resolve, consumedOnly, weekKey)}
+    ${renderHistory(state, day, resolve, consumedOnly, { mode: hist.mode, month: hist.month, key: weekKey })}
     ${entries.length ? `<button class="btn" data-action="personal-to-recipe">🥣 ${L("Bu günü tarif olarak kaydet")}</button>` : ''}
     ${undo ? `<button class="btn" data-action="personal-undo">${t('undo')}</button>` : ''}
     ${dayHasEntries ? `<details class="personal-sources" ${sourceOpen ? 'open' : ''}><summary>${t('source')}</summary><label class="field"><span>${t('nutrient')}</span><select id="personal-source-key">${NUTRIENTS.map(n => `<option value="${n.key}" ${n.key === sourceKey ? 'selected' : ''}>${esc(label(n))}</option>`).join('')}</select></label><div id="personal-sources-content">${renderDaySources(entries, resolve, sourceKey)}</div></details>` : ''}

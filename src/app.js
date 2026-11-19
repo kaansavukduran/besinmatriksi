@@ -47,7 +47,8 @@ import { withSettingsToc } from './settings-toc.js';
 import { compareChart, compareAminoChart } from './compare-chart.js';
 import { brandMark, plateIllustration } from './kitchen-art.js';
 import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS, shortcutKey, migrateFontV2, migrateAionOff, applyProfileSettings } from './settings.js';
-import { S } from './state.js'; // B215: en son içe aktarılır; durum, diğer modüller değerlendirildikten sonra kurulur (eski sıra)
+import { S } from './state.js';
+import { shiftMonth } from './history.js'; // B215: en son içe aktarılır; durum, diğer modüller değerlendirildikten sonra kurulur (eski sıra)
 
 const PRESETS = [1, 5, 10, 25, 50, 100, 150, 200, 250, 500, 750, 1000, 2000, 5000, 10000];
 const MAX_G = MAX_GRAMS; // B197: 10 kg
@@ -901,7 +902,7 @@ export function render() {
   const selStart = document.activeElement?.selectionStart;
   let view = '';
   if (S.tab === 'kesfet') view = renderExplore();
-  else if (S.tab === 'gunluk') view = renderPersonal(S.personal, S.personalDraft, S.personalDay, S.consumedOnly, S.settings, resolve, S.personalSource, S.personalSourceOpen, S.personalUndo, S.personalReadError, isPhone() ? (S.dayMicroOpen ?? false) : !S.closed.has('micro'), S.daySecOpen, isPhone(), S.weekKey);
+  else if (S.tab === 'gunluk') view = renderPersonal(S.personal, S.personalDraft, S.personalDay, S.consumedOnly, S.settings, resolve, S.personalSource, S.personalSourceOpen, S.personalUndo, S.personalReadError, isPhone() ? (S.dayMicroOpen ?? false) : !S.closed.has('micro'), S.daySecOpen, isPhone(), S.weekKey, S.hist || {});
   else if (S.tab === 'tarif') view = renderRecipe();
   else if (S.tab === 'karsilastir') view = renderCompare();
   else if (S.tab === 'ayarlar') view = renderSettings();
@@ -1181,7 +1182,7 @@ async function onClick(e) {
   switch (a) {
     case 'settings-jump': { const el = document.getElementById(b.dataset.id); if (el) { el.scrollIntoView({ block: 'start' }); el.querySelector('h2')?.focus({ preventScroll: true }); } break; }
     case 'aion-demo': aionPlay(b.dataset.anim || 'celebrate'); aionSay(tr('aionHello'), 4000); break;
-    case 'personal-goto-day': if (validDay(b.dataset.day)) { S.personalDay = b.dataset.day; S.personalDayAuto = b.dataset.day === localDay(); render(); } break;
+    case 'personal-goto-day': if (validDay(b.dataset.day)) { const fromCal = !!b.closest('.cal'); S.personalDay = b.dataset.day; S.personalDayAuto = b.dataset.day === localDay(); render(); if (fromCal) { const h = document.querySelector('#personal-day'); h?.closest('.card')?.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); h?.focus({ preventScroll: true }); } } break;
     case 'personal-to-recipe': {
       const { items, capped } = dayToRecipeItems(S.personal.entries, S.personalDay, { consumedOnly: S.consumedOnly, maxG: MAX_G });
       if (!items.length) break;
@@ -1358,6 +1359,10 @@ async function onClick(e) {
     }
     // tarif
     case 'rc-new': { const r = newRecipe(L("Tarif {n}", { n: S.recipes.length + 1 })); S.recipeDaily = false; S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); render(); break; }
+    // B217: Günlük geçmişi: aralık, ay gezinme, sık yenen besini Keşfet'te aç
+    case 'hist-mode': S.hist = { ...(S.hist || {}), mode: b.dataset.mode }; render(); document.querySelector(`[data-action="hist-mode"][data-mode="${b.dataset.mode}"]`)?.focus(); break;
+    case 'hist-month': { S.hist ||= {}; const cur = S.hist.month || S.personalDay.slice(0, 7); const next = shiftMonth(cur, Number(b.dataset.d)); if (next <= localDay().slice(0, 7)) S.hist.month = next; render(); document.querySelector(`[data-action="hist-month"][data-d="${b.dataset.d}"]`)?.focus(); break; }
+    case 'hist-open': { const ref = JSON.parse(b.dataset.ref); S.tab = 'kesfet'; selectFood('ex', ref); window.scrollTo(0, 0); break; }
     case 'week-key': S.weekKey = b.dataset.key; render(); document.querySelector(`[data-action="week-key"][data-key="${b.dataset.key}"]`)?.focus(); break;
     case 'rc-daily-total': S.recipeDaily = true; render(); break;
     case 'daily-recipe-basis': setSetting('recipeTotalBasis', b.dataset.b); render(); break;
