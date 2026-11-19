@@ -426,3 +426,12 @@ test('B191 UK CoFID 2021 dolgusu: yalnız elle eşlenen biçimlerde, yalnız say
     assert.ok(Math.abs(p - fm.v.protein) <= 1 || Math.abs(p - fm.v.protein) / fm.v.protein <= 0.25, `${id} protein ${fm.v.protein}/${p}`);
   }
 });
+
+test('B196 USDA 18:2 / 18:3 toplamları (618/619) gösterilir; çoklu doymamış toplamı aşmaz; boşluk küçüldü', () => {
+  const plant = DB.foods.filter((f) => !f.animal).flatMap((f) => f.forms).filter((fm) => fm.v && Object.keys(fm.v).length);
+  const miss = (k) => plant.filter((fm) => fm.v[k] == null).length / plant.length;
+  assert.ok(miss('f18d2_t') < 0.15 && miss('f18d3_t') < 0.15, `${miss('f18d2_t')} ${miss('f18d3_t')}`);
+  const walnut = DB.foods.find((f) => f.id === 'ceviz').forms[0];
+  assert.equal(walnut.s.f18d2_t, 'u'); assert.ok(walnut.v.f18d2_t > 30000 && walnut.v.f18d3_t > 8000);
+  for (const fm of plant) if (fm.v.pufa != null && fm.v.f18d2_t != null && fm.v.f18d3_t != null) assert.ok((fm.v.f18d2_t + fm.v.f18d3_t) / 1000 <= fm.v.pufa * 1.1 + 0.05, `${fm.label} ${fm.v.f18d2_t}+${fm.v.f18d3_t} > ${fm.v.pufa}`);
+});

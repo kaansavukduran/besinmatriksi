@@ -110,6 +110,9 @@ const DEFINITIONS = [
   N('f20d1', 'Eikosenoik (C20:1 n-9)', 'mg', 'yag', 'Tekli doymamış (tek tek)', null, 'f20d1cn9', { fa: true }),
   N('f22d1', 'Erusik (C22:1 n-9)', 'mg', 'yag', 'Tekli doymamış (tek tek)', null, 'f22d1cn9', { fa: true }),
   N('f24d1', 'Nervonik (C24:1 n-9)', 'mg', 'yag', 'Tekli doymamış (tek tek)', null, 'f24d1cn9', { fa: true }),
+  // B196: USDA'nın ölçtüğü 18:2 ve 18:3 TOPLAMLARI (izomerler ayrıştırılmamış; SR28'de ~7200 kayıt). Alt türler (LA, ALA) yalnız ~1900 kayıtta.
+  N('f18d2_t', 'C18:2 toplamı (linoleik ağırlıklı, izomer ayrıştırılmamış)', 'mg', 'yag', 'Çoklu doymamış (tek tek)', null, null, { fa: true }),
+  N('f18d3_t', 'C18:3 toplamı (bitkilerde çoğunlukla ALA, izomer ayrıştırılmamış)', 'mg', 'yag', 'Çoklu doymamış (tek tek)', null, null, { fa: true }),
   N('la', 'Linoleik asit, LA (C18:2 n-6)', 'mg', 'yag', 'Çoklu doymamış (tek tek)', null, 'f18d2cn6', { fa: true }),
   N('ala_fa', 'Alfa-linolenik asit, ALA (C18:3 n-3)', 'mg', 'yag', 'Çoklu doymamış (tek tek)', null, 'f18d3n3', { fa: true }),
   N('f20d2', 'Eikosadienoik (C20:2 n-6)', 'mg', 'yag', 'Çoklu doymamış (tek tek)', null, 'f20d2n6', { fa: true }),

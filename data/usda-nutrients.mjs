@@ -11,7 +11,7 @@ export const USDA_NUTRIENTS = {
   arg: '511', his: '512', ala: '513', asp: '514', glu: '515', gly: '516', pro: '517', ser: '518',
   cholesterol: '601', trans: '605', sfa: '606', mufa: '645', pufa: '646',
   f4d0: '607', f6d0: '608', f8d0: '609', f10d0: '610', f12d0: '611', f14d0: '612', f15d0: '652', f16d0: '613', f18d0: '614', f20d0: '615', f22d0: '624', f24d0: '654',
-  la: '675', ala_fa: '851', f20d2: '672', f20d3: '853', aa_fa: '855', epa: '629', dpa: '631', dha: '621',
+  f18d2_t: '618', f18d3_t: '619', la: '675', ala_fa: '851', f20d2: '672', f20d3: '853', aa_fa: '855', epa: '629', dpa: '631', dha: '621',
   phytosterols: '636', sitosterol: '641', campesterol: '639', stigmasterol: '638',
   f14d1_total: '625', f16d1_c: '673', f18d1_c: '674', f18d1_trans: '663', f20d1_total: '628', f22d1_c: '676', f24d1_c: '671',
   mk4: '428', caffeine: '262', theobromine: '263', betaine: '454', fluoride: '313', galactose: '287', alcohol: '221',

@@ -1101,3 +1101,9 @@
 - Kanıt: `npm run data` (CoFID 161); `npm test` 170/170 (B191 testi tüm 106 eşlemede su/protein uyumu ve değer birebirliği); Playwright tam koşu 362/362.
 - Sürüm 1.1.2-beta.56 (B194 + B195), Kaan'ın "Yayınla" isteğiyle. Yayın kanıtı: v1.1.2-beta.56 pre-release 2026-11-19T11:44:54Z (release.yml run 44514687755 success, ilk denemede).
 - Sonraki: **B196** beta.56 (B194–B195).
+
+## B196 · 2026-11-19 · Yağ asitleri: USDA 18:2 / 18:3 toplamları görünür (plan A1)
+- Bulgu (B195 sonrası analiz): linoleik (LA) %89, ALA %84 eksik görünüyordu; omega-3/6 toplamları hiç yok. Neden: yalnız izomer-özel USDA kodları (675, 851; SR28'de ~1900 kayıt) okunuyordu; USDA'nın ölçtüğü 18:2 / 18:3 toplamları (618, 619; ~7200 kayıt) hiç kullanılmıyordu.
+- İki yeni satır: "C18:2 toplamı (linoleik ağırlıklı, izomer ayrıştırılmamış)" ve "C18:3 toplamı (bitkilerde çoğunlukla ALA, izomer ayrıştırılmamış)", etiket USDA (u). Bitkisel boşluk %9 / %10. LA ve ALA satırları ayrı kalır; toplamlar LA/ALA'ya kopyalanmadı (izomer ayrımı yok). Omega-3/6 toplamı türetilmedi: 18:3 toplamı GLA gibi n-6 izomerleri de içerebilir; ölçüm olmayan "omega-3 toplamı" yazılmaz (karar: dürüstlük > dolu görünüm).
+- Kanıt: `npm run data`; `npm test` 171/171 (B196: boşluk <%15, ceviz 18:2 38,1 g / 18:3 9,08 g USDA, 18:2+18:3 ≤ çoklu doymamış); tarayıcıda ceviz matrisi açılıp satırlar doğrulandı; tam koşu aşağıda.
+- Sonraki: **B197** miktar sınırı 1 kg → 10 kg (Kaan isteği).
