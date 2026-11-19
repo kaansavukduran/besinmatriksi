@@ -470,3 +470,11 @@ test('B219 vegan ağırlıklı dünya ve Anadolu tarifleri', () => {
   }
   assert.equal(by('fattus').dietary.kind, 'unknown'); // hazır pide (unlu mamul) içeriği belirsiz
 });
+
+test('B224 günlük yaygın yemekler: FNDDS kaynağı, hayvansal işaret, bitkisel tofu sote', () => {
+  const by = (id) => DB.foods.find((f) => f.id === id);
+  for (const id of ['makarna_domates_soslu', 'makarna_sebzeli', 'fistik_ezmeli_sandvic']) { assert.equal(by(id).dietary.kind, 'unknown', id); assert.ok(!by(id).animal, id); }
+  for (const id of ['lazanya_sebzeli', 'tofu_sebze_sote', 'ceviche']) assert.equal(by(id).animal, true, id);
+  assert.equal(by('tofu_sote_bitkisel').dietary.kind, 'plant');
+  const oat = by('yulaf_lapasi'); assert.equal(oat.forms.length, 2); assert.ok(Object.values(oat.forms[1].s).every((t) => t === 'N'));
+});

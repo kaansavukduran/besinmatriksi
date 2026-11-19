@@ -1278,3 +1278,11 @@
 - Taşırken çalışma zamanı hatası yakalandı: Tarif sekmesi `NUTRIENTS is not defined` ile açılmıyordu (sabit çağrı değil özellik erişimiyle kullanılıyordu; B218'in metin tabanlı modül testi kaçırdı). Tarayıcı testleri (B147, B148) düşerek yakaladı; düzeltildi.
 - Kalıcı koruma: `tests/undefined-names.test.mjs` Vite'ın ayrıştırıcısıyla (parseAst) her kaynak dosyanın (src/*.js + src/views/*.js, 60 dosya) sözdizimi ağacını çıkarır; içe aktarma, işlev, değişken, parametre, yakalama bildirimlerine karşı her başvuruyu denetler. Deneme: `NUTRIENTS` ve argüman olarak geçen `resolve` içe aktarımı silinince ikisini de yakaladı. Mevcut kodda gerçek tanımsız ad çıkmadı (yalnız `import.meta` ve `with { type: 'json' }` yanlış alarmı, kurala eklendi).
 - Kanıt: `npm test` 249/249; Tarif testleri 9/9; Playwright tam koşu 55: 383/383.
+
+## B224 · 2026-11-19 · Günlük yaygın yemekler
+- USDA FNDDS: domates soslu makarna, sebzeli domates soslu makarna (hazır sos içeriği belirsiz → bilinmiyor), sebzeli lazanya (peynir + yumurta, hayvansal), tofu-sebze sote (FNDDS tarifinde dana et suyu → hayvansal, notta), fıstık ezmeli reçelli sandviç (ekmek içeriği belirsiz → bilinmiyor), ceviche (çiğ balık, risk notu). Yulaf lapasına "Bitkisel sütle (USDA FNDDS)" biçimi.
+- Ev tarifi hesabı: tofu ve sebze sote (tamamen bitkisel; sert tofu, brokoli, havuç, soğan, biber, susam/ayçiçek yağı, shoyu) → vegan filtresinde; FNDDS'teki et sulu türün bitkisel karşılığı.
+- Eş anlamlılar: spagetti, lasagna/lazanya, pb&j, stir fry/wok.
+- Katalog 824 besin. Kanıt: `npm run data`; `npm test` 250/250 (B224 veri testi).
+- Sürüm 1.1.2-beta.60 (B221–B224).
+- Playwright tam koşu 56 (B224 + beta.60): 383/383.

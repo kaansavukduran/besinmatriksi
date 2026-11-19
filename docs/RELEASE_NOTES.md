@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 59 · Takip takvimi
+# 🫐 Besin Matriksi 1.1.2 Beta 60 · Takipte seri, kıyas ve CSV
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -22,6 +22,10 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
+- **🔥 Kayıt serisi ve kıyas:** Geçmiş'te “3 gündür kesintisiz” ve her ortalamanın altında “▲ 234 kcal · önceki 7 güne göre”.
+- **⬇ Geçmişi CSV indir:** Görünen aralık (7 gün / 30 gün / ay) Excel'de açılan tablo olarak; kayıtsız gün boş (0 değil).
+- **7 yeni yemek:** domates soslu ve sebzeli makarna, sebzeli lazanya, tofu-sebze sote (et sulu ve tamamen bitkisel iki tür), fıstık ezmeli reçelli sandviç, ceviche; yulaf lapasına bitkisel sütlü biçim.
+- **Daha sağlam kod:** Tarif ve Kıyasla ekranları ayrı modüllerde; her kaynak dosyada tanımsız ad otomatik denetleniyor.
 - **📅 Geçmiş (takip):** Günlük'te Son 7 gün · Son 30 gün · Takvim. Kayıtlı gün sayısı, günlük ortalama enerji / protein / lif, en sık yediklerin. Takvimde renk koyulaştıkça değer artar; bir güne dokun, o gün açılır. Boş gün 0 sayılmaz.
 - **📋 Bu günü bugüne kopyala:** Geçmiş bir günü tek dokunuşla bugünün planına al; “Geri al” ile vazgeç.
 - **11 yeni vegan ağırlıklı yemek:** chana masala, aloo gobi, rajma, misir wot, ful medames, fattuş, pico de gallo, zeytinyağlı pırasa, zeytinyağlı kereviz, zeytinyağlı kabak, patates yemeği.

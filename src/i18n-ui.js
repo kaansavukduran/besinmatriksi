@@ -1057,5 +1057,12 @@ export const UI_EN = {
  "{n} gündür kesintisiz": "{n}-day streak",
  "önceki aya göre": "vs previous month",
  "önceki 30 güne göre": "vs previous 30 days",
- "önceki 7 güne göre": "vs previous 7 days"
+ "önceki 7 güne göre": "vs previous 7 days",
+ "USDA FNDDS tarifi: haşlanmış makarna + hazır domates (spagetti) sosu. Hazır sosun içeriği belirtilmediği için vegan olduğu doğrulanmadı.": "USDA FNDDS recipe: boiled pasta + ready-made tomato (spaghetti) sauce. The ready-made sauce's ingredients are not stated, so vegan status is not verified.",
+ "USDA FNDDS tarifi: haşlanmış makarna + sebzeli hazır domates sosu.": "USDA FNDDS recipe: boiled pasta + ready-made tomato sauce with vegetables.",
+ "USDA FNDDS tarifi: lazanya hamuru, mozzarella, ricotta, yumurta, kabak, biber, ıspanak, domates sosu.": "USDA FNDDS recipe: lasagna sheets, mozzarella, ricotta, egg, squash, pepper, spinach, tomato sauce.",
+ "USDA FNDDS tarifi: tofu, havuç, brokoli, soğan, soya sosu, bitkisel yağ ve dana et suyu. Et suyu yüzünden hayvansal; kendi bitkisel tarifini Tarif oluştur'da hesaplayabilirsin.": "USDA FNDDS recipe: tofu, carrot, broccoli, onion, soy sauce, vegetable oil and beef broth. Animal-based because of the broth; you can calculate your own plant version in Recipes.",
+ "USDA FNDDS tarifi: fıstık ezmesi (tuzlu), reçel, buğday ekmeği. Ekmeğin içeriği belirtilmediği için vegan olduğu doğrulanmadı.": "USDA FNDDS recipe: peanut butter (salted), jam, wheat bread. The bread's ingredients are not stated, so vegan status is not verified.",
+ "USDA FNDDS tarifi: çiğ balık (snapper), misket limonu ve limon suyu, domates, soğan, jalapeño. Asitte bekletmek pişirme değildir; gebelikte ve bağışıklığı zayıf kişilerde risklidir.": "USDA FNDDS recipe: raw fish (snapper), lime and lemon juice, tomato, onion, jalapeño. Marinating in acid is not cooking; risky in pregnancy and for people with weakened immunity.",
+ "Ölçüm değil, tarif hesabı (tahmin), pişmiş ağırlıkla: %35 sert tofu + brokoli, havuç, soğan, biber, susam yağı, ayçiçek yağı, soya sosu (shoyu, buğdaylı), sarımsak, zencefil (USDA kayıtlarından). Et suyu yok.": "Not a measurement; a recipe calculation (estimate) by cooked weight: 35% firm tofu + broccoli, carrot, onion, pepper, sesame oil, sunflower oil, soy sauce (shoyu, with wheat), garlic, ginger (from USDA records). No broth."
 };
