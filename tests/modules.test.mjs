@@ -21,9 +21,10 @@ test('B212/B214 ayar içindekiler: kartlara kimlik, bilinen başlıklar gruplara
   assert.equal((html.match(/data-action="settings-jump"/g) || []).length, 3);
 });
 
+const TEXT_WORDS = new Set(['CSV', 'USDA', 'NDB', 'PHE', 'FNDDS', 'SR28', 'EFSA', 'WHO', 'FAO', 'UNU', 'PDCAAS', 'DIAAS']); // iç içe şablonlardaki düz metin kelimeleri
 test('B218 görünüm modülleri: her çağrılan ad içe aktarılmış ya da tanımlı (yorum/metin dışı)', () => {
-  const globals = new Set(['String', 'Number', 'Math', 'Object', 'Array', 'JSON', 'Map', 'Set', 'Boolean', 'Date', 'Intl', 'RegExp', 'Promise', 'window', 'document', 'structuredClone', 'matchMedia', 'encodeURIComponent', 'if', 'for', 'while', 'switch', 'return', 'typeof', 'catch', 'function']);
-  for (const file of ['compare.js', 'amount.js', 'common.js']) {
+  const globals = new Set(['String', 'Number', 'Math', 'Object', 'Array', 'JSON', 'Map', 'Set', 'Boolean', 'Date', 'Intl', 'RegExp', 'Promise', 'window', 'document', 'structuredClone', 'matchMedia', 'encodeURIComponent', 'setTimeout', 'if', 'for', 'while', 'switch', 'return', 'typeof', 'catch', 'function']);
+  for (const file of ['compare.js', 'amount.js', 'common.js', 'ui.js', 'recipe.js']) {
     let src = fs.readFileSync(new URL(`../src/views/${file}`, import.meta.url), 'utf8');
     src = src.replace(/\/\/.*$/gm, '').replace(/\/\*[\s\S]*?\*\//g, '');
     // şablon metnin düz kısmını at, ${…} ifadelerini koru
@@ -32,6 +33,8 @@ test('B218 görünüm modülleri: her çağrılan ad içe aktarılmış ya da ta
     for (const m of src.matchAll(/(?:function|const|let|var)\s+([A-Za-z_$][\w$]*)/g)) known.add(m[1]);
     for (const m of src.matchAll(/\(([^()]*)\)\s*=>/g)) for (const x of m[1].split(/[,{}\s=[\]]+/)) if (x) known.add(x);
     const missing = [...src.matchAll(/(?<![.\w$])([A-Za-z_$][\w$]*)\s*\(/g)].map((m) => m[1]).filter((x) => !known.has(x) && !globals.has(x) && x !== 'L');
-    assert.deepEqual([...new Set(missing)], [], file);
+    // B223: büyük harfli sabitler (NUTRIENTS, SECTIONS…) çağrı olmadan da kullanılır (NUTRIENTS.map); onlar da içe aktarılmış olmalı
+    const consts = [...src.matchAll(/(?<![.\w$])([A-Z][A-Z0-9_]{2,})\b/g)].map((m) => m[1]).filter((x) => !known.has(x) && !TEXT_WORDS.has(x));
+    assert.deepEqual([...new Set([...missing, ...consts])], [], file);
   }
 });

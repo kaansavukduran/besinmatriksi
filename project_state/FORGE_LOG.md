@@ -1272,3 +1272,9 @@
 - Tarif görünümünü ayırma ertelendi: bildirim (`toast`), etkin tarif, katalog yükleme gibi uygulama düzeyi yardımcılara bağlı; önce bunlar ortak bir `ui.js`'e alınmalı.
 - Kanıt (B221 + B222): `npm test` 189/189; Playwright tam koşu 54: 383/383. Sonraki: **B223** ortak ui.js (toast, etkin tarif, katalog yükleme) → Tarif görünümünü ayırma; yeni yemek turu; beta.60.
 - Yayın kanıtı (B217–B220): v1.1.2-beta.59 pre-release (release.yml run 44591406391 success, ilk denemede; kaynak 8a3899e). B221–B222 bir sonraki sürümde.
+
+## B223 · 2026-11-19 · Tarif görünümü ayrıldı; tanımsız ad denetimi (sözdizimi ağacıyla)
+- `src/views/ui.js`: bildirim (toast), etkin tarif, tarif kaydı, porsiyon kalorisi, geniş katalog yükleme. Yeniden çizim döngüsel içe aktarma olmadan: app.js açılışta `setRenderer(render)` ile kaydeder. `src/views/recipe.js`: Tarif sekmesi (liste, malzemeler, matris, özet, eksikler). app.js 1.642 → 1.529 satır (oturum başında 1.790).
+- Taşırken çalışma zamanı hatası yakalandı: Tarif sekmesi `NUTRIENTS is not defined` ile açılmıyordu (sabit çağrı değil özellik erişimiyle kullanılıyordu; B218'in metin tabanlı modül testi kaçırdı). Tarayıcı testleri (B147, B148) düşerek yakaladı; düzeltildi.
+- Kalıcı koruma: `tests/undefined-names.test.mjs` Vite'ın ayrıştırıcısıyla (parseAst) her kaynak dosyanın (src/*.js + src/views/*.js, 60 dosya) sözdizimi ağacını çıkarır; içe aktarma, işlev, değişken, parametre, yakalama bildirimlerine karşı her başvuruyu denetler. Deneme: `NUTRIENTS` ve argüman olarak geçen `resolve` içe aktarımı silinince ikisini de yakaladı. Mevcut kodda gerçek tanımsız ad çıkmadı (yalnız `import.meta` ve `with { type: 'json' }` yanlış alarmı, kurala eklendi).
+- Kanıt: `npm test` 249/249; Tarif testleri 9/9; Playwright tam koşu 55: 383/383.
