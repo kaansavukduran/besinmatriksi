@@ -1298,3 +1298,9 @@
 - 7'si malzeme doğrulamasıyla vegan filtresinde. Çizim benzersizliği testi gazpacho ile çoban salatasının aynı çizimini yakaladı → renk değişti.
 - Katalog 832 besin. Kanıt: `npm run data`; `npm test` 313/313 (B226 veri testi).
 - Playwright tam koşu 58 (B226): 383/383.
+
+## B227 · 2026-11-19 · Sık yenenlerden "＋ Bugüne"
+- Geçmiş'teki "En sık yediklerin" listesinde her besinde "＋ Bugüne · 120 g": olağan miktar = o aralıktaki kayıt başına ortalama gram (5 g'a yuvarlı, en az 1 g). Tek dokunuşla bugünün planına eklenir (tüketildi işareti kullanıcıya kalır), bildirim gösterilir, "Geri al" kaldırır. Kaydı bulunamayan besinde düğme yok.
+- Kanıt: `summarize` olağan miktar birim testi (104,3 → 105 g; 1 g sıfıra yuvarlanmaz); Playwright B227 (110 + 130 g → 120 g eklenir, geri al → boş); iPhone 375 px ekran görüntüsü, taşma yok.
+- Sürüm 1.1.2-beta.61 (B225–B227).
+- Playwright tam koşu 59 (B227 + beta.61): 385/385.

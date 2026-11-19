@@ -256,3 +256,6 @@
 /* B222: önceki döneme göre fark ve kayıt serisi */
 .ht-d { font-size: .74rem; color: var(--muted); line-height: 1.3; margin-top: 2px; }
 .ht-streak { color: var(--fg); font-weight: 600; }
+/* B227: sık yenenlerde "＋ Bugüne" */
+.hist-top li { align-items: center; }
+.hist-add { min-height: calc(var(--tap) - 8px); padding: .1rem .7rem; font-size: .85rem; margin-left: auto; }

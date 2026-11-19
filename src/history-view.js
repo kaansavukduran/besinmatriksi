@@ -24,7 +24,8 @@ function tiles(sum, key, delta = {}, deltaLabel = '', streak = 0) {
 
 function topFoods(sum) {
   if (!sum.top.length) return '';
-  return `<div class="hist-top"><h4>${L("En sık yediklerin")}</h4><ol>${sum.top.map((f) => `<li><button class="linkish" data-action="hist-open" data-ref='${esc(JSON.stringify(f.ref))}'>${esc(f.name || L("Kayıt bulunamadı"))}</button><span class="muted">${L("{d} gün · {g} g", { d: f.days, g: fmtNum(f.g) })}</span></li>`).join('')}</ol></div>`;
+  // B227: "＋ Bugüne": olağan miktarla (kayıt başına ortalama) bugünün planına tek dokunuşla ekler
+  return `<div class="hist-top"><h4>${L("En sık yediklerin")}</h4><ol>${sum.top.map((f) => `<li><button class="linkish" data-action="hist-open" data-ref='${esc(JSON.stringify(f.ref))}'>${esc(f.name || L("Kayıt bulunamadı"))}</button><span class="muted">${L("{d} gün · {g} g", { d: f.days, g: fmtNum(f.g) })}</span>${f.name ? `<button class="btn ghost hist-add" data-action="hist-add" data-ref='${esc(JSON.stringify(f.ref))}' data-g="${f.usual}" aria-label="${esc(L("{n}, {g} g bugüne ekle", { n: f.name, g: fmtNum(f.usual) }))}">＋ ${L("Bugüne")} · ${fmtNum(f.usual)} g</button>` : ''}</li>`).join('')}</ol></div>`;
 }
 
 function bars(list, day, key, unit, long) {

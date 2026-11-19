@@ -37,11 +37,12 @@ export function summarize(list, resolve) {
   const foods = new Map();
   for (const d of logged) for (const e of d.entries) {
     const k = JSON.stringify(e.ref);
-    const f = foods.get(k) || { ref: e.ref, g: 0, days: new Set() };
-    f.g += Number(e.g) || 0; f.days.add(d.day); foods.set(k, f);
+    const f = foods.get(k) || { ref: e.ref, g: 0, n: 0, days: new Set() };
+    f.g += Number(e.g) || 0; f.n++; f.days.add(d.day); foods.set(k, f);
   }
   const top = [...foods.values()]
-    .map((f) => ({ ref: f.ref, name: resolve(f.ref)?.name || null, g: f.g, days: f.days.size }))
+    // B227: usual = kayıt başına ortalama gram (5 g'a yuvarlı, en az 1 g); hızlı ekleme bu miktarı kullanır
+    .map((f) => ({ ref: f.ref, name: resolve(f.ref)?.name || null, g: f.g, days: f.days.size, usual: Math.max(1, Math.round(f.g / f.n / 5) * 5) }))
     .sort((a, b) => b.days - a.days || b.g - a.g)
     .slice(0, 5);
   return { days: list, logged: logged.length, total: list.length, avg, top };

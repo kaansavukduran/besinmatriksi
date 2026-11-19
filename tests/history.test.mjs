@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { rangeSummary, monthGrid, shiftMonth } from '../src/history.js';
+import { rangeSummary, monthGrid, shiftMonth, summarize } from '../src/history.js';
 
 const items = { a: { v: { energy: 100, protein: 10, fiber: 2 }, s: {} }, b: { v: { energy: 50 }, s: {} } };
 const resolve = (r) => items[r.id] ? { ...items[r.id], name: r.id.toUpperCase(), formLabel: '', cat: 'x', portions: [] } : null;
@@ -76,4 +76,15 @@ test('B222 kayıt serisi ve önceki dönemle fark', () => {
   assert.equal(d.energy, null);
   const d2 = periodDelta(rangeSummary(st, '2026-11-19', 1, resolve), rangeSummary(st, '2026-11-17', 1, resolve));
   assert.equal(d2.energy.value, 150); // 250 − 100
+});
+
+test('B227 sık yenenlerde olağan miktar: kayıt başına ortalama, 5 g yuvarlı, en az 1 g', () => {
+  const s = summarize([
+    { day: 'd1', n: 2, v: {}, partial: {}, entries: [{ ref: { t: 'c', id: 'a', f: 0 }, g: 120 }, { ref: { t: 'c', id: 'a', f: 0 }, g: 80 }] },
+    { day: 'd2', n: 1, v: {}, partial: {}, entries: [{ ref: { t: 'c', id: 'a', f: 0 }, g: 113 }, { ref: { t: 'c', id: 'b', f: 0 }, g: 1 }] },
+  ], resolve);
+  const a = s.top.find((f) => f.name === 'A'), b = s.top.find((f) => f.name === 'B');
+  assert.equal(a.usual, 105); // (120 + 80 + 113) / 3 = 104,3 → 105
+  assert.equal(a.days, 2);
+  assert.equal(b.usual, 1); // 1 g → 0'a yuvarlanmaz
 });

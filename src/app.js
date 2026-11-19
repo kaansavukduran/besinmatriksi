@@ -976,6 +976,13 @@ async function onClick(e) {
       download(`besin-gecmisi-${first}_${last}.csv`, historyCSV(sum.days, resolve, { date: L("Tarih"), entries: L("Kayıt"), energy: L("Enerji (kcal)"), protein: L("Protein (g)"), fiber: L("Lif (g)"), partial: L("Eksik ölçüm (≥)"), foods: L("Besinler") }), 'text/csv;charset=utf-8');
       break;
     }
+    case 'hist-add': {
+      const ref = JSON.parse(b.dataset.ref), g = clamp(Number(b.dataset.g) || 100, 1, MAX_G), today = localDay();
+      S.personal.entries.push({ id: uid(), day: today, ref, g, consumed: false });
+      S.personalUndo = { type: 'copy', ids: [S.personal.entries.at(-1).id] };
+      if (!persistPersonal()) break;
+      toast(L("{n} ({g} g) bugüne plan olarak eklendi.", { n: resolve(ref)?.name || '', g: fmtNum(g) })); render(); break;
+    }
     case 'hist-open': { const ref = JSON.parse(b.dataset.ref); S.tab = 'kesfet'; selectFood('ex', ref); window.scrollTo(0, 0); break; }
     case 'week-key': S.weekKey = b.dataset.key; render(); document.querySelector(`[data-action="week-key"][data-key="${b.dataset.key}"]`)?.focus(); break;
     case 'rc-daily-total': S.recipeDaily = true; render(); break;

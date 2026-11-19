@@ -82,3 +82,25 @@ test('B220 geçmiş günü bugüne kopyala: plan olarak eklenir, geri alınabili
   expect(await today()).toEqual([]);
   expect(errors).toEqual([]);
 });
+
+test('B227 sık yenenden "＋ Bugüne": olağan miktarla bugüne plan, geri alınabilir', async ({ page }) => {
+  const errors = []; page.on('pageerror', (error) => errors.push(error.message));
+  await page.clock.setFixedTime(new Date('2026-11-19T12:00:00'));
+  await page.addInitScript(() => {
+    if (localStorage.getItem('bm.personal.v1')) return;
+    localStorage.setItem('bm.personal.v1', JSON.stringify({ schema: 1, profile: {}, milestones: {}, entries: [
+      { id: 'a', day: '2026-11-17', ref: { t: 'c', id: 'muz', f: 0 }, g: 110, consumed: true },
+      { id: 'b', day: '2026-11-18', ref: { t: 'c', id: 'muz', f: 0 }, g: 130, consumed: true },
+    ] }));
+  });
+  await page.goto('/#/diary');
+  const add = page.locator('.history [data-action="hist-add"]').first();
+  await expect(add).toContainText('120 g');
+  await add.click();
+  await expect(page.locator('.toast')).toContainText(/120 g/);
+  const today = () => page.evaluate(() => JSON.parse(localStorage.getItem('bm.personal.v1')).entries.filter((e) => e.day === '2026-11-19').map((e) => [e.ref.id, e.g, e.consumed]));
+  expect(await today()).toEqual([['muz', 120, false]]);
+  await page.locator('[data-action="personal-undo"]').click();
+  expect(await today()).toEqual([]);
+  expect(errors).toEqual([]);
+});

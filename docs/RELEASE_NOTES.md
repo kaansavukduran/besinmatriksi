@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 60 · Takipte seri, kıyas ve CSV
+# 🫐 Besin Matriksi 1.1.2 Beta 61 · Hızlı ekleme ve ev yemekleri
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -22,6 +22,8 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
+- **＋ Bugüne:** Geçmiş'teki “En sık yediklerin” listesinden bir besini, genelde yediğin miktarla tek dokunuşta bugünün planına ekle.
+- **8 yeni yemek:** kuru fasulye (etsiz), yeşil mercimek yemeği, domates çorbası, şakşuka, çoban salatası, onigiri, damper (Avustralya), wojapi (Lakota yaban mersini sosu).
 - **🔥 Kayıt serisi ve kıyas:** Geçmiş'te “3 gündür kesintisiz” ve her ortalamanın altında “▲ 234 kcal · önceki 7 güne göre”.
 - **⬇ Geçmişi CSV indir:** Görünen aralık (7 gün / 30 gün / ay) Excel'de açılan tablo olarak; kayıtsız gün boş (0 değil).
 - **7 yeni yemek:** domates soslu ve sebzeli makarna, sebzeli lazanya, tofu-sebze sote (et sulu ve tamamen bitkisel iki tür), fıstık ezmeli reçelli sandviç, ceviche; yulaf lapasına bitkisel sütlü biçim.
