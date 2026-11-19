@@ -915,5 +915,7 @@ export const UI_EN = {
  "ör. nohut, mercimek, yulaf": "e.g. chickpeas, lentils, oats",
  "Bu aramaya uyan besin yok.": "No food matches this search.",
  "İki ya da daha fazla besini yan yana görmek için ara ve dokun (en fazla 4).": "To see foods side by side, search and tap (up to 4).",
- "En fazla 4 besin kıyaslanır; yeni eklemek için birini çıkar.": "Up to 4 foods can be compared; remove one to add another."
+ "En fazla 4 besin kıyaslanır; yeni eklemek için birini çıkar.": "Up to 4 foods can be compared; remove one to add another.",
+ "En fazla {m} g (10 kg) seçilebilir.": "At most {m} g (10 kg) can be selected.",
+ "1 oz = 28,349523125 g. Seçim düğmeleri ve hesap tabanı 1 g – 10 kg aralığında kalır. Sıvılarda yaklaşık mL, yoğunluk 1 varsayımıdır.": "1 oz = 28.349523125 g. Selectors and the calculation base stay within 1 g – 10 kg. For liquids, mL is approximate, assuming density 1."
 };

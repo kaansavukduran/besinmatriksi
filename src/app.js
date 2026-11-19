@@ -26,7 +26,7 @@ import { energyEstimate, recipeToEntries, dayToRecipeItems, loadPersonal, savePe
 import { renderPersonal, renderEnergy, renderDaySources } from './personal-view.js';
 import { nutrientLabel } from './i18n-nutrients.js';
 import { getLanguage } from './i18n.js';
-import { SLIDER_STEPS, sliderToGrams, gramsToSlider } from './amount-scale.js';
+import { SLIDER_STEPS, sliderToGrams, gramsToSlider, MAX_GRAMS, kgLabel } from './amount-scale.js';
 import { normalizeCollections, createCollection, renameCollection, deleteCollection, toggleRef, removeRef, collectionTree, collectionRefs, hasRef, moveRef, moveIndex, transferRef, MAX_COLLECTIONS, MAX_ITEMS } from './collections.js';
 // B165: koleksiyon hatası nedenine göre bildirilir (sınır ≠ boş ad)
 function collectionError(err) {
@@ -44,8 +44,8 @@ import { foodArt } from './food-art.js';
 import { brandMark, plateIllustration } from './kitchen-art.js';
 import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS, shortcutKey, migrateFontV2, migrateAionOff, applyProfileSettings } from './settings.js';
 
-const PRESETS = [1, 5, 10, 25, 50, 100, 150, 200, 250, 500, 750, 1000];
-const MAX_G = 1000;
+const PRESETS = [1, 5, 10, 25, 50, 100, 150, 200, 250, 500, 750, 1000, 2000, 5000, 10000];
+const MAX_G = MAX_GRAMS; // B197: 10 kg
 
 const S = {
   tab: 'kesfet',
@@ -192,7 +192,7 @@ const foodIcon = (f, size = 28) => (S.settings.emoji ? foodArt(f?.id, size) || F
 function amountControls(target, g, portions = [], { compact = false, liquid = false } = {}) {
   const oz = S.settings.amountUnit === 'oz';
   const unit = oz ? `oz (≈ ${fmtNum(g)} g)` : liquid ? 'g ≈ mL' : 'g';
-  const presets = compact ? [10, 25, 50, 100, 200, 500, 1000] : PRESETS;
+  const presets = compact ? [10, 25, 50, 100, 200, 500, 1000, 2000, 5000] : PRESETS;
   return `<div class="amount ${compact ? 'compact' : ''}" data-amount="${esc(target)}">
     <div class="amt-main">
       <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="-10" aria-label="${L("10 gram azalt")}">−10</button>
@@ -202,8 +202,8 @@ function amountControls(target, g, portions = [], { compact = false, liquid = fa
       <button class="nudge" data-action="nudge" data-target="${esc(target)}" data-delta="10" aria-label="${L("10 gram artır")}">+10</button>
     </div>
     <input type="range" class="slider" min="0" max="${SLIDER_STEPS}" step="1" value="${gramsToSlider(g, MAX_G)}" style="--fill:${gramsToSlider(g, MAX_G) / SLIDER_STEPS * 100}%" data-slider="${esc(target)}" aria-valuetext="${fmtNum(g)} g" aria-label="${L("Miktar (gram)")}">
-    ${compact ? '' : `<div class="slider-scale" aria-hidden="true">${[[1, '1 g'], [50, '50'], [250, '250'], [MAX_G, '1 kg']].map(([v, t]) => `<span style="left:${gramsToSlider(v, MAX_G) / SLIDER_STEPS * 100}%">${t}</span>`).join('')}</div>`}
-    <div class="presets">${presets.map((p) => `<button class="pchip ${p === g ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p}">${p >= 1000 ? '1 kg' : p + ' g'}</button>`).join('')}</div>
+    ${compact ? '' : `<div class="slider-scale" aria-hidden="true">${[[1, '1 g'], [100, '100'], [1000, '1 kg'], [MAX_G, '10 kg']].map(([v, t]) => `<span style="left:${gramsToSlider(v, MAX_G) / SLIDER_STEPS * 100}%">${t}</span>`).join('')}</div>`}
+    <div class="presets">${presets.map((p) => `<button class="pchip ${p === g ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p}">${kgLabel(p)}</button>`).join('')}</div>
     ${portions.length ? `<div class="portions">${portions.map((p) => `<button class="pchip por ${Math.abs(p.g - g) < 0.01 ? 'on' : ''}" data-action="amt" data-target="${esc(target)}" data-val="${p.g}" title="${esc(p.r ? L("Tarif porsiyonu; ölçüm değil") : p.d ? L("USDA “{u}” ölçüsünden hacimle hesaplandı; yaklaşık", { u: p.src }) : p.en + ' (USDA)')}">${esc(getLanguage() === 'en' && p.en ? p.en : p.label)} · ${p.d ? '≈ ' : ''}${fmtNum(p.g)} g</button>`).join('')}</div>` : ''}
   </div>`;
 }
@@ -731,7 +731,7 @@ function renderSettings() {
     <section class="card"><h2>${L("Birim ve sayı tercihleri")}</h2>
       <div class="kv"><span>${L("Enerji (matriks)")}</span><div class="presets">${opt('energyUnit', 'both', 'kcal + kJ')}${opt('energyUnit', 'kcal', 'kcal')}${opt('energyUnit', 'kj', 'kJ')}</div></div>
       <div class="kv"><span>${L("Miktar göstergesi")}</span><div class="presets">${opt('amountUnit', 'g', L("Gram"))}${opt('amountUnit', 'oz', L("Ons (oz)"))}</div></div>
-      <p class="hint">${L("1 oz = 28,349523125 g. Seçim düğmeleri ve hesap tabanı 1–1000 g aralığında kalır. Sıvılarda yaklaşık mL, yoğunluk 1 varsayımıdır.")}</p>
+      <p class="hint">${L("1 oz = 28,349523125 g. Seçim düğmeleri ve hesap tabanı 1 g – 10 kg aralığında kalır. Sıvılarda yaklaşık mL, yoğunluk 1 varsayımıdır.")}</p>
       <div class="kv"><span>${tr('numberSeparator')}</span><div class="presets">${opt('decimalSeparator', 'auto', tr('followLanguage'))}${opt('decimalSeparator', 'comma', tr('comma') + ': 1,5')}${opt('decimalSeparator', 'dot', tr('dot') + ': 1.5')}</div></div>
       ${tog('autoUnits', L("Büyük miktarlarda birimi yükselt (µg → mg → g)"))}
       <p class="hint">${L("CSV her zaman Türkçe Excel uyumlu ondalık virgül ve tanımlı besin birimlerini kullanır.")}</p>
@@ -1088,7 +1088,7 @@ function addToRecipe(ref, g, quiet = false) {
   else rc.items.push({ id: Math.random().toString(36).slice(2, 9), ref: { ...ref }, g });
   if (quiet) return true;
   if (!persistRecipes()) { rc.items = previous; return false; }
-  toast(capped ? L("“{n}” zaten tarifte; toplam en fazla {m} g olabilir, {m} g'da kaldı.", { n: resolve(ref).name, m: MAX_G }) : `“${resolve(ref).name}” → ${rc.name} (${fmtNum(g)} g)`);
+  toast(capped ? L("“{n}” zaten tarifte; toplam en fazla {m} g olabilir, {m} g'da kaldı.", { n: resolve(ref).name, m: fmtNum(MAX_G) }) : `“${resolve(ref).name}” → ${rc.name} (${fmtNum(g)} g)`);
   aionPlay('celebrate');
   return true;
 }
@@ -1319,7 +1319,7 @@ async function onClick(e) {
     case 'nudge': {
       if (!b.dataset.target) break;
       const want = (getAmount(b.dataset.target) || 0) + Number(b.dataset.delta);
-      if (want > MAX_G) toast(L("En fazla {m} g (1 kg) seçilebilir.", { m: MAX_G }));
+      if (want > MAX_G) toast(L("En fazla {m} g (10 kg) seçilebilir.", { m: fmtNum(MAX_G) }));
       setAmount(b.dataset.target, want); break;
     }
     // tarif

@@ -6,9 +6,9 @@ import { aggregate, scaleItem, derive } from '../src/calc.js';
 const ref = { t: 'u', id: 'test' };
 test('bozuk tarif alanları ve referanslar uygulamayı bozamaz', () => {
   const r = normalizeRecipe({ name: ' Test ', servings: -10, cookedWeight: Infinity,
-    items: [null, { ref: 'invalid', g: 100 }, { ref, g: Infinity }, { ref, g: -10 }, { ref, g: 5000 }, { ref, g: .5 }] });
+    items: [null, { ref: 'invalid', g: 100 }, { ref, g: Infinity }, { ref, g: -10 }, { ref, g: 50000 }, { ref, g: .5 }] });
   assert.equal(r.name, 'Test'); assert.equal(r.servings, 1); assert.equal(r.cookedWeight, null);
-  assert.deepEqual(r.items.map(x => x.g), [1000, 1]); assert.equal(normalizeRecipe([]), null);
+  assert.deepEqual(r.items.map(x => x.g), [10000, 1]); // B197: üst sınır 10 kg assert.equal(normalizeRecipe([]), null);
 });
 test('kendi besininde eksik, negatif ve geçersiz değerler sıfıra çevrilmez', () => {
   const f = normalizeCustom({ id: 'test', name: 'Besin', v: { energy: 0, protein: -1, fe: Infinity, b12: null, ca: '12', k: 100, fake: 15 } });

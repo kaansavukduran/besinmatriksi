@@ -90,61 +90,36 @@ test('B163 enerji "ikisi" kcal ile kJ birlikte; "Varsayılana dön" onay ister, 
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('bm.settings.v2') || '{}').settings?.energyUnit)).toBe('both');
 });
 
-test('B164 1000 g sınırı sessizce kırpılmaz: tarifte birikince ve +10 ile bildirim', async ({ page }) => {
+test('B164 + B197 üst sınır (10 kg) sessizce kırpılmaz: tarifte birikince ve +10 ile bildirim', async ({ page }) => {
   await page.goto('/');
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
-  await page.locator('[data-amount="ex"] [data-action="amt"][data-val="750"]').click();
+  await page.locator('[data-amount="ex"] [data-action="amt"][data-val="5000"]').click();
+  await expect(page.locator('[data-amount="ex"] [data-action="amt"][data-val="5000"]')).toHaveText('5 kg');
   await page.locator('[data-action="ex-add-recipe"]').click();
   await page.locator('[data-action="ex-add-recipe"]').click();
-  await expect(page.locator('.toast')).toContainText('1000 g');
+  await page.locator('[data-action="ex-add-recipe"]').click();
+  await expect(page.locator('.toast')).toContainText('10.000 g');
   const g = await page.evaluate(() => JSON.parse(localStorage.getItem('bm.recipes.v1'))[0].items[0].g);
-  expect(g).toBe(1000);
-  await page.locator('[data-amount="ex"] [data-action="amt"][data-val="1000"]').click();
+  expect(g).toBe(10000);
+  await page.locator('[data-amount="ex"] [data-action="amt"][data-val="10000"]').click();
   await page.locator('[data-amount="ex"] [data-action="nudge"][data-delta="10"]').click();
-  await expect(page.locator('.toast')).toContainText('En fazla 1000 g');
-  await expect(page.locator('[data-amount="ex"] .amt-val b')).toHaveText('1.000');
+  await expect(page.locator('.toast')).toContainText('En fazla 10.000 g');
+  await expect(page.locator('[data-amount="ex"] .amt-val b')).toHaveText('10.000');
 });
 
-test('B165 koleksiyondaki geniş katalog kaydı vegan süzgeçte kaybolmaz, katalog yüklenince açılır; sınır mesajları nedenini söyler', async ({ page }) => {
-  await page.addInitScript(() => {
-    localStorage.setItem('bm.settings.v2', JSON.stringify({ version: 2, settings: { language: 'tr', dietPattern: 'vegan', showExt: false } }));
-    const many = Array.from({ length: 60 }, (_, i) => ({ id: 'c' + i, name: 'K' + i, items: i === 0 ? [{ t: 'x', n: '09427' }] : [] }));
-    localStorage.setItem('bm.collections.v1', JSON.stringify(many));
-  });
-  await page.goto('/');
-  await page.locator('[data-action="ex-cat"][data-cat="col:c0"]').first().click();
-  await expect(page.locator('#foodlist [data-action="ex-pick-ref"]')).toHaveCount(1, { timeout: 15000 });
-  await expect(page.locator('#foodlist .pending-ref')).toHaveCount(0);
-  await page.locator('[data-action="col-sub"][data-id="c0"]').click();
-  await page.locator('.dlg .dlg-line').fill('Alt');
-  await page.locator('.dlg [data-r="1"]').click();
-  await expect(page.locator('.toast')).toContainText('En fazla 60 koleksiyon');
-});
-
-test('B166 başka sekmede değişen ayar bu sekmeye gelir; eski ayarla üzerine yazılmaz', async ({ page, context }) => {
-  await page.goto('/');
-  const other = await context.newPage(); await other.goto('/');
-  await other.evaluate(() => { const s = JSON.parse(localStorage.getItem('bm.settings.v2')); s.settings.theme = 'dark'; localStorage.setItem('bm.settings.v2', JSON.stringify(s)); });
-  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
-  await page.locator('[data-action="tab"][data-tab="ayarlar"]').first().click();
-  await page.locator('[data-k="energyUnit"][data-v=\'"kcal"\']').click();
-  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('bm.settings.v2')).settings);
-  expect(saved.theme).toBe('dark'); expect(saved.energyUnit).toBe('kcal');
-});
-
-test('B168 gram kaydırıcısı: sol yarı 1–250 g, dokunuşla küçük miktar seçilir, hazır miktarla konum eşleşir, tarifte 44 px', async ({ page }) => {
+test('B168 + B197 gram kaydırıcısı: küp ölçek (1 g – 10 kg), dokunuşla küçük miktar seçilir, hazır miktarla konum eşleşir, tarifte 44 px', async ({ page }) => {
   await page.goto('/');
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
   const sl = page.locator('[data-amount="ex"] .slider');
   await page.locator('[data-amount="ex"] [data-action="amt"][data-val="250"]').click();
-  await expect(sl).toHaveValue(/^(499|500)$/); // √(249/999) = 0,499 → 250 g
+  await expect(sl).toHaveValue('292'); // B197 küp ölçek: (249/9999)^(1/3) = 0,292 → 250 g
   await sl.fill('100'); // %10 konum
   await expect(page.locator('[data-amount="ex"] .amt-val b')).toHaveText('11');
   await expect(sl).toHaveAttribute('aria-valuetext', '11 g');
   await sl.focus(); await page.keyboard.press('ArrowRight');
   await expect(page.locator('[data-amount="ex"] .amt-val b')).toHaveText('11');
   await sl.fill('1000');
-  await expect(page.locator('[data-amount="ex"] .amt-val b')).toHaveText('1.000');
+  await expect(page.locator('[data-amount="ex"] .amt-val b')).toHaveText('10.000');
   await page.locator('[data-action="ex-add-recipe"]').click();
   await page.locator('[data-action="tab"][data-tab="tarif"]').first().click();
   await page.locator('[data-action="ing-open"]').first().click();

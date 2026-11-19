@@ -1,6 +1,7 @@
 import { scaleItem, aggregate } from './calc.js';
 import { validRef, normalizeCustom } from './records.js';
 import { uid } from './util.js';
+import { MAX_GRAMS } from './amount-scale.js';
 import { referenceFor } from './settings.js';
 import { aminoReference } from './amino-daily.js';
 export const PERSONAL_KEY = 'bm.personal.v1';
@@ -50,7 +51,7 @@ export function normalizePersonal(input) {
   const ids = new Set(), entries = [];
   for (const row of input.entries) {
     const ref = validRef(row?.ref);
-    if (!ref || typeof row.id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(row.id) || !validDay(row.day) || typeof row.g !== 'number' || !Number.isFinite(row.g) || row.g < 1 || row.g > 1000) throw Error('personal.importError');
+    if (!ref || typeof row.id !== 'string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(row.id) || !validDay(row.day) || typeof row.g !== 'number' || !Number.isFinite(row.g) || row.g < 1 || row.g > MAX_GRAMS) throw Error('personal.importError');
     if (ids.has(row.id)) continue;
     ids.add(row.id); entries.push({ id: row.id, day: row.day, ref, g: row.g, consumed: row.consumed === true });
   }
@@ -101,7 +102,7 @@ export function nutrientComparison(nutrient, result, settings, energyTarget = nu
 }
 
 // Tarifi günlüğe ekler: her malzeme (gram × yenen porsiyon ÷ tarif porsiyonu) ayrı kayıt olur.
-// Kayıt sınırı 1000 g olduğundan büyük miktarlar parçalara bölünür; 1 g altı ve bulunamayan kayıtlar atlanıp sayılır.
+// Kayıt sınırı 10 kg (MAX_GRAMS) olduğundan büyük miktarlar parçalara bölünür; 1 g altı ve bulunamayan kayıtlar atlanıp sayılır.
 export function recipeToEntries(items, portions, servings, day, exists, newId = uid) {
   const entries = [];
   let skipped = 0;
@@ -111,7 +112,7 @@ export function recipeToEntries(items, portions, servings, day, exists, newId = 
     let g = Math.round(it.g * factor * 100) / 100;
     if (!exists(it.ref) || g < 1) { skipped++; continue; }
     while (g > 0) {
-      const part = g > 1000 ? 1000 : g;
+      const part = g > MAX_GRAMS ? MAX_GRAMS : g;
       if (part < 1) break;
       entries.push({ id: newId(), day, ref: { ...it.ref }, g: part, consumed: false });
       g = Math.round((g - part) * 100) / 100;
@@ -121,7 +122,7 @@ export function recipeToEntries(items, portions, servings, day, exists, newId = 
 }
 
 // Günlükteki bir günün kayıtlarını tarif malzemelerine çevirir; aynı besin birleşir (en fazla maxG), sıra korunur.
-export function dayToRecipeItems(entries, day, { consumedOnly = false, maxG = 1000, newId = uid } = {}) {
+export function dayToRecipeItems(entries, day, { consumedOnly = false, maxG = MAX_GRAMS, newId = uid } = {}) {
   const out = [], byKey = new Map();
   let capped = 0;
   for (const e of entries) {

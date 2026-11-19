@@ -1105,5 +1105,13 @@
 ## B196 · 2026-11-19 · Yağ asitleri: USDA 18:2 / 18:3 toplamları görünür (plan A1)
 - Bulgu (B195 sonrası analiz): linoleik (LA) %89, ALA %84 eksik görünüyordu; omega-3/6 toplamları hiç yok. Neden: yalnız izomer-özel USDA kodları (675, 851; SR28'de ~1900 kayıt) okunuyordu; USDA'nın ölçtüğü 18:2 / 18:3 toplamları (618, 619; ~7200 kayıt) hiç kullanılmıyordu.
 - İki yeni satır: "C18:2 toplamı (linoleik ağırlıklı, izomer ayrıştırılmamış)" ve "C18:3 toplamı (bitkilerde çoğunlukla ALA, izomer ayrıştırılmamış)", etiket USDA (u). Bitkisel boşluk %9 / %10. LA ve ALA satırları ayrı kalır; toplamlar LA/ALA'ya kopyalanmadı (izomer ayrımı yok). Omega-3/6 toplamı türetilmedi: 18:3 toplamı GLA gibi n-6 izomerleri de içerebilir; ölçüm olmayan "omega-3 toplamı" yazılmaz (karar: dürüstlük > dolu görünüm).
-- Kanıt: `npm run data`; `npm test` 171/171 (B196: boşluk <%15, ceviz 18:2 38,1 g / 18:3 9,08 g USDA, 18:2+18:3 ≤ çoklu doymamış); tarayıcıda ceviz matrisi açılıp satırlar doğrulandı; tam koşu aşağıda.
+- Kanıt: `npm run data`; `npm test` 171/171 (B196: boşluk <%15, ceviz 18:2 38,1 g / 18:3 9,08 g USDA, 18:2+18:3 ≤ çoklu doymamış); tarayıcıda ceviz matrisi açılıp satırlar doğrulandı; tam koşu B197 ile birlikte (aşağıda).
 - Sonraki: **B197** miktar sınırı 1 kg → 10 kg (Kaan isteği).
+
+## B197 · 2026-11-19 · Miktar üst sınırı 1 kg → 10 kg (Kaan isteği)
+- Tek kaynak `MAX_GRAMS = 10000` (`src/amount-scale.js`): kaydırıcı, +1/+10, tarif birikimi (B164 bildirimi), günlük kaydı doğrulaması ve tariften güne bölme, günden tarife birleştirme, kayıt normalleştirme (records). Kendi besin "etiketteki porsiyon" alanı 1–1000 g kaldı (porsiyon, toplam değil).
+- Kaydırıcı küp ölçeğe geçti (karekökte 10 kg küçük miktarları yine sıkıştırırdı): 10 g ≈ %10, 100 g ≈ %22, 1 kg ≈ %46, 10 kg uç; adımlar 1/5/10/50/100 g; tüm hazır miktarlar gidiş-dönüşte aynı gram. Ölçek etiketleri 1 g · 100 · 1 kg · 10 kg. Hazır düğmelere 2 kg, 5 kg, 10 kg eklendi.
+- Hata düzeltmesi: hazır düğme etiketi 1000 g ve üstündeki her değeri "1 kg" yazıyordu → `kgLabel` (2 kg, 2,5 kg, 10 kg).
+- Testler yeni sınıra uyarlandı (recipe-day bölme 10 kg + 3,5 kg, birleştirme sınırı, records sıkıştırma 10 kg, B164 10 kg bildirimi, B168 küp ölçek konumları); amount-scale birim testleri yeniden yazıldı (+kg etiketi).
+- Kanıt: `npm test` 172/172; build; Playwright B164/B168/B169/B170/B089 12/12; iPhone SE ekran görüntüsü (2 kg seçili, karpuz 2 kg = 600 kcal); tam koşu aşağıda. Not: önceki tam koşu (B196) bu Forge'un yeniden derlemesiyle çakıştı; düşen 3 test bu çakışmadandı (eski test dosyası / derleme sırasında sayfa yüklenemedi).
+- Sonraki: **B198** ana sayfa hızı (691 kart yerine parça parça çizim).

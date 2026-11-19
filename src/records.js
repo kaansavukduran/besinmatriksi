@@ -1,5 +1,6 @@
 import { NUTRIENTS } from './nutrients.js';
 import { uid, clamp } from './util.js';
+import { MAX_GRAMS } from './amount-scale.js';
 const object = v => v && typeof v === 'object' && !Array.isArray(v);
 const id = v => typeof v === 'string' && /^[a-zA-Z0-9_-]{1,100}$/.test(v);
 const finite = v => typeof v === 'number' && Number.isFinite(v);
@@ -19,7 +20,7 @@ export function normalizeRecipe(r, { freshIds = false } = {}) {
   const items = r.items.flatMap(it => {
     const ref = validRef(it?.ref);
     if (!ref || !finite(it.g) || it.g <= 0) return [];
-    return [{ id: !freshIds && id(it.id) ? it.id : uid(), ref, g: clamp(it.g, 1, 1000),
+    return [{ id: !freshIds && id(it.id) ? it.id : uid(), ref, g: clamp(it.g, 1, MAX_GRAMS),
       pricePerKg: finite(it.pricePerKg) && it.pricePerKg >= 0 ? it.pricePerKg : null }];
   });
   return { id: !freshIds && id(r.id) ? r.id : uid(), name: r.name.trim().slice(0, 80) || 'Adsız tarif', items,
