@@ -43,6 +43,7 @@ import { FOOD_ICONS } from './food-icons.js';
 import { foodArt } from './food-art.js';
 import { morphHtml } from './morph.js';
 import { routeOf, parseRoute } from './route.js';
+import { withSettingsToc } from './settings-toc.js';
 import { compareChart, compareAminoChart } from './compare-chart.js';
 import { brandMark, plateIllustration } from './kitchen-art.js';
 import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS, shortcutKey, migrateFontV2, migrateAionOff, applyProfileSettings } from './settings.js';
@@ -806,19 +807,6 @@ function renderSettings() {
 }
 
 // B181: Ayarlar telefonda ~12 600 px. Arama kutusunun altında bölüm şeridi: her kart başlığına tek dokunuşla atlar.
-function withSettingsToc(html) {
-  const titles = [];
-  let n = 0;
-  const out = html.replace(/<(section|div) class="card([^"]*)"([^>]*)>(\s*)<h2>([\s\S]*?)<\/h2>/g, (m, tag, cls, rest, ws, h) => {
-    const id = `set-${n++}`;
-    const text = h.replace(/<[^>]*>/g, '').replace(/^[^\p{L}]+/u, '').trim();
-    titles.push([id, text]);
-    return `<${tag} class="card${cls}"${rest} id="${id}">${ws}<h2 tabindex="-1">${h}</h2>`;
-  });
-  const toc = `<nav class="settings-toc" aria-label="${L("Ayar bölümleri")}">${titles.map(([id, t]) => `<button class="pchip" data-action="settings-jump" data-id="${id}">${esc(t)}</button>`).join('')}</nav>`;
-  return out.replace('<p class="hint" id="settings-none"', toc + '<p class="hint" id="settings-none"');
-}
-
 function renderAbout() {
   // B180: telefonda ~7600 px metin duvarıydı. Önce tanıtım, sürüm ve veri dürüstlüğü; uzun kaynak listesi ve lisanslar katlanır.
   return `<div class="about card">

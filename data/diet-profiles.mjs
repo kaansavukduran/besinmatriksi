@@ -11,7 +11,7 @@ const SOY_EXCEPT = new Set(['sebze_burger']);
 const SINGLE_SWEETENERS = new Set(['kakao','keciboynuzu','akcaagac','melas','seker','esmer_seker','jaggery','uzum_pekmezi','agave']);
 // B211: USDA FNDDS tarifleri; girdi listesi (inputFoods) tek tek incelendi (2026-11-19), hepsi bitkisel.
 // Restoran/hazır bileşenli olanlar burada yok (bilinmiyor kalır). Alerjen yokluğu iddia edilmez (freeFrom boş).
-const FNDDS_PLANT = new Set(['guacamole','ratatouille','gazpacho','congee','vejetaryen_chili','pho_etsiz','ramen_vejetaryen','minestrone','borscht']);
+const FNDDS_PLANT = new Set(['sambar','dosa','masala_dosa','idli','pakora','bezelye_corbasi','yuca_kizartmasi','grits','guacamole','ratatouille','gazpacho','congee','vejetaryen_chili','pho_etsiz','ramen_vejetaryen','minestrone','borscht']);
 export function curatedDietProfile(food, ctx = {}) {
  const allergens = new Set(food.allergens || []);
  if(food.cat==='soya'||food.id==='soya_filizi')allergens.add('soya');

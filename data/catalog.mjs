@@ -910,5 +910,20 @@ export const WORLD_DISH_ADDITIONS = [
  F("ratatouille","Ratatouille","ratatouille","yemek",[["pismis","N75316050",null,"Pişmiş"]],{note:"USDA FNDDS tarifi: patlıcan, kabak, kırmızı biber, domates, soğan, sarımsak, zeytinyağı, fesleğen, kekik."}),
  F("fufu","Fufu (Batı Afrika)","fufu cassava taro","yemek",[["pismis","N71970200",null,"Pişmiş"]],{note:"USDA FNDDS tarifi: manyok, taro, yağ (türü belirtilmemiş), tuz."}),
  F("injera","İnjera (Etiyopya ekmeği)","injera ethiopian bread","ekmek",[["taze","N51807000",null,"Taze"]],{animal:true,allergens:["gluten"],note:"USDA FNDDS tarifi: karabuğday + buğday unu, maya, az bal. Geleneksel injera teff unu ve sudan yapılır."}),
+  // B213: Güney Hint, Doğu Avrupa, Latin ve Amerika mutfağından ikinci tur (USDA FNDDS)
+ F("sambar","Sambar (Güney Hint mercimek-sebze yemeği)","sambar lentil vegetable stew","yemek",[["pismis","N41311020",null,"Pişmiş"]],{note:"USDA FNDDS tarifi: mercimek, demirhindi, domates, bamya, taze fasulye, patates, soğan, hardal tohumu, zerdeçal, acı biber, bitkisel yağ."}),
+ F("dosa","Dosa (Güney Hint krebi)","dosa plain","yemek",[["tava","N55702100",null,"Tavada"]],{note:"USDA FNDDS tarifi: pirinç + mercimek hamuru, hardal tohumu, bitkisel yağ, tuz."}),
+ F("masala_dosa","Masala dosa (dolgulu)","masala dosa filled","yemek",[["tava","N58174100",null,"Tavada"]],{note:"USDA FNDDS tarifi: sade dosa + sebzeli pakora dolgusu (patates, patlıcan, karnabahar, nohut unu)."}),
+ F("idli","İdli (buharda pirinç keki)","idli","yemek",[["pismis","N55702000",null,"Buharda"]],{note:"USDA FNDDS tarifi: pirinç, bölünmüş bezelye (geleneksel tarifte urad mercimeği), tuz."}),
+ F("papad","Papad (mercimek gofreti, közlenmiş)","papad pappadum","atistirmalik",[["kavrulmus","N41311000",null,"Közlenmiş"]],{note:"USDA FNDDS kaydı: hazır papad, közlenmiş. Hazır ürünün tam içeriği belirtilmemiş; vegan olduğu doğrulanmadı."}),
+ F("paratha","Paratha (tam buğday, katmerli)","paratha whole wheat","ekmek",[["taze","N51300185",null,"Hazır"]],{allergens:["gluten"],note:"USDA FNDDS kaydı: tam buğday paratha, ticari, dondurulmuş. Yağ türü belirtilmemiş; vegan olduğu doğrulanmadı."}),
+ F("pakora","Pakora (sebzeli, nohut unlu)","pakora vegetable","yemek",[["tava","N75440400",null,"Kızartılmış"]],{note:"USDA FNDDS tarifi: patates, patlıcan, karnabahar, soğan, muz (plantain), nohut, zerdeçal, acı biber, bitkisel yağ."}),
+ F("palak_paneer","Palak paneer (ıspanaklı peynir)","palak paneer","yemek",[["pismis","N72125310",null,"Pişmiş"]],{animal:true,allergens:["sut"],note:"USDA FNDDS tarifi: ıspanak, paneer peyniri, sade yağ (ghee), domates, soğan, zencefil, sarımsak, baharat."}),
+ F("bezelye_corbasi","Kuru bezelye çorbası (etsiz)","split pea soup","yemek",[["pismis","N41602050",null,"Pişmiş"]],{note:"USDA FNDDS tarifi: bölünmüş kuru bezelye, havuç-soğan-kereviz, bitkisel yağ, su, tuz."}),
+ F("chilaquiles","Chilaquiles (Meksika)","chilaquiles","yemek",[["pismis","N58100360",null,"Pişmiş"]],{animal:true,allergens:["sut","yumurta"],note:"USDA FNDDS tarifi: mısır tortillası, domates sosu, peynir, sahanda yumurta."}),
+ F("knish","Knish (patatesli hamur işi)","knish","yemek",[["firin","N58122320",null,"Fırında"]],{animal:true,allergens:["gluten","sut","yumurta"],note:"USDA FNDDS tarifi: un, margarin, yumurta, lor peyniri, patates dolgusu."}),
+ F("latke","Latke (patates mücveri)","potato pancake latke","yemek",[["tava","N71701000",null,"Tavada"]],{animal:true,allergens:["gluten","yumurta"],note:"USDA FNDDS tarifi: rendelenmiş patates, soğan, un, yumurta, bitkisel yağda kızartma."}),
+ F("yuca_kizartmasi","Yuca (manyok) kızartması","yuca fries cassava","fastfood",[["tava","N71930190",null,"Kızartılmış"]],{note:"USDA FNDDS tarifi: manyok, bitkisel yağ, tuz. Çiğ manyok siyanojenik glikozit içerir; pişirilmiş tüketilir."}),
+ F("grits","Grits (mısır lapası, suyla)","grits corn porridge","tahil",[["pismis","N56201051",null,"Suyla pişmiş"]],{note:"USDA FNDDS tarifi: zenginleştirilmiş beyaz mısır irmiği, su, tuz; yağ eklenmemiş."}),
 ];
 FOODS.push(...WORLD_DISH_ADDITIONS);

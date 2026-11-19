@@ -1,0 +1,84 @@
+/* ============ Temel ============ */
+* { box-sizing: border-box; }
+html { font-size: var(--fs); -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: var(--font); line-height: var(--lh); letter-spacing: var(--ls); word-spacing: var(--ws);
+  min-height: 100vh; overflow-x: hidden;
+}
+:root[data-bold="1"] body { font-weight: 600; }
+:root[data-bold="1"] b, :root[data-bold="1"] h2, :root[data-bold="1"] h3 { font-weight: 800; }
+button, input, textarea, select { font: inherit; color: inherit; letter-spacing: inherit; word-spacing: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: var(--focus-width, 3px) solid var(--acc); outline-offset: 2px; }
+h2 { font-size: 1.3rem; margin: 0 0 .4em; line-height: 1.25; }
+h3 { font-size: 1.05rem; margin: 1em 0 .4em; }
+i.sci, .dsub i { font-style: italic; }
+.muted { color: var(--muted); }
+.hint { color: var(--muted); font-size: .86rem; margin: .5em 0; }
+.empty { color: var(--muted); padding: .6em 0; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+/* ============ Üst çubuk ============ */
+.top {
+  position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 1rem;
+  padding: calc(env(safe-area-inset-top) + 14px) max(24px, calc((100vw - 1480px) / 2)) 14px; background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px); border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: .65rem; margin-right: auto; min-height: var(--tap); padding: 0; border: 0; border-radius: var(--radius); background: transparent; color: var(--fg); text-align: left; font-size: 1.08rem; white-space: nowrap; }
+.brand:hover b { text-decoration: underline; text-underline-offset: .18em; }
+.logo { display: flex; color: var(--acc); }
+.tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  position: relative; display: flex; align-items: center; gap: .35rem; min-height: var(--tap);
+  padding: 0 .9rem; border: 0; border-radius: calc(var(--radius) * .5); background: transparent; color: var(--muted); white-space: nowrap;
+}
+.tab:hover { background: var(--card2); color: var(--fg); }
+.tab.on { background: var(--acc); color: var(--ac-fg); }
+.badge { min-width: 1.3em; height: 1.3em; border-radius: 999px; background: var(--bad); color: #fff; font-size: .72rem; display: inline-grid; place-items: center; padding: 0 .3em; }
+
+.view { padding: 28px 24px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); max-width: 1528px; margin: 0 auto; }
+
+/* ============ Ortak öğeler ============ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .35rem; min-height: var(--tap);
+  padding: 0 1rem; border-radius: calc(var(--radius) * .65); border: 1px solid var(--line); background: var(--card); color: var(--fg);
+}
+.btn:hover { border-color: var(--acc); }
+.btn.primary { background: var(--acc); border-color: var(--acc); color: var(--ac-fg); font-weight: 700; }
+.btn.ghost { background: transparent; }
+.btn.danger { color: var(--bad); }
+.btn.big { min-height: calc(var(--tap) + 12px); font-size: 1.05rem; width: 100%; margin-top: .6rem; }
+.btn.block { width: 100%; }
+.linkish { border: 0; background: none; color: var(--acc); text-decoration: underline; padding: .3em 0; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: calc(var(--pad) + 4px); box-shadow: var(--shadow); }
+
+.pchip {
+  min-height: calc(var(--tap) - 4px); padding: .1rem .8rem; border-radius: calc(var(--radius) * .5); border: 1px solid var(--line);
+  background: var(--card); color: var(--fg); white-space: nowrap;
+}
+.pchip:hover { border-color: var(--acc); }
+.pchip.on { background: var(--acc); border-color: var(--acc); color: var(--ac-fg); font-weight: 700; }
+.pchip.static { cursor: default; }
+.pchip .dot { font-size: .6em; vertical-align: middle; opacity: .8; }
+.presets, .forms, .portions, .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.presets.end { justify-content: flex-end; }
+.chip { display: inline-block; font-size: .8rem; padding: .1em .6em; border-radius: 999px; background: var(--card2); border: 1px solid var(--line); }
+.chip.ok { background: var(--okbg); color: var(--ok); border-color: color-mix(in srgb, var(--ok) 40%, transparent); }
+.chip.warn { background: var(--warnbg); color: var(--warn); border-color: color-mix(in srgb, var(--warn) 40%, transparent); }
+.chip.bad { background: var(--badbg); color: var(--bad); border-color: color-mix(in srgb, var(--bad) 40%, transparent); }
+.help { display: inline-grid; place-items: center; width: 1.3em; height: 1.3em; border-radius: 50%; background: var(--card2); color: var(--muted); font-size: .75rem; cursor: help; border: 1px solid var(--line); }
+.cnt { font-size: .75rem; color: var(--muted); margin-left: auto; }
+.on .cnt { color: inherit; opacity: .8; }
+
+.toast {
+  position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 100;
+  background: var(--fg); color: var(--bg); padding: .7em 1.2em; border-radius: 999px; box-shadow: var(--shadow); transition: opacity .4s;
+  max-width: calc(100vw - 32px); text-align: center;
+}
+.toast.out { opacity: 0; }
+
+#ruler { position: fixed; left: 0; right: 0; top: 0; height: 44px; pointer-events: none; z-index: 90; display: none;
+  background: color-mix(in srgb, var(--acc) 12%, transparent); border-top: 2px solid color-mix(in srgb, var(--acc) 35%, transparent); border-bottom: 2px solid color-mix(in srgb, var(--acc) 35%, transparent); }
+#ruler.on { display: block; }

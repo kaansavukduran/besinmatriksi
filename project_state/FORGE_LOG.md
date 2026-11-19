@@ -1198,4 +1198,23 @@
 - Katalog 785 besin / 936 biçim (B203'te 738 / 889).
 - Kanıt: `npm run data`; `npm test` 179/179 (B210/B211 veri testi: FNDDS etiketi, hayvansal işaret, diyet sınıfı, tarif etiketi); Playwright world-foods (sushi, içli köfte, vegan filtresi etsizi gösterir etliyi gizler, "meksika fasulyesi"). Playwright tam koşu 45 (B204–B211 birlikte): 375/375.
 - Paket (öncesi 47aecca → sonrası): ana JS 2.575.196 → 2.695.865 bayt (+121 KB = 47 yeni besin verisi; gzip 508 KB), CSS 73,7 → 76,2 KB, tek dosya 12,56 → 12,68 MB, hafif tek dosya ~4,2 MB. Kod tarafı kazanımlar boyut değil çalışma zamanı: ana sayfa DOM 8682 → ~1100, miktar değişiminde yalnız yama.
-- Sonraki: **B212** beta.57 yayını (B196–B211), sonra Ayarlar grupları ve app.js/styles.css modülerleştirmesi (davranışsız, ayrı Forge'lar).
+- Sonraki: **B212**.
+
+## B212 · 2026-11-19 · Ayarlar dört grupta; çapraz tarayıcı kırığı
+- Ayarlar'ın üstündeki 16 bölüm düğmesi dört grupta: Genel, Görünüm ve yazı, Erişilebilirlik, Veri ve matriks (başlık metniyle eşlenir, dil bağımsız; eşleşmeyen "Diğer"e). Masaüstünde solda grup adı, sağda düğmeler; telefonda grup adı üstte, düğmeler yana kayar. Kartlar ve denetimler değişmedi.
+- CI'daki "Tarayıcı uyumu" işi (Firefox, WebKit, iPhone, iPad; yerelde yalnız Chromium var) 47aecca'da 15 kırmızı veriyordu: B152 / Kıyasla taşması / mikro özet (B204'te düzeltildi) + B169 ve B186 Aion testleri iPhone/iPad'de `mouse.wheel` kullanıyordu (mobil WebKit desteklemiyor; uygulama hatası değil). Testler `window.scrollBy` ile kaydırıyor; aynı kaydırma olayı.
+- Kanıt: Playwright B212 (4 grup, her kartın düğmesi, Yedekleme düğmesi kartın başlığına odaklar, taşma yok); B169/B186 Chromium'da geçti; çapraz tarayıcı sonucu CI'da.
+
+## B213 · 2026-11-19 · Dünya mutfağı ikinci tur (14 yemek, USDA FNDDS)
+- Güney Hint: sambar, dosa, masala dosa, idli, papad, paratha, pakora, palak paneer. Doğu Avrupa/Yahudi: latke, knish. Latin: chilaquiles, yuca kızartması. Amerika: grits. Avrupa: kuru bezelye çorbası. Girdi listesi incelenen 8'i bitkisel (vegan filtresinde); papad/paratha (hazır ürün) bilinmiyor; palak paneer, chilaquiles, knish, latke hayvansal.
+- Eş anlamlılar: vegemite/marmite (maya özü ezmesi zaten katalogda), draniki, mısır lapası.
+- Ölçümsüz 38 besin için kaynak taraması: CoFID kuru ananas tazeden hesaplanmış, bitki çayları ve tarçın tür belirtmiyor, kuru maya besin mayası değil, FNDDS kuru ananas taze + şeker hesabı. Kural gereği (başka gıdayla doldurulmaz, tazeden kurutulmuş türetilmez) hiçbiri eklenmedi; "ölçüm yok" kalır.
+- Katalog 799 besin. Kanıt: `npm test` 179/179; Playwright tam koşu 46: 377/377.
+
+## B214 · 2026-11-19 · styles.css modüllere bölündü (piksel farksız), app.js'ten ilk saf modül
+- `src/styles.css` artık yalnız sıralı `@import` dizini; içerik 10 dosyada (`src/styles/`): tokens, base, explore, matrix, views, responsive, forms-print, aion-collections, components, forge-fixes. Bölme yalnız sütun 0'daki bölüm başlıklarında (üst düzey blok sınırı); sıra korunur.
+- Kanıt: kaynak birleştirildiğinde özgün dosyayla aynı (boş satırlar hariç); derlenmiş CSS bayt bayt aynı (`cmp`, aynı içerik özeti `style-CvvuriXA.css`, 76.718 bayt) → piksel farkı yok.
+- `src/settings-toc.js`: Ayarlar içindekiler (saf işlev) app.js'ten ayrıldı; birim testi. app.js 1.790 satır.
+- app.js'in geri kalanı (liste, detay, tarif, kıyas, günlük) tek bir paylaşılan durum nesnesi `S` ve `render()` ile sıkı bağlı; davranışsız bölmek için önce durum modülü (`state.js`) gerekir. Ayrı Forge olarak planlandı.
+- Kanıt: `npm test` 181/181 (styles dizini, settings-toc); Playwright tam koşu 47: 377/377.
+- Sonraki: **B215** beta.58 yayını (B212–B214) ve state.js ile app.js bölmenin ilk adımı.

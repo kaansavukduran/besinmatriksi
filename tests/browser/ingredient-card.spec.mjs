@@ -140,7 +140,7 @@ test('B169 Aion baloncuğu kontrolleri yutmaz; telefonda kaydırınca Aion kenar
   expect(hit).toBe(true);
   await page.locator('#q').evaluate(() => document.querySelector('.slider')?.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })));
   await expect(bubble).toBeHidden();
-  await page.mouse.wheel(0, 300);
+  await page.evaluate(() => window.scrollBy(0, 300)); // mobil WebKit'te mouse.wheel yok; kaydırma olayı aynı
   await expect(page.locator('#aion')).toHaveClass(/aion-tucked/);
   const through = await page.locator('.aion-body').evaluate((b) => { const r = b.getBoundingClientRect(); const x = Math.min(innerWidth - 2, r.left + r.width / 2); const e = document.elementFromPoint(x, r.top + r.height / 2); return !!e && !e.closest('.aion'); });
   expect(through).toBe(true);
@@ -368,7 +368,7 @@ test('B186 telefonda Aion konuşunca kenarda beklemez: "Kutlamayı dene" baloncu
   await page.locator('.aion-settings [data-action="aion-demo"]').click();
   await expect(page.locator('#aion .aion-bubble')).toBeVisible({ timeout: 800 });
   await expect(page.locator('#aion')).not.toHaveClass(/aion-tucked/);
-  await page.mouse.wheel(0, 200);
+  await page.evaluate(() => window.scrollBy(0, 200)); // mobil WebKit'te mouse.wheel yok
   await expect(page.locator('#aion')).toHaveClass(/aion-tucked/);
 });
 
