@@ -22,7 +22,7 @@ import { renderRecipeSources, renderRecipeSourceRows } from './recipe-sources.js
 import { renderEfsaSettings } from './efsa-ui.js';
 import { t as tr, setLanguage, preferredLanguage, L } from './i18n.js';
 import { renderAppearance, settingSlider } from './appearance.js';
-import { energyEstimate, recipeToEntries, dayToRecipeItems, loadPersonal, savePersonal, emptyProfile, normalizeProfile, mergePersonalFoods, localDay, validDay, dayResult, PERSONAL_KEY } from './personal.js';
+import { energyEstimate, recipeToEntries, dayToRecipeItems, copyDayEntries, loadPersonal, savePersonal, emptyProfile, normalizeProfile, mergePersonalFoods, localDay, validDay, dayResult, PERSONAL_KEY } from './personal.js';
 import { renderPersonal, renderEnergy, renderDaySources } from './personal-view.js';
 import { nutrientLabel } from './i18n-nutrients.js';
 import { getLanguage } from './i18n.js';
@@ -1112,10 +1112,20 @@ async function onClick(e) {
     case 'personal-mode': S.consumedOnly = b.dataset.mode === 'consumed'; render(); break;
     case 'personal-consumed': { const entry = S.personal.entries.find(e => e.id === b.dataset.id); if (entry) entry.consumed = !entry.consumed; persistPersonal(); render(); break; }
     case 'personal-remove': { const entry = S.personal.entries.find(e => e.id === b.dataset.id); if (entry) { S.personalUndo = { type: 'entry', entry: { ...entry } }; S.personal.entries = S.personal.entries.filter(e => e.id !== entry.id); persistPersonal(); render(); } break; }
+    // B220: geçmiş bir günü bugüne kopyala (planlandı olarak); geri alınabilir
+    case 'personal-copy-day': {
+      const today = localDay(), copied = copyDayEntries(S.personal.entries, S.personalDay, today, { consumedOnly: S.consumedOnly });
+      if (!copied.length) break;
+      S.personal.entries.push(...copied); S.personalUndo = { type: 'copy', ids: copied.map((e) => e.id) };
+      if (!persistPersonal()) break;
+      S.personalDay = today; S.personalDayAuto = true; render(); window.scrollTo(0, 0);
+      toast(L("{n} kayıt bugüne plan olarak eklendi; yedikçe “Tüketildi” diye işaretle.", { n: copied.length })); break;
+    }
     case 'personal-undo': {
       const undo = S.personalUndo;
       if (undo?.type === 'entry' && !S.personal.entries.some(e => e.id === undo.entry.id)) S.personal.entries.push(undo.entry);
       if (undo?.type === 'profile') { S.personal.profile = undo.profile; S.personalDraft = structuredClone(undo.profile); }
+      if (undo?.type === 'copy') { const ids = new Set(undo.ids); S.personal.entries = S.personal.entries.filter((e) => !ids.has(e.id)); }
       S.personalUndo = null; persistPersonal(); render(); break;
     }
     case 'personal-efsa': {

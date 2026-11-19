@@ -36,3 +36,15 @@ test('B217 ay ızgarası Pazartesi başlar, ay dışı boş; ay kaydırma yıl g
   assert.equal(monthGrid(2026, 1).flat().filter(Boolean).length, 28);
   assert.equal(shiftMonth('2026-12', 1), '2027-01'); assert.equal(shiftMonth('2026-01', -1), '2025-12');
 });
+
+import { copyDayEntries } from '../src/personal.js';
+test('B220 günü kopyala: yeni kimlik, hedef gün, planlandı; aynı güne kopya yok; yalnız tüketilenler süzgeci', () => {
+  let n = 0; const newId = () => 'n' + (n++);
+  const out = copyDayEntries(st.entries, '2026-11-19', '2026-11-20', { newId });
+  assert.equal(out.length, 2);
+  assert.ok(out.every((e) => e.day === '2026-11-20' && e.consumed === false && e.id.startsWith('n')));
+  assert.deepEqual(out.map((e) => e.g), [200, 100]);
+  assert.equal(st.entries[0].day, '2026-11-19'); // kaynak değişmez
+  assert.deepEqual(copyDayEntries(st.entries, '2026-11-19', '2026-11-19'), []);
+  assert.equal(copyDayEntries(st.entries, '2026-11-17', '2026-11-20', { consumedOnly: true }).length, 0);
+});

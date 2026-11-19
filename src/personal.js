@@ -136,6 +136,11 @@ export function dayToRecipeItems(entries, day, { consumedOnly = false, maxG = MA
 }
 
 // Seçili günle biten 7 günlük seri: günde kayıt yoksa v=null (0 değil); kısmi kapsam işaretlenir.
+// B220: bir günün kayıtlarını başka güne kopyalar (yeni kimlik, "planlandı" olarak; tüketildi işareti kullanıcıya kalır)
+export function copyDayEntries(entries, fromDay, toDay, { consumedOnly = false, newId = uid } = {}) {
+  if (fromDay === toDay) return [];
+  return entries.filter((e) => e.day === fromDay && (!consumedOnly || e.consumed)).map((e) => ({ ...e, id: newId(), day: toDay, consumed: false }));
+}
 export function shiftDay(day, delta) {
   const d = new Date(day + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + delta); return d.toISOString().slice(0, 10);
 }

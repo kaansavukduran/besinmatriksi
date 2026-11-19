@@ -49,3 +49,26 @@ test('B217 Günlük geçmişi boşken rehber ve Keşfet düğmesi', async ({ pag
   // Bugüne kayıt yokken geçmiş bölümü günün kartında boş durum gösterir (kayıt varken geçmiş görünür)
   await expect(page.locator('.day-empty, .hist-empty').first()).toBeVisible();
 });
+
+test('B220 geçmiş günü bugüne kopyala: plan olarak eklenir, geri alınabilir', async ({ page }) => {
+  const errors = []; page.on('pageerror', (error) => errors.push(error.message));
+  await page.clock.setFixedTime(new Date('2026-11-19T12:00:00'));
+  await page.addInitScript(() => {
+    if (localStorage.getItem('bm.personal.v1')) return;
+    localStorage.setItem('bm.personal.v1', JSON.stringify({ schema: 1, profile: {}, milestones: {}, entries: [
+      { id: 'a', day: '2026-11-18', ref: { t: 'c', id: 'muz', f: 0 }, g: 120, consumed: true },
+      { id: 'b', day: '2026-11-18', ref: { t: 'c', id: 'yulaf', f: 0 }, g: 50, consumed: true },
+    ] }));
+  });
+  await page.goto('/#/diary');
+  await expect(page.locator('[data-action="personal-copy-day"]')).toHaveCount(0); // bugün seçiliyken yok
+  await page.locator('.history .wk[data-day="2026-11-18"]').click();
+  await page.locator('[data-action="personal-copy-day"]').click();
+  await expect(page.locator('#personal-day')).toHaveValue('2026-11-19');
+  await expect(page.locator('.toast')).toContainText(/2 kayıt|2 entries/);
+  const today = () => page.evaluate(() => JSON.parse(localStorage.getItem('bm.personal.v1')).entries.filter((e) => e.day === '2026-11-19'));
+  expect((await today()).map((e) => [e.ref.id, e.g, e.consumed])).toEqual([['muz', 120, false], ['yulaf', 50, false]]);
+  await page.locator('[data-action="personal-undo"]').click();
+  expect(await today()).toEqual([]);
+  expect(errors).toEqual([]);
+});

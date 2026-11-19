@@ -461,3 +461,12 @@ test('B216 Balkan/Slav/Orta Asya/yerli Amerikan tarifleri: tarif etiketi, diyet 
   for (const id of ['plov', 'sopska']) { assert.equal(by(id).animal, true, id); assert.notEqual(by(id).dietary.kind, 'plant', id); }
   assert.ok(by('frybread').forms[0].v.energy > 300 && by('frybread').forms[0].v.energy < 450); // kızartma varsayımı makul aralıkta
 });
+
+test('B219 vegan ağırlıklı dünya ve Anadolu tarifleri', () => {
+  const by = (id) => DB.foods.find((f) => f.id === id);
+  for (const id of ['chana_masala', 'aloo_gobi', 'rajma', 'misir_wot', 'ful_medames', 'pico_de_gallo', 'zeytinyagli_pirasa', 'zeytinyagli_kereviz', 'kabak_yemegi', 'patates_yemegi']) {
+    assert.equal(by(id).dietary.kind, 'plant', id);
+    assert.ok(by(id).forms[0].v.energy > 15 && by(id).forms[0].v.energy < 250, id);
+  }
+  assert.equal(by('fattus').dietary.kind, 'unknown'); // hazır pide (unlu mamul) içeriği belirsiz
+});

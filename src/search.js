@@ -18,6 +18,7 @@ export const SEARCH_ALIASES = {
   kuru_kayisi: ['kayısı kurusu', 'kükürtlü kuru kayısı', 'dried apricots', 'sulphured', 'sulfured'],
   // B210 dünya mutfağı: yaygın yazımlar
   karabugday: ['greçka', 'kaşa', 'kasha', 'grechka'], ajvar: ['ayvar'], sopska: ['shopska', 'çoban salatası balkan'], plov: ['palov', 'osh', 'özbek pilavı'],
+  chana_masala: ['chole', 'nohut körisi'], aloo_gobi: ['alu gobi'], rajma: ['fasulye körisi'], misir_wot: ['wot', 'etiyopya mercimek'], ful_medames: ['foul', 'ful'], fattus: ['fattoush', 'fettuş'], pico_de_gallo: ['salsa', 'salsa fresca'],
   maya_ozu: ['vegemite', 'marmite', 'maya ekstresi'], grits: ['mısır lapası'], latke: ['patates mücveri', 'draniki'],
   susi_somonlu: ['sushi', 'salmon roll', 'maki'], susi_california: ['sushi', 'california roll', 'maki'], borscht: ['borş', 'barszcz', 'borsch'],
   pierogi: ['pirogi', 'varenik', 'vareniki'], fasulye_ezmesi_meksika: ['frijoles refritos', 'meksika fasulyesi ezmesi'], congee: ['jook', 'pirinç lapası'],

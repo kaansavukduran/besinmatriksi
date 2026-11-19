@@ -1248,3 +1248,14 @@
 - Taşırken iki eksik içe aktarma yakalandı (`foodName`, `getLanguage`): derleme bunları yakalamıyordu (ESM'de tanımsız ad çalışırken patlar). Kalıcı koruma: `tests/modules.test.mjs` görünüm modüllerinde çağrılan her adın içe aktarılmış ya da tanımlı olduğunu denetler (yorum ve metin dışı); deneme olarak bir içe aktarma silindiğinde test düştü.
 - Kanıt: `npm test` 185/185; build + build:single; Playwright ilgili 39 test + tam koşu 51: 381/381.
 - Sonraki: **B219** sıradaki görünümü ayır (Ayarlar ya da Tarif) ve yeni yemek turu; 2–3 Forge sonra beta.59 (takvim dahil).
+
+## B219 · 2026-11-19 · Vegan ağırlıklı 11 yemek
+- Ev tarifi hesabı (tahmin, USDA SR28 malzemeleri): chana masala, aloo gobi, rajma (Hint); misir wot (Etiyopya; berbere yerine toz biber + chili, notta); ful medames (Mısır); fattuş (Levant; sumak USDA'da yok); pico de gallo (Meksika); zeytinyağlı pırasa, zeytinyağlı kereviz, zeytinyağlı kabak, patates yemeği (Anadolu).
+- 10'u malzeme doğrulamasıyla vegan filtresinde; fattuş hazır pide (unlu mamul, içerik belirsiz) yüzünden "bilinmiyor". Eş anlamlılar: chole, alu gobi, wot, foul, fattoush/fettuş, salsa.
+- Katalog 817 besin. Kanıt: `npm run data`; `npm test` (B219 veri testi: diyet sınıfı, makul enerji aralığı).
+
+## B220 · 2026-11-19 · Geçmiş günü bugüne kopyala (takip kolaylığı)
+- Geçmiş bir gün seçiliyken (takvim/çubuktan) günün kartında "📋 Bu günü bugüne kopyala": o günün kayıtları bugüne "planlandı" olarak eklenir (yeni kimlik; tüketildi işareti kullanıcıya kalır), görünüm bugüne geçer, bildirim yönlendirir, "Geri al" tüm kopyayı kaldırır. "Yalnız tüketilenler" seçiliyse yalnız tüketilenler kopyalanır. Bugün seçiliyken düğme yok.
+- `copyDayEntries` (src/personal.js) saf işlev; birim testi (yeni kimlik, hedef gün, planlandı, kaynak değişmez, aynı güne kopya yok, süzgeç).
+- Kanıt: `npm test` 187/187; Playwright B220 (kopyala → bugün, 2 kayıt planlandı, geri al → boş); iPhone 390 px ekran görüntüsü.
+- Playwright tam koşu 52 (B219 + B220): 383/383. Sürüm 1.1.2-beta.59 (B217–B220).

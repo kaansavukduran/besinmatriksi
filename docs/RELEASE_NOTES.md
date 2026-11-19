@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 58 · Dünya mutfağı ikinci tur, düzenli Ayarlar
+# 🫐 Besin Matriksi 1.1.2 Beta 59 · Takip takvimi
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -22,6 +22,9 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
+- **📅 Geçmiş (takip):** Günlük'te Son 7 gün · Son 30 gün · Takvim. Kayıtlı gün sayısı, günlük ortalama enerji / protein / lif, en sık yediklerin. Takvimde renk koyulaştıkça değer artar; bir güne dokun, o gün açılır. Boş gün 0 sayılmaz.
+- **📋 Bu günü bugüne kopyala:** Geçmiş bir günü tek dokunuşla bugünün planına al; “Geri al” ile vazgeç.
+- **11 yeni vegan ağırlıklı yemek:** chana masala, aloo gobi, rajma, misir wot, ful medames, fattuş, pico de gallo, zeytinyağlı pırasa, zeytinyağlı kereviz, zeytinyağlı kabak, patates yemeği.
 - **21 yeni yemek:** Güney Hint (sambar, dosa, masala dosa, idli, pakora, papad, paratha, palak paneer), Doğu Avrupa (latke, knish, vinegret), Balkanlar (ajvar, pasulj, şopska), Orta Asya (plov), Amerika yerli halkları (succotash “üç kız kardeş”, frybread), Latin (chilaquiles, yuca kızartması), grits, kuru bezelye çorbası.
 - **Ayarlar dört grupta:** Genel · Görünüm ve yazı · Erişilebilirlik · Veri ve matriks. Aradığın bölüm tek bakışta.
 - **Arama:** “vegemite”, “marmite”, “kaşa”, “ayvar”, “osh” gibi yazımlar doğru besini bulur.
