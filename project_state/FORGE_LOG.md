@@ -1312,3 +1312,9 @@
 - Eş anlamlılar: gimbap, zalouk, gavurdağı, pasta fagioli. Katalog 839 besin.
 - Kanıt: `npm run data`; `npm test` 315/315 (B228 veri testi).
 - Playwright tam koşu 60 (B228): 385/385.
+
+## B229 · 2026-11-19 · Keşfet görünümü ayrıldı
+- `src/views/explore.js`: kategori şeridi, besin/katalog/koleksiyon/kendi besin düğmeleri, sıralama, parça parça liste, tam katalog araması, biçim çipleri, benzer besinler, karşılama, katalog başlığı, detay matrisi ve Keşfet sekmesi (26 dışa aktarım; Tarif seçici aynı liste işlevlerini buradan kullanır). app.js 1.366 → 1.089 satır (oturum başında 1.790).
+- Eksik içe aktarmalar tanımsız ad testiyle tek seferde bulundu (data, catalog-tree, diet, collections, similar, matrix, calc…); hiçbir modül app.js'ten içe aktarmıyor.
+- Kanıt: `npm test` 317/317 (tanımsız ad + içe/dışa aktarma denetimi 61 dosya); Keşfet testleri 15/15; Playwright tam koşu 61: 385/385.
+- Sürüm 1.1.2-beta.62 (B228–B229).

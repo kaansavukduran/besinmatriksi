@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 61 · Hızlı ekleme ve ev yemekleri
+# 🫐 Besin Matriksi 1.1.2 Beta 62 · Yeni vegan yemekler
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -22,6 +22,8 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
+- **7 yeni vegan yemek:** patates salatası, gavurdağı salatası, zeytinyağlı börülce, kimbap (Kore), pasta e fagioli (İtalya), harira ve zaalouk (Fas).
+- **Daha sağlam kod:** Keşfet ekranı da ayrı modülde; her kaynak dosyada tanımsız ad ve eksik içe aktarma otomatik denetleniyor.
 - **＋ Bugüne:** Geçmiş'teki “En sık yediklerin” listesinden bir besini, genelde yediğin miktarla tek dokunuşta bugünün planına ekle.
 - **8 yeni yemek:** kuru fasulye (etsiz), yeşil mercimek yemeği, domates çorbası, şakşuka, çoban salatası, onigiri, damper (Avustralya), wojapi (Lakota yaban mersini sosu).
 - **🔥 Kayıt serisi ve kıyas:** Geçmiş'te “3 gündür kesintisiz” ve her ortalamanın altında “▲ 234 kcal · önceki 7 güne göre”.
