@@ -535,3 +535,16 @@ test('B240 đuveč, Üç Kız Kardeş, yaban pirinci pilavı, balkabağı çorba
   assert.equal(by('achichuk').forms[0].key, 'cig');
   assert.match(by('zeytinyagli_taze_bakla').note, /G6PD/);
 });
+
+test('B241 jollof, red red, mafe, gado-gado, kinoa salatası, sebzeli kuskus: vegan; fıstık ezmesi bitkisel, tereyağı değil', () => {
+  const by = (id) => DB.foods.find((f) => f.id === id);
+  for (const id of ['jollof_pilavi', 'red_red', 'mafe', 'gado_gado', 'kinoa_salatasi', 'kuskus_sebzeli']) {
+    const f = by(id);
+    assert.ok(f, id);
+    assert.equal(f.dietary.kind, 'plant', id); // mafe ve gado-gado "Peanut butter" (16398) içerir
+    assert.ok(!f.animal, id);
+    assert.match(f.note, /tahmin/, id);
+  }
+  assert.deepEqual(by('gado_gado').allergens, ['yerfistigi', 'soya', 'gluten']);
+  assert.notEqual(by('damper').dietary.kind, 'plant'); // gerçek tereyağı (01001) hâlâ hayvansal
+});

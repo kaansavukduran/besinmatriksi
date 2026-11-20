@@ -1396,3 +1396,11 @@
 - Ev tarifi hesabı (tahmin; USDA SR28): đuveč (Balkan sebzeli pirinç), Üç Kız Kardeş yahnisi (mısır-fasulye-kabak), yaban pirinci pilavı (manoomin; Zizania ≠ Oryza notu), balkabağı çorbası (kremasız), zeytinyağlı taze bakla (kabuklu kayıt yok, tane kaydı; G6PD uyarısı), açiçuk (Özbek, çiğ, yağsız). Hepsi vegan filtresinde. Katalog 857 besin.
 - Kanıt: `npm run data`; `npm test` 339/339 (B240 veri testi); arama testine 6 yabancı ad eklendi, 2/2; telefon ekran görüntüsü (Three Sisters, İngilizce) hatasız; Playwright tam koşu 72: 387/387.
 - Sonraki: B241 CI doğrulama; yeni yemek turu (Orta/Güney Amerika, Batı Afrika, Güneydoğu Asya).
+
+## B241 · 2026-11-20 · Batı Afrika, Endonezya, And, Mağrip yemekleri; fıstık ezmesi sınıflandırması
+- CI: Test 277 ve Pages 126 (B240) başarılı.
+- Kural düzeltmesi: `recipeAllPlant` NOT_PLANT kalıbı "Peanut butter"ı tereyağı sanıyordu (`\bbutter\b`). Yağlı tohum/kuruyemiş/kakao ezmeleri dışarıda bırakıldı; yalın "butter" hâlâ hayvansal. Mevcut 857 besinin hiçbirinin sınıfı değişmedi (önce/sonra karşılaştırması).
+- Ev tarifi hesabı (tahmin; USDA SR28): jollof pilavı (etsiz), red red (palmiye yağlı börülce), mafe (fıstık ezmeli; alerjen yer fıstığı), gado-gado (tofulu, yumurtasız; yer fıstığı, soya, gluten), kinoa salatası, sebzeli kuskus (gluten). Hepsi vegan filtresinde. Katalog 863 besin.
+- Gözlem: "Benzer besinler" vegan gado-gado için etli bir FNDDS yemeği öneriyor (besin profiline göre benzerlik). Diyet sınıfı gözetilmiyor; sonraki Forge'a alındı.
+- Kanıt: `npm run data`; `npm test` 340/340 (B241: diyet, alerjen, damper tereyağı hâlâ hayvansal); arama testi 2/2; telefon ekran görüntüsü hatasız; Playwright tam koşu 73: 387/387.
+- Sonraki: B242 benzer besinlerde aynı diyet sınıfını öne alma (vegan besine önce vegan öneriler) + sürüm beta.66 (B240–B242).

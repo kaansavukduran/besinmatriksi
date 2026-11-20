@@ -19,7 +19,7 @@ test('B210/B211 dünya ve Anadolu yemekleri aranır; vegan filtresi doğrulanmı
   await page.locator('#q').fill('meksika fasulyesi');
   await expect(page.locator('#foodlist [data-id="kirmizi_fasulye"]')).toBeVisible();
   // B231: yabancı adla arama (vegan filtresi açıkken de görünür)
-  for (const [q, id] of [['mujaddara', 'mucedra'], ['khichdi', 'kicri'], ['gallo pinto', 'gallo_pinto'], ['lobio', 'lobio'], ['acılı ezme', 'acili_ezme'], ['barbunya pilaki', 'zeytinyagli_barbunya'], ['kushari', 'koshari'], ['lahana yemeği', 'kapuska'], ['lecso', 'lecso'], ['nohut pilavı', 'nohutlu_pilav'], ['karnıbahar yemeği', 'karnabahar_yemegi'], ['bharta', 'baingan_bharta'], ['duvec', 'djuvec'], ['three sisters', 'uc_kiz_kardes'], ['wild rice', 'yaban_pirinci_pilavi'], ['pumpkin soup', 'balkabagi_corbasi'], ['zeytinyağlı bakla', 'zeytinyagli_taze_bakla'], ['achichuk', 'achichuk']]) {
+  for (const [q, id] of [['mujaddara', 'mucedra'], ['khichdi', 'kicri'], ['gallo pinto', 'gallo_pinto'], ['lobio', 'lobio'], ['acılı ezme', 'acili_ezme'], ['barbunya pilaki', 'zeytinyagli_barbunya'], ['kushari', 'koshari'], ['lahana yemeği', 'kapuska'], ['lecso', 'lecso'], ['nohut pilavı', 'nohutlu_pilav'], ['karnıbahar yemeği', 'karnabahar_yemegi'], ['bharta', 'baingan_bharta'], ['duvec', 'djuvec'], ['three sisters', 'uc_kiz_kardes'], ['wild rice', 'yaban_pirinci_pilavi'], ['pumpkin soup', 'balkabagi_corbasi'], ['zeytinyağlı bakla', 'zeytinyagli_taze_bakla'], ['achichuk', 'achichuk'], ['jollof', 'jollof_pilavi'], ['red red', 'red_red'], ['groundnut stew', 'mafe'], ['gado gado', 'gado_gado'], ['quinoa salad', 'kinoa_salatasi'], ['couscous', 'kuskus_sebzeli']]) {
     await page.locator('#q').fill(q);
     await expect(page.locator(`#foodlist [data-id="${id}"]`), q).toBeVisible();
   }

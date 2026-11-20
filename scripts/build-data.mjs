@@ -118,7 +118,8 @@ const ffByNdb = new Map();
 // B211: tarif malzemelerinin hepsi bitkisel mi? SR28 besin grubu + açıklama (yağ grubunda hayvansal yağlar, tahıllarda yumurtalı erişte,
 // tatlandırıcılarda bal/jelatin, içeceklerde süt elenir). Unlu mamuller (1800) içerik belirsiz olduğu için kabul edilmez.
 const PLANT_GRPS = new Set(['0200', '0400', '0900', '1100', '1200', '1400', '1600', '1900', '2000']);
-const NOT_PLANT = /\b(lard|tallow|butter|ghee|chicken fat|fish oil|egg|eggs|honey|gelatin|whey|milk chocolate|cheese|cream|yogurt|animal)\b|(?<!(almond|soy|coconut|oat|rice) )\bmilk\b/i;
+// B241: yağlı tohum/kuruyemiş ezmeleri (peanut/almond/cashew/sesame/sunflower/nut/seed/cocoa butter) bitkiseldir; yalın "butter" tereyağıdır
+const NOT_PLANT = /\b(lard|tallow|(?<!(peanut|almond|cashew|sesame|sunflower seed|nut|seed|cocoa) )butter|ghee|chicken fat|fish oil|egg|eggs|honey|gelatin|whey|milk chocolate|cheese|cream|yogurt|animal)\b|(?<!(almond|soy|coconut|oat|rice) )\bmilk\b/i;
 const LEAVENING = new Set(['18369', '18371', '18372']); // kabartma tozu / karbonat (mineral)
 function recipeAllPlant(food) {
   if (!food.recipe || food.animal) return false;
