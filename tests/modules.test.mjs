@@ -83,3 +83,16 @@ test('B236 seçici ve Kıyasla eylemleri ayrı modülde ve app.js ile çakışma
   for (const k of keys) assert.ok(!app.includes(`case '${k}'`), `app.js hâlâ ${k} içeriyor`);
   assert.match(app, /bindPickActions\(\{ render, selectFood, addToRecipe, addToCompare \}\)/);
 });
+
+// B238: Ayarlar eylemleri ve ön ayarlar src/actions/settings.js'te
+test('B238 Ayarlar eylemleri ayrı modülde ve app.js ile çakışmaz', async () => {
+  const st = fs.readFileSync(new URL('../src/actions/settings.js', import.meta.url), 'utf8');
+  const app = fs.readFileSync(new URL('../src/app.js', import.meta.url), 'utf8');
+  const keys = [...st.matchAll(/^  '([a-z0-9-]+)': async \(b\) =>/gm)].map((m) => m[1]);
+  assert.equal(keys.length, 20);
+  for (const k of ['theme-color-save', 'target-add', 'profile-save', 'profile-apply', 'section-move', 'reset-group', 'set', 'font', 'setstep', 'preset']) assert.ok(keys.includes(k), k);
+  for (const k of keys) assert.ok(!app.includes(`case '${k}'`), `app.js hâlâ ${k} içeriyor`);
+  assert.ok(!app.includes('PRESETS_UI'));
+  assert.match(app, /bindSettingsActions\(\{ render, uiDialog, setSetting, applySettings \}\)/);
+  assert.match(st, /export const PRESETS_UI = \{\n  dyslexia:/);
+});

@@ -1374,3 +1374,10 @@
 - Test: `release.test.mjs` B237 (iş ayrımı, bağımlılık, yayın işinde derleme/yükleme yok).
 - Kanıt: `npm test` 332/332; YAML ayrıştırma: işler [build, deploy], deploy.needs = build. Gerçek doğrulama bu commit'in Pages koşusunda (NOT_RUN: yerelde Actions yok).
 - Sonraki: B238 Pages koşusunu doğrula; Ayarlar eylemlerini src/actions/settings.js'e ayırma.
+
+## B238 · 2026-11-20 · Yeni Pages iş akışı doğrulandı; Ayarlar eylemleri ayrıldı
+- Pages 123 (B237, build → deploy ayrı işler) başarılı. 122'nin yeniden denemesi eski tek işli tanımla yine "0 artifact" verdi; 123 daha yeni kodu yayınladığı için etkisiz.
+- `src/actions/settings.js`: Ayarlar'ın 20 tıklama eylemi (tema uygula/renk düzenle/dışa aktar, hedef ekle/sil, görünüm profili kaydet/uygula/güncelle/sil, bölüm sırası, sabitleneni kaldır, bölüm sıfırla, ayar dışa aktar, set/font/adım, ön ayarlar) ve `PRESETS_UI`. app.js 916 → 843 satır (oturum başında 1.790); kullanılmayan 6 içe aktarma kaldırıldı.
+- Test: 20 eylem modülde, app.js'te ikinci tanım ve `PRESETS_UI` yok.
+- Kanıt: `npm test` 335/335; build + build:single; Ayarlar tarayıcı testleri 12/12; telefon: disleksi ön ayarı → font opendyslexic, tema sepia, cetvel açık, sayfa hatası yok; Playwright tam koşu 70: 387/387.
+- Sonraki: B239 kalan genel eylemleri (Keşfet: ex-/cu-/multi-/amt) src/actions/explore.js'e ayırma; ardından sürüm beta.65 (B237–B239).

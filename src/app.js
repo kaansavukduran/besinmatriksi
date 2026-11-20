@@ -10,10 +10,10 @@ import { renderRecipeTotal } from './recipe-total-view.js';
 import { renderMatrix, basicCard, BASIC_KEYS, macroPie } from './matrix.js';
 import { createPrintController } from './print.js';
 import { FONTS, fontStack, ensureFont, headingFont, ensureHeadingFont } from './fonts.js';
-import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, mergeImport, saveImportState, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles, loadCollections, loadRecent, saveRecent, pushRecent } from './store.js';
+import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, mergeImport, saveImportState, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, loadCollections, loadRecent, saveRecent, pushRecent } from './store.js';
 import { esc, fmtNum, fmtAmount, clamp, download, uid, configureFormatting, norm, pctText, fmtPct } from './util.js';
 import { matrixCSV } from './export.js';
-import { contrastRatio, accentText, exportTheme, parseTheme, COLOR_LABELS, validColor, themeTextContrast } from './theme.js';
+import { contrastRatio, accentText, parseTheme, COLOR_LABELS, validColor, themeTextContrast } from './theme.js';
 import { renderThemeEditor, themePreview } from './theme-editor.js';
 import { focusSelector, syncModalFocus, trapModalTab } from './accessibility.js';
 import { recentSearches } from './search.js';
@@ -40,7 +40,7 @@ import { routeOf, parseRoute } from './route.js';
 import { withSettingsToc } from './settings-toc.js';
 import { compareChart, compareAminoChart } from './compare-chart.js';
 import { brandMark, plateIllustration } from './kitchen-art.js';
-import { referenceFor, normalizeSettings, resetSettingGroup, exportSettings, parseSettings, MATRIX_SECTIONS, moveSection, SHORTCUT_ACTIONS, shortcutKey, migrateFontV2, migrateAionOff, applyProfileSettings } from './settings.js';
+import { referenceFor, normalizeSettings, parseSettings, MATRIX_SECTIONS, SHORTCUT_ACTIONS, shortcutKey, migrateFontV2, migrateAionOff } from './settings.js';
 import { S } from './state.js';
 import { catIcon, foodIcon, persona, isPhone } from './views/common.js';
 import { PRESETS, MAX_G, amountControls, perServing, miniAmount } from './views/amount.js';
@@ -50,6 +50,7 @@ import { renderSettings, renderAbout, RELEASES_URL } from './views/settings.js';
 import { catName, foodCategoryPath, foodButton, quickFacts, SORTS, sortFoods, sortBar, extButton, categoryNav, refButton, collectionList, customButton, knownFood, recentRow, LIST_CHUNK, listLimit, moreButton, foodList, fullCatalogSearch, formChips, similarRow, renderExplore, welcome, visibleCurated, catalogHeading, matrixForExplore } from './views/explore.js';
 import { recipeResult, recipeTotalModel, selectedRecipeResult, renderRecipe, renderRecipeSummary, renderRecipeGaps } from './views/recipe.js';
 import { DAY_ACTIONS, bindDayActions } from './actions/day.js';
+import { SETTINGS_ACTIONS, bindSettingsActions } from './actions/settings.js';
 import { PICK_ACTIONS, bindPickActions } from './actions/pick.js';
 import { RECIPE_ACTIONS, bindRecipeActions } from './actions/recipe.js';
 import { COLLECTION_ACTIONS, bindCollectionActions, persistCollections } from './actions/collections.js';
@@ -455,12 +456,6 @@ function addToCompare(ref, g) {
   return true;
 }
 
-const PRESETS_UI = {
-  dyslexia: { font: 'opendyslexic', fontSize: 19, lineHeight: 1.8, letterSpacing: 0.05, wordSpacing: 0.16, theme: 'sepia', ruler: true, density: 'comfy' },
-  lowvision: { font: 'atkinson', fontSize: 22, lineHeight: 1.6, theme: 'contrast', bold: true, density: 'large' },
-  calm: { theme: 'light', emoji: false, reduceMotion: true, accent: '#3557d6', font: 'inter', showSd: false, showAlt: false },
-  cute: { theme: 'pastel', font: 'nunito', emoji: true, radius: 20, accent: 'auto' },
-};
 
 function persistPersonal() {
   if (S.personalReadError || !savePersonal(S.personal)) { S.personal = structuredClone(lastSavedPersonal); toast(tr(S.personalReadError ? 'corruptPersonal' : 'storageError')); return false; }
@@ -502,6 +497,7 @@ async function onClick(e) {
   if (!b) return;
   const a = b.dataset.action;
   if (!document.querySelector('.modal')) modalOpener = focusSelector(b);
+  if (Object.hasOwn(SETTINGS_ACTIONS, a)) return SETTINGS_ACTIONS[a](b); // B238: src/actions/settings.js
   if (Object.hasOwn(PICK_ACTIONS, a)) return PICK_ACTIONS[a](b); // B236: src/actions/pick.js
   if (Object.hasOwn(RECIPE_ACTIONS, a)) return RECIPE_ACTIONS[a](b); // B235: src/actions/recipe.js
   if (Object.hasOwn(COLLECTION_ACTIONS, a)) return COLLECTION_ACTIONS[a](b); // B232: src/actions/collections.js
@@ -576,77 +572,7 @@ async function onClick(e) {
       const pre = b.dataset.prefix; if (S.listLimit?.[pre]) S.listLimit[pre].n += 180;
       const y = window.scrollY; render(); window.scrollTo(0, y); break;
     }
-    // ayarlar
-    case 'theme-apply': setSetting('accent', 'auto'); setSetting('theme', 'custom'); render(); break;
-    case 'theme-color-open': S.themeEditor = { key: b.dataset.key, color: S.settings.customTheme[b.dataset.key] }; render(); break;
-    case 'theme-color-close': S.themeEditor = null; render(); break;
-    case 'theme-color-preset': S.themeEditor.color = b.dataset.color; render(); break;
-    case 'theme-color-save': {
-      const input = $('#theme-color-hex');
-      if (!validColor(input.value)) { input.setAttribute('aria-invalid', 'true'); input.reportValidity(); input.focus(); break; }
-      if (S.themeEditor.key === 'accent' && S.settings.theme === 'custom') setSetting('accent', 'auto');
-      setSetting('customTheme', { ...S.settings.customTheme, [S.themeEditor.key]: input.value });
-      S.themeEditor = null; render(); break;
-    }
-    case 'theme-export': download('besin-matriksi-tema.json', exportTheme(S.settings.customTheme)); break;
-    case 'target-add': {
-      const key = $('#target-nutrient')?.value, value = Number($('#target-new-value')?.value);
-      if (!key || !Number.isFinite(value) || value <= 0) { toast(L("Bir bileşen ve sıfırdan büyük hedef miktarı gir")); break; }
-      setSetting('targets', { ...S.settings.targets, [key]: value }); render(); break;
-    }
-    case 'target-remove': { const targets = { ...S.settings.targets }; delete targets[b.dataset.key]; setSetting('targets', targets); render(); break; }
     case 'open-file': document.getElementById(b.dataset.id)?.click(); break;
-    case 'profile-save': {
-      const name = $('#profile-name')?.value.trim();
-      if (!name) { toast(L("Bir profil adı gir")); break; }
-      if (S.profiles.length >= 12) { toast(L("En fazla 12 profil kaydedilebilir")); break; }
-      const next = [...S.profiles, { id: uid(), name: name.slice(0, 40), settings: normalizeSettings(S.settings) }];
-      if (!saveProfiles(next)) { toast(L("Profil cihaz depolamasına yazılamadı")); break; }
-      S.profiles = next; render(); toast(L("Görünüm kaydedildi")); break;
-    }
-    case 'profile-apply': {
-      const p = S.profiles.find(p => p.id === b.dataset.id);
-      if (p) {
-        const next = applyProfileSettings(S.settings, p.settings);
-        if (!saveSettings(next)) { toast(L("Kaydedilemedi: cihaz depolaması kullanılamıyor")); break; }
-        S.settings = next; applySettings(); if (S.settings.showExt) requestExtCatalog(); render(); toast(L("Görünüm: {n}", { n: p.name }));
-      } break;
-    }
-    case 'profile-update': {
-      const p = S.profiles.find(p => p.id === b.dataset.id);
-      if (p && await uiDialog(L("“{n}” geçerli görünümle güncellensin mi?", { n: p.name }), { ok: L("Güncelle"), cancel: L("Vazgeç") })) {
-        const next = S.profiles.map(x => x.id === p.id ? { ...x, settings: normalizeSettings(S.settings) } : x);
-        if (!saveProfiles(next)) { toast(L("Profil cihaz depolamasına yazılamadı")); break; }
-        S.profiles = next; toast(L("Profil güncellendi"));
-      } break;
-    }
-    case 'profile-delete': {
-      const p = S.profiles.find(p => p.id === b.dataset.id);
-      if (p && await uiDialog(L("“{n}” görünüm profili silinsin mi?", { n: p.name }), { ok: L("Sil"), cancel: L("Vazgeç") })) {
-        const next = S.profiles.filter(x => x.id !== p.id);
-        if (!saveProfiles(next)) { toast(L("Profil cihaz depolamasına yazılamadı")); break; }
-        S.profiles = next; render();
-      } break;
-    }
-    case 'section-move': S.settings = moveSection(S.settings, b.dataset.id, Number(b.dataset.d)); saveSettings(S.settings); render(); break;
-    case 'unpin': setSetting('pinnedNutrients', S.settings.pinnedNutrients.filter(k => k !== b.dataset.key)); render(); break;
-    case 'reset-group': S.settings = resetSettingGroup(S.settings, b.dataset.group); saveSettings(S.settings); applySettings(); render(); toast(L("Bölüm ayarları sıfırlandı")); break;
-    case 'settings-export': download('besin-matriksi-ayarlar.json', exportSettings(S.settings)); break;
-    case 'set': setSetting(b.dataset.k, JSON.parse(b.dataset.v)); render(); break;
-    case 'font': setSetting('font', b.dataset.v); render(); break;
-    case 'setstep': {
-      const k = b.dataset.k, st = Number(b.dataset.d);
-      const v = clamp(Math.round((S.settings[k] + st) * 1000) / 1000, Number(b.dataset.min), Number(b.dataset.max));
-      setSetting(k, v); render(); break;
-    }
-    case 'preset': {
-      if (b.dataset.p === 'reset') {
-        // Tüm görünüm/matriks ayarları ve hedefler sıfırlanır: geri alınamaz, onay ister (B163)
-        if (!(await uiDialog(L("Tüm ayarlar varsayılana dönsün mü? Kişisel hedefler ve görünüm seçimleri sıfırlanır; tarif ve günlük kayıtları korunur."), { ok: L("Varsayılana dön"), cancel: L("Vazgeç") }))) break;
-        S.settings = { ...DEFAULT_SETTINGS };
-      } else Object.assign(S.settings, PRESETS_UI[b.dataset.p]);
-      saveSettings(S.settings); applySettings(); render(); toast(L("Ön ayar uygulandı")); break;
-    }
     case 'micro-source': {
       const key = b.dataset.key; if (!NUTRIENT_BY_KEY[key]) break;
       if (S.tab === 'tarif') { S.recipeSource = key; S.recipeSourcesOpen = true; }
@@ -848,6 +774,7 @@ export function start() {
   bindCollectionActions({ render, uiDialog }); // B232
   bindRecipeActions({ render, uiDialog, setSetting }); // B235
   bindPickActions({ render, selectFood, addToRecipe, addToCompare }); // B236
+  bindSettingsActions({ render, uiDialog, setSetting, applySettings }); // B238
   printController = createPrintController(document, window);
   applySettings();
   if (S.settings.showExt || S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) requestExtCatalog();
