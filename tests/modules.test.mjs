@@ -49,3 +49,15 @@ test('B230 Günlük eylemleri ayrı modülde ve app.js ile çakışmaz', () => {
   assert.match(app, /Object\.hasOwn\(DAY_ACTIONS, a\)/);
   assert.match(app, /bindDayActions\(\{ render, persistPersonal, uiDialog, selectFood, setSetting \}\)/);
 });
+
+// B232: koleksiyon eylemleri src/actions/collections.js'te
+test('B232 koleksiyon eylemleri ayrı modülde ve app.js ile çakışmaz', () => {
+  const col = fs.readFileSync(new URL('../src/actions/collections.js', import.meta.url), 'utf8');
+  const app = fs.readFileSync(new URL('../src/app.js', import.meta.url), 'utf8');
+  const keys = [...col.matchAll(/^  '([a-z0-9-]+)': async \(b\) =>/gm)].map((m) => m[1]);
+  assert.deepEqual(keys, ['col-pick', 'col-pick-close', 'col-toggle', 'col-create-add', 'col-new', 'col-sub', 'col-rename', 'col-delete', 'col-move', 'col-remove-item']);
+  for (const k of keys) assert.ok(!app.includes(`case '${k}'`), `app.js hâlâ ${k} içeriyor`);
+  assert.match(app, /Object\.hasOwn\(COLLECTION_ACTIONS, a\)/);
+  assert.match(app, /bindCollectionActions\(\{ render, uiDialog \}\)/);
+  assert.ok(!/function (collectionError|persistCollections)\b/.test(app));
+});

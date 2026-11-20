@@ -1331,3 +1331,10 @@
 - Eş anlamlılar: mujaddara, khichdi/kitchari, gallopinto, lobiyo, ezme, barbunya pilaki. İngilizce adlar, notlar, simge ve kendine özgü çizim (mücedra çizimi natto ile aynı çıkınca B080 testi yakaladı; renk değişti). Katalog 845 besin.
 - Kanıt: `npm run data`; `npm test` 321/321 (B231 veri testi: diyet, tahmin notu, lif aralığı, lobio alerjeni); tarayıcı: yabancı adla arama world-foods testine eklendi, 6/6; telefon ekran görüntüsü hatasız; Playwright tam koşu 63: 385/385.
 - Sonraki: B232 koleksiyon eylemlerini src/actions/collections.js'e ayırma + sürüm beta.63.
+
+## B232 · 2026-11-20 · Koleksiyon eylemleri ayrıldı; sürüm 1.1.2-beta.63
+- `src/actions/collections.js`: koleksiyon seçici, ekle/çıkar, yeni/alt kategori, yeniden adlandır, sil, sırala, öğe çıkar (10 eylem) + `collectionError` ve `persistCollections` (app.js'teki `onChange` taşıma akışı bunu içe aktarır). app.js 1.003 → 953 satır.
+- Test: eylem listesi sabit, app.js'te ikinci tanım yok, yardımcılar yalnız modülde.
+- Kanıt: `npm test` 324/324; build + build:single tamam; koleksiyon tarayıcı testleri (B054, B055) 4/4; Playwright tam koşu 64: 384 geçti, 1 düştü: `app.spec.mjs:258` EFSA paneli (telefon) `details[open]` beklentisi. Bu kodla ilgisiz (Ayarlar/EFSA; B232 dokunmadı); tek başına `--repeat-each 4` 8/8 geçti. Yük altında aralıklı (FLAKY) olarak kaydedildi; CI'da izlenecek.
+- Sürüm 1.1.2-beta.63 (B230–B232); notlar ve lisans bildirimi yenilendi.
+- Sonraki: B233 beta.63 doğrulama; EFSA testindeki aralıklı düşmenin kökü (yeniden çizim sonrası details açık durumu); yeni yemek turu.

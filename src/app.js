@@ -10,7 +10,7 @@ import { renderRecipeTotal } from './recipe-total-view.js';
 import { renderMatrix, basicCard, BASIC_KEYS, macroPie } from './matrix.js';
 import { createPrintController } from './print.js';
 import { FONTS, fontStack, ensureFont, headingFont, ensureHeadingFont } from './fonts.js';
-import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, mergeImport, saveImportState, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles, loadCollections, saveCollections, loadRecent, saveRecent, pushRecent } from './store.js';
+import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, mergeImport, saveImportState, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, saveProfiles, loadCollections, loadRecent, saveRecent, pushRecent } from './store.js';
 import { esc, fmtNum, fmtAmount, clamp, download, uid, configureFormatting, norm, pctText, fmtPct } from './util.js';
 import { matrixCSV } from './export.js';
 import { contrastRatio, accentText, exportTheme, parseTheme, COLOR_LABELS, validColor, themeTextContrast } from './theme.js';
@@ -27,13 +27,7 @@ import { renderPersonal, renderEnergy, renderDaySources } from './personal-view.
 import { nutrientLabel } from './i18n-nutrients.js';
 import { getLanguage } from './i18n.js';
 import { SLIDER_STEPS, sliderToGrams, gramsToSlider, MAX_GRAMS, kgLabel } from './amount-scale.js';
-import { normalizeCollections, createCollection, renameCollection, deleteCollection, toggleRef, removeRef, collectionTree, collectionRefs, hasRef, moveRef, moveIndex, transferRef, MAX_COLLECTIONS, MAX_ITEMS } from './collections.js';
-// B165: koleksiyon hatası nedenine göre bildirilir (sınır ≠ boş ad)
-function collectionError(err) {
-  if (err?.message === 'too-many') return L("En fazla {m} koleksiyon olabilir; yer açmak için birini sil.", { m: MAX_COLLECTIONS });
-  if (err?.message === 'bad-parent') return L("Alt kategori yalnız bir üst koleksiyonun altına eklenebilir.");
-  return L("Koleksiyon için bir ad yaz");
-}
+import { normalizeCollections, collectionTree, collectionRefs, hasRef, moveIndex, transferRef, MAX_ITEMS } from './collections.js';
 import { mountAion, configureAion, aionMood, aionPlay, aionSay } from './aion.js';
 import { greetingFor, newlyReached, celebrationText } from './aion-moments.js';
 import { dailyRefs } from './daily-ref.js';
@@ -56,6 +50,7 @@ import { renderSettings, renderAbout, RELEASES_URL } from './views/settings.js';
 import { catName, foodCategoryPath, foodButton, quickFacts, SORTS, sortFoods, sortBar, extButton, categoryNav, refButton, collectionList, customButton, knownFood, recentRow, LIST_CHUNK, listLimit, moreButton, foodList, fullCatalogSearch, formChips, similarRow, renderExplore, welcome, visibleCurated, catalogHeading, matrixForExplore } from './views/explore.js';
 import { recipeResult, recipeTotalModel, selectedRecipeResult, renderRecipe, renderRecipeSummary, renderRecipeGaps } from './views/recipe.js';
 import { DAY_ACTIONS, bindDayActions } from './actions/day.js';
+import { COLLECTION_ACTIONS, bindCollectionActions, persistCollections } from './actions/collections.js';
 // B215: en son içe aktarılır; durum, diğer modüller değerlendirildikten sonra kurulur (eski sıra)
 
 
@@ -162,7 +157,6 @@ function renderColPicker() {
       <div class="presets end"><button class="btn" data-action="col-pick-close">${L("Bitti")}</button></div>
     </div></div>`;
 }
-function persistCollections() { if (!saveCollections(S.collections)) toast(L("Kaydedilemedi: cihaz depolaması kullanılamıyor")); }
 
 // ---------------------------------------------------------------- KENDİ BESİNİM (etiket girişi)
 const CUSTOM_FIELDS = [
@@ -493,6 +487,7 @@ async function onClick(e) {
   if (!b) return;
   const a = b.dataset.action;
   if (!document.querySelector('.modal')) modalOpener = focusSelector(b);
+  if (Object.hasOwn(COLLECTION_ACTIONS, a)) return COLLECTION_ACTIONS[a](b); // B232: src/actions/collections.js
   if (Object.hasOwn(DAY_ACTIONS, a)) return DAY_ACTIONS[a](b); // B230: Günlük + Geçmiş eylemleri src/actions/day.js
   switch (a) {
     case 'settings-jump': { const el = document.getElementById(b.dataset.id); if (el) { el.scrollIntoView({ block: 'start' }); el.querySelector('h2')?.focus({ preventScroll: true }); } break; }
@@ -532,53 +527,7 @@ async function onClick(e) {
       toast(L("{n} besin → {r} (her biri 100 g)", { n, r: activeRecipe().name })); aionPlay('celebrate');
       S.multi = false; S.picked = []; render(); break;
     }
-    case 'col-pick': S.colPicker = true; render(); break;
-    case 'col-pick-close': S.colPicker = false; render(); break;
-    case 'col-toggle': {
-      const before = S.collections.find((c) => c.id === b.dataset.id);
-      const added = before && !hasRef(before, S.sel);
-      if (added && before.items.length >= MAX_ITEMS) { toast(L("“{c}” dolu: bir koleksiyonda en fazla {m} besin olabilir.", { c: before.name, m: MAX_ITEMS })); break; }
-      S.collections = toggleRef(S.collections, b.dataset.id, S.sel); persistCollections(); render();
-      if (added) aionPlay('celebrate');
-      break;
-    }
-    case 'col-create-add': {
-      const name = $('#col-new-name')?.value || '';
-      try { const r = createCollection(S.collections, name); S.collections = toggleRef(r.list, r.created.id, S.sel); persistCollections(); render(); aionPlay('celebrate'); }
-      catch (err) { toast(collectionError(err)); }
-      break;
-    }
-    case 'col-new': {
-      const name = await uiDialog(L("Yeni koleksiyonun adı:"), { input: '', line: true, ok: L("Oluştur"), cancel: L("Vazgeç") });
-      if (name == null) break;
-      try { const r = createCollection(S.collections, name); S.collections = r.list; S.cat = 'col:' + r.created.id; persistCollections(); render(); }
-      catch (err) { toast(collectionError(err)); }
-      break;
-    }
-    case 'col-sub': {
-      const name = await uiDialog(L("Alt kategorinin adı:"), { input: '', line: true, ok: L("Oluştur"), cancel: L("Vazgeç") });
-      if (name == null) break;
-      try { const r = createCollection(S.collections, name, b.dataset.id); S.collections = r.list; S.cat = 'col:' + r.created.id; persistCollections(); render(); }
-      catch (err) { toast(collectionError(err)); }
-      break;
-    }
-    case 'col-rename': {
-      const c = S.collections.find((x) => x.id === b.dataset.id);
-      const name = c && await uiDialog(L("Yeni ad:"), { input: c.name, line: true, ok: L("Kaydet"), cancel: L("Vazgeç") });
-      if (name) { S.collections = renameCollection(S.collections, c.id, name); persistCollections(); render(); }
-      break;
-    }
-    case 'col-delete': {
-      const c = S.collections.find((x) => x.id === b.dataset.id);
-      if (!c) break;
-      const subs = S.collections.filter((x) => x.parent === c.id).length;
-      const msg = subs ? L("“{n}” ve {s} alt kategorisi silinsin mi? Besinlerin kendisi silinmez.", { n: c.name, s: subs }) : L("“{n}” silinsin mi? Besinlerin kendisi silinmez.", { n: c.name });
-      if (!(await uiDialog(msg, { ok: L("Sil"), cancel: L("Vazgeç") }))) break;
-      S.collections = deleteCollection(S.collections, c.id); S.cat = null; persistCollections(); render(); break;
-    }
-    case 'col-move': S.collections = moveRef(S.collections, b.dataset.id, +b.dataset.i, +b.dataset.d); persistCollections(); render(); break;
     case 'rc-move': { const rc = activeRecipe(); const i = rc.items.findIndex((x) => x.id === b.dataset.id); rc.items = moveIndex(rc.items, i, +b.dataset.d); persistRecipes(); render(); break; }
-    case 'col-remove-item': S.collections = removeRef(S.collections, b.dataset.id, JSON.parse(b.dataset.ref)); persistCollections(); render(); break;
     case 'pk-pick-custom': selectFood('pk', { t: 'u', id: b.dataset.cid }); break;
     case 'cu-new': S.customEdit = { name: b.dataset.name || '', liquid: false, portion: null, v: {} }; render(); break;
     case 'cu-edit': { const f = customFoods().find((x) => x.id === S.sel?.id); if (f) { S.customEdit = JSON.parse(JSON.stringify(f)); render(); } break; }
@@ -932,6 +881,7 @@ function onChange(e) {
 export function start() {
   setRenderer(render); // B223: ui.js (geniş katalog yüklenince) yeniden çizer
   bindDayActions({ render, persistPersonal, uiDialog, selectFood, setSetting }); // B230
+  bindCollectionActions({ render, uiDialog }); // B232
   printController = createPrintController(document, window);
   applySettings();
   if (S.settings.showExt || S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) requestExtCatalog();
