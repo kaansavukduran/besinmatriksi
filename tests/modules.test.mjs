@@ -38,3 +38,14 @@ test('B218 görünüm modülleri: her çağrılan ad içe aktarılmış ya da ta
     assert.deepEqual([...new Set([...missing, ...consts])], [], file);
   }
 });
+
+// B230: Günlük + Geçmiş tıklama eylemleri src/actions/day.js'te; app.js'te aynı eylemin ikinci bir "case"i kalmaz
+test('B230 Günlük eylemleri ayrı modülde ve app.js ile çakışmaz', () => {
+  const day = fs.readFileSync(new URL('../src/actions/day.js', import.meta.url), 'utf8');
+  const app = fs.readFileSync(new URL('../src/app.js', import.meta.url), 'utf8');
+  const keys = [...day.matchAll(/^  '([a-z0-9-]+)': async \(b\) =>/gm)].map((m) => m[1]);
+  for (const k of ['personal-goto-day', 'personal-save', 'personal-undo', 'personal-copy-day', 'rc-to-day', 'ex-add-day', 'hist-mode', 'hist-month', 'hist-csv', 'hist-add', 'hist-open', 'week-key']) assert.ok(keys.includes(k), k);
+  for (const k of keys) assert.ok(!app.includes(`case '${k}'`), `app.js hâlâ ${k} içeriyor`);
+  assert.match(app, /Object\.hasOwn\(DAY_ACTIONS, a\)/);
+  assert.match(app, /bindDayActions\(\{ render, persistPersonal, uiDialog, selectFood, setSetting \}\)/);
+});

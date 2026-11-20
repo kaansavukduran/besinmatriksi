@@ -1318,3 +1318,10 @@
 - Eksik içe aktarmalar tanımsız ad testiyle tek seferde bulundu (data, catalog-tree, diet, collections, similar, matrix, calc…); hiçbir modül app.js'ten içe aktarmıyor.
 - Kanıt: `npm test` 317/317 (tanımsız ad + içe/dışa aktarma denetimi 61 dosya); Keşfet testleri 15/15; Playwright tam koşu 61: 385/385.
 - Sürüm 1.1.2-beta.62 (B228–B229).
+
+## B230 · 2026-11-20 · beta.62 doğrulandı; Günlük eylemleri ayrıldı
+- beta.62: release.yml koşusu 44637502821 başarılı; `v1.1.2-beta.62` ön sürüm, 23 varlık (Windows/macOS/Linux/Android/iOS-imzasız, tek dosya ve hafif HTML, PWA, kaynak, SHA256SUMS). Test iş akışı 266 (Chromium + Tarayıcı uyumu) yeşil. Pages 115 yine GitHub tarafında "Found 0 artifact(s)"; yalnız başarısız iş yeniden çalıştırıldı.
+- `src/actions/day.js`: Günlük ve Geçmiş'in 20 tıklama eylemi (gün seç, tarif↔gün, profil kaydet/temizle, tüketildi, sil, günü kopyala, geri al, EFSA, dışa aktar, geçmiş aralık/ay/CSV/＋Bugüne/aç, grafik değeri) tek tabloda. app.js yardımcıları `bindDayActions` ile verilir; modül app.js'ten içe aktarmaz. app.js 1.089 → 1.003 satır; kullanılmayan 8 içe aktarma kaldırıldı.
+- Tanımsız ad + içe/dışa aktarma testi `src/actions/` klasörünü de tarar; yeni test eylemlerin app.js'te ikinci kez tanımlanmadığını denetler.
+- Kanıt: `npm test` 320/320; `npm run build && npm run build:single` tamam; Günlük tarayıcı testleri 28/28 ve temizlikten sonra 20/20; Playwright tam koşu 62: 385/385.
+- Sonraki: B231 yeni vegan yemek turu (acılı ezme, mücedra, kiçri, gallo pinto, lobio, zeytinyağlı barbunya).

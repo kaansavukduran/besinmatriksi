@@ -22,7 +22,7 @@ import { renderRecipeSources, renderRecipeSourceRows } from './recipe-sources.js
 import { renderEfsaSettings } from './efsa-ui.js';
 import { t as tr, setLanguage, preferredLanguage, L } from './i18n.js';
 import { renderAppearance, settingSlider } from './appearance.js';
-import { energyEstimate, recipeToEntries, dayToRecipeItems, copyDayEntries, loadPersonal, savePersonal, emptyProfile, normalizeProfile, mergePersonalFoods, localDay, validDay, dayResult, PERSONAL_KEY } from './personal.js';
+import { energyEstimate, loadPersonal, savePersonal, mergePersonalFoods, localDay, validDay, dayResult, PERSONAL_KEY } from './personal.js';
 import { renderPersonal, renderEnergy, renderDaySources } from './personal-view.js';
 import { nutrientLabel } from './i18n-nutrients.js';
 import { getLanguage } from './i18n.js';
@@ -55,8 +55,8 @@ import { setRenderer, toast, requestExtCatalog, catalogPending, activeRecipe, re
 import { renderSettings, renderAbout, RELEASES_URL } from './views/settings.js';
 import { catName, foodCategoryPath, foodButton, quickFacts, SORTS, sortFoods, sortBar, extButton, categoryNav, refButton, collectionList, customButton, knownFood, recentRow, LIST_CHUNK, listLimit, moreButton, foodList, fullCatalogSearch, formChips, similarRow, renderExplore, welcome, visibleCurated, catalogHeading, matrixForExplore } from './views/explore.js';
 import { recipeResult, recipeTotalModel, selectedRecipeResult, renderRecipe, renderRecipeSummary, renderRecipeGaps } from './views/recipe.js';
-import { shiftMonth, historyCSV } from './history.js';
-import { historyRange } from './history-view.js'; // B215: en son içe aktarılır; durum, diğer modüller değerlendirildikten sonra kurulur (eski sıra)
+import { DAY_ACTIONS, bindDayActions } from './actions/day.js';
+// B215: en son içe aktarılır; durum, diğer modüller değerlendirildikten sonra kurulur (eski sıra)
 
 
 let lastSavedPersonal = structuredClone(S.personal); // B215: durum src/state.js'te
@@ -493,80 +493,10 @@ async function onClick(e) {
   if (!b) return;
   const a = b.dataset.action;
   if (!document.querySelector('.modal')) modalOpener = focusSelector(b);
+  if (Object.hasOwn(DAY_ACTIONS, a)) return DAY_ACTIONS[a](b); // B230: Günlük + Geçmiş eylemleri src/actions/day.js
   switch (a) {
     case 'settings-jump': { const el = document.getElementById(b.dataset.id); if (el) { el.scrollIntoView({ block: 'start' }); el.querySelector('h2')?.focus({ preventScroll: true }); } break; }
     case 'aion-demo': aionPlay(b.dataset.anim || 'celebrate'); aionSay(tr('aionHello'), 4000); break;
-    case 'personal-goto-day': if (validDay(b.dataset.day)) { const fromCal = !!b.closest('.cal'); S.personalDay = b.dataset.day; S.personalDayAuto = b.dataset.day === localDay(); render(); if (fromCal) { const h = document.querySelector('#personal-day'); h?.closest('.card')?.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); h?.focus({ preventScroll: true }); } } break;
-    case 'personal-to-recipe': {
-      const { items, capped } = dayToRecipeItems(S.personal.entries, S.personalDay, { consumedOnly: S.consumedOnly, maxG: MAX_G });
-      if (!items.length) break;
-      const r = newRecipe(L("Günlük {d}", { d: S.personalDay })); r.items = items;
-      S.recipeDaily = false; S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); S.tab = 'tarif'; render();
-      toast(L("{n} malzemeli tarif oluşturuldu", { n: items.length }) + (capped ? ' · ' + L("{n} besin 1 kg sınırında kesildi", { n: capped }) : ''));
-      aionPlay('celebrate'); break;
-    }
-    case 'rc-to-day': {
-      const rc = activeRecipe(); if (!rc.items.length) break;
-      const ans = await uiDialog(L("“{r}” tarifinden kaç porsiyon? (Tarif {s} porsiyon; ölçü bugünün günlüğüne malzeme malzeme eklenir.)", { r: rc.name, s: rc.servings }), { input: '1', line: true, ok: L("Günlüğe ekle"), cancel: L("Vazgeç") });
-      if (ans == null) break;
-      const portions = Number(String(ans).replace(',', '.'));
-      if (!(portions > 0 && portions <= 50)) { toast(L("Porsiyon 0'dan büyük ve en fazla 50 olmalı.")); break; }
-      const day = localDay();
-      const { entries, skipped } = recipeToEntries(rc.items, portions, rc.servings, day, (ref) => !!resolve(ref));
-      if (!entries.length) { toast(L("Eklenecek malzeme yok.")); break; }
-      S.personal.entries.push(...entries); S.personal.milestones.food = true; if (!persistPersonal()) break;
-      toast(L("{n} kayıt bugünün günlüğüne eklendi", { n: entries.length }) + (skipped ? ' · ' + L("{n} malzeme atlandı (bulunamadı veya 1 g altı)", { n: skipped }) : ''));
-      aionPlay('celebrate'); break;
-    }
-    case 'ex-add-day': {
-      if (!S.sel || !resolve(S.sel)) break;
-      if (S.personalDayAuto) S.personalDay = localDay(); // uygulama gece yarısını açık geçirdiyse bugüne yaz
-      S.personal.entries.push({ id: uid(), day: S.personalDay, ref: { ...S.sel }, g: S.amount, consumed: false });
-      S.personal.milestones.food = true; if (!persistPersonal()) break; toast(tr('dayAdded')); aionPlay('celebrate'); break;
-    }
-    case 'personal-save': {
-      if ([...document.querySelectorAll('[data-personal-field]')].some(el => !el.checkValidity())) { toast(tr('profile.invalid')); break; }
-      try {
-        S.personal.profile = normalizeProfile(S.personalDraft);
-        if (S.personal.profile.age && S.personal.profile.height && S.personal.profile.weight && S.personal.profile.sex !== 'unspecified') S.personal.milestones.profile = true;
-        const saved = persistPersonal(); render(); if (saved) $('#personal-save-status').textContent = tr('saved');
-      } catch { toast(tr('profile.invalid')); }
-      break;
-    }
-    case 'personal-clear': {
-      if (!await uiDialog(tr('confirmClear'), { ok: tr('clearProfile'), cancel: tr('cancel') })) break;
-      S.personalUndo = { type: 'profile', profile: structuredClone(S.personal.profile) };
-      S.personal.profile = emptyProfile(); S.personalDraft = emptyProfile(); persistPersonal(); render(); break;
-    }
-    case 'personal-mode': S.consumedOnly = b.dataset.mode === 'consumed'; render(); break;
-    case 'personal-consumed': { const entry = S.personal.entries.find(e => e.id === b.dataset.id); if (entry) entry.consumed = !entry.consumed; persistPersonal(); render(); break; }
-    case 'personal-remove': { const entry = S.personal.entries.find(e => e.id === b.dataset.id); if (entry) { S.personalUndo = { type: 'entry', entry: { ...entry } }; S.personal.entries = S.personal.entries.filter(e => e.id !== entry.id); persistPersonal(); render(); } break; }
-    // B220: geçmiş bir günü bugüne kopyala (planlandı olarak); geri alınabilir
-    case 'personal-copy-day': {
-      const today = localDay(), copied = copyDayEntries(S.personal.entries, S.personalDay, today, { consumedOnly: S.consumedOnly });
-      if (!copied.length) break;
-      S.personal.entries.push(...copied); S.personalUndo = { type: 'copy', ids: copied.map((e) => e.id) };
-      if (!persistPersonal()) break;
-      S.personalDay = today; S.personalDayAuto = true; render(); window.scrollTo(0, 0);
-      toast(L("{n} kayıt bugüne plan olarak eklendi; yedikçe “Tüketildi” diye işaretle.", { n: copied.length })); break;
-    }
-    case 'personal-undo': {
-      const undo = S.personalUndo;
-      if (undo?.type === 'entry' && !S.personal.entries.some(e => e.id === undo.entry.id)) S.personal.entries.push(undo.entry);
-      if (undo?.type === 'profile') { S.personal.profile = undo.profile; S.personalDraft = structuredClone(undo.profile); }
-      if (undo?.type === 'copy') { const ids = new Set(undo.ids); S.personal.entries = S.personal.entries.filter((e) => !ids.has(e.id)); }
-      S.personalUndo = null; persistPersonal(); render(); break;
-    }
-    case 'personal-efsa': {
-      const p = S.personal.profile;
-      if (!(p.age >= 1 && p.age <= 99) || !['male', 'female'].includes(p.sex)) { toast(tr('saveProfileFirst')); break; }
-      setSetting('referenceMode', 'efsa'); setSetting('efsaAge', p.age); setSetting('efsaSex', p.sex); setSetting('efsaPhytate', ''); setSetting('efsaIronGroup', 'unspecified'); render(); break;
-    }
-    case 'personal-export': {
-      const refs = new Set(S.personal.entries.filter(e => e.ref.t === 'u').map(e => e.ref.id));
-      download('besin-matriksi-personal.json', JSON.stringify({ app: 'besin-matriksi-personal', version: 1, personal: S.personal, custom: customFoods().filter(f => refs.has(f.id)).map(normalizeCustom) }, null, 2)); break;
-    }
-    case 'personal-raw': try { download('besin-matriksi-personal-raw.txt', localStorage.getItem(PERSONAL_KEY) || '', 'text/plain'); } catch { await uiDialog(tr('storageError'), { ok: tr('ok') }); } break;
     case 'setting-reset': if (Object.hasOwn(DEFAULT_SETTINGS, b.dataset.key)) { setSetting(b.dataset.key, DEFAULT_SETTINGS[b.dataset.key]); render(); } break;
     case 'tab':
       // B177: etkin Keşfet sekmesine yeniden dokunmak (telefonda besin ayrıntısındayken) listeye döner; kategori ve arama korunur
@@ -684,23 +614,6 @@ async function onClick(e) {
     // tarif
     case 'rc-new': { const r = newRecipe(L("Tarif {n}", { n: S.recipes.length + 1 })); S.recipeDaily = false; S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); render(); break; }
     // B217: Günlük geçmişi: aralık, ay gezinme, sık yenen besini Keşfet'te aç
-    case 'hist-mode': S.hist = { ...(S.hist || {}), mode: b.dataset.mode }; render(); document.querySelector(`[data-action="hist-mode"][data-mode="${b.dataset.mode}"]`)?.focus(); break;
-    case 'hist-month': { S.hist ||= {}; const cur = S.hist.month || S.personalDay.slice(0, 7); const next = shiftMonth(cur, Number(b.dataset.d)); if (next <= localDay().slice(0, 7)) S.hist.month = next; render(); document.querySelector(`[data-action="hist-month"][data-d="${b.dataset.d}"]`)?.focus(); break; }
-    case 'hist-csv': {
-      const h = S.hist || {}, sum = historyRange(S.personal, S.personalDay, resolve, S.consumedOnly, h);
-      const first = sum.days[0]?.day, last = sum.days.at(-1)?.day;
-      download(`besin-gecmisi-${first}_${last}.csv`, historyCSV(sum.days, resolve, { date: L("Tarih"), entries: L("Kayıt"), energy: L("Enerji (kcal)"), protein: L("Protein (g)"), fiber: L("Lif (g)"), partial: L("Eksik ölçüm (≥)"), foods: L("Besinler") }), 'text/csv;charset=utf-8');
-      break;
-    }
-    case 'hist-add': {
-      const ref = JSON.parse(b.dataset.ref), g = clamp(Number(b.dataset.g) || 100, 1, MAX_G), today = localDay();
-      S.personal.entries.push({ id: uid(), day: today, ref, g, consumed: false });
-      S.personalUndo = { type: 'copy', ids: [S.personal.entries.at(-1).id] };
-      if (!persistPersonal()) break;
-      toast(L("{n} ({g} g) bugüne plan olarak eklendi.", { n: resolve(ref)?.name || '', g: fmtNum(g) })); render(); break;
-    }
-    case 'hist-open': { const ref = JSON.parse(b.dataset.ref); S.tab = 'kesfet'; selectFood('ex', ref); window.scrollTo(0, 0); break; }
-    case 'week-key': S.weekKey = b.dataset.key; render(); document.querySelector(`[data-action="week-key"][data-key="${b.dataset.key}"]`)?.focus(); break;
     case 'rc-daily-total': S.recipeDaily = true; render(); break;
     case 'daily-recipe-basis': setSetting('recipeTotalBasis', b.dataset.b); render(); break;
     case 'rc-open': S.recipeDaily = false; S.activeRecipe = b.dataset.id; render(); break;
@@ -1018,6 +931,7 @@ function onChange(e) {
 
 export function start() {
   setRenderer(render); // B223: ui.js (geniş katalog yüklenince) yeniden çizer
+  bindDayActions({ render, persistPersonal, uiDialog, selectFood, setSetting }); // B230
   printController = createPrintController(document, window);
   applySettings();
   if (S.settings.showExt || S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) requestExtCatalog();

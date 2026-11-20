@@ -46,9 +46,10 @@ function check(file) {
   return [...refs.keys()].filter((n) => !declared.has(n) && !GLOBALS.has(n));
 }
 
-// Tüm uygulama kaynakları (src/*.js + src/views/*.js)
+// Tüm uygulama kaynakları (src/*.js + src/views/*.js + src/actions/*.js)
 const FILES = [...fs.readdirSync(new URL('../src/', import.meta.url)).filter((f) => f.endsWith('.js')),
-  ...fs.readdirSync(new URL('../src/views/', import.meta.url)).filter((f) => f.endsWith('.js')).map((f) => 'views/' + f)];
+  ...fs.readdirSync(new URL('../src/views/', import.meta.url)).filter((f) => f.endsWith('.js')).map((f) => 'views/' + f),
+  ...fs.readdirSync(new URL('../src/actions/', import.meta.url)).filter((f) => f.endsWith('.js')).map((f) => 'actions/' + f)];
 for (const file of FILES) test(`B223 tanımsız ad yok: ${file}`, () => assert.deepEqual(check(file), []));
 
 // B225: içe aktarılan her ad, hedef modülde gerçekten dışa aktarılıyor mu (yoksa tarayıcı modül bağlarken patlar)
