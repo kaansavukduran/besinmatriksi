@@ -563,3 +563,16 @@ test('B243 kızarmış pilav, Tay körisi, rice and peas, pkhali, ajapsandali, a
   // konserve hindistan cevizi sütünde (12118) lif ölçülmemiş → tarif toplamı bilinmiyor, 0 değil
   for (const id of ['tay_sebze_korisi', 'rice_and_peas']) assert.equal(by(id).forms[0].v.fiber, undefined, id);
 });
+
+test('B244 zaru soba, ginisang monggo, arroz rojo, frijoles de la olla, kabak tatlısı, kayısı hoşafı: vegan ve tahmin etiketli', () => {
+  const by = (id) => DB.foods.find((f) => f.id === id);
+  for (const id of ['zaru_soba', 'ginisang_monggo', 'arroz_rojo', 'frijoles_de_la_olla', 'kabak_tatlisi', 'kayisi_hosafi']) {
+    const f = by(id);
+    assert.ok(f, id);
+    assert.equal(f.dietary.kind, 'plant', id); // şeker (1900) ve kuru meyve tarifleri de bitkisel
+    assert.ok(!f.animal, id);
+    assert.match(f.note, /tahmin/, id);
+  }
+  assert.deepEqual(by('zaru_soba').allergens, ['gluten', 'soya']);
+  assert.deepEqual(by('kabak_tatlisi').allergens, ['sertkabuklu']);
+});

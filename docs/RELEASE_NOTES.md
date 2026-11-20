@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 66 · Dünya sofrası: Afrika'dan And'lara
+# 🫐 Besin Matriksi 1.1.2 Beta 67 · Körili, sobalı, hoşaflı
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -22,6 +22,7 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
+- **12 yeni vegan yemek ve tatlı:** sebzeli kızarmış pilav, Tay sebze körisi, rice and peas (Jamaika), pkhali ve ajapsandali (Gürcistan), adas polo (İran), zaru soba (Japonya), ginisang monggo (Filipinler), arroz rojo ve frijoles de la olla (Meksika), kabak tatlısı ve kuru kayısı hoşafı.
 - **12 yeni vegan yemek:** jollof pilavı, red red, mafe (Batı Afrika), gado-gado (Endonezya), kinoa salatası (And), sebzeli kuskus (Mağrip), đuveč (Balkan), Üç Kız Kardeş yahnisi ve yaban pirinci pilavı (Kuzey Amerika yerlileri), balkabağı çorbası, zeytinyağlı taze bakla, açiçuk (Özbek).
 - **Benzer besinler daha isabetli:** Vegan bir besine bakarken önce vegan öneriler gelir.
 - **Düzeltme:** Fıstık ezmeli tarifler artık doğru şekilde vegan sayılıyor (“peanut butter” tereyağı sanılıyordu).

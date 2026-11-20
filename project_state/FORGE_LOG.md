@@ -1419,3 +1419,11 @@
 - Körili ve rice and peas'te lif "veri yok": USDA konserve hindistan cevizi sütü (12118) kaydında lif ölçülmemiş; toplam bilinmiyor, 0 yazılmıyor (testle sabitlendi; arayüzde "Lif: veri yok" görüldü).
 - Kanıt: `npm run data`; `npm test` 342/342; arama testi 2/2; telefon ekran görüntüsü hatasız; Playwright tam koşu 75: 387/387.
 - Sonraki: B244 yeni yemek turu (Japonya, Vietnam, Filipinler, Meksika, Türk tatlıları vegan) veya veri eksikleri; 2–3 Forge sonra sürüm.
+
+## B244 · 2026-11-20 · Japon, Filipin, Meksika yemekleri ve vegan Türk tatlıları; sürüm 1.1.2-beta.67
+- CI: Test 280 ve Pages 129 (B243) başarılı.
+- Ev tarifi hesabı (tahmin; USDA SR28): zaru soba (soba kaydı buğdaylı; gluten, soya; balıklı dashi yok), ginisang monggo (Filipin, etsiz), arroz rojo, frijoles de la olla (epazotlu; domuz yağsız), kabak tatlısı (cevizli; şekerle pişirmede su kaybı ölçülmedi notu), kuru kayısı hoşafı (kükürtlü kayıt; sülfit notu). Hepsi vegan filtresinde; tatlılar mevcut tatlılar gibi "Yemekler" kategorisinde. Katalog 875 besin.
+- Zaru soba lifi "veri yok": USDA pişmiş soba (20115) kaydında lif ölçülmemiş.
+- Kanıt: `npm run data`; `npm test` 343/343; arama testi 2/2; telefon ekran görüntüsü hatasız; Playwright tam koşu 76: 387/387.
+- Sürüm 1.1.2-beta.67 (B243–B244); sürüm sonrası `npm test` 343/343 ve derleme tamam.
+- Sonraki: B245 beta.67 doğrulama; yeni yemek turu (Hindistan güneyi, Etiyopya, Kore, Peru).
