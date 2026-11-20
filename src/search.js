@@ -20,7 +20,7 @@ export const SEARCH_ALIASES = {
   karabugday: ['greçka', 'kaşa', 'kasha', 'grechka'], ajvar: ['ayvar'], sopska: ['shopska', 'çoban salatası balkan'], plov: ['palov', 'osh', 'özbek pilavı'],
   chana_masala: ['chole', 'nohut körisi'], aloo_gobi: ['alu gobi'], rajma: ['fasulye körisi'], misir_wot: ['wot', 'etiyopya mercimek'], ful_medames: ['foul', 'ful'], fattus: ['fattoush', 'fettuş'], pico_de_gallo: ['salsa', 'salsa fresca'],
   makarna_domates_soslu: ['spagetti', 'spaghetti', 'pasta'], lazanya_sebzeli: ['lasagna', 'lazanya'], fistik_ezmeli_sandvic: ['pb&j', 'peanut butter'], tofu_sebze_sote: ['stir fry', 'wok'],
-  kimbap: ['gimbap'], zaalouk: ['zalouk', 'fas patlıcan'], gavurdagi: ['gavurdağı'], pasta_e_fagioli: ['pasta fagioli'],
+  kimbap: ['gimbap'], acili_ezme: ['ezme', 'acılı ezme'], mucedra: ['mujaddara', 'mudjadara', 'mücedderə'], kicri: ['khichdi', 'kitchari', 'khichri'], gallo_pinto: ['gallopinto', 'rice and beans'], lobio: ['lobiyo'], zeytinyagli_barbunya: ['barbunya pilaki', 'barbunya yemeği'], zaalouk: ['zalouk', 'fas patlıcan'], gavurdagi: ['gavurdağı'], pasta_e_fagioli: ['pasta fagioli'],
   maya_ozu: ['vegemite', 'marmite', 'maya ekstresi'], grits: ['mısır lapası'], latke: ['patates mücveri', 'draniki'],
   susi_somonlu: ['sushi', 'salmon roll', 'maki'], susi_california: ['sushi', 'california roll', 'maki'], borscht: ['borş', 'barszcz', 'borsch'],
   pierogi: ['pirogi', 'varenik', 'vareniki'], fasulye_ezmesi_meksika: ['frijoles refritos', 'meksika fasulyesi ezmesi'], congee: ['jook', 'pirinç lapası'],

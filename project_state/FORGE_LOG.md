@@ -1325,3 +1325,9 @@
 - Tanımsız ad + içe/dışa aktarma testi `src/actions/` klasörünü de tarar; yeni test eylemlerin app.js'te ikinci kez tanımlanmadığını denetler.
 - Kanıt: `npm test` 320/320; `npm run build && npm run build:single` tamam; Günlük tarayıcı testleri 28/28 ve temizlikten sonra 20/20; Playwright tam koşu 62: 385/385.
 - Sonraki: B231 yeni vegan yemek turu (acılı ezme, mücedra, kiçri, gallo pinto, lobio, zeytinyağlı barbunya).
+
+## B231 · 2026-11-20 · Altı vegan yemek: Anadolu, Levant, Hindistan, Orta Amerika, Gürcistan
+- Ev tarifi hesabı (tahmin; USDA SR28 malzemeleri): acılı ezme (çiğ; nar ekşisi yerine nar suyu), mücedra (mercimekli pirinç; kavrulmuş soğan kaydı yok, haşlanmış soğan), kiçri (maş fasulyeli pirinç; ghee yerine zeytinyağı), gallo pinto (Lizano sosu hariç), lobio (cevizli; alerjen: sert kabuklu), zeytinyağlı barbunya. Hepsi malzeme doğrulamasıyla vegan filtresinde.
+- Eş anlamlılar: mujaddara, khichdi/kitchari, gallopinto, lobiyo, ezme, barbunya pilaki. İngilizce adlar, notlar, simge ve kendine özgü çizim (mücedra çizimi natto ile aynı çıkınca B080 testi yakaladı; renk değişti). Katalog 845 besin.
+- Kanıt: `npm run data`; `npm test` 321/321 (B231 veri testi: diyet, tahmin notu, lif aralığı, lobio alerjeni); tarayıcı: yabancı adla arama world-foods testine eklendi, 6/6; telefon ekran görüntüsü hatasız; Playwright tam koşu 63: 385/385.
+- Sonraki: B232 koleksiyon eylemlerini src/actions/collections.js'e ayırma + sürüm beta.63.

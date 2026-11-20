@@ -491,3 +491,19 @@ test('B228 vegan ağırlıklı Anadolu/Kore/İtalya/Fas yemekleri; ölçülmemi�
   for (const id of ['patates_salatasi', 'gavurdagi', 'zeytinyagli_borulce', 'kimbap', 'pasta_e_fagioli', 'harira', 'zaalouk']) assert.equal(by(id).dietary.kind, 'plant', id);
   assert.equal(by('kimbap').forms[0].v.fiber, undefined); // kısa taneli pirinçte lif ölçülmemiş → toplam bilinmiyor
 });
+
+test('B231 acılı ezme, mücedra, kiçri, gallo pinto, lobio, zeytinyağlı barbunya: vegan, tahmin etiketli, cevizli lobio alerjen taşır', () => {
+  const by = (id) => DB.foods.find((f) => f.id === id);
+  const ids = ['acili_ezme', 'mucedra', 'kicri', 'gallo_pinto', 'lobio', 'zeytinyagli_barbunya'];
+  for (const id of ids) {
+    const f = by(id);
+    assert.ok(f, id);
+    assert.equal(f.dietary.kind, 'plant', id);
+    assert.ok(!f.animal, id);
+    assert.ok(f.forms[0].v.energy > 0 && f.forms[0].v.protein > 0, id);
+    assert.match(f.note, /tahmin/, id);
+  }
+  assert.deepEqual(by('lobio').allergens, ['sertkabuklu']);
+  // baklagilli tabaklar: lifi ölçülmüş malzemeler → toplam yazılır ve makul aralıkta
+  for (const id of ['mucedra', 'kicri', 'gallo_pinto', 'lobio', 'zeytinyagli_barbunya']) assert.ok(by(id).forms[0].v.fiber > 2 && by(id).forms[0].v.fiber < 10, id);
+});
