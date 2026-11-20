@@ -61,3 +61,14 @@ test('B232 koleksiyon eylemleri ayrı modülde ve app.js ile çakışmaz', () =>
   assert.match(app, /bindCollectionActions\(\{ render, uiDialog \}\)/);
   assert.ok(!/function (collectionError|persistCollections)\b/.test(app));
 });
+
+// B235: Tarif eylemleri src/actions/recipe.js'te
+test('B235 Tarif eylemleri ayrı modülde ve app.js ile çakışmaz', () => {
+  const rc = fs.readFileSync(new URL('../src/actions/recipe.js', import.meta.url), 'utf8');
+  const app = fs.readFileSync(new URL('../src/app.js', import.meta.url), 'utf8');
+  const keys = [...rc.matchAll(/^  '([a-z0-9-]+)': async \(b\) =>/gm)].map((m) => m[1]);
+  assert.deepEqual(keys.sort(), ['daily-recipe-basis', 'rc-add', 'rc-basis', 'rc-cw', 'rc-cw-clear', 'rc-cw-set', 'rc-daily-total', 'rc-del-item', 'rc-delete', 'rc-dup', 'rc-move', 'rc-new', 'rc-open', 'rc-serv']);
+  for (const k of keys) assert.ok(!app.includes(`case '${k}'`), `app.js hâlâ ${k} içeriyor`);
+  assert.match(app, /Object\.hasOwn\(RECIPE_ACTIONS, a\)/);
+  assert.match(app, /bindRecipeActions\(\{ render, uiDialog, setSetting \}\)/);
+});

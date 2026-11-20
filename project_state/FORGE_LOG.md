@@ -1352,3 +1352,10 @@
 - Eş anlamlılar: kushari, lahana yemeği, leço, nohut pilavı, karnıbahar yemeği, bharta.
 - Kanıt: `npm run data`; `npm test` 325/325 (B234 veri testi); arama testi genişletildi 2/2; telefon ekran görüntüsü hatasız; Playwright tam koşu 67: 387/387.
 - Sonraki: B235 CI (B231–B234) doğrulama; Tarif sekmesi eylemlerini src/actions/recipe.js'e ayırma.
+
+## B235 · 2026-11-20 · CI yeşil (B231–B234); Tarif eylemleri ayrıldı
+- CI: Test iş akışı 268–271 (B231–B234; Chromium + Tarayıcı uyumu) hepsi başarılı.
+- `src/actions/recipe.js`: Tarif sekmesinin 14 tıklama eylemi (yeni, aç, kopya, sil, malzeme sırala/sil/ekle, öz/porsiyon temeli, porsiyon, pişmiş ağırlık ±/ayarla/temizle, günlük toplam ve temeli). app.js 953 → 944 satır; kalan yetim yorum satırları ve kullanılmayan `moveIndex` içe aktarması temizlendi.
+- Test: eylem listesi sabit, app.js'te ikinci tanım yok.
+- Kanıt: `npm test` 328/328; build + build:single; Tarif tarayıcı testleri 78/78; telefon ekran görüntüsü (yeni tarif) hatasız; Playwright tam koşu 68: 387/387.
+- Sonraki: B236 Kıyasla ve seçici (pk-/cmp-) eylemlerini ayırma; ardından sürüm beta.64 (B233–B236).

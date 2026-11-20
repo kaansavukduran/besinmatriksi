@@ -27,7 +27,7 @@ import { renderPersonal, renderEnergy, renderDaySources } from './personal-view.
 import { nutrientLabel } from './i18n-nutrients.js';
 import { getLanguage } from './i18n.js';
 import { SLIDER_STEPS, sliderToGrams, gramsToSlider, MAX_GRAMS, kgLabel } from './amount-scale.js';
-import { normalizeCollections, collectionTree, collectionRefs, hasRef, moveIndex, transferRef, MAX_ITEMS } from './collections.js';
+import { normalizeCollections, collectionTree, collectionRefs, hasRef, transferRef, MAX_ITEMS } from './collections.js';
 import { mountAion, configureAion, aionMood, aionPlay, aionSay } from './aion.js';
 import { greetingFor, newlyReached, celebrationText } from './aion-moments.js';
 import { dailyRefs } from './daily-ref.js';
@@ -50,6 +50,7 @@ import { renderSettings, renderAbout, RELEASES_URL } from './views/settings.js';
 import { catName, foodCategoryPath, foodButton, quickFacts, SORTS, sortFoods, sortBar, extButton, categoryNav, refButton, collectionList, customButton, knownFood, recentRow, LIST_CHUNK, listLimit, moreButton, foodList, fullCatalogSearch, formChips, similarRow, renderExplore, welcome, visibleCurated, catalogHeading, matrixForExplore } from './views/explore.js';
 import { recipeResult, recipeTotalModel, selectedRecipeResult, renderRecipe, renderRecipeSummary, renderRecipeGaps } from './views/recipe.js';
 import { DAY_ACTIONS, bindDayActions } from './actions/day.js';
+import { RECIPE_ACTIONS, bindRecipeActions } from './actions/recipe.js';
 import { COLLECTION_ACTIONS, bindCollectionActions, persistCollections } from './actions/collections.js';
 // B215: en son içe aktarılır; durum, diğer modüller değerlendirildikten sonra kurulur (eski sıra)
 
@@ -500,6 +501,7 @@ async function onClick(e) {
   if (!b) return;
   const a = b.dataset.action;
   if (!document.querySelector('.modal')) modalOpener = focusSelector(b);
+  if (Object.hasOwn(RECIPE_ACTIONS, a)) return RECIPE_ACTIONS[a](b); // B235: src/actions/recipe.js
   if (Object.hasOwn(COLLECTION_ACTIONS, a)) return COLLECTION_ACTIONS[a](b); // B232: src/actions/collections.js
   if (Object.hasOwn(DAY_ACTIONS, a)) return DAY_ACTIONS[a](b); // B230: Günlük + Geçmiş eylemleri src/actions/day.js
   switch (a) {
@@ -540,7 +542,6 @@ async function onClick(e) {
       toast(L("{n} besin → {r} (her biri 100 g)", { n, r: activeRecipe().name })); aionPlay('celebrate');
       S.multi = false; S.picked = []; render(); break;
     }
-    case 'rc-move': { const rc = activeRecipe(); const i = rc.items.findIndex((x) => x.id === b.dataset.id); rc.items = moveIndex(rc.items, i, +b.dataset.d); persistRecipes(); render(); break; }
     case 'pk-pick-custom': selectFood('pk', { t: 'u', id: b.dataset.cid }); break;
     case 'cu-new': S.customEdit = { name: b.dataset.name || '', liquid: false, portion: null, v: {} }; render(); break;
     case 'cu-edit': { const f = customFoods().find((x) => x.id === S.sel?.id); if (f) { S.customEdit = JSON.parse(JSON.stringify(f)); render(); } break; }
@@ -573,27 +574,6 @@ async function onClick(e) {
       if (want > MAX_G) toast(L("En fazla {m} g (10 kg) seçilebilir.", { m: fmtNum(MAX_G) }));
       setAmount(b.dataset.target, want); break;
     }
-    // tarif
-    case 'rc-new': { const r = newRecipe(L("Tarif {n}", { n: S.recipes.length + 1 })); S.recipeDaily = false; S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); render(); break; }
-    // B217: Günlük geçmişi: aralık, ay gezinme, sık yenen besini Keşfet'te aç
-    case 'rc-daily-total': S.recipeDaily = true; render(); break;
-    case 'daily-recipe-basis': setSetting('recipeTotalBasis', b.dataset.b); render(); break;
-    case 'rc-open': S.recipeDaily = false; S.activeRecipe = b.dataset.id; render(); break;
-    case 'rc-dup': { const src = activeRecipe(); const r = { ...JSON.parse(JSON.stringify(src)), id: Math.random().toString(36).slice(2, 10), name: L("{n} (kopya)", { n: src.name }) }; S.recipeDaily = false; S.recipes.push(r); S.activeRecipe = r.id; persistRecipes(); render(); break; }
-    case 'rc-delete': {
-      const rc = activeRecipe();
-      if (!(await uiDialog(L("“{n}” silinsin mi?", { n: rc.name }), { ok: L("Sil"), cancel: L("Vazgeç") }))) break;
-      S.recipes = S.recipes.filter((r) => r.id !== rc.id);
-      if (!S.recipes.length) S.recipes.push(newRecipe(L("Yeni tarif")));
-      S.activeRecipe = S.recipes[0].id; persistRecipes(); render(); break;
-    }
-    case 'rc-del-item': { const rc = activeRecipe(); rc.items = rc.items.filter((i) => i.id !== b.dataset.id); persistRecipes(); render(); break; }
-    case 'rc-add': S.picker = { target: 'recipe', cat: null, q: '', sel: null, amount: S.settings.defaultAmount }; render(); break;
-    case 'rc-basis': S.basis = b.dataset.b; render(); break;
-    case 'rc-serv': { const rc = activeRecipe(); rc.servings = clamp((rc.servings || 1) + Number(b.dataset.d), 1, 50); persistRecipes(); render(); break; }
-    case 'rc-cw': { const rc = activeRecipe(); const base = rc.cookedWeight || rc.items.reduce((acc, i) => acc + i.g, 0); rc.cookedWeight = clamp(Math.round(base + Number(b.dataset.d)), 1, 50000); persistRecipes(); render(); break; }
-    case 'rc-cw-set': { const rc = activeRecipe(); rc.cookedWeight = rc.items.reduce((a, i) => a + i.g, 0); persistRecipes(); render(); break; }
-    case 'rc-cw-clear': { const rc = activeRecipe(); rc.cookedWeight = null; persistRecipes(); render(); break; }
     // karşılaştır
     case 'list-more': {
       const pre = b.dataset.prefix; if (S.listLimit?.[pre]) S.listLimit[pre].n += 180;
@@ -895,6 +875,7 @@ export function start() {
   setRenderer(render); // B223: ui.js (geniş katalog yüklenince) yeniden çizer
   bindDayActions({ render, persistPersonal, uiDialog, selectFood, setSetting }); // B230
   bindCollectionActions({ render, uiDialog }); // B232
+  bindRecipeActions({ render, uiDialog, setSetting }); // B235
   printController = createPrintController(document, window);
   applySettings();
   if (S.settings.showExt || S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) requestExtCatalog();
