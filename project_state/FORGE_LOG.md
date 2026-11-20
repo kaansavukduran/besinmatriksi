@@ -1367,3 +1367,10 @@
 - Kanıt: `npm test` 331/331; build + build:single; telefon akışı Kıyasla → Besin ekle → kategori → besin → Ekle: 1 kart, seçici kapandı, sayfa hatası yok; Playwright tam koşu 69: 387/387.
 - Sürüm 1.1.2-beta.64 (B233–B236); notlar ve lisans bildirimi yenilendi; sürüm sonrası `npm test` 331/331 ve derleme tamam.
 - Sonraki: B237 beta.64 doğrulama; Ayarlar eylemlerini (theme-/profile-/set/font…) src/actions/settings.js'e ayırma.
+
+## B237 · 2026-11-20 · beta.64 doğrulandı; Pages iş akışı derleme/yayın olarak ayrıldı
+- beta.64: release.yml koşusu 44667501698 başarılı; `v1.1.2-beta.64` ön sürüm, 23 varlık (13'ü sürüm adlı paket). Test 273 (B236) yeşil.
+- Pages 122 yine "Found 0 artifact(s)" (110, 112, 115, 122 ile beşinci kez); başarısız iş yeniden çalıştırıldı. Kalıcı çözüm: `pages.yml` GitHub Pages şablonundaki gibi `build` (test + derleme + artifact yükleme) ve `deploy` (`needs: build`, yalnız deploy-pages) işlerine ayrıldı; yayın, yükleme işi bittikten sonra başlar. Eylem sürümleri ve SHA sabitlemeleri değişmedi.
+- Test: `release.test.mjs` B237 (iş ayrımı, bağımlılık, yayın işinde derleme/yükleme yok).
+- Kanıt: `npm test` 332/332; YAML ayrıştırma: işler [build, deploy], deploy.needs = build. Gerçek doğrulama bu commit'in Pages koşusunda (NOT_RUN: yerelde Actions yok).
+- Sonraki: B238 Pages koşusunu doğrula; Ayarlar eylemlerini src/actions/settings.js'e ayırma.

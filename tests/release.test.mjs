@@ -72,3 +72,16 @@ test('B202 hafif tek dosya: release.yml derler ve paketler; vite veriyi JSON.par
   assert.match(cfg, /foods-ext-lite\.json/);
   assert.deepEqual(JSON.parse(fs.readFileSync('src/foods-ext-lite.json', 'utf8')).foods, []);
 });
+
+// B237: Pages derleme ve yayın ayrı işler; yayın işi derlemeyi bekler ve kendi artifact'ını yüklemez
+test('B237 Pages iş akışı: build → deploy ayrı işler, yayın derlemeye bağlı', () => {
+  const y = fs.readFileSync(new URL('../.github/workflows/pages.yml', import.meta.url), 'utf8');
+  const build = y.slice(y.indexOf('\n  build:'), y.indexOf('\n  deploy:'));
+  const deploy = y.slice(y.indexOf('\n  deploy:'));
+  assert.match(build, /upload-pages-artifact@[0-9a-f]{40}/);
+  assert.match(build, /npm test/);
+  assert.match(deploy, /needs: build/);
+  assert.match(deploy, /deploy-pages@[0-9a-f]{40}/);
+  assert.doesNotMatch(deploy, /upload-pages-artifact|npm (ci|test|run)/);
+  assert.match(deploy, /environment: \{ name: github-pages/);
+});
