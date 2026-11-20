@@ -199,9 +199,22 @@ function saveCustomEdit() {
 const TAB_SHORT = { kesfet: () => L("Keşfet"), tarif: () => L("Tarif"), gunluk: () => L("Günlük"), karsilastir: () => L("Kıyasla"), hakkinda: () => L("Bilgi"), ayarlar: () => L("Ayarlar") };
 const TABS = [['kesfet', '🔎'], ['tarif', '🥣'], ['gunluk', '📒'], ['karsilastir', '⚖️'], ['hakkinda', 'ℹ️'], ['ayarlar', '🎨']];
 
+// B233: açık/kapalı durumu kaydedilen <details> bölümleri. "toggle" olayı ayrı bir görev olarak sonradan gelir;
+// EFSA tablosunda açılıştan hemen sonra ayar değişince (yeniden çizim) durum kayboluyordu: render() onu çizmeden önce DOM'dan okur.
+// Yalnız tekil bölüm: recipe-sources sayfada birden çok kez bulunabilir, DOM'dan toplu okumak birinin durumunu ötekine yazar.
+const REMEMBERED_DETAILS = 'details.efsa-table';
+function rememberDetails(d) {
+  if (!d.isConnected) return;
+  if (d.matches?.('details.recipe-sources')) S.recipeSourcesOpen = d.open;
+  if (d.matches?.('details.efsa-table')) S.efsaTableOpen = d.open;
+  if (d.matches?.('details.cmp-amino')) S.cmpAminoOpen = d.open;
+  if (d.matches?.('details.personal-section')) { S.daySecOpen ||= {}; S.daySecOpen[d.dataset.psec] = d.open; }
+}
+
 export function render() {
   if (S.personalDayAuto && S.personalDay !== localDay()) S.personalDay = localDay();
   document.querySelectorAll('[data-diet-details]').forEach(el=>S.dietOpen[el.dataset.dietDetails]=el.open);
+  document.querySelectorAll(REMEMBERED_DETAILS).forEach(rememberDetails);
   const keep = {};
   document.querySelectorAll('[data-keep-scroll]').forEach((el) => (keep[el.dataset.keepScroll] = {top:el.scrollTop,left:el.scrollLeft}));
   const winY = window.scrollY;
@@ -924,8 +937,7 @@ export function start() {
   // Bölümlerin açık/kapalı durumunu hatırla
   document.addEventListener('toggle', (e) => {
     const d = e.target;
-    if (d.isConnected && d.matches?.('details.recipe-sources')) S.recipeSourcesOpen = d.open;
-    if (d.isConnected && d.matches?.('details.efsa-table')) S.efsaTableOpen = d.open;
+    rememberDetails(d);
     if (d.isConnected && d.matches?.('details.personal-sources')) {
       S.personalSourceOpen = d.open;
       if (d.open && !S.personal.milestones.source) {
@@ -934,8 +946,6 @@ export function start() {
         if (progress) { progress.value = done; progress.setAttribute('aria-label', tr('progressCount', { done })); $('.exploration-progress p').textContent = tr('progressCount', { done }); }
       }
     }
-    if (d.isConnected && d.matches?.('details.cmp-amino')) S.cmpAminoOpen = d.open;
-    if (d.isConnected && d.matches?.('details.personal-section')) { S.daySecOpen ||= {}; S.daySecOpen[d.dataset.psec] = d.open; }
     if (d.isConnected && d.matches?.('.personal details.micro-overview') && isPhone()) S.dayMicroOpen = d.open; // seçim diğer sekmelerle de paylaşılır (aşağıda)
     if (!printController.active && d.isConnected && d.matches?.('details.sec, details.micro-overview')) { if (d.open) S.closed.delete(d.dataset.sec); else S.closed.add(d.dataset.sec); }
   }, true);

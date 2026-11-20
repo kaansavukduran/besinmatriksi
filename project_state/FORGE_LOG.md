@@ -1338,3 +1338,10 @@
 - Kanıt: `npm test` 324/324; build + build:single tamam; koleksiyon tarayıcı testleri (B054, B055) 4/4; Playwright tam koşu 64: 384 geçti, 1 düştü: `app.spec.mjs:258` EFSA paneli (telefon) `details[open]` beklentisi. Bu kodla ilgisiz (Ayarlar/EFSA; B232 dokunmadı); tek başına `--repeat-each 4` 8/8 geçti. Yük altında aralıklı (FLAKY) olarak kaydedildi; CI'da izlenecek.
 - Sürüm 1.1.2-beta.63 (B230–B232); notlar ve lisans bildirimi yenilendi.
 - Sonraki: B233 beta.63 doğrulama; EFSA testindeki aralıklı düşmenin kökü (yeniden çizim sonrası details açık durumu); yeni yemek turu.
+
+## B233 · 2026-11-20 · EFSA tablosu açık durumu yarışı giderildi
+- Kök neden: tarayıcı `toggle` olayını ayrı bir görev olarak sonradan gönderir. EFSA tablosu açıldıktan hemen sonra yaş/cinsiyet değişince `render()` toggle'dan önce çalışıyor, `S.efsaTableOpen` eski (kapalı) kalıyor ve tablo kapanıyordu (tam koşu 64'teki aralıklı düşme).
+- Düzeltme: `rememberDetails()` tek yerde; `render()` çizmeden önce `details.efsa-table` durumunu DOM'dan okur. İlk denemede recipe-sources/personal-section da eklendi; tam koşu 65'te 8 test düştü (sayfada birden çok recipe-sources var, toplu okuma birinin durumunu ötekine yazıyor). Kapsam yalnız tekil EFSA tablosuyla sınırlandı.
+- Test: `details-state.spec.mjs` (yeni) tabloyu açıp aynı görevde yeniden çizdirir; düzeltmesiz derlemede düştüğü, düzeltmeyle geçtiği gözlendi (kapatma da korunur).
+- Kanıt: `npm test` 324/324; build + build:single; hedefli tarayıcı testleri 24/24; Playwright tam koşu 66: 387/387.
+- Sonraki: B234 beta.63 release doğrulama; yeni yemek turu.
