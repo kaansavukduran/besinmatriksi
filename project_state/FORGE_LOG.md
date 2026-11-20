@@ -1404,3 +1404,11 @@
 - Gözlem: "Benzer besinler" vegan gado-gado için etli bir FNDDS yemeği öneriyor (besin profiline göre benzerlik). Diyet sınıfı gözetilmiyor; sonraki Forge'a alındı.
 - Kanıt: `npm run data`; `npm test` 340/340 (B241: diyet, alerjen, damper tereyağı hâlâ hayvansal); arama testi 2/2; telefon ekran görüntüsü hatasız; Playwright tam koşu 73: 387/387.
 - Sonraki: B242 benzer besinlerde aynı diyet sınıfını öne alma (vegan besine önce vegan öneriler) + sürüm beta.66 (B240–B242).
+
+## B242 · 2026-11-20 · Benzer besinlerde diyet sınıfı; sürüm 1.1.2-beta.66
+- CI: Test 278 ve Pages 127 (B241) başarılı.
+- `similarFoods`: bitkisel (dietary.kind = plant) bir besinde önce bitkisel adaylar, sonra profil yakınlığı. Hayvansal/belirsiz besinde sıralama yalnız yakınlık (değişmedi). Gado-gado önerileri: önce "Eggplant and meat casserole" → şimdi yaban pirinci pilavı, pasta e fagioli, mafe, harira, sebzeli kuskus, türlü (hepsi bitkisel).
+- Test: `similar.test.mjs` B242 (vegan besinde bitkisel önce; hayvansal besinde yalnız yakınlık).
+- Kanıt: `npm test` 341/341; build + build:single; telefon ekran görüntüsü (gado-gado benzerleri bitkisel) hatasız; Playwright tam koşu 74: 387/387.
+- Sürüm 1.1.2-beta.66 (B240–B242).
+- Sonraki: B243 beta.66 doğrulama; yeni yemek turu (Güneydoğu/Doğu Asya, Karayipler, Kafkasya).

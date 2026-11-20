@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 65 · Daha düzenli, daha sağlam
+# 🫐 Besin Matriksi 1.1.2 Beta 66 · Dünya sofrası: Afrika'dan And'lara
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -22,6 +22,9 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
+- **12 yeni vegan yemek:** jollof pilavı, red red, mafe (Batı Afrika), gado-gado (Endonezya), kinoa salatası (And), sebzeli kuskus (Mağrip), đuveč (Balkan), Üç Kız Kardeş yahnisi ve yaban pirinci pilavı (Kuzey Amerika yerlileri), balkabağı çorbası, zeytinyağlı taze bakla, açiçuk (Özbek).
+- **Benzer besinler daha isabetli:** Vegan bir besine bakarken önce vegan öneriler gelir.
+- **Düzeltme:** Fıstık ezmeli tarifler artık doğru şekilde vegan sayılıyor (“peanut butter” tereyağı sanılıyordu).
 - **Daha sağlam kod:** Ayarlar ve Keşfet düğmeleri de ayrı modüllerde; ana dosya 1.790 satırdan 801 satıra indi. Görünüm ve davranış aynı, 387 tarayıcı testiyle doğrulandı.
 - **Web sürümü daha güvenilir yayınlanıyor:** GitHub Pages yayını derleme ve yayın olarak iki adıma ayrıldı; ara sıra görülen “yayın bulunamadı” hatası giderildi.
 - **6 yeni vegan yemek:** koşari (Mısır), kapuska (etsiz), lecsó (Macar, yumurtasız), nohutlu pilav, karnabahar yemeği ve baingan bharta (Hint). “kushari”, “lahana yemeği”, “bharta” gibi adlarla da bulunur.

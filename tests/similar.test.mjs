@@ -18,3 +18,15 @@ test('aynı kategoride en yakın profil önce; eksik veri ve başka kategori dı
   assert.equal(profileDistance({ energy: 1, protein: null }, { energy: 1 }), null);
   assert.equal(profileDistance(foods[0].forms[0].v, foods[0].forms[0].v), 0);
 });
+
+test('B242 bitkisel besinde bitkisel öneriler önce gelir; hayvansal besinde sıralama yalnız yakınlık', () => {
+  const v = (energy, protein) => ({ energy, protein, carb_avail: 10, fat: 5, fiber: 2 });
+  const mk = (id, kind, vals) => ({ id, cat: 'yemek', dietary: { kind }, forms: [{ v: vals }] });
+  const vegan = mk('vegan', 'plant', v(100, 5));
+  const meatClose = mk('etli', 'animal', v(101, 5)); // profilce en yakın
+  const plantFar = mk('bitkisel', 'plant', v(140, 8));
+  const unknown = mk('belirsiz', undefined, v(102, 5));
+  assert.deepEqual(similarFoods(vegan, [vegan, meatClose, plantFar, unknown]).map((f) => f.id), ['bitkisel', 'etli', 'belirsiz']);
+  const meat = mk('et', 'animal', v(100, 5));
+  assert.deepEqual(similarFoods(meat, [meat, meatClose, plantFar, unknown]).map((f) => f.id), ['etli', 'belirsiz', 'bitkisel']);
+});

@@ -14,11 +14,14 @@ export function profileDistance(a, b) {
 
 export function similarFoods(food, foods, { count = 6, formIndex = 0 } = {}) {
   const base = food.forms[formIndex]?.v || food.forms[0].v;
+  const plantBase = food.dietary?.kind === 'plant';
   return foods
     .filter((f) => f.id !== food.id && f.cat === food.cat)
     .map((f) => ({ f, d: profileDistance(base, f.forms[0].v) }))
     .filter((x) => x.d != null)
-    .sort((a, b) => a.d - b.d || a.f.id.localeCompare(b.f.id))
+    // B242: bitkisel (vegan) bir besinde önce bitkisel öneriler; profil yakınlığı ikinci ölçüt. Hayvansal besinde sıralama değişmez.
+    .map((x) => ({ ...x, off: plantBase && x.f.dietary?.kind !== 'plant' ? 1 : 0 }))
+    .sort((a, b) => a.off - b.off || a.d - b.d || a.f.id.localeCompare(b.f.id))
     .slice(0, count)
     .map((x) => x.f);
 }
