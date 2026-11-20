@@ -1389,3 +1389,10 @@
 - Kanıt: `npm test` 338/338; build + build:single; telefon akışı arama → besin seç → Tarife ekle: tarifte kayıt, adres `#/food/mercimek_corbasi`, sayfa hatası yok; Playwright tam koşu 71: 387/387.
 - Sürüm 1.1.2-beta.65 (B237–B239); sürüm sonrası `npm test` 338/338 ve derleme tamam.
 - Sonraki: B240 beta.65 doğrulama; kalan genel eylemler (miktar, dışa/içe aktarma, bağlantılar) ve onInput/onChange ayrımı; ardından yeni yemek turu.
+
+## B240 · 2026-11-20 · beta.65 doğrulandı; Balkan, Kuzey Amerika yerlisi, Anadolu, Orta Asya yemekleri
+- beta.65: release.yml koşusu 44680727155 başarılı; `v1.1.2-beta.65` ön sürüm, 23 varlık. Test 276 ve Pages 125 (B239) başarılı.
+- app.js modülerleştirme yeterli görüldü (1.790 → 801 satır; tıklama eylemleri 7 modülde). onInput/onChange zinciri küçük ve bağlama sıkı bağlı; bölmenin riski kazancından büyük, bırakıldı.
+- Ev tarifi hesabı (tahmin; USDA SR28): đuveč (Balkan sebzeli pirinç), Üç Kız Kardeş yahnisi (mısır-fasulye-kabak), yaban pirinci pilavı (manoomin; Zizania ≠ Oryza notu), balkabağı çorbası (kremasız), zeytinyağlı taze bakla (kabuklu kayıt yok, tane kaydı; G6PD uyarısı), açiçuk (Özbek, çiğ, yağsız). Hepsi vegan filtresinde. Katalog 857 besin.
+- Kanıt: `npm run data`; `npm test` 339/339 (B240 veri testi); arama testine 6 yabancı ad eklendi, 2/2; telefon ekran görüntüsü (Three Sisters, İngilizce) hatasız; Playwright tam koşu 72: 387/387.
+- Sonraki: B241 CI doğrulama; yeni yemek turu (Orta/Güney Amerika, Batı Afrika, Güneydoğu Asya).

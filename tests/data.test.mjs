@@ -521,3 +521,17 @@ test('B234 koşari, kapuska, lecsó, nohutlu pilav, karnabahar yemeği, baingan 
   assert.deepEqual(by('koshari').allergens, ['gluten']);
   assert.ok(by('nohutlu_pilav').forms[0].v.protein > by('kapuska').forms[0].v.protein);
 });
+
+test('B240 đuveč, Üç Kız Kardeş, yaban pirinci pilavı, balkabağı çorbası, zeytinyağlı taze bakla, açiçuk: vegan ve tahmin etiketli', () => {
+  const by = (id) => DB.foods.find((f) => f.id === id);
+  for (const id of ['djuvec', 'uc_kiz_kardes', 'yaban_pirinci_pilavi', 'balkabagi_corbasi', 'zeytinyagli_taze_bakla', 'achichuk']) {
+    const f = by(id);
+    assert.ok(f, id);
+    assert.equal(f.dietary.kind, 'plant', id);
+    assert.ok(!f.animal, id);
+    assert.ok(f.forms[0].v.energy > 0, id);
+    assert.match(f.note, /tahmin/, id);
+  }
+  assert.equal(by('achichuk').forms[0].key, 'cig');
+  assert.match(by('zeytinyagli_taze_bakla').note, /G6PD/);
+});

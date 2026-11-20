@@ -4,9 +4,9 @@
   "product_version": "1.1.2-beta.62",
   "development_state": "IN_PROGRESS",
   "last_forge_at": "2026-11-19",
-  "last_completed_forge": "B239",
+  "last_completed_forge": "B240",
   "active_forge": null,
-  "next_recommended_forge": "B240 beta.65 doğrulama; onInput/onChange ve kalan genel eylemleri ayırma; yeni yemek turu",
+  "next_recommended_forge": "B241 CI doğrulama; yeni vegan yemek turu (Güney Amerika, Batı Afrika, Güneydoğu Asya)",
   "branch": "ccr-1e1934aa-iv8aev",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
   "validated_code_commit": null,
@@ -333,11 +333,11 @@
     "B127"
   ],
   "latest_release": {
-    "tag": "v1.1.2-beta.64",
-    "run": 44667501698,
-    "source_sha": "a369472",
+    "tag": "v1.1.2-beta.65",
+    "run": 44680727155,
+    "source_sha": "6838d05",
     "assets": 23,
-    "contains": "B196–B236"
+    "contains": "B196–B239"
   },
   "current_forge": {
     "id": "B151",
