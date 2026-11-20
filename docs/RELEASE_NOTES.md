@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 64 · Koşari, lecsó ve kapuska
+# 🫐 Besin Matriksi 1.1.2 Beta 65 · Daha düzenli, daha sağlam
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -22,6 +22,8 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 ## ✨ Bu sürümde yeni
 
+- **Daha sağlam kod:** Ayarlar ve Keşfet düğmeleri de ayrı modüllerde; ana dosya 1.790 satırdan 801 satıra indi. Görünüm ve davranış aynı, 387 tarayıcı testiyle doğrulandı.
+- **Web sürümü daha güvenilir yayınlanıyor:** GitHub Pages yayını derleme ve yayın olarak iki adıma ayrıldı; ara sıra görülen “yayın bulunamadı” hatası giderildi.
 - **6 yeni vegan yemek:** koşari (Mısır), kapuska (etsiz), lecsó (Macar, yumurtasız), nohutlu pilav, karnabahar yemeği ve baingan bharta (Hint). “kushari”, “lahana yemeği”, “bharta” gibi adlarla da bulunur.
 - **Düzeltme:** Ayarlar'daki EFSA referans tablosu açıkken yaş veya cinsiyet değiştirince bazen kendiliğinden kapanıyordu; artık açık kalır.
 - **Daha sağlam kod:** Tarif, Kıyasla ve malzeme seçici düğmeleri de ayrı modüllerde; ana dosya 916 satır.

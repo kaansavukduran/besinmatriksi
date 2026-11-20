@@ -50,6 +50,7 @@ import { renderSettings, renderAbout, RELEASES_URL } from './views/settings.js';
 import { catName, foodCategoryPath, foodButton, quickFacts, SORTS, sortFoods, sortBar, extButton, categoryNav, refButton, collectionList, customButton, knownFood, recentRow, LIST_CHUNK, listLimit, moreButton, foodList, fullCatalogSearch, formChips, similarRow, renderExplore, welcome, visibleCurated, catalogHeading, matrixForExplore } from './views/explore.js';
 import { recipeResult, recipeTotalModel, selectedRecipeResult, renderRecipe, renderRecipeSummary, renderRecipeGaps } from './views/recipe.js';
 import { DAY_ACTIONS, bindDayActions } from './actions/day.js';
+import { EXPLORE_ACTIONS, bindExploreActions } from './actions/explore.js';
 import { SETTINGS_ACTIONS, bindSettingsActions } from './actions/settings.js';
 import { PICK_ACTIONS, bindPickActions } from './actions/pick.js';
 import { RECIPE_ACTIONS, bindRecipeActions } from './actions/recipe.js';
@@ -497,6 +498,7 @@ async function onClick(e) {
   if (!b) return;
   const a = b.dataset.action;
   if (!document.querySelector('.modal')) modalOpener = focusSelector(b);
+  if (Object.hasOwn(EXPLORE_ACTIONS, a)) return EXPLORE_ACTIONS[a](b); // B239: src/actions/explore.js
   if (Object.hasOwn(SETTINGS_ACTIONS, a)) return SETTINGS_ACTIONS[a](b); // B238: src/actions/settings.js
   if (Object.hasOwn(PICK_ACTIONS, a)) return PICK_ACTIONS[a](b); // B236: src/actions/pick.js
   if (Object.hasOwn(RECIPE_ACTIONS, a)) return RECIPE_ACTIONS[a](b); // B235: src/actions/recipe.js
@@ -510,56 +512,11 @@ async function onClick(e) {
       // B177: etkin Keşfet sekmesine yeniden dokunmak (telefonda besin ayrıntısındayken) listeye döner; kategori ve arama korunur
       if (S.tab === 'kesfet' && b.dataset.tab === 'kesfet' && S.sel) S.sel = null;
       S.tab = b.dataset.tab; render(); window.scrollTo(0, 0); break;
-    // keşfet
-    case 'ex-home': S.tab = 'kesfet'; S.sel = null; S.cat = null; S.q = ''; S.extGroup = null; S.extPage = 0; render(); window.scrollTo(0, 0); break;
     case 'diet-reset': updateDiet(Object.fromEntries(DIET_KEYS.map(k=>[k,DEFAULT_SETTINGS[k]]))); break;
-    case 'ex-cat': S.sel = null; S.cat = b.dataset.cat || null; S.extGroup = null; S.extPage = 0; render(); $('.list') && ($('.list').scrollTop = 0); break;
     case 'ext-reload': location.reload(); break;
-    case 'ex-full-search': S.sel = null; S.cat = 'ext'; S.extGroup = null; S.extPage = 0; render(); break;
-    case 'ex-extpage': S.extPage = Math.max(0, Number(b.dataset.page) || 0); render(); $('#foodlist .catalog-heading h2')?.focus(); $('#foodlist .catalog-heading')?.scrollIntoView({ block: 'start' }); break;
-    case 'ex-extgroup': S.extGroup = S.extGroup === b.dataset.g ? null : b.dataset.g; render(); break;
-    case 'ex-pick': selectFood('ex', { t: 'c', id: b.dataset.id, f: 0 }); break;
-    case 'gap-open': S.tab = 'kesfet'; selectFood('ex', { t: 'c', id: b.dataset.id, f: 0 }); break;
-    case 'ex-pick-ext': selectFood('ex', { t: 'x', n: b.dataset.ndb }); break;
-    case 'ex-pick-custom': selectFood('ex', { t: 'u', id: b.dataset.cid }); break;
-    case 'ex-pick-ref': selectFood('ex', JSON.parse(b.dataset.ref)); break;
-    case 'sort': S.sort = b.dataset.s; render(); break;
-    case 'rc-sort': S.rcSort = b.dataset.s; render(); break;
-    case 'recent-clear': S.recent = []; saveRecent([]); render(); break;
-    case 'ing-open': { const id = b.dataset.id; if (S.ingOpen.has(id)) S.ingOpen.delete(id); else S.ingOpen.add(id); render(); document.querySelector(`[data-action="ing-open"][data-id="${CSS.escape(id)}"]`)?.focus(); break; }
-    case 'multi-toggle': S.multi = !S.multi; S.picked = []; render(); break;
-    case 'multi-pick': { const id = b.dataset.id; S.picked = S.picked.includes(id) ? S.picked.filter((x) => x !== id) : [...S.picked, id]; render(); break; }
-    case 'multi-add': {
-      const n = S.picked.length; if (!n) break;
-      const rc = activeRecipe(), previous = structuredClone(rc.items);
-      for (const id of S.picked) addToRecipe({ t: 'c', id, f: 0 }, 100, true);
-      if (!persistRecipes()) { rc.items = previous; render(); break; }
-      toast(L("{n} besin → {r} (her biri 100 g)", { n, r: activeRecipe().name })); aionPlay('celebrate');
-      S.multi = false; S.picked = []; render(); break;
-    }
-    case 'cu-new': S.customEdit = { name: b.dataset.name || '', liquid: false, portion: null, v: {} }; render(); break;
-    case 'cu-edit': { const f = customFoods().find((x) => x.id === S.sel?.id); if (f) { S.customEdit = JSON.parse(JSON.stringify(f)); render(); } break; }
-    case 'cu-close': S.customEdit = null; render(); break;
-    case 'cu-liquid': S.customEdit.liquid = b.dataset.v === '1'; render(); break;
-    case 'cu-save': if (saveCustomEdit()) { S.tab = 'kesfet'; render(); toast(L("Kaydedildi")); } break;
-    case 'cu-delete': {
-      const E = S.customEdit;
-      if (!(await uiDialog(L("“{n}” silinsin mi? Tariflerdeki kullanımları “bulunamadı” olarak kalır.", { n: E.name }), { ok: L("Sil"), cancel: L("Vazgeç") }))) break;
-      const list = customFoods().filter((x) => x.id !== E.id);
-      if (!saveCustom(list)) { toast(L("Kaydedilemedi: cihaz depolaması kullanılamıyor")); break; }
-      setCustomFoods(list); S.customEdit = null; if (S.sel?.t === 'u') S.sel = null; render(); break;
-    }
     case 'csv': exportCSV(); break;
     case 'print': try { printController.print(); } catch { toast(L("Yazdırma bu ortamda kullanılamıyor; CSV olarak indirebilirsin")); } break;
-    case 'ex-form': S.sel = { ...S.sel, f: +b.dataset.f }; render(); break;
-    case 'ex-back': S.sel = null; render(); break;
-    case 'cats-toggle': S.catsOpen = !S.catsOpen; render(); $('.cats-toggle')?.focus(); break;
     case 'copy-link': { const url = location.href; (navigator.clipboard?.writeText(url) || Promise.reject()).then(() => toast(L("Bağlantı kopyalandı"))).catch(() => uiDialog(L("Bağlantıyı kopyala:"), { input: url, line: true })); break; }
-    case 'search-recent': S.q = b.dataset.q; S.cat = null; render(); break;
-    case 'search-clear': S.searches = []; saveSearches([]); render(); break;
-    case 'ex-clear': S.q = ''; render(); break;
-    case 'ex-add-recipe': addToRecipe(S.sel, S.amount); render(); break;
-    case 'ex-add-compare': addToCompare(S.sel, S.amount); render(); break;
     // miktar
     case 'amt': setAmount(b.dataset.target, Number(b.dataset.val)); break;
     case 'nudge': {
@@ -775,6 +732,7 @@ export function start() {
   bindRecipeActions({ render, uiDialog, setSetting }); // B235
   bindPickActions({ render, selectFood, addToRecipe, addToCompare }); // B236
   bindSettingsActions({ render, uiDialog, setSetting, applySettings }); // B238
+  bindExploreActions({ render, selectFood, addToRecipe, addToCompare, uiDialog, saveCustomEdit }); // B239
   printController = createPrintController(document, window);
   applySettings();
   if (S.settings.showExt || S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) requestExtCatalog();

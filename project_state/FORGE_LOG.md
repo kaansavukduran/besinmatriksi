@@ -1381,3 +1381,11 @@
 - Test: 20 eylem modülde, app.js'te ikinci tanım ve `PRESETS_UI` yok.
 - Kanıt: `npm test` 335/335; build + build:single; Ayarlar tarayıcı testleri 12/12; telefon: disleksi ön ayarı → font opendyslexic, tema sepia, cetvel açık, sayfa hatası yok; Playwright tam koşu 70: 387/387.
 - Sonraki: B239 kalan genel eylemleri (Keşfet: ex-/cu-/multi-/amt) src/actions/explore.js'e ayırma; ardından sürüm beta.65 (B237–B239).
+
+## B239 · 2026-11-20 · Keşfet eylemleri ayrıldı; sürüm 1.1.2-beta.65
+- CI: Test 274–275 ve Pages 123–124 (yeni build → deploy) başarılı; Pages ardışık iki koşuda hatasız.
+- `src/actions/explore.js`: Keşfet'in 31 tıklama eylemi (ana sayfa, kategori, tam katalog/sayfa/grup, besin seç (katalog/USDA/kendi/ref/eksik besinden), sıralama, son bakılanları temizle, malzeme kartı aç, çoklu seçim/ekle, kendi besinin yeni/düzenle/kapat/sıvı/kaydet/sil, biçim, geri, kategori şeridi aç/kapa, arama geçmişi, aramayı temizle, tarife/kıyasa ekle). app.js 843 → 801 satır.
+- Test: 31 eylem modülde, app.js'te ikinci tanım yok.
+- Kanıt: `npm test` 338/338; build + build:single; telefon akışı arama → besin seç → Tarife ekle: tarifte kayıt, adres `#/food/mercimek_corbasi`, sayfa hatası yok; Playwright tam koşu 71: 387/387.
+- Sürüm 1.1.2-beta.65 (B237–B239); sürüm sonrası `npm test` 338/338 ve derleme tamam.
+- Sonraki: B240 beta.65 doğrulama; kalan genel eylemler (miktar, dışa/içe aktarma, bağlantılar) ve onInput/onChange ayrımı; ardından yeni yemek turu.

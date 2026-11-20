@@ -96,3 +96,14 @@ test('B238 Ayarlar eylemleri ayrı modülde ve app.js ile çakışmaz', async ()
   assert.match(app, /bindSettingsActions\(\{ render, uiDialog, setSetting, applySettings \}\)/);
   assert.match(st, /export const PRESETS_UI = \{\n  dyslexia:/);
 });
+
+// B239: Keşfet eylemleri src/actions/explore.js'te
+test('B239 Keşfet eylemleri ayrı modülde ve app.js ile çakışmaz', () => {
+  const ex = fs.readFileSync(new URL('../src/actions/explore.js', import.meta.url), 'utf8');
+  const app = fs.readFileSync(new URL('../src/app.js', import.meta.url), 'utf8');
+  const keys = [...ex.matchAll(/^  '([a-z0-9-]+)': async \(b\) =>/gm)].map((m) => m[1]);
+  assert.equal(keys.length, 31);
+  for (const k of ['ex-cat', 'ex-pick', 'ex-back', 'multi-add', 'cu-save', 'cu-delete', 'cats-toggle', 'ex-add-recipe', 'ex-add-compare', 'recent-clear']) assert.ok(keys.includes(k), k);
+  for (const k of keys) assert.ok(!app.includes(`case '${k}'`), `app.js hâlâ ${k} içeriyor`);
+  assert.match(app, /bindExploreActions\(\{ render, selectFood, addToRecipe, addToCompare, uiDialog, saveCustomEdit \}\)/);
+});
