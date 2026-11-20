@@ -1359,3 +1359,11 @@
 - Test: eylem listesi sabit, app.js'te ikinci tanım yok.
 - Kanıt: `npm test` 328/328; build + build:single; Tarif tarayıcı testleri 78/78; telefon ekran görüntüsü (yeni tarif) hatasız; Playwright tam koşu 68: 387/387.
 - Sonraki: B236 Kıyasla ve seçici (pk-/cmp-) eylemlerini ayırma; ardından sürüm beta.64 (B233–B236).
+
+## B236 · 2026-11-20 · Seçici ve Kıyasla eylemleri ayrıldı; sürüm 1.1.2-beta.64
+- CI: Test 272 (B235) başarılı.
+- `src/actions/pick.js`: malzeme/kıyas seçicisi (kategori, katalog sayfası, besin seç, biçim, geri, kapat, Ekle / Ekle-devam) ve Kıyasla (ekle, sil, bölüm, aynı miktar, arama sonucundan ekle) 18 eylem. Düşmeli `pk-confirm`/`pk-confirm-more` tek `confirmPick(more)` işlevinde; tarife ekleme kaydedilemezse seçim korunur (eski davranış). app.js 944 → 916 satır.
+- Test: 18 eylem modülde, app.js'te ikinci tanım yok.
+- Kanıt: `npm test` 331/331; build + build:single; telefon akışı Kıyasla → Besin ekle → kategori → besin → Ekle: 1 kart, seçici kapandı, sayfa hatası yok; Playwright tam koşu 69: 387/387.
+- Sürüm 1.1.2-beta.64 (B233–B236); notlar ve lisans bildirimi yenilendi; sürüm sonrası `npm test` 331/331 ve derleme tamam.
+- Sonraki: B237 beta.64 doğrulama; Ayarlar eylemlerini (theme-/profile-/set/font…) src/actions/settings.js'e ayırma.

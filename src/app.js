@@ -50,6 +50,7 @@ import { renderSettings, renderAbout, RELEASES_URL } from './views/settings.js';
 import { catName, foodCategoryPath, foodButton, quickFacts, SORTS, sortFoods, sortBar, extButton, categoryNav, refButton, collectionList, customButton, knownFood, recentRow, LIST_CHUNK, listLimit, moreButton, foodList, fullCatalogSearch, formChips, similarRow, renderExplore, welcome, visibleCurated, catalogHeading, matrixForExplore } from './views/explore.js';
 import { recipeResult, recipeTotalModel, selectedRecipeResult, renderRecipe, renderRecipeSummary, renderRecipeGaps } from './views/recipe.js';
 import { DAY_ACTIONS, bindDayActions } from './actions/day.js';
+import { PICK_ACTIONS, bindPickActions } from './actions/pick.js';
 import { RECIPE_ACTIONS, bindRecipeActions } from './actions/recipe.js';
 import { COLLECTION_ACTIONS, bindCollectionActions, persistCollections } from './actions/collections.js';
 // B215: en son içe aktarılır; durum, diğer modüller değerlendirildikten sonra kurulur (eski sıra)
@@ -501,6 +502,7 @@ async function onClick(e) {
   if (!b) return;
   const a = b.dataset.action;
   if (!document.querySelector('.modal')) modalOpener = focusSelector(b);
+  if (Object.hasOwn(PICK_ACTIONS, a)) return PICK_ACTIONS[a](b); // B236: src/actions/pick.js
   if (Object.hasOwn(RECIPE_ACTIONS, a)) return RECIPE_ACTIONS[a](b); // B235: src/actions/recipe.js
   if (Object.hasOwn(COLLECTION_ACTIONS, a)) return COLLECTION_ACTIONS[a](b); // B232: src/actions/collections.js
   if (Object.hasOwn(DAY_ACTIONS, a)) return DAY_ACTIONS[a](b); // B230: Günlük + Geçmiş eylemleri src/actions/day.js
@@ -519,15 +521,12 @@ async function onClick(e) {
     case 'ext-reload': location.reload(); break;
     case 'ex-full-search': S.sel = null; S.cat = 'ext'; S.extGroup = null; S.extPage = 0; render(); break;
     case 'ex-extpage': S.extPage = Math.max(0, Number(b.dataset.page) || 0); render(); $('#foodlist .catalog-heading h2')?.focus(); $('#foodlist .catalog-heading')?.scrollIntoView({ block: 'start' }); break;
-    case 'pk-full-search': S.picker.cat = 'ext'; S.picker.extGroup = null; S.picker.extPage = 0; render(); break;
-    case 'pk-extpage': S.picker.extPage = Math.max(0, Number(b.dataset.page) || 0); render(); $('.pk-list .catalog-heading h2')?.focus(); $('.pk-list .catalog-heading')?.scrollIntoView({ block: 'start' }); break;
     case 'ex-extgroup': S.extGroup = S.extGroup === b.dataset.g ? null : b.dataset.g; render(); break;
     case 'ex-pick': selectFood('ex', { t: 'c', id: b.dataset.id, f: 0 }); break;
     case 'gap-open': S.tab = 'kesfet'; selectFood('ex', { t: 'c', id: b.dataset.id, f: 0 }); break;
     case 'ex-pick-ext': selectFood('ex', { t: 'x', n: b.dataset.ndb }); break;
     case 'ex-pick-custom': selectFood('ex', { t: 'u', id: b.dataset.cid }); break;
     case 'ex-pick-ref': selectFood('ex', JSON.parse(b.dataset.ref)); break;
-    case 'pk-pick-ref': selectFood('pk', JSON.parse(b.dataset.ref)); break;
     case 'sort': S.sort = b.dataset.s; render(); break;
     case 'rc-sort': S.rcSort = b.dataset.s; render(); break;
     case 'recent-clear': S.recent = []; saveRecent([]); render(); break;
@@ -542,7 +541,6 @@ async function onClick(e) {
       toast(L("{n} besin → {r} (her biri 100 g)", { n, r: activeRecipe().name })); aionPlay('celebrate');
       S.multi = false; S.picked = []; render(); break;
     }
-    case 'pk-pick-custom': selectFood('pk', { t: 'u', id: b.dataset.cid }); break;
     case 'cu-new': S.customEdit = { name: b.dataset.name || '', liquid: false, portion: null, v: {} }; render(); break;
     case 'cu-edit': { const f = customFoods().find((x) => x.id === S.sel?.id); if (f) { S.customEdit = JSON.parse(JSON.stringify(f)); render(); } break; }
     case 'cu-close': S.customEdit = null; render(); break;
@@ -574,36 +572,9 @@ async function onClick(e) {
       if (want > MAX_G) toast(L("En fazla {m} g (10 kg) seçilebilir.", { m: fmtNum(MAX_G) }));
       setAmount(b.dataset.target, want); break;
     }
-    // karşılaştır
     case 'list-more': {
       const pre = b.dataset.prefix; if (S.listLimit?.[pre]) S.listLimit[pre].n += 180;
       const y = window.scrollY; render(); window.scrollTo(0, y); break;
-    }
-    case 'cmp-pick': {
-      const f = FOODS.find((x) => x.id === b.dataset.id); const i = Number(b.dataset.f);
-      if (!f || !f.forms[i]) break;
-      if (addToCompare({ t: 'c', id: f.id, f: i }, S.settings.defaultAmount || 100)) { S.cmpQ = ''; render(); setTimeout(() => document.getElementById('cmp-q')?.focus(), 0); }
-      break;
-    }
-    case 'cmp-add': S.picker = { target: 'compare', cat: null, q: '', sel: null, amount: S.settings.defaultAmount }; render(); break;
-    case 'cmp-del': S.compare.splice(+b.dataset.i, 1); [...S.ingOpen].filter((k) => k.startsWith('cmp:')).forEach((k) => S.ingOpen.delete(k)); render(); break;
-    case 'cmp-sec': S.cmpSection = b.dataset.s; render(); break;
-    case 'cmp-same': S.compare.forEach((c) => (c.g = Number(b.dataset.g))); render(); break;
-    // seçici
-    case 'pk-close': S.picker = null; render(); break;
-    case 'pk-cat': S.picker.cat = b.dataset.cat || null; S.picker.extGroup = null; S.picker.extPage = 0; render(); break;
-    case 'pk-extgroup': S.picker.extGroup = S.picker.extGroup === b.dataset.g ? null : b.dataset.g; render(); break;
-    case 'pk-pick': selectFood('pk', { t: 'c', id: b.dataset.id, f: 0 }); break;
-    case 'pk-pick-ext': selectFood('pk', { t: 'x', n: b.dataset.ndb }); break;
-    case 'pk-form': S.picker.sel = { ...S.picker.sel, f: +b.dataset.f }; render(); break;
-    case 'pk-back': S.picker.sel = null; render(); break;
-    case 'pk-confirm':
-    case 'pk-confirm-more': {
-      const P = S.picker;
-      if (P.target === 'recipe') { if (!addToRecipe(P.sel, P.amount)) break; }
-      else addToCompare(P.sel, P.amount);
-      if (a === 'pk-confirm-more') { P.sel = null; } else S.picker = null;
-      render(); break;
     }
     // ayarlar
     case 'theme-apply': setSetting('accent', 'auto'); setSetting('theme', 'custom'); render(); break;
@@ -876,6 +847,7 @@ export function start() {
   bindDayActions({ render, persistPersonal, uiDialog, selectFood, setSetting }); // B230
   bindCollectionActions({ render, uiDialog }); // B232
   bindRecipeActions({ render, uiDialog, setSetting }); // B235
+  bindPickActions({ render, selectFood, addToRecipe, addToCompare }); // B236
   printController = createPrintController(document, window);
   applySettings();
   if (S.settings.showExt || S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) requestExtCatalog();

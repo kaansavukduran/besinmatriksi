@@ -72,3 +72,14 @@ test('B235 Tarif eylemleri ayrı modülde ve app.js ile çakışmaz', () => {
   assert.match(app, /Object\.hasOwn\(RECIPE_ACTIONS, a\)/);
   assert.match(app, /bindRecipeActions\(\{ render, uiDialog, setSetting \}\)/);
 });
+
+// B236: seçici (pk-) ve Kıyasla (cmp-) eylemleri src/actions/pick.js'te
+test('B236 seçici ve Kıyasla eylemleri ayrı modülde ve app.js ile çakışmaz', () => {
+  const pk = fs.readFileSync(new URL('../src/actions/pick.js', import.meta.url), 'utf8');
+  const app = fs.readFileSync(new URL('../src/app.js', import.meta.url), 'utf8');
+  const keys = [...pk.matchAll(/^  '([a-z0-9-]+)': async \((b)?\) =>/gm)].map((m) => m[1]);
+  for (const k of ['cmp-pick', 'cmp-add', 'cmp-del', 'cmp-sec', 'cmp-same', 'pk-close', 'pk-cat', 'pk-pick', 'pk-form', 'pk-back', 'pk-confirm', 'pk-confirm-more', 'pk-full-search', 'pk-extpage']) assert.ok(keys.includes(k), k);
+  assert.equal(keys.length, 18);
+  for (const k of keys) assert.ok(!app.includes(`case '${k}'`), `app.js hâlâ ${k} içeriyor`);
+  assert.match(app, /bindPickActions\(\{ render, selectFood, addToRecipe, addToCompare \}\)/);
+});
