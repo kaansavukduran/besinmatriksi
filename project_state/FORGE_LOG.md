@@ -1412,3 +1412,10 @@
 - Kanıt: `npm test` 341/341; build + build:single; telefon ekran görüntüsü (gado-gado benzerleri bitkisel) hatasız; Playwright tam koşu 74: 387/387.
 - Sürüm 1.1.2-beta.66 (B240–B242).
 - Sonraki: B243 beta.66 doğrulama; yeni yemek turu (Güneydoğu/Doğu Asya, Karayipler, Kafkasya).
+
+## B243 · 2026-11-20 · beta.66 doğrulandı; Çin, Tayland, Jamaika, Gürcistan, İran yemekleri
+- beta.66: release.yml koşusu 44702751570 başarılı; `v1.1.2-beta.66` ön sürüm, 23 varlık. Test 279 ve Pages 128 (B242) başarılı.
+- Ev tarifi hesabı (tahmin; USDA SR28): sebzeli kızarmış pilav (tofulu, yumurtasız; soya, gluten, susam), Tay sebze körisi (hindistan cevizi sütü, tofu; köri ezmesi kaydı yok, balık sosu yok), rice and peas (Jamaika), pkhali (Gürcü, cevizli; sert kabuklu), ajapsandali (Gürcü), adas polo (İran; tereyağı yerine yağ). Hepsi vegan filtresinde. Katalog 869 besin.
+- Körili ve rice and peas'te lif "veri yok": USDA konserve hindistan cevizi sütü (12118) kaydında lif ölçülmemiş; toplam bilinmiyor, 0 yazılmıyor (testle sabitlendi; arayüzde "Lif: veri yok" görüldü).
+- Kanıt: `npm run data`; `npm test` 342/342; arama testi 2/2; telefon ekran görüntüsü hatasız; Playwright tam koşu 75: 387/387.
+- Sonraki: B244 yeni yemek turu (Japonya, Vietnam, Filipinler, Meksika, Türk tatlıları vegan) veya veri eksikleri; 2–3 Forge sonra sürüm.

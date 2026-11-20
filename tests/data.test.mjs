@@ -548,3 +548,18 @@ test('B241 jollof, red red, mafe, gado-gado, kinoa salatası, sebzeli kuskus: ve
   assert.deepEqual(by('gado_gado').allergens, ['yerfistigi', 'soya', 'gluten']);
   assert.notEqual(by('damper').dietary.kind, 'plant'); // gerçek tereyağı (01001) hâlâ hayvansal
 });
+
+test('B243 kızarmış pilav, Tay körisi, rice and peas, pkhali, ajapsandali, adas polo: vegan, alerjenler işaretli', () => {
+  const by = (id) => DB.foods.find((f) => f.id === id);
+  for (const id of ['sebzeli_kizarmis_pilav', 'tay_sebze_korisi', 'rice_and_peas', 'pkhali', 'ajapsandali', 'adas_polo']) {
+    const f = by(id);
+    assert.ok(f, id);
+    assert.equal(f.dietary.kind, 'plant', id);
+    assert.ok(!f.animal, id);
+    assert.match(f.note, /tahmin/, id);
+  }
+  assert.deepEqual(by('sebzeli_kizarmis_pilav').allergens, ['soya', 'gluten', 'susam']);
+  assert.deepEqual(by('pkhali').allergens, ['sertkabuklu']);
+  // konserve hindistan cevizi sütünde (12118) lif ölçülmemiş → tarif toplamı bilinmiyor, 0 değil
+  for (const id of ['tay_sebze_korisi', 'rice_and_peas']) assert.equal(by(id).forms[0].v.fiber, undefined, id);
+});
