@@ -4,9 +4,9 @@
   "product_version": "1.1.2-beta.62",
   "development_state": "IN_PROGRESS",
   "last_forge_at": "2026-11-19",
-  "last_completed_forge": "B233",
+  "last_completed_forge": "B234",
   "active_forge": null,
-  "next_recommended_forge": "B234 beta.63 release doğrulama (run 44648575783); yeni vegan yemek turu",
+  "next_recommended_forge": "B235 CI doğrulama (B231–B234); Tarif eylemlerini src/actions/recipe.js'e ayırma",
   "branch": "ccr-1e1934aa-iv8aev",
   "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
   "validated_code_commit": null,
@@ -333,11 +333,11 @@
     "B127"
   ],
   "latest_release": {
-    "tag": "v1.1.2-beta.62",
-    "run": 44637502821,
-    "source_sha": "555fe14",
+    "tag": "v1.1.2-beta.63",
+    "run": 44648575783,
+    "source_sha": "a6d830b",
     "assets": 23,
-    "contains": "B196–B229"
+    "contains": "B196–B232"
   },
   "current_forge": {
     "id": "B151",

@@ -1345,3 +1345,10 @@
 - Test: `details-state.spec.mjs` (yeni) tabloyu açıp aynı görevde yeniden çizdirir; düzeltmesiz derlemede düştüğü, düzeltmeyle geçtiği gözlendi (kapatma da korunur).
 - Kanıt: `npm test` 324/324; build + build:single; hedefli tarayıcı testleri 24/24; Playwright tam koşu 66: 387/387.
 - Sonraki: B234 beta.63 release doğrulama; yeni yemek turu.
+
+## B234 · 2026-11-20 · beta.63 doğrulandı; altı vegan yemek daha
+- beta.63: release.yml koşusu 44648575783 başarılı; `v1.1.2-beta.63` ön sürüm, 23 varlık (13'ü sürüm adlı paket). CI: B230 (267) yeşil; B231–B233 koşuları GitHub kuyruğunda sürüyordu.
+- Ev tarifi hesabı (tahmin; USDA SR28): koşari (Mısır; makarnalı → gluten), kapuska (etsiz), lecsó (Macar; yumurtasız/sosissiz), nohutlu pilav (zeytinyağlı), karnabahar yemeği (patatesli), baingan bharta (Hint; közlenmiş patlıcan kaydı yok, haşlanmış). Hepsi vegan filtresinde. Katalog 851 besin.
+- Eş anlamlılar: kushari, lahana yemeği, leço, nohut pilavı, karnıbahar yemeği, bharta.
+- Kanıt: `npm run data`; `npm test` 325/325 (B234 veri testi); arama testi genişletildi 2/2; telefon ekran görüntüsü hatasız; Playwright tam koşu 67: 387/387.
+- Sonraki: B235 CI (B231–B234) doğrulama; Tarif sekmesi eylemlerini src/actions/recipe.js'e ayırma.

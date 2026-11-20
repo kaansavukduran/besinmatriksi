@@ -19,7 +19,7 @@ test('B210/B211 dünya ve Anadolu yemekleri aranır; vegan filtresi doğrulanmı
   await page.locator('#q').fill('meksika fasulyesi');
   await expect(page.locator('#foodlist [data-id="kirmizi_fasulye"]')).toBeVisible();
   // B231: yabancı adla arama (vegan filtresi açıkken de görünür)
-  for (const [q, id] of [['mujaddara', 'mucedra'], ['khichdi', 'kicri'], ['gallo pinto', 'gallo_pinto'], ['lobio', 'lobio'], ['acılı ezme', 'acili_ezme'], ['barbunya pilaki', 'zeytinyagli_barbunya']]) {
+  for (const [q, id] of [['mujaddara', 'mucedra'], ['khichdi', 'kicri'], ['gallo pinto', 'gallo_pinto'], ['lobio', 'lobio'], ['acılı ezme', 'acili_ezme'], ['barbunya pilaki', 'zeytinyagli_barbunya'], ['kushari', 'koshari'], ['lahana yemeği', 'kapuska'], ['lecso', 'lecso'], ['nohut pilavı', 'nohutlu_pilav'], ['karnıbahar yemeği', 'karnabahar_yemegi'], ['bharta', 'baingan_bharta']]) {
     await page.locator('#q').fill(q);
     await expect(page.locator(`#foodlist [data-id="${id}"]`), q).toBeVisible();
   }

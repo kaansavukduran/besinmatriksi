@@ -507,3 +507,17 @@ test('B231 acılı ezme, mücedra, kiçri, gallo pinto, lobio, zeytinyağlı bar
   // baklagilli tabaklar: lifi ölçülmüş malzemeler → toplam yazılır ve makul aralıkta
   for (const id of ['mucedra', 'kicri', 'gallo_pinto', 'lobio', 'zeytinyagli_barbunya']) assert.ok(by(id).forms[0].v.fiber > 2 && by(id).forms[0].v.fiber < 10, id);
 });
+
+test('B234 koşari, kapuska, lecsó, nohutlu pilav, karnabahar yemeği, baingan bharta: vegan, tahmin etiketli, koşaride gluten', () => {
+  const by = (id) => DB.foods.find((f) => f.id === id);
+  for (const id of ['koshari', 'kapuska', 'lecso', 'nohutlu_pilav', 'karnabahar_yemegi', 'baingan_bharta']) {
+    const f = by(id);
+    assert.ok(f, id);
+    assert.equal(f.dietary.kind, 'plant', id);
+    assert.ok(!f.animal, id);
+    assert.ok(f.forms[0].v.energy > 0, id);
+    assert.match(f.note, /tahmin/, id);
+  }
+  assert.deepEqual(by('koshari').allergens, ['gluten']);
+  assert.ok(by('nohutlu_pilav').forms[0].v.protein > by('kapuska').forms[0].v.protein);
+});
