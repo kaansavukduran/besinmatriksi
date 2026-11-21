@@ -169,7 +169,7 @@ export function foodList(prefix, cat, q, extGroup) {
       ${all.length > pageSize ? `<nav class="catalog-pages" aria-label="${L("Katalog sayfaları")}"><button class="btn" data-action="${prefix}-extpage" data-page="${current - 1}" ${current === 0 ? 'disabled' : ''}>${L("Önceki")}</button><span role="status">${L("Sayfa {a} / {b}", { a: current + 1, b: pageCount })}</span><button class="btn" data-action="${prefix}-extpage" data-page="${current + 1}" ${current === pageCount - 1 ? 'disabled' : ''}>${L("Sonraki")}</button></nav>` : ''}`;
   }
   const res = search(q, { cat, ext: S.settings.showExt && extLoaded() && !!q });
-  if (!res.curated.length && !res.ext.length && !res.custom.length) return `<p class="empty">${L("Eşleşen besin yok. Aramayı kısalt veya “Tümü”ne dön.")}</p>${q ? fullCatalogSearch(prefix) : ''}`;
+  if (!res.curated.length && !res.ext.length && !res.custom.length) return emptySearch(prefix, q, cat);
   let html = (prefix === 'ex' ? catalogHeading(cat, q, res.curated.length + res.ext.length + res.custom.length) : '') + (!q && !cat ? recentRow(prefix) : '') + sortBar(prefix);
   const groupedCategory = ['meyve','sebze','baklagil','icecek'].includes(cat);
   if (prefix==='ex' && groupedCategory && !q && S.sort!=='default') html += `<p class="hint">${L("Her alt başlık kendi içinde sıralanır.")}</p>`;
@@ -271,6 +271,16 @@ export function welcome() {
 }
 
 export const visibleCurated = () => search('', { cat: null }).curated;
+// B247: boş sonuçta nedenini ve tek dokunuşluk çıkışları göster: kategori daraltıyorsa tümünde ara, beslenme filtresi açıksa sıfırla, aramayı temizle
+export function emptySearch(prefix, q, cat) {
+  const actions = [];
+  if (cat && q) actions.push(`<button class="btn" data-action="${prefix}-cat">${L("Tüm kategorilerde ara")}</button>`);
+  if (dietActive(S.settings)) actions.push(`<button class="btn" data-action="diet-reset">${L("Beslenme filtresini sıfırla")}</button>`);
+  if (q && prefix === 'ex') actions.push(`<button class="btn ghost" data-action="ex-clear">${L("Aramayı temizle")}</button>`);
+  const why = dietActive(S.settings) ? `<p class="hint">${L("Beslenme filtresi açık; uymayan besinler gizli.")}</p>` : '';
+  return `<div class="empty-state" role="status"><p class="empty">${L("Eşleşen besin yok. Aramayı kısalt veya “Tümü”ne dön.")}</p>${why}${actions.length ? `<div class="empty-actions">${actions.join('')}</div>` : ''}</div>${q ? fullCatalogSearch(prefix) : ''}`;
+}
+
 export function catalogHeading(cat, q, count) {
   const title = q ? L("“{q}” için sonuçlar", { q }) : cat ? catName(cat) : L("Besinleri keşfet");
   return `<div class="catalog-heading ${['meyve','sebze','baklagil','icecek'].includes(cat)?'grouped-heading':''}"><h2>${esc(title)}</h2><span class="hint">${L("{n} besin", { n: count })}</span></div>`;

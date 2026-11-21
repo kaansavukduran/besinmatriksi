@@ -259,3 +259,19 @@
 /* B227: sık yenenlerde "＋ Bugüne" */
 .hist-top li { align-items: center; }
 .hist-add { min-height: calc(var(--tap) - 8px); padding: .1rem .7rem; font-size: .85rem; margin-left: auto; }
+
+/* B247: boş sonuç: neden + tek dokunuşluk çıkışlar */
+.empty-state { margin: 1rem 0 .5rem; }
+.empty-state .empty { margin-bottom: .4rem; }
+.empty-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: .6rem; }
+
+/* B248: telefonda ilk ekranda besin görünsün: tanıtım, filtre ve başlık boşlukları sıkılaştırıldı (masaüstü değişmez) */
+@media (max-width: 700px) {
+  .explore:not(.has-sel) .welcome { padding: 0 0 12px; margin-bottom: 12px; }
+  .explore:not(.has-sel) .welcome h1 { font-size: 1.45rem; margin-bottom: 6px; }
+  .explore:not(.has-sel) .welcome-copy > p { margin-bottom: 0; }
+  .explore:not(.has-sel) .welcome-copy .welcome-meta { display: none; } /* sayı hemen alttaki "Besinleri keşfet · N besin" başlığında var */
+  .explore:not(.has-sel) .diet-filter { padding: .45rem 0; margin-bottom: .5rem; gap: .2rem; }
+  .explore:not(.has-sel) .catalog-heading { margin: 10px 0 6px; }
+  .explore:not(.has-sel) #foodlist h3.grp { margin: .6rem 0 .4rem; padding-block: .25rem; font-size: 1.2rem; }
+}

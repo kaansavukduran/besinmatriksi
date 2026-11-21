@@ -85,3 +85,20 @@ test('B237 Pages iş akışı: build → deploy ayrı işler, yayın derlemeye b
   assert.doesNotMatch(deploy, /upload-pages-artifact|npm (ci|test|run)/);
   assert.match(deploy, /environment: \{ name: github-pages/);
 });
+
+// B246: veri (catalog) ve metin/çizim sözlükleri (content) koddan ayrı parçalar; tek dosya sürümünde bölme yok
+test('B246 vite parça ayrımı: catalog ve content grupları, tek dosyada kapalı', () => {
+  const cfg = fs.readFileSync('vite.config.js', 'utf8');
+  assert.match(cfg, /name: 'catalog', test: \/src\[\\\\\/\]data\[\\\\\/\]foods\\\.json\//);
+  assert.match(cfg, /name: 'content'/);
+  assert.match(cfg, /single \? \{ output: \{ codeSplitting: false \} \}/);
+});
+
+// B250: bağlantı önizlemesindeki besin sayısı gerçek katalogla çelişmez (eskiden "690+" yazıyordu)
+test('B250 og:description besin sayısı katalogdan büyük değil ve 100\'ün altında eskimiş değil', async () => {
+  const { decodeDB } = await import('../src/foods-codec.js');
+  const html = fs.readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const n = Number(html.match(/og:description" content="(\d+)\+/)[1]);
+  const total = decodeDB(JSON.parse(fs.readFileSync(new URL('../src/data/foods.json', import.meta.url), 'utf8'))).foods.length;
+  assert.ok(n <= total && total - n < 100, `${n}+ / ${total}`);
+});

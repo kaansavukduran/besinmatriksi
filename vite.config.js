@@ -19,7 +19,18 @@ export default defineConfig(({ mode }) => {
       cssCodeSplit: false,
       target: 'es2020',
       chunkSizeWarningLimit: 5000,
-      rollupOptions: single ? { output: { codeSplitting: false } } : {},
+      // B246: veri ve metin sözlükleri koddan seyrek değişir; ayrı parçalar sayesinde kod güncellemesinde yalnız kod yeniden indirilir
+      // (hepsi ilk açılışta paralel modulepreload ile gelir; toplam bayt değişmez). Tek dosya sürümünde bölme yok.
+      rollupOptions: single ? { output: { codeSplitting: false } } : {
+        output: {
+          codeSplitting: {
+            groups: [
+              { name: 'catalog', test: /src[\\/]data[\\/]foods\.json/ },
+              { name: 'content', test: /src[\\/](i18n-[a-z-]+\.js|food-art\.js|food-icons\.js|data[\\/](efsa|notices)\.json)/ },
+            ],
+          },
+        },
+      },
     },
     // B202: hafif sürümde geniş katalog yerine boş taslak paketlenir
     resolve: lite ? { alias: [{ find: /^\.\/data\/foods-ext\.json$/, replacement: fileURLToPath(new URL('./src/foods-ext-lite.json', import.meta.url)) }] } : {},
