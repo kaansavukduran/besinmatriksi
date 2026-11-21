@@ -1446,3 +1446,8 @@
 - Denetim: axe (wcag2a/aa, 21aa) 7 ekran × 390/1366 px × açık/koyu temada 0 ihlal; konsol hatası/uyarısı 0; ölü kod: 4 kullanılmayan tek satırlık dışa aktarım (tree shaking ile pakete girmiyor).
 - Test: `ux-flow.spec.mjs` (B247 üç çıkış, B248 iki telefon boyutunda ilk besin alt menünün üstünde ve taşma yok), `release.test.mjs` B246 ve B250.
 - Kanıt: `npm test` 351/351; build + build:single; Playwright tam koşu 78: 391 geçti, 2 düştü (B122 sırası → B249 geri alındı); geri alma sonrası ilgili testler 12/12; Playwright tam koşu 79: 391/391.
+
+## B251 · 2026-11-21 · Sürüm 1.1.2-beta.68; main dalı
+- Kaan: "yayınla … main'e al … sürüm yükselt" (açık onay). Sürüm 1.1.2-beta.68 (B245–B250: kayıpsız veri sıkıştırması, parça ayrımı, boş arama çıkışları, telefon ilk ekranı).
+- Depoda `main` yoktu; varsayılan dal `ccr-1e1934aa-iv8aev` ve Pages oradan yayınlanıyor. Aynı commit'ten `main` oluşturuldu. `pages.yml` artık `main` push'unda da tetiklenir; yayın yalnız deponun varsayılan dalından yapılır (varsayılan dal GitHub ayarlarından `main` yapılırsa Pages oradan yayınlar).
+- Kanıt: `npm test` 351/351; build, build:single, build:lite; hosting/ux/route tarayıcı testleri 8/8; kod B250 tam koşusu (79: 391/391) ile aynı.

@@ -4,7 +4,7 @@ name: GitHub Pages (iPhone/Android için yüklenebilir PWA)
 # GitHub Actions seçilmelidir; bu iş akışı yönetici ayarını değiştirmez.
 on:
   push:
-    branches: [ccr-1e1934aa-iv8aev]
+    branches: [ccr-1e1934aa-iv8aev, main] # yayın yalnız deponun varsayılan dalından yapılır (aşağıdaki if)
   workflow_dispatch:
 
 permissions:

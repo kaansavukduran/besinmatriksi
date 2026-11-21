@@ -84,6 +84,8 @@ test('B237 Pages iş akışı: build → deploy ayrı işler, yayın derlemeye b
   assert.match(deploy, /deploy-pages@[0-9a-f]{40}/);
   assert.doesNotMatch(deploy, /upload-pages-artifact|npm (ci|test|run)/);
   assert.match(deploy, /environment: \{ name: github-pages/);
+  assert.match(y, /branches: \[ccr-1e1934aa-iv8aev, main\]/); // B251: main de tetikler; yayın yalnız varsayılan daldan
+  assert.match(y, /if: github.ref_name == github.event.repository.default_branch/);
 });
 
 // B246: veri (catalog) ve metin/çizim sözlükleri (content) koddan ayrı parçalar; tek dosya sürümünde bölme yok
