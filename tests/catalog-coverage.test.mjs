@@ -4,10 +4,11 @@ import fs from 'node:fs';
 import { NUTRIENTS } from '../src/nutrients.js';
 import { UI_EN } from '../src/i18n-ui.js';
 import { EXT_CATALOG_EN } from '../src/i18n-ext-catalog.js';
+import { decodeDB, decodeExt } from '../src/foods-codec.js';
 
 const read = p => fs.readFileSync(new URL(p, import.meta.url), 'utf8');
-const curated = JSON.parse(read('../src/data/foods.json'));
-const extended = JSON.parse(read('../src/data/foods-ext.json'));
+const curated = decodeDB(JSON.parse(read('../src/data/foods.json')));
+const extended = decodeExt(JSON.parse(read('../src/data/foods-ext.json')));
 const source = read('../data/raw/FOOD_DES.txt').split(/\r?\n/).filter(Boolean).map(line => {
   const fields = line.split('^').map(value => value.replace(/^~|~$/g, ''));
   return { n: fields[0], g: fields[1], en: fields[2] };

@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { matrixCSV } from '../src/export.js';
 import { renderMatrix } from '../src/matrix.js';
+import { decodeDB } from '../src/foods-codec.js';
 test('CSV sıfır ve eksik değeri ayırır; kısmi kapsamı ve Türkçe kaçışı korur', () => {
   const csv = matrixCSV({ v: { protein: 0 }, s: { protein: 'k' }, cov: { protein: 1 }, n: 2 }, 'Muz; "Tarif"');
   assert.ok(csv.startsWith('\ufeff"Muz; ""Tarif"""'));
@@ -66,7 +67,7 @@ test('denetim düzeltmeleri: CSV ve döküm her kaynak etiketini taşır; tahmin
   const fs = await import('node:fs');
   const { SRC } = await import('../src/export.js');
   const { LABELS } = await import('../src/recipe-sources.js');
-  const db = JSON.parse(fs.readFileSync(new URL('../src/data/foods.json', import.meta.url)));
+  const db = decodeDB(JSON.parse(fs.readFileSync(new URL('../src/data/foods.json', import.meta.url))));
   const tags = new Set(db.foods.flatMap((f) => f.forms.flatMap((fm) => Object.values(fm.s))));
   for (const t of tags) { assert.ok(SRC[t], 'CSV: ' + t); assert.ok(LABELS[t], 'döküm: ' + t); }
   const csv = matrixCSV({ v: { protein: 2 }, s: { protein: 'r' }, n: 1 }, '=HYPERLINK("x")');

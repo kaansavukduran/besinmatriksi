@@ -3,8 +3,9 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { NUTRIENTS } from '../src/nutrients.js';
 import { scaleItem, aggregate, derive } from '../src/calc.js';
+import { decodeDB } from '../src/foods-codec.js';
 
-const DB = JSON.parse(fs.readFileSync(new URL('../src/data/foods.json', import.meta.url)));
+const DB = decodeDB(JSON.parse(fs.readFileSync(new URL('../src/data/foods.json', import.meta.url))));
 const keys = new Set(NUTRIENTS.map((n) => n.key));
 const form = (id, i = 0) => {
   const f = DB.foods.find((x) => x.id === id).forms[i];

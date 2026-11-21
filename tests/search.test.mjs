@@ -5,8 +5,9 @@ import { searchKey, recentSearches } from '../src/search.js';
 import { normalizeProfiles, exportPayload, parseImport } from '../src/store.js';
 import fs from 'node:fs';
 import {EN_FOODS} from '../src/i18n-foods.js';
+import { decodeDB } from '../src/foods-codec.js';
 test('B154 dried apricots use a plain name and common searches while retaining sulphite/source identity',()=>{
- const food=JSON.parse(fs.readFileSync(new URL('../src/data/foods.json',import.meta.url))).foods.find(f=>f.id==='kuru_kayisi');
+ const food=decodeDB(JSON.parse(fs.readFileSync(new URL('../src/data/foods.json',import.meta.url)))).foods.find(f=>f.id==='kuru_kayisi');
  assert.equal(food.tr,'Kuru kayısı');assert.equal(EN_FOODS[food.id],'Dried apricots');
  const key=searchKey(food);for(const query of ['kuru kayısı','kayısı kurusu','kükürtlü kuru kayısı','dried apricots','sulphured','sulfured'])for(const term of norm(query).split(' '))assert.ok(key.includes(term),query);
  assert.ok(!key.includes('kukurtsuz'));assert.ok(!key.includes('gun kurusu'));

@@ -1,7 +1,8 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';
 import {catalogGroup,categoryContains,rootCategories,catalogSections,DRINK_GROUPS} from '../src/catalog-tree.js';
 import {EN_CATEGORIES} from '../src/i18n-foods.js';
-const db=JSON.parse(fs.readFileSync(new URL('../src/data/foods.json',import.meta.url)));
+import { decodeDB } from '../src/foods-codec.js';
+const db=decodeDB(JSON.parse(fs.readFileSync(new URL('../src/data/foods.json',import.meta.url))));
 const categories=db.categories.map(([id,name,icon])=>({id,name,icon})),food=id=>db.foods.find(f=>f.id===id);
 test('B151 root categories own every food once, with no repeated child tabs or duplicate catalogue records',()=>{
  const roots=rootCategories(categories);for(const id of ['kurumeyve','yaprak','kok','kahve','soya'])assert.ok(!roots.some(r=>r.id===id));

@@ -1427,3 +1427,12 @@
 - Kanıt: `npm run data`; `npm test` 343/343; arama testi 2/2; telefon ekran görüntüsü hatasız; Playwright tam koşu 76: 387/387.
 - Sürüm 1.1.2-beta.67 (B243–B244); sürüm sonrası `npm test` 343/343 ve derleme tamam.
 - Sonraki: B245 beta.67 doğrulama; yeni yemek turu (Hindistan güneyi, Etiyopya, Kore, Peru).
+
+## B245 · 2026-11-21 · Kayıpsız veri sıkıştırması (katalog ve geniş katalog)
+- Teşhis: ana paket 2.972 KB (gzip 569 KB); bunun ~2.650 KB'ı küratörlü katalog. Her değerin yanında aynı anahtarla tekrarlanan kaynak kodu (`"protein":"u"`, 54.060 kez "u") ~950 KB, tekrarlanan anahtar adları ve porsiyon etiketleri kalanının çoğu.
+- `src/foods-codec.js`: `form.v` → anahtar sıra numarası + değer dizisi (anahtar adları tek tabloda), `form.s` → değerlerle aynı sırada tek karakterli kaynak dizgesi, porsiyonlar → [g, şablon]. Geniş katalog için aynı yöntem (`encodeExt/decodeExt`; `fs` istisnaları olduğu gibi). Açma `data.js`'te (açılışta) ve `loadExt`'te.
+- Güvence: `build-data` yazmadan önce gidiş-dönüş eşitliğini denetler (eşit değilse derleme durur). Yeniden üretilen veri açıldığında eski dosyalarla karakteri karakterine aynı (foods 2.649.325, ext 9.720.210 karakter). Değer, birim, kaynak kodu, ölçülmemiş = anahtar yok (0 değil) ve anahtar sırası korunur.
+- Sonuç: foods.json 2.649 → 1.163 KB; foods-ext 9.720 → 5.685 KB. Ana JS paketi 2.972 → 1.830 KB (gzip 569 → 502 KB); geniş katalog parçası 8.185 → 5.468 KB (gzip 1.579 → 1.402 KB); tek dosya HTML 12,96 → 9,11 MB; hafif HTML 4,78 → 3,63 MB.
+- Ölçüm (390×844, 4× CPU yavaşlatma, 7 koşu medyanı, iki tur): açılış 1.606 → 1.168–1.321 ms; betik süresi 916–947 → 598–712 ms. Açık yığın ~9,7 → ~12,5 MB (açılan nesneler; ölçüm anı GC'ye bağlı).
+- Test: `foods-codec.test.mjs` (paketlenmiş biçim, yeniden paketleme birebir, küçük örnekte eksik ölçüm/0/sıra, eşleşmeyen v/s'de hata, hafif taslak geçişi, geniş katalog gidiş-dönüş); veri okuyan 10 test `decodeDB/decodeExt` kullanır.
+- Kanıt: `npm run data`; `npm test` 349/349; `npm run build`, `build:single`, `build:lite`; katalog/geniş katalog tarayıcı testleri 28/28; Playwright tam koşu 77: 387/387.

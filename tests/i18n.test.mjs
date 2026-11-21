@@ -8,6 +8,7 @@ import { EN_FOODS, EN_CATEGORIES, EN_FORMS } from '../src/i18n-foods.js';
 import { EN_NUTRIENTS } from '../src/i18n-nutrients.js';
 import { NUTRIENTS, SECTIONS, ALLERGENS } from '../src/nutrients.js';
 import { AA_REF } from '../src/calc.js';
+import { decodeDB } from '../src/foods-codec.js';
 
 const SRC = new URL('../src/', import.meta.url);
 const files = fs.readdirSync(SRC).filter(f => f.endsWith('.js')).map(f => [f, fs.readFileSync(new URL(f, SRC), 'utf8')]);
@@ -24,7 +25,7 @@ test('kaynaktaki her L("…") metninin İngilizce karşılığı var', () => {
 });
 
 test('veri tarafı sabit metinlerinin İngilizcesi tam', () => {
-  const data = JSON.parse(fs.readFileSync(new URL('data/foods.json', SRC)));
+  const data = decodeDB(JSON.parse(fs.readFileSync(new URL('data/foods.json', SRC))));
   for (const f of data.foods) assert.ok(EN_FOODS[f.id], 'besin adı: ' + f.id);
   for (const [id] of data.categories) assert.ok(EN_CATEGORIES[id], 'kategori: ' + id);
   for (const f of data.foods) for (const fm of f.forms) assert.ok(EN_FORMS[fm.label], 'biçim: ' + fm.label);
@@ -48,7 +49,7 @@ test('L() dile göre çevirir ve yer tutucuları doldurur; eksik çeviride Türk
 import { FOOD_ICONS } from '../src/food-icons.js';
 test('her küratörlü besinin kendi simgesi var (B076)', async () => {
   const fs = await import('node:fs');
-  const db = JSON.parse(fs.readFileSync(new URL('../src/data/foods.json', import.meta.url)));
+  const db = decodeDB(JSON.parse(fs.readFileSync(new URL('../src/data/foods.json', import.meta.url))));
   const missing = db.foods.filter((f) => !FOOD_ICONS[f.id]).map((f) => f.id);
   assert.deepEqual(missing, []);
   const extra = Object.keys(FOOD_ICONS).filter((k) => !db.foods.some((f) => f.id === k));
@@ -59,7 +60,7 @@ test('her küratörlü besinin kendi simgesi var (B076)', async () => {
 import { FOOD_ART, foodArt } from '../src/food-art.js';
 test('her küratörlü besinin kendine özgü SVG çizimi var (B080)', async () => {
   const fs = await import('node:fs');
-  const db = JSON.parse(fs.readFileSync(new URL('../src/data/foods.json', import.meta.url)));
+  const db = decodeDB(JSON.parse(fs.readFileSync(new URL('../src/data/foods.json', import.meta.url))));
   const svgs = db.foods.map((f) => foodArt(f.id));
   assert.ok(svgs.every((s) => s.startsWith('<svg') && /<(path|circle|rect|ellipse)/.test(s)));
   assert.equal(new Set(svgs).size, db.foods.length); // hepsi benzersiz

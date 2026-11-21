@@ -1,6 +1,7 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {gunzipSync} from 'node:zlib';
 import {categoryContains} from '../src/catalog-tree.js';import {searchKey} from '../src/search.js';import {norm} from '../src/util.js';
-const db=JSON.parse(fs.readFileSync(new URL('../src/data/foods.json',import.meta.url))),food=id=>db.foods.find(f=>f.id===id);
+import { decodeDB } from '../src/foods-codec.js';
+const db=decodeDB(JSON.parse(fs.readFileSync(new URL('../src/data/foods.json',import.meta.url)))),food=id=>db.foods.find(f=>f.id===id);
 const measured={kuru_mango:'09178',kuru_armut:'09259',kuru_trabzon_hurmasi:'09264',kuru_turna_yemisi:'09079',kuru_yaban_mersini:'09163',kuru_hunnap:'09147',kuru_lici:'09165',kuru_longan:'09173',muz_cipsi:'19400'};
 test('B155 nine dried-fruit selections use their own USDA dry/prepared records and raw energy/protein',()=>{
  const raw=new Map();for(const line of gunzipSync(fs.readFileSync(new URL('../data/raw/NUT_DATA.txt.gz',import.meta.url))).toString().split('\n')){const [id,key,value]=line.split('^').map(x=>x.replace(/^~|~$/g,''));if(Object.values(measured).includes(id)&&['208','203'].includes(key))raw.set(id+':'+key,Number(value));}

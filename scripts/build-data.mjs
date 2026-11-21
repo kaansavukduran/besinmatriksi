@@ -12,6 +12,7 @@ import { NUTRIENTS } from '../src/nutrients.js';
 import { FOODS, CATEGORIES, FORM_LABELS, ANIMAL_CATS } from '../data/catalog.mjs';
 import { POPULAR, NICHE } from '../data/popularity.mjs';
 import { COFID_MAP, COFID_KEYS, COFID_SUGARS } from '../data/cofid-map.mjs';
+import { encodeDB, decodeDB, encodeExt, decodeExt } from '../src/foods-codec.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const raw = (f) => fs.readFileSync(path.join(root, 'data/raw', f), 'utf8');
@@ -557,6 +558,16 @@ const meta = {
   forms: foods.reduce((a, f) => a + f.forms.length, 0),
   ifctLinked, estimated, ext: ext.length,
 };
-fs.writeFileSync(path.join(outDir, 'foods.json'), JSON.stringify({ meta, categories: CATEGORIES, animalCategories: ANIMAL_CATS, foods }));
-fs.writeFileSync(path.join(outDir, 'foods-ext.json'), JSON.stringify({ meta: extMeta, groups: EXT_GROUPS, foods: ext }));
+// B245: kayıpsız sıkıştırılmış yazılır (src/foods-codec.js); yazmadan önce gidiş-dönüş eşitliği doğrulanır
+{
+  const plain = { meta, categories: CATEGORIES, animalCategories: ANIMAL_CATS, foods };
+  const plainText = JSON.stringify(plain), packed = JSON.stringify(encodeDB(JSON.parse(plainText)));
+  if (JSON.stringify(decodeDB(JSON.parse(packed))) !== plainText) throw new Error('foods.json sıkıştırma gidiş-dönüşü eşit değil');
+  fs.writeFileSync(path.join(outDir, 'foods.json'), packed);
+}
+{
+  const plainText = JSON.stringify({ meta: extMeta, groups: EXT_GROUPS, foods: ext }), packed = JSON.stringify(encodeExt(JSON.parse(plainText)));
+  if (JSON.stringify(decodeExt(JSON.parse(packed))) !== plainText) throw new Error('foods-ext.json sıkıştırma gidiş-dönüşü eşit değil');
+  fs.writeFileSync(path.join(outDir, 'foods-ext.json'), packed);
+}
 console.log('CoFID doldurulan hücre', cofidFills); console.log('tutarlılık kapısı: atılan hücre', gateDrops); console.log(meta, 'foods.json', (fs.statSync(path.join(outDir, 'foods.json')).size / 1024).toFixed(0) + ' KB', 'ext', (fs.statSync(path.join(outDir, 'foods-ext.json')).size / 1024).toFixed(0) + ' KB');

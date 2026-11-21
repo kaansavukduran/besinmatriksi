@@ -3,9 +3,10 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { gunzipSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
+import { decodeExt } from '../src/foods-codec.js';
 const csv = gunzipSync(fs.readFileSync(new URL('../data/raw/USDA_SR_LEGACY_2018_B146_FILL.csv.gz', import.meta.url)));
 const meta = JSON.parse(fs.readFileSync(new URL('../data/raw/USDA_SR_LEGACY_B146_SOURCE.json', import.meta.url)));
-const ext = JSON.parse(fs.readFileSync(new URL('../src/data/foods-ext.json', import.meta.url)));
+const ext = decodeExt(JSON.parse(fs.readFileSync(new URL('../src/data/foods-ext.json', import.meta.url))));
 test('B146 analytical fill is traceable and preserves amino units and measured zero', () => {
   assert.equal(createHash('sha256').update(csv).digest('hex'), meta.csv_sha256);
   const rows = csv.toString().trim().split('\n').slice(1).map(line => line.split(','));

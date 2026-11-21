@@ -1,10 +1,13 @@
 import { categoryContains, rootCategories } from './catalog-tree.js';
 import { matchesDiet, extendedDietProfile } from './diet.js';
-import DB from './data/foods.json';
+import PACKED from './data/foods.json';
+import { decodeDB, decodeExt } from './foods-codec.js';
 import { norm } from './util.js';
 import { searchKey } from './search.js';
 import { getLanguage, L } from './i18n.js';
 import { EN_FOODS, EN_CATEGORIES, EN_FORMS } from './i18n-foods.js';
+
+const DB = decodeDB(PACKED); // B245: kayıpsız sıkıştırılmış katalog açılır
 
 const en = () => getLanguage() === 'en';
 export const foodName = (f) => (en() && EN_FOODS[f.id]) || f.tr;
@@ -27,7 +30,7 @@ export async function loadExt() {
   // B202: hafif tek dosya sürümünde geniş katalog paketlenmez (dal derlemede silinir)
   if (LITE) return Promise.reject(Object.assign(new Error('lite'), { lite: true }));
   if (!EXT_REQUEST) EXT_REQUEST = import('./data/foods-ext.json').then((mod) => {
-    const next = mod.default;
+    const next = decodeExt(mod.default); // B245
     for (const f of next.foods) { f._k = norm(`${f.en} ${f.sci || ''} ${f.n} ${next.groups[f.g] || ''}`); extByNdb.set(f.n, f); }
     EXT = next;
     return EXT;
