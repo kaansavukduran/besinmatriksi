@@ -333,11 +333,11 @@
     "B127"
   ],
   "latest_release": {
-    "tag": "v1.1.2-beta.66",
-    "run": 44702751570,
-    "source_sha": "c96fd8c",
+    "tag": "v1.1.2-beta.68",
+    "run": 44895981769,
+    "source_sha": "a0d815a",
     "assets": 23,
-    "contains": "B196–B242"
+    "contains": "B196–B251"
   },
   "current_forge": {
     "id": "B151",

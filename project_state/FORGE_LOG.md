@@ -1451,3 +1451,4 @@
 - Kaan: "yayınla … main'e al … sürüm yükselt" (açık onay). Sürüm 1.1.2-beta.68 (B245–B250: kayıpsız veri sıkıştırması, parça ayrımı, boş arama çıkışları, telefon ilk ekranı).
 - Depoda `main` yoktu; varsayılan dal `ccr-1e1934aa-iv8aev` ve Pages oradan yayınlanıyor. Aynı commit'ten `main` oluşturuldu. `pages.yml` artık `main` push'unda da tetiklenir; yayın yalnız deponun varsayılan dalından yapılır (varsayılan dal GitHub ayarlarından `main` yapılırsa Pages oradan yayınlar).
 - Kanıt: `npm test` 351/351; build, build:single, build:lite; hosting/ux/route tarayıcı testleri 8/8; kod B250 tam koşusu (79: 391/391) ile aynı.
+- Doğrulama: release.yml 44895981769 başarılı; `v1.1.2-beta.68` ön sürüm, 23 varlık (13'ü sürüm adlı paket), 2026-11-21 11:20 UTC. Test 44895966903 (Chromium + Tarayıcı uyumu) ve Pages 44895966918 başarılı.
