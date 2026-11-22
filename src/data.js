@@ -44,6 +44,9 @@ export const extGroups = () => (EXT ? EXT.groups : {});
 export const extFoods = () => (EXT ? (SHOW_ANIMAL ? EXT.foods : EXT.foods.filter((f) => !f.a && f.diet !== 'unknown')).filter(eligibleExtFood) : []);
 export const extAnimalGroup = (g) => !!EXT && !EXT.foods.some((f) => f.g === g && !f.a && f.diet !== 'unknown');
 
+import { volumeDensity } from './amount-scale.js';
+export { volumeDensity };
+
 // Ref: { t: 'c', id, f } küratörlü | { t: 'x', n } geniş katalog
 export function resolve(ref) {
   if (!ref) return null;
@@ -52,14 +55,17 @@ export function resolve(ref) {
     if (!food) return null;
     const form = food.forms[ref.f];
     if (!form) return null;
+    const liquid = ['icecek', 'demleme', 'suyu', 'yag'].includes(form.key);
     return {
       ref, food, form, animal: !!food.animal,
       name: foodName(food), formLabel: formName(form.label), cat: food.cat,
-      liquid: ['icecek', 'demleme', 'suyu', 'yag'].includes(form.key),
+      liquid,
+      density: liquid ? volumeDensity(form.portions) : null,
+      customLiquid: false,
       v: form.v, s: form.s, alt: form.alt || {}, sd: form.sd || {},
       portions: form.portions || [],
       allergens: food.allergens, note: [food.note, form.unavailable].filter(Boolean).map((x) => L(x)).join(' ') || null, sci: food.sci,
-      usda: form.usda, ifct: form.ifct, estFrom: form.estFrom, recipeOf: form.recipeOf || null, recipeYield: form.recipeYield || null,
+      usda: form.usda, cofid: form.cofid || null, ifct: form.ifct, estFrom: form.estFrom, recipeOf: form.recipeOf || null, recipeYield: form.recipeYield || null,
     };
   }
   if (ref.t === 'x') {
@@ -67,11 +73,15 @@ export function resolve(ref) {
     if (!f) return null;
     const s = {};
     for (const k of Object.keys(f.v)) s[k] = f.fs?.[k] || 'u';
+    const liquid = f.g === '1400' || f.g === '0400';
     return {
       ref, ext: f, animal: !!f.a, name: f.en, formLabel: L('USDA tanımı'), cat: 'ext:' + f.g,
-      liquid: f.g === '1400', v: f.v, s, alt: {}, sd: {}, portions: f.p || [],
+      liquid,
+      density: liquid ? volumeDensity(f.p) : null,
+      customLiquid: false,
+      v: f.v, s, alt: {}, sd: {}, portions: f.p || [],
       allergens: [], note: [L('USDA SR28 (2015) arşiv kaydı; güncel ürün etiketi değildir.'), f.a ? L('Hayvansal içerikli kayıt.') : f.diet === 'unknown' ? L('Karma içerik doğrulanmadı; vegan veya alerjensiz olduğu varsayılmaz.') : L('Kaynak grubu bitkiseldir; marka ve içerik ambalajdan doğrulanmalıdır.'), f.branded ? L('Markalı kaynak kaydı; ürünün tarifi zamanla değişmiş olabilir.') : ''].filter(Boolean).join(' '), sci: f.sci,
-      usda: { ndb: f.n, desc: f.en, refuse: f.r, refDesc: f.rd, sci: f.sci }, ifct: null, estFrom: null,
+      usda: { ndb: f.n, desc: f.en, refuse: f.r, refDesc: f.rd, sci: f.sci }, cofid: null, ifct: null, estFrom: null,
     };
   }
   if (ref.t === 'u') {
@@ -85,9 +95,9 @@ export function resolve(ref) {
     if (v.carb != null && f.v.carb == null) s.carb = 'd';
     return {
       ref, custom: f, name: f.name, formLabel: L('Kendi besinim (etiket)'), cat: 'custom',
-      liquid: !!f.liquid, v, s, alt: {}, sd: {}, portions: f.portion ? [{ g: f.portion, label: L('1 porsiyon (etiket)'), en: 'label serving' }] : [],
+      liquid: !!f.liquid, density: null, customLiquid: !!f.liquid, v, s, alt: {}, sd: {}, portions: f.portion ? [{ g: f.portion, label: L('1 porsiyon (etiket)'), en: 'label serving' }] : [],
       allergens: [], note: f.note || L('Değerler kullanıcı tarafından ürün etiketinden girildi.'), sci: null,
-      usda: null, ifct: null, estFrom: null,
+      usda: null, cofid: null, ifct: null, estFrom: null,
     };
   }
   return null;

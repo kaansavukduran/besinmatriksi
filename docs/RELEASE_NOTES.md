@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 68 · Daha hızlı açılış
+# 🫐 Besin Matriksi 1.1.2 Beta 69 · Daha doğru ölçüler, akıcı kullanım ve yeni veriler
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -15,14 +15,24 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 | macOS (Intel + M çip) | `…-macos-universal-unsigned.dmg` | Aç, uygulamayı **Uygulamalar** klasörüne sürükle. İlk açılışta sağ tık → **Aç**. |
 | Linux | `…-linux-x86_64.AppImage` | `chmod +x` ile çalıştırılabilir yap, çift tıkla. (`.deb` / `.rpm` da var.) |
 | **Her bilgisayar (kurulumsuz)** | `…-offline.html` | Çift tıkla, tarayıcıda açılır. İnternet gerekmez. |
-| Yavaş telefon / az yer | `…-offline-lite.html` (~4 MB) | Aynı uygulama; 8.000 kayıtlık USDA tam kataloğu hariç, tüm küratörlü besinler var. |
+| Yavaş telefon / az yer | `…-offline-lite.html` (~3,5 MB) | Aynı uygulama; 8.038 kayıtlık USDA tam kataloğu hariç, tüm küratörlü besinler var. |
 | iPhone | Şimdilik `offline.html` dosyasını Dosyalar uygulamasından Safari ile aç | Apple imzası olmadan `.ipa` kurulamaz; App Store/TestFlight sürümü bekliyor. |
 
 `SHA256SUMS.txt` dosya bütünlüğünü, `BUILD_INFO.json` kaynak commit'ini kaydeder.
 
-## ✨ Bu sürümde yeni
+## ✨ Bu sürümde yeni (Beta 69 · B252–B256)
 
-- **%41 daha hızlı açılış:** Besin verisi kayıpsız sıkıştırıldı (değerler birebir aynı). Uygulama paketi 2,97 MB'tan 1,83 MB'a, tek dosya sürümü 13 MB'tan 9,1 MB'a indi. Güncellemelerde artık yalnız değişen küçük kod parçası iniyor.
+- **Yoğunluk doğruluğu (`g` vs `mL`):** Yağ ve yoğunluğu doğrulanmamış sıvılarda “100 g ≈ mL” genellemesi kaldırıldı. USDA hacim ölçüsü bulunan sıvılarda doğrulanmış yoğunlukla yaklaşık hacim gösterilir (ör. zeytinyağı 100 g ≈ 110 mL); özel 100 mL etiket besinleri doğrudan mL kalır.
+- **Kesin miktar girişi ve sade hazır miktarlar:** Miktar satırına doğrudan sayısal giriş (ör. `137`, `42,5`) eklendi; 15 hazır düğme yerine günlük 8 miktar (`25 g – 1 kg`) önde, uç değerler (`1 g`, `5 kg`, `10 kg`…) katlanır “Diğer miktarlar” altında.
+- **Akıcı seçici ve liste konumu:** Tarif/Karşılaştırma besin seçicisinde arama kutusu en üstte, kategoriler tek satırlık yatay şeritte ve besin listesi hemen ilk ekranda görünür. Masaüstünde aşağı kaydırılmış listeden besin seçince detay başlığı görünür kalır; geri dönünce liste kaydırma konumu korunur.
+- **Kaynak şeffaflığı ve B12/D önerileri:** USDA Foundation-only kayıtlardaki “NDB undefined” metni düzeltildi, FDC/NDB kaynak kimliği görünür kılındı. Tarif eksik önerilerinde UV/D içeren mantarlar ile zenginleştirilmiş bitkisel süt/yoğurtlar dikkate alınır; güvenilir olmayan iz B12 kayıtları önerilmez.
+- **Yeni doğrulanmış besin verileri:** Siyah pirinç (kuru) USDA FoodData Central Foundation `FDC 2710825` (23 bileşen, CC0) ile bağlandı (boş form sayısı 37 → 36). 13 yaygın besinde UK CoFID 2021’den 18 eksik biyotin ve iyot hücresi bileşim doğrulamasıyla eklendi.
+- **Yeni açılış tabağı illüstrasyonu ve taslak koruyan PWA güncellemesi:** Açılışta 37 KB WebP botanik tabak illüstrasyonu eklendi (açık/koyu tema uyumlu, çevrimdışı pakete gömülü). Açık tarif/etiket taslağı varken PWA güncellemesi zorla yenilemek yerine engellemesiz şerit gösterir.
+- **Ardışık mobil derleme numaraları ve `main` Pages yayını:** Android/iOS derleme numarası her sürümde monoton artar (`1.1.2-beta.69` → `10102169`). GitHub Pages iş akışı tek kanonik dal olarak `main` üzerinden veri/bildirim/test kapılarıyla yayımlayacak biçimde hizalandı.
+
+### Beta 68'den (B245–B251)
+
+- **%41 daha hızlı açılış:** Besin verisi kayıpsız sıkıştırıldı (değerler birebir aynı). Uygulama paketi 2,97 MB'tan 1,83 MB'a, tek dosya sürümü 13 MB'tan 8,75 MB'a indi. Güncellemelerde artık yalnız değişen küçük kod parçası iniyor.
 - **Telefonda ilk ekranda besinler:** Ana sayfa sıkılaştırıldı; açar açmaz ilk besinler görünüyor.
 - **Sonuç çıkmayınca yol gösterir:** “Tüm kategorilerde ara”, “Beslenme filtresini sıfırla” ve “Aramayı temizle” düğmeleri.
 - **12 yeni vegan yemek ve tatlı:** sebzeli kızarmış pilav, Tay sebze körisi, rice and peas (Jamaika), pkhali ve ajapsandali (Gürcistan), adas polo (İran), zaru soba (Japonya), ginisang monggo (Filipinler), arroz rojo ve frijoles de la olla (Meksika), kabak tatlısı ve kuru kayısı hoşafı.

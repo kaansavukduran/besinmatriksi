@@ -1,0 +1,13 @@
+{
+  "assets": [
+    {
+      "path": "src/assets/hero-plate.webp",
+      "used_in": "src/kitchen-art.js (plateIllustration -> Keşfet welcome hero)",
+      "created_on": "2026-11-22",
+      "forge": "B255",
+      "origin": "Generated via Antigravity generate_image tool for Besin Matriksi; background stripped to alpha transparency and resized to 420x366 WebP (quality 76, 37.3 KB) with Pillow 13.0.0",
+      "license": "Project-owned original artwork (MIT with repository)",
+      "notes": "Editorial whole-food botanical plate illustration (greens, avocado, tomato, chickpeas, red lentils, figs, walnuts, olive oil spoon). Decorative (alt=''), no text, no brand packaging, no portion claims."
+    }
+  ]
+}

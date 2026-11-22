@@ -275,3 +275,75 @@
   .explore:not(.has-sel) .catalog-heading { margin: 10px 0 6px; }
   .explore:not(.has-sel) #foodlist h3.grp { margin: .6rem 0 .4rem; padding-block: .25rem; font-size: 1.2rem; }
 }
+
+/* B252–B253: Modern Web Guidance (content-first-noise-reduction, forms, form-factor-adaptation, responsive-table, dialog) */
+h1, h2, h3 { text-wrap: balance; }
+@media (max-width: 700px) {
+  html { scroll-padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)); }
+}
+.modal-box { overscroll-behavior: contain; }
+.src-id { font-variant-numeric: tabular-nums; font-size: .92em; color: var(--muted); }
+
+/* Kesin miktar girişi ve katlanır uç hazır miktarlar */
+.amt-exact { display: inline-flex; align-items: center; margin-left: auto; max-width: 100%; min-width: 0; }
+.amt-input {
+  width: min(5.5rem, 100%); max-width: 100%; min-width: 0; box-sizing: border-box;
+  min-height: var(--tap); padding: 0 .6rem;
+  border: 1px solid var(--line); border-radius: calc(var(--radius) * .6);
+  background: var(--bg); color: var(--fg); font: inherit; font-size: max(1rem, 1em);
+  font-variant-numeric: tabular-nums; text-align: right;
+}
+.amt-input[aria-invalid="true"] { border-color: var(--bad, #d9534f); }
+.amount.compact .amt-exact,
+:root[data-ui-scaled="true"] .amt-exact { flex: 1 0 100%; grid-column: 1 / -1; width: 100%; margin-left: 0; margin-top: 4px; }
+.amount.compact .amt-input,
+:root[data-ui-scaled="true"] .amt-input { width: 100%; text-align: center; }
+@container (max-width: 26em) {
+  .amount:not(.mini) .amt-main > .amt-exact { grid-column: 1 / -1; flex: 1 0 100%; width: 100%; margin-left: 0; margin-top: 4px; }
+  .amount:not(.mini) .amt-main > .amt-exact .amt-input { width: 100%; text-align: center; }
+}
+.amt-more { margin-top: 6px; }
+.amt-more > summary {
+  cursor: pointer; list-style: none; display: inline-flex; align-items: center; gap: .35rem;
+  min-height: 32px; font-size: .85rem; color: var(--muted); user-select: none;
+}
+.amt-more > summary::-webkit-details-marker { display: none; }
+.amt-more > summary::before { content: '▸'; font-size: .85em; transition: transform .15s; }
+.amt-more[open] > summary::before { transform: rotate(90deg); }
+.amt-more .presets { margin-top: 6px; }
+
+/* Seçici modalı: arama üstte, kategoriler tek satırlık kaydırılabilir şerit (isteğe bağlı tam ızgara) */
+.pk-search { display: block; margin-bottom: 6px; }
+.pk-search .searchbar { margin-bottom: 0; }
+.pk-search [hidden] { display: none; }
+.pk-cats-nav { flex-direction: row; position: static; top: auto; max-height: none; margin: 6px 0 10px; padding-right: 0; }
+.pk-cats-nav .cat { border-color: var(--line); background: var(--card); }
+.pk-cats-nav .cat.on { background: var(--acc); }
+.pk-cats-nav .cats-toggle {
+  display: inline-flex; align-items: center; gap: .35rem; order: -1; flex: 0 0 auto; min-height: calc(var(--tap) - 4px); padding: .3rem .85rem;
+  border: 1px dashed var(--line); border-radius: calc(var(--radius) * .7); background: transparent; color: var(--fg); font-weight: 650; white-space: nowrap; cursor: pointer;
+}
+.pk-cats-nav[data-strip="true"] {
+  display: flex; flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: thin; gap: 6px; padding-bottom: 6px;
+}
+.pk-cats-nav[data-strip="true"] .cat, .pk-cats-nav[data-strip="true"] .cat-group { flex: 0 0 auto; white-space: nowrap; align-self: center; }
+.pk-cats-nav[data-strip="false"] { overflow: visible; }
+.pk-cats-nav.cats-grid .cats-toggle { grid-column: 1 / -1; justify-self: start; }
+
+/* Karşılaştırma tablosu: dikey iç kaydırma yok (B109); dar ekranda yatay kaydırırken satır başlığı yapışkan */
+.tablewrap { overflow-x: auto; overflow-y: visible; }
+table.cmp { border-collapse: separate; border-spacing: 0; }
+table.cmp thead th { background: var(--card); border-bottom: 2px solid var(--line); }
+table.cmp tbody th[scope="row"] { position: sticky; left: 0; z-index: 1; background: var(--card); }
+table.cmp thead th:first-child { position: sticky; left: 0; z-index: 2; background: var(--card); }
+
+/* Taslak koruyan, engellemesiz PWA güncelleme şeridi */
+.update-bar {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: 16px; z-index: 60;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+  max-width: min(560px, calc(100vw - 24px)); padding: 10px 14px;
+  background: var(--card); color: var(--fg); border: 2px solid var(--acc);
+  border-radius: var(--radius); box-shadow: 0 8px 28px rgb(0 0 0 / .22);
+}
+@media (max-width: 700px) { .update-bar { bottom: calc(88px + env(safe-area-inset-bottom, 0px)); } }
+

@@ -3,72 +3,59 @@
 Türkçe ve English arayüzlü, çevrimdışı besin matriksi, günlük ve tarif hesaplayıcı. Bitkisel ağırlıklı küratörlü katalog ve hayvansal içerik filtresiyle tam USDA SR28 kaynak kataloğu.
 Windows · macOS · Linux · Android · iPhone · tarayıcı/PWA · tek HTML.
 
-**[Paketleri indir: Actions / Artifacts](https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175)** ·
-[Kurulum adımları](docs/INSTALL.md) · [Geliştirme PR #2](https://github.com/kaansavukduran/besinmatriksi/pull/2)
+**[Sürümler / Releases](https://github.com/kaansavukduran/besinmatriksi/releases)** ·
+**[Canlı Web / PWA (GitHub Pages)](https://kaansavukduran.github.io/besinmatriksi/)** ·
+[Kurulum adımları](docs/INSTALL.md) · [Sürüm notları](docs/RELEASE_NOTES.md)
 
 ## İndirip dene
 
-Başarılı **Derle ve yayınla** çalışmasını aç, **Artifacts** bölümünden platform arşivini indir ve içindeki dosyayı aç. GitHub hesabınla oturum açman gerekir.
-Son kullanıcı talimatı yeni herkese açık Release yayınına izin vermediği için bu sürüm yalnız Actions çıktısıdır:
+En güncel yayımlı paketler **[GitHub Releases](https://github.com/kaansavukduran/besinmatriksi/releases)** (son yayımlı ön sürüm: `v1.1.2-beta.68`, 23 varlık) üzerinden veya `release.yml` Actions çıktılarından indirilir. Kaynak deposundaki hazırlanan sürüm `1.1.2-beta.69` olup paketleme ve Release üretimi ilgili workflow ile ayrı yürütülür.
 
-| Platform | Dosya |
+| Platform | Dosya kalıbı |
 |---|---|
-| Windows, kurulumsuz | `BesinMatriksi-1.1.2-beta.1-windows-x64-portable.exe` |
-| Windows, kurulum | `BesinMatriksi-1.1.2-beta.1-windows-x64-Setup.exe` veya `*-windows-x64.msi` |
-| macOS Intel + Apple Silicon | `BesinMatriksi-1.1.2-beta.1-macos-universal-unsigned.dmg` |
-| Linux | `BesinMatriksi-1.1.2-beta.1-linux-x86_64.AppImage`, `*-linux-amd64.deb` veya `*-linux-x86_64.rpm` |
-| Android | `BesinMatriksi-1.1.2-beta.1-android.apk` (debug imzalı) |
-| iPhone | `BesinMatriksi-1.1.2-beta.1-ios-UNSIGNED-NOT-INSTALLABLE.ipa`, Apple imzası gerekir |
-| Her platformda tarayıcı | `BesinMatriksi-1.1.2-beta.1-offline.html` |
-| HTTPS sunucusuna kurulan PWA | `BesinMatriksi-1.1.2-beta.1-web-pwa.zip` |
-
-Bu adlar **[release-candidate arşivinde](https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175/artifacts/13674510954)** bulunur (124 MB). Tek platform isteyen ayrı `desktop-windows`, `desktop-macos`, `desktop-linux`, `android` veya `web` artifact'ini seçebilir; bu ayrı arşivlerde kısa/eski dosya adları bulunur. Kaynak SHA `d78b8da`; arşivdeki `SHA256SUMS.txt` ve `BUILD_INFO.json` doğrulandı.
+| Windows, kurulumsuz | `BesinMatriksi-<sürüm>-windows-x64-portable.exe` |
+| Windows, kurulum | `BesinMatriksi-<sürüm>-windows-x64-Setup.exe` veya `*-windows-x64.msi` |
+| macOS Intel + Apple Silicon | `BesinMatriksi-<sürüm>-macos-universal-unsigned.dmg` |
+| Linux | `BesinMatriksi-<sürüm>-linux-x86_64.AppImage`, `*-linux-amd64.deb` veya `*-linux-x86_64.rpm` |
+| Android | `BesinMatriksi-<sürüm>-android.apk` (debug imzalı) |
+| iPhone | `BesinMatriksi-<sürüm>-ios-UNSIGNED-NOT-INSTALLABLE.ipa`, Apple imzası gerekir |
+| Her platformda tarayıcı | `BesinMatriksi-<sürüm>-offline.html` (~8,8 MB) veya `*-offline-lite.html` (~3,5 MB) |
+| HTTPS sunucusuna kurulan PWA | `BesinMatriksi-<sürüm>-web-pwa.zip` |
 
 iPhone IPA **imzasızdır, doğrudan dokunup kurulamaz**; kendi Apple imzanla yükleme gerekir.
 Windows ve macOS paketleri de geliştirici sertifikasıyla imzalanmamıştır.
 Android anahtar tanımlı değilse debug imzalı APK üretilir.
-Windows WebView2 gerektirir. Fiziksel cihaz kabulü henüz tamamlanmamıştır.
+Windows WebView2 gerektirir. Fiziksel cihaz kabulü paket üretiminden ayrıdır ve henüz tamamlanmamıştır.
 
 ## Kullanım
 
-- **Keşfet:** kategori → besin → tüketim biçimi → 1–1000 g. Hazır miktarlar, kaydırıcı, ±1/±10 ve kaynakta varsa ev ölçüleri. İsteğe bağlı ons gösterimi.
-- **Günlük ve profil:** yaş, boy, kilo, aktivite ve isteğe bağlı Tanita fişi alanlarını kaydet. Günlük enerji ihtiyacı **tahmini**, planlanan/tüketilen besinler ve 244 bileşenin miktar/kapsam/referans farklarını incele. [Profil ve günlük rehberi](docs/PERSONAL_DAILY.md).
+- **Keşfet:** kategori → besin → tüketim biçimi → 1 g – 10 kg. Kesin sayısal miktar girişi, günlük hazır miktarlar (`25 g – 1 kg`), katlanır uç miktarlar (`1 g – 10 kg`), kaydırıcı, ±1/±10 ve kaynakta varsa ev ölçüleri; yağ/sıvılarda yalnız USDA hacim ölçüsünden doğrulanmış yoğunlukla yaklaşık mL gösterimi. İsteğe bağlı ons gösterimi.
+- **Günlük ve profil:** yaş, boy, kilo, aktivite ve isteğe bağlı Tanita fişi alanlarını kaydet. Günlük enerji ihtiyacı **tahmini**, planlanan/tüketilen besinler, 7/30 günlük ve aylık geçmiş ile 244+ bileşenin miktar/kapsam/referans farklarını incele. [Profil ve günlük rehberi](docs/PERSONAL_DAILY.md).
 - **Tarif oluştur:** malzemeleri ekle, porsiyon veya pişmiş son ağırlık seç. Toplam/1 porsiyon/son ürünün 100 g'ı. Eksik besin bilgisi kısmi kapsamla gösterilir. Malzeme ve kaynak dökümünde her bileşenin malzeme katkısı, USDA kayıt no/etiket kaynağı ve hesap girdileri incelenir.
 - **Karşılaştır:** 2–4 besini aynı miktar ve biçimde yan yana incele. En yüksek değer vurgusu sağlık açısından 'en iyi' anlamına gelmez.
-- **Ayarlar:** yeni görünüm kartında TR/EN, sistem/açık/koyu/yüksek kontrast tema, %80–200 bağımsız arayüz ölçeği (elle %135 dahil), yazı boyutu ve aralık kaydırıcıları; isteğe bağlı sakin keşif ilerlemesi. 9 tema ve yedi renk alanlı özel tema; renk seçim penceresi, hazır renkler/HEX, canlı önizleme ve metin kontrast ölçümü; 8 gömülü font ve sistem fontu; OpenDyslexic, Atkinson, Lexend; punto ve aralıklar; okuma cetveli; büyük imleç; atanabilir kısayollar; 12 görünüm profili.
+- **Ayarlar:** görünüm kartında TR/EN, sistem/açık/koyu/yüksek kontrast tema, %80–200 bağımsız arayüz ölçeği (elle %135 dahil), yazı boyutu ve aralık kaydırıcıları; isteğe bağlı sakin keşif ilerlemesi. 9 tema ve yedi renk alanlı özel tema; renk seçim penceresi, hazır renkler/HEX, canlı önizleme ve metin kontrast ölçümü; 8 gömülü font ve sistem fontu; OpenDyslexic, Atkinson, Lexend; punto ve aralıklar; okuma cetveli; büyük imleç; atanabilir kısayollar; 12 görünüm profili.
 - **Kendi matriksin:** bölümleri gizle/sırala, 24 öğeye kadar sabitle. AB/TGK etiket BRD'si, elle girilen hedef veya kaynak/tür/yıl gösteren EFSA grup PRI/AI referansı. kcal/kJ ve sayı/birim tercihleri.
 - **Yedek/çıktı:** tarif/etiket/profil yedeği; ayrı ayar veya tema dosyası; CSV; Türkçe karakterli ve sayfa numaralı A4 yazdırma/PDF. Yazdırmadan sonra bölüm durumları korunur.
-- **Hakkında:** lisans ve telif bildirimleri internet olmadan okunabilir.
+- **Hakkında:** lisans, telif ve kaynak kapsam bildirimleri internet olmadan okunabilir.
 
 Veriler ve tercihler cihazda tutulur; uygulama çalışma anında CDN, analitik veya uzak veri servisi kullanmaz.
-PWA'nın ilk çevrimiçi yüklemesi önbelleğe alınmalıdır; tek HTML dosyasında veri ve fontlar gömülüdür.
+PWA'nın ilk çevrimiçi yüklemesi önbelleğe alınmalıdır; tek HTML dosyasında veri, görseller ve fontlar gömülüdür.
 
 ## Web yayını
 
-Vercel: **https://besinmatriksi.vercel.app/**.
-Cloudflare Pages: **https://besinmatriksi.pages.dev/**.
-GitHub Pages: **https://kaansavukduran.github.io/besinmatriksi/**.
-Üç adres de 16 Kasım 2026 tarihinde gerçek tarayıcı girişiyle doğrulandı.
+- GitHub Pages (birincil): **https://kaansavukduran.github.io/besinmatriksi/** (22 Kasım 2026 kontrol: HTTP 200).
+- Cloudflare Pages (ayrı ayna): **https://besinmatriksi.pages.dev/** (22 Kasım 2026 kontrol: HTTP 200).
+- Vercel (`https://besinmatriksi.vercel.app/`): 22 Kasım 2026 kontrolünde HTTP 402 döndürdüğü için etkin yayın adresi olarak varsayılmaz.
 
-`.github/workflows/pages.yml`, üretim dalı `ccr-1e1934aa-iv8aev`
-güncellendiğinde testleri ve web derlemesini çalıştırır, ardından `dist`
-çıktısını yayımlar. Yeni bir depo kurulumunda yönetici **Settings → Pages →
-Build and deployment → Source → GitHub Actions** seçmelidir. Bu depoda
-Pages artık etkindir; önceki entegrasyon yetkisi engeli güncel yayın engeli değildir.
-Dağıtım durumu [Pages iş akışında](https://github.com/kaansavukduran/besinmatriksi/actions/workflows/pages.yml)
-ve dağıtım çıktısındaki URL'den izlenebilir.
+`.github/workflows/pages.yml`, kanonik yayın dalı `main` güncellendiğinde (veya elle `workflow_dispatch` ile) veri determinizmi, bildirim doğrulaması, birim testleri ve web derlemesini çalıştırır, ardından `dist` çıktısını GitHub Pages'e yayımlar. Yeni bir depo kurulumunda yönetici **Settings → Pages → Build and deployment → Source → GitHub Actions** seçmelidir. Dağıtım durumu [Pages iş akışında](https://github.com/kaansavukduran/besinmatriksi/actions/workflows/pages.yml) izlenebilir.
 
-Vite varlıkları, manifest ve service worker göreli yollar kullanır; aynı
-çıktı kök alan adında ve `/besinmatriksi/` altında çalışır. İlk açılıştan sonra
-telefonda **Ana ekrana ekle / Uygulamayı yükle** kullanılabilir.
-Bu alan adlarının cihaz kayıtları ayrıdır; tarif ve tercihleri taşımak için
-yedek dışa/içe aktarma kullanılır.
+Vite varlıkları, manifest ve service worker göreli yollar kullanır; aynı çıktı kök alan adında ve `/besinmatriksi/` altında çalışır. İlk açılıştan sonra telefonda **Ana ekrana ekle / Uygulamayı yükle** kullanılabilir. Bu alan adlarının cihaz kayıtları ayrıdır; tarif ve tercihleri taşımak için yedek dışa/içe aktarma kullanılır.
 
 ## Veri kapsamı ve lisanslar
 
-**Besin bileşimi USDA SR28 ve kayıtlarda belirtilen USDA Foundation, FNDDS ve özel bileşen kaynaklarından gelir.**
+**Besin bileşimi USDA SR28 ve kayıtlarda belirtilen USDA Foundation Foods, FNDDS, SR Legacy, USDA özel bileşen veritabanları (Flavonoid, İzoflavon, İyot, Kolin, Proantosiyanidin, Pürin) ile boşluk doldurmada UK CoFID 2021'den (OGL v3.0) gelir.** IFCT verileri ve IFCT tabanlı tahminler dağıtıma dahil değildir (`ifctLinked = 0`, `estimated = 0`).
 EFSA DRV Finder ayrıca 23 bileşen / 169 PRI-AI kaydıyla isteğe bağlı grup referansıdır; besin ölçümü değildir. Ayarlar → Yüzde referansı → EFSA: yaş ve kaynak cinsiyet grubunu seç. Yetişkin çinko için fitat, yetişkin kadın demiri için menopoz grubu ayrıca seçilir. Eşleşmeyen veya kapsam dışı alanda yüzde gösterilmez. Kaynak/görüş yılı ve koşullar açılabilir tabloda, PRI/AI türü matrikste ve CSV'de korunur. Kişisel hedefler değişmez.
-**707 küratörlü besin / 853 tüketim biçimi.** Tam USDA SR28 kaynağının **8.789/8.789** kaydı erişilebilir: 719 benzersiz SR28 kaydı küratörlü biçimlerde, kalan **8.070 kayıt** ayrı kaynak kataloğundadır. 707 besin adını, 8.789 ise hazırlamaya özgü kaynak kaydını sayar. Niş/hayvansal gizleme tercihleri ana ekranda görünen sayıyı değiştirir.
+**875 küratörlü besin / 1.027 tüketim biçimi** (36 biçim doğrulanmış açık kaynak bulunmadığı için dürüstçe “veri yok” olarak işaretli; 124 biçim açıkça “Tahmin (tarif)” etiketli; 178 eksik biyotin/iyot hücresi UK CoFID 2021 ile doğrulandı). Ayrıca **8.038 ek SR28 kaydı** ayrı **Tam Katalog** bölümünde erişilebilir. Niş/hayvansal gizleme tercihleri ana ekranda görünen sayıyı değiştirir.
 
 Keşfet → **Tam Katalog** ile ayar açmadan eriş. 80 kayıtlık sayfalar, besin grubu seçimi ve özgün İngilizce ad veya NDB numarasıyla arama vardır. 2015 tarihli SR28 marka kayıtları güncel ambalaj etiketi sayılmaz; içerik ve alerjen bilgisi üründen doğrulanır. Hayvansal kayıtlar gizlenince içeriği belirsiz karma kayıtlar da gizlenir.
 

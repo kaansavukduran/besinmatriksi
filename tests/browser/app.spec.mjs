@@ -712,6 +712,7 @@ test('"besin ekle" penceresinde kategori düğmeleri simetrik: eşit genişlik v
   await page.goto('/');
   await tab(page, 'karsilastir');
   await page.locator('[data-action="cmp-add"]').click();
+  await page.locator('[data-action="pk-cats-toggle"]').click();
   const sizes = await page.locator('.cats.cats-grid .cat:not(.add)').evaluateAll((els) => els.map((e) => { const r = e.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height)]; }));
   expect(sizes.length).toBeGreaterThan(10);
   expect(new Set(sizes.map((s) => s[0])).size).toBe(1);

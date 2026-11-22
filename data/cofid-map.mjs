@@ -47,7 +47,7 @@ export const COFID_MAP = {
   // B195: üçüncü tur (İngilizce besin adıyla arama + aynı kurallar)
   karpuz: { cig: '14-296' }, seftali: { cig: '14-299' }, armut: { cig: '14-365' }, avokado: { cig: '14-386' },
   ananas: { cig: '14-376' }, mango: { cig: '14-378' }, frenk_uzumu: { cig: '14-053' }, papaya: { cig: '14-390' },
-  sogan: { haslanmis: '13-500' },
+  sogan: { cig: '13-499', haslanmis: '13-500' },
   lahana: { cig: '13-509', haslanmis: '13-584' }, karnabahar: { cig: '13-512', haslanmis: '13-513' },
   bamya: { haslanmis: '13-652' }, balkabagi: { cig: '13-326', haslanmis: '13-549' }, enginar: { cig: '13-153' },
   kuskonmaz: { cig: '13-157' }, edamame: { pismis: '13-667' }, karalahana: { cig: '13-234', haslanmis: '13-649' },
@@ -56,6 +56,10 @@ export const COFID_MAP = {
   urad: { kuru: '13-056' }, pirinc_beyaz: { pismis: '11-862' }, bulgur: { kuru: '11-904' }, pirinc_esmer: { pismis: '11-869' },
   kinoa: { kuru: '14-843' }, bugday_kepegi: { kuru: '11-906' }, findik: { cig: '14-874' }, kestane: { cig: '14-813' },
   brezilya_cevizi: { cig: '14-871' }, tahin: { macun: '14-847' }, maydanoz: { taze: '13-844' }, havuc_suyu: { icecek: '13-607' },
+  // B254: dördüncü tur (aynı kurallar: ad + hazırlama biçimi + su ±5 g + protein ±%25/±1 g; yalnız eksik biyotin/iyot)
+  elma: { cig: '14-319' }, domates: { cig: '13-517' }, patates: { cig: '13-489', haslanmis: '13-490' },
+  kivi: { cig: '14-371' }, kiraz: { cig: '14-382' }, uzum: { cig: '14-350' }, greyfurt: { cig: '14-384' },
+  patlican: { cig: '13-161' }, kabak: { cig: '13-627' }, yulaf: { kuru: '11-788' }, hurma: { kurutulmus: '14-394' },
 };
 // CoFID alanı → uygulama anahtarı (birimler aynı: µg / mg)
 export const COFID_KEYS = { iodine: 'iodine', mn: 'mn', se: 'se', biotin: 'biotin', b5: 'panto', k1: 'vitk' };

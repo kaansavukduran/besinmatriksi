@@ -366,7 +366,7 @@ for (const food of FOODS) {
   const forms = food.forms.map(([key, ndb, ifc, custom]) => {
     if (!FORM_LABELS[key]) throw new Error('Bilinmeyen form: ' + key);
     const v = {}, s = {}, alt = {}, sd = {};
-    let usda = null, ic = null;
+    let usda = null, ic = null, cofidCode = null;
     if (ndb && ndb.startsWith('F')) {
       // Yalnız FDC Foundation'da olan besin (ör. aslan yelesi mantarı): tüm değerler FDC'den, etiket 'F'
       const ff = ffByNdb.get(ndb.slice(1));
@@ -388,7 +388,7 @@ for (const food of FOODS) {
       if (fl) { Object.assign(v, fl.v); Object.assign(s, fl.s); }
       const ffId = fillFromFoundation(ndb, v, s);
       fillFromExtra(ndb, v, s);
-      fillFromCofid(food.id, key, v, s);
+      if (fillFromCofid(food.id, key, v, s) > 0) cofidCode = COFID_MAP[food.id][key];
       usda = { ndb, desc: d.long, refuse: d.refuse, refDesc: d.refDesc || null, sci: d.sci || null, ...(ffId ? { fdc: ffId } : {}) };
     }
     if (!ndb && food.recipe) {
@@ -436,6 +436,7 @@ for (const food of FOODS) {
       key,
       label: custom || FORM_LABELS[key],
       usda,
+      ...(cofidCode ? { cofid: cofidCode } : {}),
       ifct: ic,
       estFrom: null,
       ...(unavailable ? { unavailable } : {}),
@@ -550,13 +551,25 @@ if (extMeta.coveredSourceRecords !== extMeta.sourceRecords) throw new Error('USD
 
 const outDir = path.join(root, 'src/data');
 fs.mkdirSync(outDir, { recursive: true });
+const allForms = foods.flatMap((f) => f.forms);
+let recipeEstimatedForms = 0, recipeEstimatedCells = 0, assumedZeroCells = 0, foundationForms = 0, fnddsForms = 0;
+for (const fm of allForms) {
+  const vals = Object.values(fm.s || {});
+  const rCount = vals.filter((x) => x === 'r').length;
+  if (rCount) { recipeEstimatedForms++; recipeEstimatedCells += rCount; }
+  assumedZeroCells += vals.filter((x) => x === 'z').length;
+  if (fm.usda?.fdc && !fm.usda?.ndb && !fm.usda?.fndds) foundationForms++;
+  if (fm.usda?.fndds) fnddsForms++;
+}
 const meta = {
   sources: 'USDA SR28 (2015) tam ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015); USDA SR Legacy (2018); USDA İyot 4.0 (2024); USDA Kolin 2 (2008); USDA Proantosiyanidin 2.1 (2018); USDA Pürin 3 (2026); UK CoFID 2021 (boşluk doldurma)',
   dataPolicy: 'USDA public domain / CC0; IFCT ve IFCT tabanlı tahminler dağıtıma dahil değil',
-  unavailableForms: foods.flatMap(f => f.forms).filter(f => f.unavailable).length,
+  unavailableForms: allForms.filter((f) => f.unavailable).length,
   curated: foods.length,
-  forms: foods.reduce((a, f) => a + f.forms.length, 0),
-  ifctLinked, estimated, ext: ext.length,
+  forms: allForms.length,
+  ifctLinked, estimated,
+  recipeEstimatedForms, recipeEstimatedCells, assumedZeroCells, cofidFilledCells: cofidFills, foundationForms, fnddsForms,
+  ext: ext.length,
 };
 // B245: kayıpsız sıkıştırılmış yazılır (src/foods-codec.js); yazmadan önce gidiş-dönüş eşitliği doğrulanır
 {

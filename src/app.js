@@ -43,7 +43,7 @@ import { brandMark, plateIllustration } from './kitchen-art.js';
 import { referenceFor, normalizeSettings, parseSettings, MATRIX_SECTIONS, SHORTCUT_ACTIONS, shortcutKey, migrateFontV2, migrateAionOff } from './settings.js';
 import { S } from './state.js';
 import { catIcon, foodIcon, persona, isPhone } from './views/common.js';
-import { PRESETS, MAX_G, amountControls, perServing, miniAmount } from './views/amount.js';
+import { PRESETS, MAX_G, amountUnitText, amountControls, perServing, miniAmount } from './views/amount.js';
 import { compareResults, renderCompare } from './views/compare.js';
 import { setRenderer, toast, requestExtCatalog, catalogPending, activeRecipe, recipeItemCount, persistRecipes, servingKcal } from './views/ui.js';
 import { renderSettings, renderAbout, RELEASES_URL } from './views/settings.js';
@@ -134,12 +134,13 @@ function renderPicker() {
         <button class="btn ghost" data-action="pk-close" aria-label="${L("Kapat")}">✕ ${L("Kapat")}</button></div>
       ${item ? `<div class="pk-sel"><button class="back show" data-action="pk-back">← ${L("Geri")}</button><h3>${esc(item.name)}</h3>
           ${formChips('pk', P.sel)}
-          ${amountControls('pk', P.amount, item.portions, { liquid: item.liquid })}
+          ${amountControls('pk', P.amount, item.portions, { liquid: item.liquid, density: item.density, customLiquid: item.customLiquid })}
           <div class="pk-prev">${item.v.energy != null ? `${fmtNum((item.v.energy * P.amount) / 100)} kcal · ` : ''}${item.v.protein != null ? `${fmtNum((item.v.protein * P.amount) / 100)} g protein · ` : ''}${item.v.fiber != null ? `${fmtNum((item.v.fiber * P.amount) / 100)} g ${L("lif")}` : ''}</div>
           <button class="btn primary big" data-action="pk-confirm">${P.target === 'recipe' ? '＋ ' + L("Tarife ekle") : '＋ ' + L("Karşılaştırmaya ekle")}</button>
           ${P.target === 'recipe' ? `<button class="btn" data-action="pk-confirm-more">＋ ${L("Ekle ve başka seç")}</button>` : ''}</div>`
-      : `${renderDietFilter(S.settings,'pk',S.dietOpen.pk)}<nav class="cats cats-grid">${categoryNav('pk', P.cat)}</nav>
-        <div class="searchbar"><input type="search" id="pq" placeholder="${L("Ara (isteğe bağlı)")}" value="${esc(P.q)}" autocomplete="off" aria-label="${L("Besin ara")}"></div>
+      : `<search class="pk-search"><div class="searchbar"><input type="search" id="pq" placeholder="${L("Besin ara: mercimek, muz, yulaf…")}" value="${esc(P.q)}" autocomplete="off" enterkeyhint="search" aria-label="${L("Besin ara")}"><button class="btn ghost" data-action="pk-clear"${P.q ? '' : ' hidden'}>${L("Temizle")}</button></div></search>
+        ${renderDietFilter(S.settings,'pk',S.dietOpen.pk)}
+        <nav class="cats pk-cats-nav${P.catsOpen ? ' cats-grid' : ''}" data-strip="${P.catsOpen ? 'false' : 'true'}" aria-label="${L("Kategoriler")}"><button class="cats-toggle" data-action="pk-cats-toggle" aria-expanded="${P.catsOpen ? 'true' : 'false'}">${P.catsOpen ? L("Daha az") : L("Tüm kategoriler")}</button>${categoryNav('pk', P.cat)}</nav>
         <div class="pk-list">${foodList('pk', P.cat, P.q, P.extGroup)}</div>`}
     </div></div>`;
 }
@@ -285,7 +286,7 @@ function quickKeys(e) {
   }
   if (e.key === 'Escape') {
     if (t.id === 'q' && t.value) { e.preventDefault(); t.value = ''; t.dispatchEvent(new Event('input', { bubbles: true })); return true; }
-    if (S.sel && !typing) { e.preventDefault(); const id = S.sel.id; S.sel = null; render(); (document.querySelector(`#foodlist [data-id="${CSS.escape(id || '')}"]`) || $('#q'))?.focus(); return true; }
+    if (S.sel && !typing) { e.preventDefault(); const id = S.sel.id; S.sel = null; render(); window.scrollTo(0, S.browseScrollY || 0); (document.querySelector(`#foodlist [data-id="${CSS.escape(id || '')}"]`) || $('#q'))?.focus(); return true; }
   }
   return false;
 }
@@ -341,21 +342,28 @@ function getAmount(target) {
   if (target.startsWith('cmp:')) return S.compare[+target.slice(4)]?.g;
   return null;
 }
-function setAmount(target, g, { fromSlider = false } = {}) {
+function setAmount(target, g, { fromSlider = false, fromInput = false } = {}) {
   g = clamp(Math.round(g * 100) / 100, 1, MAX_G);
   if (target === 'ex') S.amount = g;
   else if (target === 'pk') S.picker.amount = g;
   else if (target.startsWith('rc:')) { const it = activeRecipe().items.find((i) => i.id === target.slice(3)); if (it) it.g = g; scheduleSave(); }
   else if (target.startsWith('cmp:')) { const c = S.compare[+target.slice(4)]; if (c) c.g = g; }
-  // Yerinde güncelle (kaydırıcı sürüklenirken odak kaybolmasın)
+  // Yerinde güncelle (kaydırıcı sürüklenirken veya metin yazılırken odak kaybolmasın)
   const box = document.querySelector(`[data-amount="${CSS.escape(target)}"]`);
   if (box) {
+    const customLiquid = box.dataset.customLiquid === '1';
+    const dVal = Number(box.dataset.density);
+    const density = dVal > 0 ? { gPerMl: dVal } : null;
+    const oz = S.settings.amountUnit === 'oz' && !customLiquid;
     const out = box.querySelector('.amt-val b');
-    if (out) out.textContent = fmtNum(S.settings.amountUnit === 'oz' ? g / 28.349523125 : g);
-    if (S.settings.amountUnit === 'oz') box.querySelector('.amount-unit').textContent = `oz (≈ ${fmtNum(g)} g)`;
+    if (out) out.textContent = fmtNum(oz ? g / 28.349523125 : g);
+    const unitEl = box.querySelector('.amount-unit');
+    if (unitEl) unitEl.textContent = amountUnitText(g, { oz, density, customLiquid });
+    const inp = box.querySelector('.amt-input');
+    if (inp && !fromInput) { inp.value = fmtNum(g); inp.removeAttribute('aria-invalid'); }
     const sl = box.querySelector('.slider');
     if (sl && !fromSlider) sl.value = String(gramsToSlider(g, MAX_G));
-    if (sl) { sl.style.setProperty('--fill', gramsToSlider(g, MAX_G) / SLIDER_STEPS * 100 + '%'); sl.setAttribute('aria-valuetext', fmtNum(g) + ' g'); }
+    if (sl) { sl.style.setProperty('--fill', gramsToSlider(g, MAX_G) / SLIDER_STEPS * 100 + '%'); sl.setAttribute('aria-valuetext', `${fmtNum(g)} ${customLiquid ? 'mL' : 'g'}`); }
     box.querySelectorAll('.pchip').forEach((b) => b.classList.toggle('on', Math.abs(Number(b.dataset.val) - g) < 0.01));
     const ps = box.querySelector('.per-serv') || box.parentElement?.querySelector('.per-serv');
     if (ps) ps.textContent = L("porsiyon başı {g} g", { g: fmtNum(g / Number(ps.dataset.perserv)) });
@@ -409,7 +417,12 @@ function selectFood(prefix, ref) {
   if (q?.trim()) { S.searches = recentSearches(S.searches, q); saveSearches(S.searches); }
 
   if (prefix === 'ex' && ref?.t === 'c') { S.recent = pushRecent(S.recent, ref, knownFood); saveRecent(S.recent); }
-  if (prefix === 'ex') { S.sel = ref; S.amount = S.settings.defaultAmount; render(); const d = $('.detail'); if (d) d.scrollTop = 0; if (window.innerWidth < 900) window.scrollTo(0, 0); }
+  if (prefix === 'ex') {
+    if (!S.sel) S.browseScrollY = window.scrollY;
+    S.sel = ref; S.amount = S.settings.defaultAmount; render();
+    const d = $('.detail'); if (d) d.scrollTop = 0;
+    window.scrollTo(0, 0);
+  }
   else { S.picker.sel = ref; S.picker.amount = S.settings.defaultAmount; render(); }
 }
 
@@ -508,10 +521,14 @@ async function onClick(e) {
     case 'settings-jump': { const el = document.getElementById(b.dataset.id); if (el) { el.scrollIntoView({ block: 'start' }); el.querySelector('h2')?.focus({ preventScroll: true }); } break; }
     case 'aion-demo': aionPlay(b.dataset.anim || 'celebrate'); aionSay(tr('aionHello'), 4000); break;
     case 'setting-reset': if (Object.hasOwn(DEFAULT_SETTINGS, b.dataset.key)) { setSetting(b.dataset.key, DEFAULT_SETTINGS[b.dataset.key]); render(); } break;
-    case 'tab':
+    case 'tab': {
       // B177: etkin Keşfet sekmesine yeniden dokunmak (telefonda besin ayrıntısındayken) listeye döner; kategori ve arama korunur
-      if (S.tab === 'kesfet' && b.dataset.tab === 'kesfet' && S.sel) S.sel = null;
-      S.tab = b.dataset.tab; render(); window.scrollTo(0, 0); break;
+      const backToList = S.tab === 'kesfet' && b.dataset.tab === 'kesfet' && !!S.sel;
+      if (backToList) S.sel = null;
+      S.tab = b.dataset.tab; render(); window.scrollTo(0, backToList ? (S.browseScrollY || 0) : 0); break;
+    }
+    case 'pwa-reload': flushSave(); location.reload(); break;
+    case 'pwa-dismiss': $('#pwa-update-bar')?.remove(); break;
     case 'diet-reset': updateDiet(Object.fromEntries(DIET_KEYS.map(k=>[k,DEFAULT_SETTINGS[k]]))); break;
     case 'ext-reload': location.reload(); break;
     case 'csv': exportCSV(); break;
@@ -586,7 +603,7 @@ async function importText(t) {
 function exportCSV() {
   let r, title;
   if (S.tab === 'tarif') { const x = selectedRecipeResult(); const rc = x.rc; r = x.r; title = `${rc.name} – ${x.basisLabel}`; }
-  else if (S.sel) { const item = resolve(S.sel); r = scaleItem(item, S.amount); title = `${item.name} – ${item.formLabel} – ${fmtNum(S.amount)} g`; }
+  else if (S.sel) { const item = resolve(S.sel); r = scaleItem(item, S.amount); title = `${item.name} – ${item.formLabel} – ${fmtNum(S.amount)} ${item.customLiquid ? 'mL' : 'g'}`; }
   else return;
   const safe = title.replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '').slice(0, 60);
   download(`besin-matriksi-${safe}.csv`, matrixCSV(r, title, S.settings), 'text/csv;charset=utf-8');
@@ -614,8 +631,24 @@ function applySettingsFilter() {
   const none = document.getElementById('settings-none'); if (none) none.hidden = shown > 0;
 }
 
+function parseExactAmount(raw) {
+  const s = String(raw ?? '').trim().replace(/\s+/g, '');
+  if (!s) return null;
+  // Türkçe (1.250,5 veya 42,5) ve İngilizce (1,250.5 veya 42.5) ondalık girişleri kabul et
+  const normalized = s.includes(',') && s.includes('.')
+    ? (s.lastIndexOf(',') > s.lastIndexOf('.') ? s.replace(/\./g, '').replace(',', '.') : s.replace(/,/g, ''))
+    : s.includes(',') ? s.replace(',', '.') : s;
+  const n = Number(normalized);
+  return Number.isFinite(n) && n >= 1 && n <= MAX_G ? n : null;
+}
+
 function onInput(e) {
   const t = e.target;
+  if (t.dataset.amtinput) {
+    const val = parseExactAmount(t.value);
+    if (val != null) { t.removeAttribute('aria-invalid'); setAmount(t.dataset.amtinput, val, { fromInput: true }); }
+    return;
+  }
   if (t.id === 'rc-q') { S.rcQ = t.value; applyRecipeFilter(); return; }
   if (t.id === 'settings-q') { S.settingsQ = t.value; applySettingsFilter(); return; }
   if (t.id === 'cmp-q') { S.cmpQ = t.value; const box = document.getElementById('cmp-found'); if (box) box.innerHTML = compareResults(S.cmpQ); return; }
@@ -660,10 +693,21 @@ function onInput(e) {
     if (S.q) $('.welcome')?.remove();
     return;
   }
-  if (t.id === 'pq') { S.picker.q = t.value; S.picker.extPage = 0; $('.pk-list').innerHTML = foodList('pk', S.picker.cat, S.picker.q, S.picker.extGroup); return; }
+  if (t.id === 'pq') {
+    S.picker.q = t.value; S.picker.extPage = 0;
+    const clr = $('.modal [data-action="pk-clear"]'); if (clr) clr.hidden = !S.picker.q;
+    $('.pk-list').innerHTML = foodList('pk', S.picker.cat, S.picker.q, S.picker.extGroup);
+    return;
+  }
   if (t.id === 'rc-name') { activeRecipe().name = t.value.slice(0, 80) || L("Adsız tarif"); persistRecipes(); return; }
 }
 function onChange(e) {
+  if (e.target.dataset.amtinput) {
+    const val = parseExactAmount(e.target.value);
+    if (val != null) { e.target.removeAttribute('aria-invalid'); setAmount(e.target.dataset.amtinput, val); }
+    else { e.target.setAttribute('aria-invalid', 'true'); toast(L("Miktar 1 ile 10.000 arasında bir sayı olmalı.")); }
+    return;
+  }
   // B200: Kıyasla kartında biçim (çiğ/pişmiş…) yerinde değişir; miktar korunur
   if (e.target.dataset.cmpform != null) { const c = S.compare[+e.target.dataset.cmpform]; const f = +e.target.value; if (c?.ref?.t === 'c' && FOODS.find((x) => x.id === c.ref.id)?.forms[f]) { c.ref = { ...c.ref, f }; render(); $(`[data-cmpform="${e.target.dataset.cmpform}"]`)?.focus(); } return; }
   if (e.target.dataset.colTransfer && e.target.value) {
@@ -725,7 +769,27 @@ function onChange(e) {
   if (t.id === 'rc-name') render();
 }
 
+function hasActiveDraft() {
+  if (S.customEdit || S.themeEditor) return true;
+  if (JSON.stringify(S.personalDraft) !== JSON.stringify(S.personal.profile)) return true;
+  const a = document.activeElement;
+  if (a && a.matches?.('input:not([type="search"]):not([type="range"]), textarea')) return true;
+  return false;
+}
+function notifyUpdateReady() {
+  flushSave();
+  if ($('#pwa-update-bar')) return;
+  const bar = document.createElement('div');
+  bar.id = 'pwa-update-bar';
+  bar.className = 'update-bar';
+  bar.setAttribute('role', 'status');
+  bar.innerHTML = `<span>${L("Yeni sürüm indirildi. Hazır olduğunda yenile; kayıtların korunur.")}</span><div class="presets"><button class="btn primary" data-action="pwa-reload">${L("Yenile")}</button><button class="btn ghost" data-action="pwa-dismiss">${L("Sonra")}</button></div>`;
+  document.body.appendChild(bar);
+}
+
 export function start() {
+  window.__bmHasActiveDraft = hasActiveDraft;
+  window.__bmNotifyUpdateReady = notifyUpdateReady;
   setRenderer(render); // B223: ui.js (geniş katalog yüklenince) yeniden çizer
   bindDayActions({ render, persistPersonal, uiDialog, selectFood, setSetting }); // B230
   bindCollectionActions({ render, uiDialog }); // B232

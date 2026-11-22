@@ -226,7 +226,7 @@ export function renderExplore() {
           <div class="dsub">${item.animal ? `<span class="tag-animal">${L("Hayvansal")}</span> ` : ''}${esc(item.food ? foodCategoryPath(item.food) : catName(item.cat))}${item.sci ? ` · <i>${esc(item.sci)}</i>` : ''}</div></div>
       </div>
       ${formChips('ex', S.sel)}
-      ${amountControls('ex', S.amount, item.portions, { liquid: item.liquid })}
+      ${amountControls('ex', S.amount, item.portions, { liquid: item.liquid, density: item.density, customLiquid: item.customLiquid })}
       <div class="dact" role="toolbar" aria-label="${L("Besin eylemleri")}">
         <button class="btn primary" data-action="ex-add-recipe">＋ ${tr('addRecipe')}</button>
         <button class="btn" data-action="ex-add-day">＋ ${tr('addDay')}</button>
@@ -247,8 +247,8 @@ export function renderExplore() {
     <nav class="cats ${S.settings.catGrid ? 'cats-grid' : ''}" aria-label="${L("Kategoriler")}" data-strip="${!S.settings.catGrid && !S.catsOpen}">${categoryNav('ex', S.cat)}${S.settings.catGrid ? '' : `<button class="cats-toggle" data-action="cats-toggle" aria-expanded="${!!S.catsOpen}">${S.catsOpen ? L("Daha az") : L("Tüm kategoriler")}</button>`}</nav>
     <section class="list" aria-label="${L("Besinler")}">
       ${!item && !S.cat && !S.q ? welcome() : ''}
-      <div class="searchbar"><input type="search" id="q" placeholder="${L("Bir besin bul: mercimek, latte, pizza…")}" value="${esc(S.q)}" autocomplete="off" aria-label="${L("Besin ara")}" aria-keyshortcuts="/" title="${L("Kısayol: / ara · ↓ sonuçlara geç · Esc temizle")}">
-      ${S.q ? `<button class="btn ghost" data-action="ex-clear">${L("Temizle")}</button>` : ''}</div>
+      <search><div class="searchbar"><input type="search" id="q" placeholder="${L("Bir besin bul: mercimek, latte, pizza…")}" value="${esc(S.q)}" autocomplete="off" enterkeyhint="search" aria-label="${L("Besin ara")}" aria-keyshortcuts="/" title="${L("Kısayol: / ara · ↓ sonuçlara geç · Esc temizle")}">
+      ${S.q ? `<button class="btn ghost" data-action="ex-clear">${L("Temizle")}</button>` : ''}</div></search>
       ${S.searches.length ? `<div class="recent-searches" aria-label="${L("Son aramalar")}"><span class="hint">${L("Son aramalar")}</span><div class="presets">${S.searches.map(q => `<button class="pchip" data-action="search-recent" data-q="${esc(q)}">${esc(q)}</button>`).join('')}<button class="btn ghost" data-action="search-clear">${L("Geçmişi temizle")}</button></div></div>` : ''}
       ${renderDietFilter(S.settings,'ex',S.dietOpen.ex)}
       <div id="foodlist">${foodList('ex', S.cat, S.q, S.extGroup)}</div>

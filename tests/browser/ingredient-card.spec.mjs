@@ -93,6 +93,7 @@ test('B163 enerji "ikisi" kcal ile kJ birlikte; "Varsayılana dön" onay ister, 
 test('B164 + B197 üst sınır (10 kg) sessizce kırpılmaz: tarifte birikince ve +10 ile bildirim', async ({ page }) => {
   await page.goto('/');
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  await page.locator('[data-amount="ex"] details.amt-more > summary').click();
   await page.locator('[data-amount="ex"] [data-action="amt"][data-val="5000"]').click();
   await expect(page.locator('[data-amount="ex"] [data-action="amt"][data-val="5000"]')).toHaveText('5 kg');
   await page.locator('[data-action="ex-add-recipe"]').click();

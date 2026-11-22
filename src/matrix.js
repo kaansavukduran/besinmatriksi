@@ -27,9 +27,27 @@ export function dominantSource(sources) {
   return total >= 4 && n / total >= 0.5 ? best : null;
 }
 
+export function sourceRecordId(s, item) {
+  if (!s || !item) return '';
+  if (s === 'N' && item.usda?.fndds) return `FNDDS ${item.usda.fndds}`;
+  if (s === 'F' && item.usda?.fdc) return `FDC ${item.usda.fdc}` + (item.usda.ndb ? ` (NDB ${item.usda.ndb})` : '');
+  if ((s === 'u' || s === 'f' || s === 'y' || s === 'L' || s === 'I' || s === 'C' || s === 'P' || s === 'U' || s === 'z') && item.usda?.ndb) return `NDB ${item.usda.ndb}`;
+  if (s === 'B' && item.cofid) return `CoFID ${item.cofid}`;
+  if (s === 'i' && item.ifct?.code) return `IFCT ${item.ifct.code}`;
+  return '';
+}
+
 function srcChip(s, item) {
   if (!s) return '';
-  const record = s === 'N' && item?.usda?.fndds ? ` · FNDDS ${item.usda.fndds} · ${item.usda.desc}` : s === 'F' && item?.usda?.fdc ? ` · FDC ${item.usda.fdc} (NDB ${item.usda.ndb})` : (s === 'u' || s === 'f' || s === 'y') && item?.usda ? (s === 'u' ? ' · USDA SR28 (2015), NDB ' : ' · NDB ') + `${item.usda.ndb} · ${item.usda.desc}` : s === 'i' && item?.ifct ? ` · IFCT 2017, ${item.ifct.code} · ${item.ifct.name}` : s === 'e' && item?.estFrom ? ' · ' + L("IFCT 2017 çiğ kaynak kaydı: {r}; protein/yağ oranı ile tahmin", { r: item.estFrom }) : '';
+  const id = sourceRecordId(s, item);
+  let record = '';
+  if (s === 'N' && item?.usda?.fndds) record = ` · FNDDS ${item.usda.fndds} · ${item.usda.desc}`;
+  else if (s === 'F' && item?.usda?.fdc) record = ` · FDC ${item.usda.fdc}${item.usda.ndb ? ` (NDB ${item.usda.ndb})` : ''}${item.usda.desc ? ` · ${item.usda.desc}` : ''}`;
+  else if ((s === 'u' || s === 'f' || s === 'y') && item?.usda?.ndb) record = (s === 'u' ? ' · USDA SR28 (2015), NDB ' : ' · NDB ') + `${item.usda.ndb} · ${item.usda.desc}`;
+  else if (s === 'B' && item?.cofid) record = ` · UK CoFID 2021, ${item.cofid}`;
+  else if (s === 'i' && item?.ifct) record = ` · IFCT 2017, ${item.ifct.code} · ${item.ifct.name}`;
+  else if (s === 'e' && item?.estFrom) record = ' · ' + L("IFCT 2017 çiğ kaynak kaydı: {r}; protein/yağ oranı ile tahmin", { r: item.estFrom });
+  else if (id) record = ` · ${id}`;
   return `<span class="src src-${s}" title="${esc(L(SRC_TITLE[s]) + record)}">${L(SRC_LABEL[s])}</span>`;
 }
 
@@ -190,7 +208,7 @@ function preparationNotes(r, item) {
   const cat = item?.cat;
   if (v.fe > 0 && (d.phyFe > 1 || cat === 'baklagil' || cat === 'tahil'))
     notes.push('Bitkisel (hem olmayan) demir: C vitamini içeren bir besinle birlikte tüketmek emilimi artırır; çay/kahve ve yüksek fitat azaltır. Islatma, filizlendirme, ekşi maya/fermentasyon fitatı düşürür.');
-  if (d.oxCa >= 1) notes.push('Oksalat kalsiyumu bağladığı için bu besindeki kalsiyumun emilimi düşüktür. Haşlayıp suyunu dökmek çözünür oksalatı azaltır.');
+  if (d.oxCa >= 1) notes.push('Yüksek oksalat/kalsiyum oranı kalsiyum emilimini azaltabilir; ancak gerçek emilim oksalatın çözünürlüğüne, öğüne ve hazırlama biçimine bağlıdır. Haşlayıp suyunu dökmek çözünür oksalatı azaltabilir.');
   if ((v.bcarotene || 0) + (v.lycopene || 0) + (v.lutzea || 0) + (v.lutein || 0) > 1000)
     notes.push('Karotenoidler yağda çözünür: az miktarda yağ ile ve ezilmiş/pişirilmiş biçimde biyoyararlanım artar.');
   if (cat === 'baklagil') notes.push('Kuru baklagilleri ıslatıp iyice pişirmek lektinleri ve tripsin inhibitörlerini büyük ölçüde etkisizleştirir; ıslatma suyunu dökmek rafinoz ailesi şekerlerini (gaz yapan GOS) azaltır.');
@@ -234,14 +252,21 @@ function identityCard(item, r, cfg, ctx) {
   } else {
     rows.push(['Besin', `${esc(item.name)}${item.sci ? ` <i class="sci">${esc(item.sci)}</i>` : ''}`]);
     rows.push(['Tüketim biçimi', esc(item.formLabel)]);
-    rows.push(['Ölçüm temeli', `${fmtNum(r.grams)} ${item.liquid ? L("g (sıvılarda ≈ mL; yoğunluk ≈ 1 kabulü)") : L("g yenebilir kısım")} · ${L("kaynak değerleri 100 g başına")}`]);
+    const basis = item.custom && item.customLiquid
+      ? `${fmtNum(r.grams)} mL · ${L("kaynak değerleri 100 mL başına")}`
+      : item.density?.gPerMl > 0
+        ? `${fmtNum(r.grams)} g (≈ ${fmtNum(r.grams / item.density.gPerMl, 'low')} mL; ${L("USDA “{u}” ölçüsünden yoğunluk {d} g/mL", { u: item.density.src, d: fmtNum(item.density.gPerMl) })}) · ${L("kaynak değerleri 100 g başına")}`
+        : `${fmtNum(r.grams)} ${L("g yenebilir kısım")} · ${L("kaynak değerleri 100 g başına")}`;
+    rows.push(['Ölçüm temeli', basis]);
     if (item.custom) rows.push(['Kaynak', L("Ürün etiketinden elle girildi; girilmeyen bileşenler “veri yok” sayılır.")]);
     if (item.usda) {
       let part = L('Yenebilir kısım');
       if (item.usda.refuse) part += ' · ' + L("satın alınan ağırlığın %{p}'i atılır", { p: item.usda.refuse }) + (item.usda.refDesc ? ` (${esc(item.usda.refDesc)})` : '');
       rows.push(['İncelenen kısım', part]);
-      rows.push(['USDA kaydı', `${esc(item.usda.desc)} <span class="muted">· ${item.usda.ndb ? 'NDB ' + esc(item.usda.ndb) : item.usda.fndds ? 'FNDDS ' + esc(item.usda.fndds) : 'FDC ' + esc(item.usda.fdc)}</span>`]);
+      const idTag = item.usda.ndb ? 'NDB ' + esc(item.usda.ndb) : item.usda.fndds ? 'FNDDS ' + esc(item.usda.fndds) : 'FDC ' + esc(item.usda.fdc);
+      rows.push(['USDA kaydı', `${esc(item.usda.desc)} <span class="muted">· ${idTag}</span>`]);
     }
+    if (item.cofid) rows.push(['UK CoFID 2021', `<span class="muted">CoFID ${esc(item.cofid)}</span> · ${L("yalnız USDA'da eksik ölçümler için")}`]);
     if (item.recipeOf) rows.push(['Tahmin (tarif)', L("Ölçüm değil; USDA malzemelerinden şu oranla hesaplandı:") + ' ' + item.recipeOf.map((x) => `${pctText(fmtNum(x.pct))} ${esc(x.desc)}`).join(' + ')]);
     if (item.recipeYield) rows.push([L('Pişme verimi'), L("Pişmiş ağırlık / çiğ malzeme ağırlığı: %{n}; kayıp su sayıldı. Vitaminler, şeker türleri, amino asitler ve yağ asidi ayrıntısı ısıyla değiştiği için hesaplanmadı (veri yok).", { n: fmtNum(item.recipeYield) })]);
     if (item.ifct) rows.push(['IFCT kaydı', `${esc(item.ifct.name)} <span class="muted">· ${esc(item.ifct.code)}${item.ifct.regions ? ' · ' + L("{n} bölge örneği", { n: item.ifct.regions }) : ''}</span>`]);
@@ -321,7 +346,10 @@ export function renderMatrix(r, cfg, ctx = {}) {
   const hesapFirst = cfg.sectionOrder.includes('hesap') && !cfg.hiddenSections.includes('hesap');
   if (hesapFirst) d.push(derivedCard(r, cfg, open('hesap')));
   d.push(renderMicronutrients(r, cfg, { open: r.n > 0 && open('micro'), contributions: ctx.recipe ? 'recipe' : null }));
-  if (cfg.showSource && cfg.baseSrc) d.push(`<p class="hint src-base">${L("Etiketsiz değerlerin kaynağı:")} ${srcChip(cfg.baseSrc, item)}</p>`);
+  if (cfg.showSource && cfg.baseSrc) {
+    const recId = sourceRecordId(cfg.baseSrc, item);
+    d.push(`<p class="hint src-base">${L("Etiketsiz değerlerin kaynağı:")} ${srcChip(cfg.baseSrc, item)}${recId ? ` <span class="src-id">· ${esc(recId)}</span>` : ''}</p>`);
+  }
   const tail = [identityCard(item, r, cfg, ctx), coverage(r, cfg), `<p class="hint reference-label">${esc(referenceLabel(cfg))}</p>`];
   if (cfg.hiddenSections.length) d.push(`<p class="hint">${L("{n} bölüm ayarlarda gizlendi. Kapsam özeti ve CSV tüm bileşenleri içerir.", { n: cfg.hiddenSections.length })}</p>`);
   if (cfg.pinnedNutrients.length) {

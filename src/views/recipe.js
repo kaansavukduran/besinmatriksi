@@ -1,6 +1,6 @@
 // B223: Tarif sekmesi (liste, malzemeler, matris, özet, eksikler) app.js'ten ayrıldı; davranış aynı
 import { S } from '../state.js';
-import { resolve, refKey, extLoaded, visibleFoods, foodName } from '../data.js';
+import { resolve, refKey, extLoaded, visibleFoods, foodName, formName } from '../data.js';
 import { scaleItem, aggregate, scaleAggregate } from '../calc.js';
 import { NUTRIENTS } from '../nutrients.js';
 import { combineRecipes } from '../recipe-total.js';
@@ -57,7 +57,7 @@ export function renderRecipe() {
       <span class="ing-kcal">${item.v.energy != null ? fmtNum((item.v.energy * it.g) / 100) + ' kcal' : ''}</span>
       <span class="move"><button class="btn ghost" data-action="rc-move" data-id="${it.id}" data-d="-1" ${idx === 0 ? 'disabled' : ''} aria-label="${esc(L("{n} yukarı taşı", { n: item.name }))}">↑</button><button class="btn ghost" data-action="rc-move" data-id="${it.id}" data-d="1" ${idx === rc.items.length - 1 ? 'disabled' : ''} aria-label="${esc(L("{n} aşağı taşı", { n: item.name }))}">↓</button></span>
       <button class="btn ghost danger" data-action="rc-del-item" data-id="${it.id}" aria-label="${L("Malzemeyi kaldır")}">✕</button></div>
-      ${S.ingOpen.has(it.id) ? `${amountControls('rc:' + it.id, it.g, item.portions, { compact: true, liquid: item.liquid })}${perServing(it.g, rc.servings)}
+      ${S.ingOpen.has(it.id) ? `${amountControls('rc:' + it.id, it.g, item.portions, { compact: true, liquid: item.liquid, density: item.density, customLiquid: item.customLiquid })}${perServing(it.g, rc.servings)}
       <button class="btn ghost" data-action="ing-open" data-id="${it.id}" aria-expanded="true">${L("Kapat")}</button>`
       : miniAmount('rc:' + it.id, it.g, rc.servings, it.id, item.name)}
     </div>`;
@@ -101,9 +101,14 @@ export function renderRecipeGaps(r, daily = false) {
   if (!S.settings.recipeGaps || (!daily && S.basis === 'per100')) return '';
   const gaps = recipeGaps(r, NUTRIENTS, visibleFoods(), (n) => referenceFor(n, S.settings));
   if (!gaps.length) return '';
+  const noteFor = (g) => g.sourceNote === 'b12'
+    ? `<p class="hint">${L("Doğal bitkisel besinlerde güvenilir B12 kaynağı yoktur; zenginleştirilmiş ürünler veya takviye değerlendirilir.")}</p>`
+    : g.sourceNote === 'vitd'
+      ? `<p class="hint">${L("D vitamini için UV ışığına maruz kalmış mantarlar, zenginleştirilmiş ürünler veya takviye değerlendirilir.")}</p>`
+      : '';
   const rows = gaps.map((g) => `<li><div class="gap-h"><b>${esc(nutrientLabel(g.n))}</b> <span class="muted">${pctText(fmtNum(g.pct, 'low'))}${g.partial ? ' · ' + L("kısmi veri, gerçek değer daha yüksek olabilir") : ''}</span></div>
-    ${g.noPlant ? `<p class="hint">${L("Bitkisel besinlerde güvenilir doğal kaynağı yok; zenginleştirilmiş ürün veya takviye gerekir.")}</p>` : ''}
-    ${!g.foods.length ? '' : `<div class="presets">${g.foods.map((x) => `<button class="pchip" data-action="gap-open" data-id="${esc(x.f.id)}">${esc(foodName(x.f))} <span class="muted">${fmtNum(x.v, 'low')} ${esc(g.n.unit)}/100 g</span></button>`).join('')}</div>`}</li>`).join('');
+    ${noteFor(g)}
+    ${!g.foods.length ? '' : `<div class="presets">${g.foods.map((x) => `<button class="pchip" data-action="gap-open" data-id="${esc(x.f.id)}" data-f="${x.fi ?? 0}">${esc(foodName(x.f))}${x.f.forms.length > 1 && x.fm?.label ? ` <span class="muted">(${esc(formName(x.fm.label))})</span>` : ''} <span class="muted">${fmtNum(x.v, 'low')} ${esc(g.n.unit)}/100 g</span></button>`).join('')}</div>`}</li>`).join('');
   return `<section class="card recipe-gaps" aria-label="${L("En düşük kalan besinler")}">
     <h3>${L("En düşük kalan besinler")}</h3>
     <p class="hint">${L("Referansa göre en düşük yüzdeler ve bunları 100 g'da en çok veren besinler. Kişisel ihtiyaç veya emilim değildir; veri olmayan bileşenler burada sayılmaz.")}</p>

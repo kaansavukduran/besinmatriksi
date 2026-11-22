@@ -1452,3 +1452,38 @@
 - Depoda `main` yoktu; varsayılan dal `ccr-1e1934aa-iv8aev` ve Pages oradan yayınlanıyor. Aynı commit'ten `main` oluşturuldu. `pages.yml` artık `main` push'unda da tetiklenir; yayın yalnız deponun varsayılan dalından yapılır (varsayılan dal GitHub ayarlarından `main` yapılırsa Pages oradan yayınlar).
 - Kanıt: `npm test` 351/351; build, build:single, build:lite; hosting/ux/route tarayıcı testleri 8/8; kod B250 tam koşusu (79: 391/391) ile aynı.
 - Doğrulama: release.yml 44895981769 başarılı; `v1.1.2-beta.68` ön sürüm, 23 varlık (13'ü sürüm adlı paket), 2026-11-21 11:20 UTC. Test 44895966903 (Chromium + Tarayıcı uyumu) ve Pages 44895966918 başarılı.
+
+## B252 · 2026-11-22 · Doğruluk düzeltmeleri (yoğunluk, B12/D önerileri, Foundation kimliği, şeffaf sayaçlar, oxCa, monoton mobil derleme kodu)
+- (A) `src/amount-scale.js` + `src/data.js` + `src/views/amount.js`: yağ ve yoğunluğu doğrulanmamış sıvılarda "100 g ≈ mL" genellemesi kaldırıldı; yalnız doğrulanmış USDA hacim porsiyonlarından (`cup`/`fl oz`/`tbsp`/`tsp`; `p.d`/`p.r` hariç) `volumeDensity()` hesaplanır (ör. zeytinyağı 0,913 g/mL → 100 g ≈ 110 mL). Özel 100 mL etiket besinleri doğrudan `mL` kalır.
+- (B) `src/gaps.js` + `src/views/recipe.js` + `src/actions/explore.js`: `NO_PLANT_SOURCE` toptan dışlaması kaldırıldı; tüm biçimler taranır; D vitamininde UV/D içeren mantarlar ve zenginleştirilmiş bitkisel süt/yoğurtlar, B12'de yalnız doğrulanmış zenginleştirilmiş bitkisel süt/yoğurtlar (≥0,4 µg) önerilir; mantar/yosun/tempeh/miso iz B12 kayıtları önerilmez.
+- (C) `src/matrix.js`: Foundation-only besinlerdeki (`aslan_yelesi`, `siyah_pirinc`) `"NDB undefined"` düzeltildi; `sourceRecordId()` kaynak kimliğini (`FDC ...` / `NDB ...`) fareyle üzerine gelme gerektirmeden `.src-base` satırında görünür yazar.
+- (D) `scripts/build-data.mjs` + `src/views/settings.js`: `meta` içine `recipeEstimatedForms` (124), `recipeEstimatedCells` (7.384), `assumedZeroCells` (5.420), `cofidFilledCells` (178), `foundationForms` (11), `fnddsForms` (101) eklendi; `ifctLinked=0` ve `estimated=0` korundu; Hakkında ekranı gerçek sayıları gösterir.
+- (E) `scripts/mobile-version.mjs`: monoton artan mobil derleme numarası formülü `(major*10000+minor*100+patch)*1000+offset` (`1.1.2-beta.69` → `10102169` > önceki yayımlı `1001002`).
+- (F) `src/matrix.js`: `oxCa >= 1` notu üstündeki "çözünür/toplam oksalat farkı" uyarısıyla çelişmeyecek biçimde hizalandı.
+- Test: `tests/b252-accuracy.test.mjs`, `tests/gaps.test.mjs`, `tests/release.test.mjs`.
+
+## B253 · 2026-11-22 · Modern Web Guidance ile akış ve arayüz iyileştirmeleri
+- Resmî `googlechrome/modern-web-guidance` CLI (`search` + `retrieve`) ile 8 rehber tam metin okundu: `content-first-noise-reduction`, `responsive-table`, `form-factor-adaptation`, `navbar`, `dialog`, `light-dismiss-a-dialog`, `accessibility`, `forms`.
+- Seçici modalı (`src/app.js`, `src/actions/pick.js`, `src/styles/forge-fixes.css`): `<search class="pk-search">` en üste taşındı (`#pq` y: 677 → 74 px), yazarken canlı açılan `Temizle` düğmesi eklendi; kategoriler tek satırlık yatay şeride (`pk-cats-nav`, `Tüm kategoriler` ile tam ızgara açılır) alındı; besin listesi hemen ilk ekranda (`y: 349 px`).
+- Miktar kontrolleri (`src/views/amount.js`, `src/app.js`): doğrudan sayısal giriş `.amt-input` (`inputmode="decimal"`, `enterkeyhint="done"`, `max(1rem, 1em)`, Türkçe virgül/nokta desteği) eklendi; günlük 8 hazır miktar (`25 g – 1 kg`) önde, uç 7 miktar (`1 g`, `5 kg`, `10 kg`…) `<details class="amt-more">` içinde.
+- Kaydırma ve konum (`src/actions/explore.js`, `src/app.js`): masaüstünde aşağı kaydırılmış listeden besin seçilince sayfa başa alınır (`.dhead` y: -603 → 97 px); listeye dönüşte `S.browseScrollY` + arama/filtre geri yüklenir.
+- Kıyasla tablosu (`src/views/compare.js`, `src/styles/forge-fixes.css`): `<caption class="sr">`, `scope="col"`, `scope="row"`, yatay kaydırmada yapışkan satır başlığı (`B109` dikey açık tablo kuralı korunarak).
+- PWA güncelleme güvenliği (`src/main.js`, `src/app.js`): açık özel besin/tarif düzenleme taslağı varken `controllerchange` zorla yenilemez; engellemesiz `#pwa-update-bar` gösterir.
+- CSS ilerleyici geliştirmeleri: `text-wrap: balance` (`h1, h2, h3`), mobilde `scroll-padding-bottom` (alt sekme + safe-area), `.modal-box { overscroll-behavior: contain }`.
+
+## B254 · 2026-11-22 · Doğrulanmış besin verisi eklemeleri ve açık boşluk envanteri
+- `data/catalog.mjs`: `siyah_pirinc` (`kuru`) → `F100349` (`USDA FDC Foundation Foods 2026-10-29`, `FDC 2710825`, 23 analitik bileşen, CC0). Boş form sayısı **37 → 36**. `siyez_bulguru` çiğ tane (`2710827`) ile sessizce eşlenmedi; nedeni açık bırakıldı.
+- `data/cofid-map.mjs`: 13 yaygın besinde (`elma:cig`, `domates:cig`, `patates:cig`, `patates:haslanmis`, `sogan:cig`, `kivi:cig`, `kiraz:cig`, `uzum:cig`, `greyfurt:cig`, `patlican:cig`, `kabak:cig`, `yulaf:kuru`, `hurma:kurutulmus`) UK CoFID 2021 (OGL v3.0) ile su/protein bileşim doğrulaması geçen **18 eksik biyotin/iyot hücresi** eklendi (`Tr`/`N` hariç; toplam CoFID dolgusu 160 → 178).
+- Dış kaynak yeniden doğrulaması: `turkomp.gov.tr` 8 sn zaman aşımı (HTTP 000), `api.nal.usda.gov` DEMO_KEY HTTP 429; `docs/DATA_RESEARCH.md` içine 36 kalan boş formun tam envanteri ve nedenleri kaydedildi.
+
+## B255 · 2026-11-22 · Üretilen açılış tabağı illüstrasyonu (`hero-plate.webp`)
+- Bulut görsel üretim aracı (`generate_image`) ile botanik tabak illüstrasyonu üretildi, krem dış zemin saydamlaştırıldı, açık ve koyu zemin üzerinde görsel olarak doğrulandı, `420×366` boyutunda **37,3 KB** `src/assets/hero-plate.webp` dosyasına sıkıştırıldı.
+- `src/kitchen-art.js` içine `?url` ile bağlandı (PWA önbelleğinde 47 dosya; `dist-single` ve `dist-lite` içine dış ağ isteği olmadan gömülü); üretim ve lisans bilgisi `assets-src/VISUAL_CREDITS.json` içine işlendi.
+
+## B256 · 2026-11-22 · Sürüm 1.1.2-beta.69, kanonik `main` Pages iş akışı ve durum kayıtlarının uzlaştırılması
+- Sürüm `1.1.2-beta.68` → `1.1.2-beta.69` (`package.json`, `package-lock.json`, `src-tauri/tauri.conf.json`, `src-tauri/tauri.linux.conf.json` `0.beta.69`, `src-tauri/Cargo.toml`, `src-tauri/Cargo.lock`, `public/THIRD_PARTY_NOTICES.txt`, `src/data/notices.json`).
+- `.github/workflows/pages.yml`: tek kanonik yayın dalı `main` (`branches: [main]`, `if: github.event_name == 'workflow_dispatch' || github.ref_name == 'main'`), derleme öncesi `npm run data && git diff --exit-code -- src/data` ve `node scripts/build-notices.mjs --check` kapıları eklendi.
+- `README.md`, `docs/RELEASE_NOTES.md`, `project_state/CURRENT_STATE.json` gerçek kod, katalog (875 besin / 1.027 biçim / 36 boş biçim / 8.038 ek kayıt) ve host durumlarıyla (GitHub Pages HTTP 200, Cloudflare Pages HTTP 200, Vercel HTTP 402) uzlaştırıldı.
+- Kanıt: `npm run data` deterministik; `node scripts/build-notices.mjs --check` PASS (25 bildirim); `npm test` 356/356 PASS; `npm run build` / `build:single` (8,75 MB) / `build:lite` (3,53 MB) PASS; Playwright tam tarayıcı koşusu (4 parça, masaüstü+telefon Chromium): **403 PASS, 1 SKIP (masaüstü dokunmatik-özel B206), 0 FAIL** (`b252-ux.spec.mjs` 12/12, `polish.spec.mjs` 10/10 dahil).
+- Engel: `kaansavukduran/besinmatriksi` bu bulut konuşmasının proje kaynaklarına bağlı olmadığı için `git push` HTTP 403 döndürdü; değişiklikler yerel `main` dalında temiz birleştirildi.
+

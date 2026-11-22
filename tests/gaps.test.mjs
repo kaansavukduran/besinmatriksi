@@ -27,11 +27,24 @@ test('referans yoksa öneri yok', () => {
   assert.deepEqual(recipeGaps(r, N, foods, () => ({ value: undefined })), []);
 });
 
-test('B12/D: bitkisel besin önerilmez, görünür hayvansal kaynaklar listelenir', () => {
-  const N2 = [{ key: 'b12', unit: 'µg' }];
-  const fs2 = [{ id: 'mantar', forms: [{ v: { b12: 0.1 } }] }, { id: 'ciger', animal: true, forms: [{ v: { b12: 59 } }] }];
-  const g = recipeGaps({ n: 1, v: { b12: 0 }, cov: { b12: 1 } }, N2, fs2, () => ({ value: 2.5 }));
-  assert.equal(g[0].noPlant, true); assert.deepEqual(g[0].foods.map((x) => x.f.id), ['ciger']);
-  const g2 = recipeGaps({ n: 1, v: { b12: 0 }, cov: { b12: 1 } }, N2, fs2.filter((f) => !f.animal), () => ({ value: 2.5 }));
-  assert.equal(g2[0].foods.length, 0);
+test('B12/D: rastgele bitkisel iz ölçümü B12 sayılmaz; zenginleştirilmiş bitkisel içecekler, UV mantarları ve tüm biçimler değerlendirilir (B252)', () => {
+  const N2 = [{ key: 'b12', unit: 'µg' }, { key: 'vitd', unit: 'µg' }];
+  const fs2 = [
+    { id: 'kultur_mantari', cat: 'mantar', forms: [{ label: 'Çiğ', v: { b12: 0.04, vitd: 0.2 } }] },
+    { id: 'tempeh', tr: 'Tempeh', cat: 'soya', forms: [{ label: 'Çiğ', v: { b12: 0.08 } }] },
+    { id: 'soya_sutu_z', tr: 'Soya sütü (eklenmiş)', cat: 'soya', forms: [{ label: 'İçecek', v: { b12: 1.11, vitd: 1.2 }, usda: { desc: 'Soymilk, fortified' } }] },
+    { id: 'portobello_uv', tr: 'Portobello (UV)', cat: 'mantar', forms: [{ label: 'Çiğ', v: { b12: 0.05, vitd: 28.4 } }] },
+    { id: 'shiitake', tr: 'Shiitake', cat: 'mantar', forms: [{ label: 'Çiğ', v: { vitd: 0.4 } }, { label: 'Kurutulmuş', v: { vitd: 3.9 } }] },
+    { id: 'ciger', animal: true, forms: [{ label: 'Pişmiş', v: { b12: 59, vitd: 1.2 } }] },
+  ];
+  const gAll = recipeGaps({ n: 1, v: { b12: 0, vitd: 0 }, cov: { b12: 1, vitd: 1 } }, N2, fs2, (n) => ({ value: n.key === 'b12' ? 2.5 : 15 }));
+  const b12All = gAll.find((x) => x.n.key === 'b12');
+  const vitdAll = gAll.find((x) => x.n.key === 'vitd');
+  assert.deepEqual(b12All.foods.map((x) => x.f.id), ['ciger', 'soya_sutu_z']); // mantar ve tempeh B12 için önerilmez
+  assert.deepEqual(vitdAll.foods.map((x) => x.f.id), ['portobello_uv', 'shiitake', 'soya_sutu_z']); // shiitake ikinci biçimi (kurutulmuş, 3.9) seçilir
+  assert.equal(vitdAll.foods[1].fi, 1);
+
+  const gVegan = recipeGaps({ n: 1, v: { b12: 0, vitd: 0 }, cov: { b12: 1, vitd: 1 } }, N2, fs2.filter((f) => !f.animal), (n) => ({ value: n.key === 'b12' ? 2.5 : 15 }));
+  assert.deepEqual(gVegan.find((x) => x.n.key === 'b12').foods.map((x) => x.f.id), ['soya_sutu_z']);
+  assert.deepEqual(gVegan.find((x) => x.n.key === 'vitd').foods.map((x) => x.f.id), ['portobello_uv', 'shiitake', 'soya_sutu_z']);
 });

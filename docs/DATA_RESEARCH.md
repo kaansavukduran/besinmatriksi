@@ -70,3 +70,21 @@ Eksik girdilerden tam ölçüm izlenimi veren oran veya amino asit skoru üretil
 ## B050 enerji modeli · 2026-11-09
 
 Mifflin 1990 DOI 10.1093/ajcn/51.2.241 / PMID 2305711 katsayıları ve çalışma yaşları 19–78, Europe PMC resmî API yanıtıyla doğrulandı. PubMed doğrudan isteği özet yerine ara sayfa verdi; aynı engel yeniden denenmedi. API URL/erişim anı/yanıt SHA ve katsayılar `data/references/ENERGY_MODEL_SOURCE.json` içinde. Makale/özet kopyası dağıtılmaz; yalnız bibliyografik olgular ve denklem kullanılır. PAL 1.4/1.6/1.8/2.0 EFSA enerji açıklamasıyla kaynaklanır (2013, DOI 10.2903/j.efsa.2013.3005). Sonuç bireysel ölçülmüş ihtiyaç değildir. Cihaz dinlenme enerjisi girdisi ayrı kullanıcı tahmini olarak tutulur; yağ yüzdesi bu denkleme sokulmaz. Yeni gıda ölçümü veya IFCT tabanlı tahmin eklenmedi. TürKomp bekleme sınırı değişmedi.
+
+## B254 eksik veri envanteri ve kaynaklı doldurma · 2026-11-22
+
+### Doğrulanıp eklenen kayıtlar
+- **Siyah pirinç (`siyah_pirinc`, kuru):** `USDA FoodData Central Foundation Foods` (2026-10-29, CC0, yerel `data/raw/USDA_FDC_FOUNDATION_2026-10-29.min.json.gz`), `FDC 2710825` (`ffNdb: 100349`, `Rice, black, unenriched, raw`): 23 analitik/hesaplı bileşen (enerji 370 kcal Atwater genel, protein 7,57 g, yağ 3,44 g, karbonhidrat 77,2 g, nişasta 71,4 g, lif 4,18 g, biyotin 4,88 µg, mineraller ve B vitaminleri). Tamamen verisiz form sayısı **37 → 36** oldu.
+- **UK CoFID 2021 (Open Government Licence v3.0, `data/raw/CoFID_2021_SUBSET.json.gz`) 4. tur — 13 eşleme, 18 yeni hücre** (yalnız USDA'da boş olan biyotin ve iyot; aynı ad + hazırlama biçimi + su ±5 g + protein ±%25 veya ±1 g kapısıyla doğrulandı; `'Tr'` ve `'N'` hücreleri dışlandı):
+  - `elma:cig` (`14-319`, biotin 1,1 µg), `domates:cig` (`13-517`, biotin 1,4 µg), `patates:cig` (`13-489`, iodine 1 µg, biotin 0,3 µg), `patates:haslanmis` (`13-490`, iodine 1 µg, biotin 0,3 µg), `sogan:cig` (`13-499`, biotin 1 µg), `kivi:cig` (`14-371`, iodine 2 µg), `kiraz:cig` (`14-382`, biotin 0,42 µg), `uzum:cig` (`14-350`, biotin 0,2 µg), `greyfurt:cig` (`14-384`, biotin 0,68 µg), `patlican:cig` (`13-161`, iodine 1 µg), `kabak:cig` (`13-627`, iodine 5 µg, biotin 3,1 µg), `yulaf:kuru` (`11-788`, biotin 19 µg), `hurma:kurutulmus` (`14-394`, iodine 17 µg, biotin 1,5 µg).
+
+### Yeniden denetlenen dış kaynak erişimi (2026-11-22)
+- **TürKomp (`https://turkomp.gov.tr/`):** 8 sn zaman aşımı (HTTP 000, erişim engelli / yanıt yok). Lisans ve yeniden dağıtım koşulları doğrulanamadığı için veri aktarılmadı.
+- **USDA FDC canlı API (`DEMO_KEY`):** HTTP 429 hız sınırı; çevrimdışı doğrulanmış tam yerel arşivler (`SR28`, `Foundation 2026-10-29`, `FNDDS 2021-2023`, `CoFID 2021`) kullanıldı.
+- **IFCT 2017 & Monash FODMAP:** Lisans engelli; dağıtıma eklenmedi.
+
+### Açık kalan 36 verisiz formun durumu (sessiz aktarım yapılmadı)
+- **Tür/çeşit veya işleme farkı nedeniyle mevcut yerel açık kaynaklarda tam eşleşmesi bulunmayanlar (26):** `siyez_bulguru` (FDC'de yalnız çiğ tam siyez buğdayı `2710827` var, bulgura aktarılmadı), `siyah_mercimek`, `gemlik_zeytini`, `taflan`, `gun_kurusu_kayisi` (kükürtlü kayısı aktarılmadı), `kuru_dut`, `kuru_cilek`, `kuru_ananas` (CoFID `14-396` enerji/karbonhidrat içermiyor, eksik profil eklenmedi), `kuru_kivi`, `psyllium`, `kanlica`, `yumurta_mantari`, `reishi`, `seylan_tarcini` (genel cassia/cinnamon aktarılmadı), `sumak`, `corek_otu`, `isot`, `adacayi_demleme`, `ihlamur_cayi`, `nane_cayi`, `rooibos_cayi` (kuru yaprak demlemeye aktarılmadı), `uzum_pekmezi`, `nar_eksisi`, `turk_kahvesi_sade`, `lungo`, `ristretto`.
+- **Marka/formülasyon bağımlı takviye ve protein tozları (9):** `kazein`, `sigir_proteini`, `kolajen_peptit`, `bezelye_proteini`, `pirinc_proteini`, `kenevir_proteini`, `kabak_cek_proteini`, `karisik_bitkisel_protein`, `besin_mayasi_z` (marka/zenginleştirme etiketi gerekir; "Kendi besinlerim" yolu açık).
+- **Lisans engelli boşluk (1):** `jaggery` (IFCT 2017 NIN yazılı izni yok).
+

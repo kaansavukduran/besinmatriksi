@@ -18,3 +18,28 @@ export function gramsToSlider(g, max = MAX_GRAMS) {
 }
 // Kısa gösterim: 1000 g ve üstü kg (ör. 2,5 kg); altı g
 export const kgLabel = (g) => (g >= 1000 ? `${String(g / 1000).replace('.', ',')} kg` : `${g} g`);
+
+// B252: doğrulanmış USDA hacim porsiyonlarından (cup/fl oz/tbsp/tsp; türetilmiş/tarif porsiyonu hariç) özgül yoğunluk (g/mL)
+const VOL_ML = { cup: 236.588, 'fl oz': 29.5735, tbsp: 14.7868, tablespoon: 14.7868, tsp: 4.9289, teaspoon: 4.9289 };
+export function volumeDensity(portions) {
+  let best = null;
+  for (const p of portions || []) {
+    if (p.d || p.r || !p.en || !(p.g > 0)) continue;
+    const m = /^(\d*\.?\d+)\s*(cup|fl oz|tbsp|tablespoon|tsp|teaspoon)s?\b/i.exec(String(p.en).trim());
+    if (!m) continue;
+    const qty = Number(m[1]), unit = m[2].toLowerCase();
+    if (!(qty > 0) || !VOL_ML[unit]) continue;
+    const gPerMl = p.g / (qty * VOL_ML[unit]);
+    if (!(gPerMl >= 0.3 && gPerMl <= 2.5)) continue;
+    const prio = unit === 'cup' ? 3 : unit === 'fl oz' ? 2 : 1;
+    if (!best || prio > best.prio) best = { gPerMl: Math.round(gPerMl * 1000) / 1000, src: m[0], prio };
+  }
+  return best ? { gPerMl: best.gPerMl, src: best.src } : null;
+}
+
+export function amountUnitText(g, { oz = false, density = null, customLiquid = false, format = (x) => String(Math.round(x)) } = {}) {
+  if (customLiquid) return 'mL';
+  if (oz) return `oz (≈ ${format(g)} g)`;
+  if (density?.gPerMl > 0) return `g (≈ ${format(g / density.gPerMl, 'low')} mL)`;
+  return 'g';
+}

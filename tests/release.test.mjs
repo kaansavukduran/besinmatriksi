@@ -16,12 +16,17 @@ test('Linux RPM beta sürümü geçerli sayısal version ve ayrı release alanı
   assert.match(linux.bundle.linux.rpm.release, /^[a-zA-Z0-9.]+$/);
 });
 
-test('mobil yerel sürüm alanları uygulamayla eşleşir; kimlik ve mevcut ayarlar değişmez', () => {
-  const version = '1.1.2-beta.1';
-  assert.deepEqual(mobileVersion(version), { name: version, marketing: '1.1.2', code: 1001002 });
+test('mobil yerel sürüm alanları uygulamayla eşleşir; derleme numarası her sürümde monoton artar (B252)', () => {
+  const version = '1.1.2-beta.69';
+  assert.deepEqual(mobileVersion(version), { name: version, marketing: '1.1.2', code: 10102169 });
+  assert.ok(mobileVersion('1.1.2-beta.1').code > 1001002, 'önceki yayımlanan 1001002 değerinden geriye düşmez');
+  const seq = ['1.1.2-alpha.1', '1.1.2-beta.67', '1.1.2-beta.68', '1.1.2-beta.69', '1.1.2-rc.1', '1.1.2', '1.1.3-beta.1', '1.1.3', '1.2.0', '2.0.0'];
+  for (let i = 1; i < seq.length; i++) {
+    assert.ok(mobileVersion(seq[i]).code > mobileVersion(seq[i - 1]).code, `${seq[i]} > ${seq[i - 1]}`);
+  }
   const android = applyMobileVersion('android', 'applicationId "io.example.app"\nversionCode 1\nversionName "1.0"', version);
-  assert.match(android, /applicationId "io.example.app"/); assert.match(android, /versionCode 1001002/); assert.match(android, /versionName "1.1.2-beta.1"/);
-  assert.match(applyMobileVersion('ios', 'MARKETING_VERSION = 1.0; CURRENT_PROJECT_VERSION = 1;', version), /MARKETING_VERSION = 1.1.2; CURRENT_PROJECT_VERSION = 1001002;/);
+  assert.match(android, /applicationId "io.example.app"/); assert.match(android, /versionCode 10102169/); assert.match(android, /versionName "1.1.2-beta.69"/);
+  assert.match(applyMobileVersion('ios', 'MARKETING_VERSION = 1.0; CURRENT_PROJECT_VERSION = 1;', version), /MARKETING_VERSION = 1.1.2; CURRENT_PROJECT_VERSION = 10102169;/);
   assert.throws(() => applyMobileVersion('android', 'unknown layout', version));
 });
 test('release eksik pakette durur; adlar, kaynak SHA ve özetler gerçek dosyaları gösterir', () => {
@@ -79,13 +84,15 @@ test('B237 Pages iş akışı: build → deploy ayrı işler, yayın derlemeye b
   const build = y.slice(y.indexOf('\n  build:'), y.indexOf('\n  deploy:'));
   const deploy = y.slice(y.indexOf('\n  deploy:'));
   assert.match(build, /upload-pages-artifact@[0-9a-f]{40}/);
+  assert.match(build, /npm run data && git diff --exit-code -- src\/data/);
+  assert.match(build, /build-notices\.mjs --check/);
   assert.match(build, /npm test/);
   assert.match(deploy, /needs: build/);
   assert.match(deploy, /deploy-pages@[0-9a-f]{40}/);
   assert.doesNotMatch(deploy, /upload-pages-artifact|npm (ci|test|run)/);
   assert.match(deploy, /environment: \{ name: github-pages/);
-  assert.match(y, /branches: \[ccr-1e1934aa-iv8aev, main\]/); // B251: main de tetikler; yayın yalnız varsayılan daldan
-  assert.match(y, /if: github.ref_name == github.event.repository.default_branch/);
+  assert.match(y, /branches: \[main\]/); // B256: tek kanonik yayın dalı main
+  assert.match(y, /if: github\.event_name == 'workflow_dispatch' \|\| github\.ref_name == 'main'/);
 });
 
 // B246: veri (catalog) ve metin/çizim sözlükleri (content) koddan ayrı parçalar; tek dosya sürümünde bölme yok

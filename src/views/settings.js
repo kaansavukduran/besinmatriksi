@@ -98,7 +98,7 @@ export function renderSettings() {
     <section class="card"><h2>${L("Birim ve sayı tercihleri")}</h2>
       <div class="kv"><span>${L("Enerji (matriks)")}</span><div class="presets">${opt('energyUnit', 'both', 'kcal + kJ')}${opt('energyUnit', 'kcal', 'kcal')}${opt('energyUnit', 'kj', 'kJ')}</div></div>
       <div class="kv"><span>${L("Miktar göstergesi")}</span><div class="presets">${opt('amountUnit', 'g', L("Gram"))}${opt('amountUnit', 'oz', L("Ons (oz)"))}</div></div>
-      <p class="hint">${L("1 oz = 28,349523125 g. Seçim düğmeleri ve hesap tabanı 1 g – 10 kg aralığında kalır. Sıvılarda yaklaşık mL, yoğunluk 1 varsayımıdır.")}</p>
+      <p class="hint">${L("1 oz = 28,349523125 g. Seçim düğmeleri ve hesap tabanı 1 g – 10 kg aralığında kalır. Sıvılarda yaklaşık mL yalnızca kaynakta hacim ölçüsü (yoğunluk) varsa hesaplanır; yoksa gram gösterilir.")}</p>
       <div class="kv"><span>${tr('numberSeparator')}</span><div class="presets">${opt('decimalSeparator', 'auto', tr('followLanguage'))}${opt('decimalSeparator', 'comma', tr('comma') + ': 1,5')}${opt('decimalSeparator', 'dot', tr('dot') + ': 1.5')}</div></div>
       ${tog('autoUnits', L("Büyük miktarlarda birimi yükselt (µg → mg → g)"))}
       <p class="hint">${L("CSV her zaman Türkçe Excel uyumlu ondalık virgül ve tanımlı besin birimlerini kullanır.")}</p>
@@ -150,6 +150,7 @@ export function renderAbout() {
     <h2>Besin Matriksi</h2>
     <p>${L("Çevrimdışı çalışan, ayrıntılı besin bileşimi gezgini ve tarif hesaplayıcı. Bitkisel besinler ağırlıklı; hayvansal besinler ayrı kategorilerde ve etiketli (Ayarlar'dan gizlenebilir). İnternet bağlantısı gerekmez; hiçbir veri cihazdan çıkmaz.")}</p>
     <p class="hint">${L("Sürüm {v} · veri: {src} · {n} küratörlü besin / {f} biçim.", { v: esc(window.__APP_VERSION__ || ''), src: esc(L(META.sources)), n: META.curated, f: META.forms })}</p>
+    ${META.recipeEstimatedForms != null ? `<p class="hint">${L("Kapsam özeti: {r} tarif hesabı (tahmin) biçimi, {u} verisiz biçim, {z} varsayılan sıfır hücresi, {e} geniş katalog kaydı.", { r: fmtNum(META.recipeEstimatedForms), u: fmtNum(META.unavailableForms), z: fmtNum(META.assumedZeroCells || 0), e: fmtNum(META.ext) })}</p>` : ''}
     <h3>${L("Veri dürüstlüğü")}</h3>
     <ul>
       <li>${L("Ölçülmemiş bileşen <b>“veri yok”</b> olarak gösterilir, asla 0 yazılmaz. 0 yalnızca kaynak 0 bildirdiğinde görünür.")}</li>

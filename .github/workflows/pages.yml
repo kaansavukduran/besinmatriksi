@@ -4,7 +4,7 @@ name: GitHub Pages (iPhone/Android için yüklenebilir PWA)
 # GitHub Actions seçilmelidir; bu iş akışı yönetici ayarını değiştirmez.
 on:
   push:
-    branches: [ccr-1e1934aa-iv8aev, main] # yayın yalnız deponun varsayılan dalından yapılır (aşağıdaki if)
+    branches: [main] # B256: tek kanonik yayın dalı main; varsayılan dal geçişiyle çifte yayın oluşmaz
   workflow_dispatch:
 
 permissions:
@@ -20,7 +20,7 @@ jobs:
   # B237: GitHub'ın Pages şablonundaki gibi derleme ve yayın ayrı işler. Tek işte yayın adımı, aynı saniyede yüklenen
   # artifact'ı bazen bulamıyordu ("Found 0 artifact(s)"; koşu 110, 112, 115, 122). Ayrı iş, yükleme tamamlanınca başlar.
   build:
-    if: github.ref_name == github.event.repository.default_branch
+    if: github.event_name == 'workflow_dispatch' || github.ref_name == 'main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -29,6 +29,8 @@ jobs:
         with: { node-version: 22, cache: npm }
       - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
       - run: npm ci
+      - run: npm run data && git diff --exit-code -- src/data
+      - run: node scripts/build-notices.mjs --check
       - run: npm test
       - run: npm run build
       - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3

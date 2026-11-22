@@ -1,95 +1,97 @@
 {
   "schema_version": "1",
   "project": "Besin Matriksi",
-  "product_version": "1.1.2-beta.62",
-  "development_state": "IN_PROGRESS",
-  "last_forge_at": "2026-11-19",
-  "last_completed_forge": "B251",
+  "product_version": "1.1.2-beta.69",
+  "development_state": "READY_TO_PUSH",
+  "last_forge_at": "2026-11-22",
+  "last_completed_forge": "B256",
   "active_forge": null,
-  "next_recommended_forge": "B252 beta.68 doğrulama; İngilizce sözlüğü yalnız İngilizce seçilince yükleme",
-  "branch": "ccr-1e1934aa-iv8aev",
-  "pull_request": "https://github.com/kaansavukduran/besinmatriksi/pull/2",
-  "validated_code_commit": null,
-  "package_source_commit": "d686224",
+  "next_recommended_forge": "B257 uzak depo bağlantısı sonrası main push, varsayılan dalı main yapma, GitHub Pages + Release doğrulaması",
+  "branch": "main",
+  "pull_request": null,
+  "validated_code_commit": "local-main-pending-push",
+  "package_source_commit": "a0d815a",
   "verified_gates": [
     {
-      "id": "unit",
-      "result": "PASS156/156 beta.42; raw-source energy/protein mapping,missing versus zero and existing form identity",
-      "level": "UNIT_TESTED"
-    },
-    {
-      "id": "web",
-      "result": "PASS beta.42 web/PWA and single HTML11.25MB",
-      "level": "BUILT"
-    },
-    {
-      "id": "browser",
-      "result": "PASS12/12 Chromium desktop/phone TR/EN dried fruit and apricot regression;33.5seconds,partial mixed-recipe energy and saved references",
-      "level": "RUNTIME_TESTED"
-    },
-    {
-      "id": "axe",
-      "result": "PASS0 WCAG2.1AA violations on light/dark fruit catalogue; new dried-fruit and mobile data-gap screenshots inspected",
-      "level": "RUNTIME_TESTED"
-    },
-    {
       "id": "data",
-      "result": "PASS deterministic regeneration; all693 old foods exactly unchanged; all8070 retained extended records unchanged;6 exact records promoted,719+8070=8789",
+      "result": "PASS deterministic regeneration; 875 curated foods, 1027 forms, 36 unavailable forms (down from 37), 8038 extended SR28 records, 178 CoFID-filled cells (+18), 11 Foundation forms (+1), 0 IFCT",
       "level": "UNIT_TESTED"
     },
     {
       "id": "notices",
-      "result": "PASS24 notices; all707 local SVGs unique",
+      "result": "PASS 25 source/license notices generated and verified for 1.1.2-beta.69",
       "level": "UNIT_TESTED"
     },
     {
+      "id": "unit",
+      "result": "PASS 356/356 Node unit tests (incl. B252 density/gaps/Foundation-ID/meta/oxCa/monotonic mobile build codes and B256 pages.yml contract)",
+      "level": "UNIT_TESTED"
+    },
+    {
+      "id": "web",
+      "result": "PASS 1.1.2-beta.69 dist PWA (47 cached files, hero-plate.webp 37.3 kB), dist-single 8.75 MB, dist-lite 3.53 MB",
+      "level": "BUILT"
+    },
+    {
+      "id": "browser",
+      "result": "PASS 403 passed, 1 skipped (desktop non-touch B206), 0 failed across all 4 Playwright shards (desktop+phone Chromium; incl. 12/12 new b252-ux.spec.mjs); before/after screenshots inspected",
+      "level": "RUNTIME_TESTED"
+    },
+    {
+      "id": "remote-publish",
+      "result": "BLOCKED HTTP 403 Permission denied pushing to kaansavukduran/besinmatriksi.git (repo not attached to cloud project resources); live GitHub Pages still serves beta.68",
+      "level": "BLOCKED"
+    },
+    {
       "id": "native-runtime",
-      "result": "NOT_RUN beta.42 physical devices, screen reader, local Firefox/WebKit and native runtime",
+      "result": "NOT_RUN physical devices (Android/iOS/Windows/macOS/Linux native), screen reader, and remote cross-browser Firefox/WebKit CI on beta.69",
       "level": "NOT_RUN"
     }
   ],
   "blockers": [
     {
+      "forge": "B256-push-publish",
+      "state": "BLOCKED_ENVIRONMENT",
+      "reason": "2026-11-22: git push to github.com/kaansavukduran/besinmatriksi.git returns HTTP 403 Permission denied because kaansavukduran/besinmatriksi is not attached to the cloud conversation's project resources.",
+      "last_attempt_date": "2026-11-22",
+      "retry_not_before": null,
+      "next_step": "Attach kaansavukduran/besinmatriksi to the project (or push local main from an authorized token), switch GitHub default branch from ccr-1e1934aa-iv8aev to main, and verify CI + GitHub Pages + Release on the pushed SHA."
+    },
+    {
       "forge": "B021",
       "state": "BLOCKED_ENVIRONMENT",
-      "reason": "2026-11-12: this cloud environment network policy refuses turkomp.gov.tr and turkomp.tarimorman.gov.tr (proxy CONNECT 403; fetch tool ENOTFOUND outside allowed domains). Site terms/license still unverified; no data imported.",
-      "last_attempt_date": "2026-11-12",
+      "reason": "2026-11-22: turkomp.gov.tr timed out (HTTP 000 after 8s) from cloud VM; site redistribution terms/license still unverified; no data imported.",
+      "last_attempt_date": "2026-11-22",
       "retry_not_before": null,
-      "next_step": "Needs the user to allow turkomp.gov.tr in the environment network settings (or provide the official terms page); then verify offline redistribution permission before any import."
+      "next_step": "Obtain accessible official TürKomp terms/license confirming offline redistribution permission before importing any Turkish-specific food records."
     },
     {
       "forge": "B031",
       "state": "NOT_RUN",
-      "reason": "Native OS/device acceptance NOT_RUN. Local Linux has GTK3 but no WebKitGTK 4.1 or Xvfb; package creation is not runtime proof.",
-      "next_step": "Inspect authorized environment provisioning for a Linux native smoke test; keep other physical platforms separate."
-    },
-    {
-      "forge": "UX-TASKS",
-      "state": "NEEDS_CLARIFICATION",
-      "reason": "User requests dragging tasks up/down and entering task times. Existing nutrition app has sections/recipes, no task model. Await existing sections/recipes versus separate planning screen choice. Do not silently invent a task module or mark this request complete."
+      "reason": "Native OS/device acceptance NOT_RUN in cloud Linux VM; package creation is not runtime proof.",
+      "next_step": "Run release.yml after push and perform physical device verification separately."
     },
     {
       "forge": "B052-signing",
       "state": "BLOCKED_SIGNING_AND_IMPLEMENTATION",
-      "reason": "Signed updater not implemented; two real signed-package upgrade acceptance NOT_RUN. Apple Developer ID/notarization/iOS distribution signing unavailable; Android actual APK uses debug certificate, permanent production key/update continuity not verified.",
-      "next_step": "Implement bounded updater settings/design and signing prerequisites without claiming a verified update or publishing to a store."
+      "reason": "Signed updater not implemented; Apple Developer ID/notarization/iOS distribution signing unavailable; Android APK uses debug certificate unless production keystore secrets are configured.",
+      "next_step": "Keep unsigned/debug signing labels explicit until production certificates are provisioned."
     }
   ],
   "remaining_forges": [
-    "B057",
-    "B052b-signing",
+    "B257-push-pages-release",
     "B031",
     "B021",
-    "UX-TASKS"
+    "B052-signing"
   ],
   "continuation": {
-    "schedule": "hourly (:12)",
+    "schedule": "on-demand",
     "timezone": "Europe/Istanbul",
-    "trigger": "trig_01Ljjr3Dkp6uBiQcjFaGuzm3",
+    "trigger": null,
     "stop_when": "Tüm uygulanabilir yol haritası işleri ve son kapılar doğrulandığında."
   },
-  "notes": "B155:14 dried-fruit identities incl separate unsulphured sun-dried apricot;9 exact USDA dry/prepared source matches and5 explicit unmeasured identities with label-entry path.28 dried records,707 foods/853 forms; all693 old foods exactly unchanged.719+8070=8789 SR28 coverage. See docs/evidence/B155/VERIFY.md.",
-  "release_target": "v1.1.2-beta.1",
+  "notes": "B252–B256 (1.1.2-beta.69): density-verified mL display, exact numeric amount input + tiered presets, search-first picker + horizontal strip, desktop scrolled-detail scroll preservation, draft-safe PWA update bar, Foundation-only FDC source IDs, B12/Vit-D gap filter fixes, monotonic mobile build codes (10102169), siyah_pirinc USDA Foundation 2710825 (empty forms 37→36), 13 verified UK CoFID 2021 mappings (+18 biotin/iodine cells), generated hero-plate.webp (37.3 kB), canonical main-branch pages.yml.",
+  "release_target": "v1.1.2-beta.69",
   "data_policy": "Distribution: USDA SR28 full table only. IFCT values and IFCT-derived estimates must not be restored without verified NIN written product permission. EFSA group reference data are separate from food measurements; only verified compatible PRI/AI records, EFSA attribution required.",
   "historical_verified_gates": [
     {
@@ -323,14 +325,16 @@
   },
   "pending_forges": [
     {
-      "id": "B030-public-beta",
-      "state": "ARTIFACT_ONLY_PACKAGED",
-      "reason": "Current instruction permits workflow_dispatch artifacts only. Candidate verified; no public Release.",
-      "run_url": "https://github.com/kaansavukduran/besinmatriksi/actions/runs/42617550175"
+      "id": "B257-push-pages-release",
+      "state": "BLOCKED_ENVIRONMENT",
+      "reason": "Local main is verified and ready at 1.1.2-beta.69, but remote git push returned HTTP 403 because kaansavukduran/besinmatriksi is not attached to cloud project resources."
     }
   ],
   "remaining": [
-    "B127"
+    "B257-push-pages-release",
+    "B021",
+    "B031",
+    "B052-signing"
   ],
   "latest_release": {
     "tag": "v1.1.2-beta.68",
@@ -340,16 +344,36 @@
     "contains": "B196–B251"
   },
   "current_forge": {
-    "id": "B151",
-    "base_commit": "e1e2088491bb1e8a97307651ce1dfb5c65e31e0c",
-    "local_evidence": "docs/evidence/B151/AUDIT.md",
+    "id": "B256",
+    "base_commit": "0c67cda9824150f30389e27d222f7be3913b76bd",
+    "local_evidence": "docs/DATA_RESEARCH.md",
     "level": "RUNTIME_TESTED"
   },
-  "validation_base_commit": "e1e2088491bb1e8a97307651ce1dfb5c65e31e0c",
+  "validation_base_commit": "0c67cda9824150f30389e27d222f7be3913b76bd",
   "current_forges": [
     {
-      "id": "B151",
-      "scope": "Fruit/vegetable descendants, unified grouped beverage catalogue and eight beverage records",
+      "id": "B252",
+      "scope": "Density-verified mL display, B12/Vit-D gap filter, Foundation-only FDC IDs, transparent meta counters, oxCa wording, monotonic mobile build codes",
+      "level": "RUNTIME_TESTED"
+    },
+    {
+      "id": "B253",
+      "scope": "Modern Web Guidance UX fixes: search-first picker with horizontal category strip, exact amount input + tiered presets, scrolled-detail header visibility & scroll restore, sticky compare row headers, draft-safe PWA update bar",
+      "level": "RUNTIME_TESTED"
+    },
+    {
+      "id": "B254",
+      "scope": "Verified data additions: siyah_pirinc USDA Foundation 2710825 (empty forms 37→36) + 13 UK CoFID 2021 composition-verified mappings (+18 biotin/iodine cells)",
+      "level": "RUNTIME_TESTED"
+    },
+    {
+      "id": "B255",
+      "scope": "Generated editorial hero plate illustration (hero-plate.webp, 37.3 kB) with transparent background and provenance record",
+      "level": "RUNTIME_TESTED"
+    },
+    {
+      "id": "B256",
+      "scope": "Version bump to 1.1.2-beta.69, canonical main-branch pages.yml with data/notices/unit gates, README/RELEASE_NOTES/CURRENT_STATE/FORGE_LOG reconciliation",
       "level": "RUNTIME_TESTED"
     }
   ],
@@ -358,14 +382,19 @@
     "reason": "Native cloud skill write tool unavailable; complete replacement packages delivered separately, not published in project repository."
   },
   "catalog_coverage": {
-    "dataset": "USDA SR28",
-    "source_year": 2015,
-    "total_source_records": 8789,
-    "curated_source_records": 713,
-    "extended_records": 8076,
-    "covered_source_records": 8789,
-    "curated_foods": 839,
-    "curated_forms": 936,
+    "dataset": "USDA SR28 + USDA Foundation/FNDDS/SR Legacy/Special + UK CoFID 2021 (gap fill)",
+    "source_year": 2026,
+    "curated_foods": 875,
+    "curated_forms": 1027,
+    "unavailable_forms": 36,
+    "recipe_estimated_forms": 124,
+    "recipe_estimated_cells": 7384,
+    "assumed_zero_cells": 5420,
+    "cofid_filled_cells": 178,
+    "foundation_forms": 11,
+    "fndds_forms": 101,
+    "extended_records": 8038,
+    "ifct_linked": 0,
     "cronometer_exact_parity": "NOT_VERIFIED"
   },
   "resolved_blockers": [

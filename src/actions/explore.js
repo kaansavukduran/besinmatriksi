@@ -21,7 +21,7 @@ export const EXPLORE_ACTIONS = {
   'ex-extpage': async (b) => { S.extPage = Math.max(0, Number(b.dataset.page) || 0); render(); $('#foodlist .catalog-heading h2')?.focus(); $('#foodlist .catalog-heading')?.scrollIntoView({ block: 'start' }); return; },
   'ex-extgroup': async (b) => { S.extGroup = S.extGroup === b.dataset.g ? null : b.dataset.g; render(); return; },
   'ex-pick': async (b) => { selectFood('ex', { t: 'c', id: b.dataset.id, f: 0 }); return; },
-  'gap-open': async (b) => { S.tab = 'kesfet'; selectFood('ex', { t: 'c', id: b.dataset.id, f: 0 }); return; },
+  'gap-open': async (b) => { S.tab = 'kesfet'; selectFood('ex', { t: 'c', id: b.dataset.id, f: Number(b.dataset.f) || 0 }); return; },
   'ex-pick-ext': async (b) => { selectFood('ex', { t: 'x', n: b.dataset.ndb }); return; },
   'ex-pick-custom': async (b) => { selectFood('ex', { t: 'u', id: b.dataset.cid }); return; },
   'ex-pick-ref': async (b) => { selectFood('ex', JSON.parse(b.dataset.ref)); return; },
@@ -52,7 +52,7 @@ export const EXPLORE_ACTIONS = {
       setCustomFoods(list); S.customEdit = null; if (S.sel?.t === 'u') S.sel = null; render(); return;
     },
   'ex-form': async (b) => { S.sel = { ...S.sel, f: +b.dataset.f }; render(); return; },
-  'ex-back': async (b) => { S.sel = null; render(); return; },
+  'ex-back': async (b) => { S.sel = null; render(); window.scrollTo(0, S.browseScrollY || 0); return; },
   'cats-toggle': async (b) => { S.catsOpen = !S.catsOpen; render(); $('.cats-toggle')?.focus(); return; },
   'search-recent': async (b) => { S.q = b.dataset.q; S.cat = null; render(); return; },
   'search-clear': async (b) => { S.searches = []; saveSearches([]); render(); return; },
