@@ -3,11 +3,12 @@ import assert from 'node:assert/strict';
 import { micronutrientSummary, renderMicronutrients } from '../src/micronutrients.js';
 import { MICRO_EN } from '../src/i18n-micro.js';
 import { UI_EN } from '../src/i18n-ui.js';
-import { setLanguage } from '../src/i18n.js';
+import { setLanguage, registerUiEn } from '../src/i18n.js';
 import { configureFormatting } from '../src/util.js';
 
 // Uygulama i18n-ui.js üzerinden bu sözlüğü kaydeder; izole bileşen testinde aynı kaynak kullanılır.
 Object.assign(UI_EN, MICRO_EN);
+registerUiEn(UI_EN);
 afterEach(() => { setLanguage('tr'); configureFormatting({ decimalSeparator: 'comma', autoUnits: true }); });
 const find = (summary, key) => summary.groups.flatMap(group => group.rows).find(row => row.key === key);
 

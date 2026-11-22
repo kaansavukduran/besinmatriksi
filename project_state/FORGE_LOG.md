@@ -1487,3 +1487,18 @@
 - Kanıt: `npm run data` deterministik; `node scripts/build-notices.mjs --check` PASS (25 bildirim); `npm test` 356/356 PASS; `npm run build` / `build:single` (8,75 MB) / `build:lite` (3,53 MB) PASS; Playwright tam tarayıcı koşusu (4 parça, masaüstü+telefon Chromium): **403 PASS, 1 SKIP (masaüstü dokunmatik-özel B206), 0 FAIL** (`b252-ux.spec.mjs` 12/12, `polish.spec.mjs` 10/10 dahil).
 - Engel: `kaansavukduran/besinmatriksi` bu bulut konuşmasının proje kaynaklarına bağlı olmadığı için `git push` HTTP 403 döndürdü; değişiklikler yerel `main` dalında temiz birleştirildi.
 
+## B257 · 2026-11-22 · İngilizce arayüz sözlüğünü tembel yükleme (`i18n-ui` ayrı parça)
+- `src/i18n.js`, `src/main.js`, `src/app.js`, `vite.config.js`: 180,2 KB’lık İngilizce arayüz sözlüğü (`i18n-ui.js` ve 4 alt sözlük) Türkçe açılışta statik içe aktarımdan çıkarılıp dinamik `import('./i18n-ui.js')` ile yalnızca İngilizce etkinleştiğinde yüklenecek biçime alındı (`ensureLanguage`, `hasUiEn`, `registerUiEn`).
+- Sonuç: `content` paketi **440,7 → 262,3 KB** (gzip **118,6 → 65,1 KB**, -%45); `i18n-ui-*.js` (54,7 KB gzip) `index.html` `modulepreload` listesinde yok, Türkçe açılışta 0 ağ isteği, `sw.js` (48 dosya) önbelleğinde çevrimdışı dil geçişi için hazır. `dist-single` (8,75 MB) ve `dist-lite` (3,53 MB) dış ağ isteksiz gömülü.
+- Test: `tests/release.test.mjs` B257 birimi + `tests/browser/b252-ux.spec.mjs` B257 ağ ve canlı dil geçiş testi.
+
+## B258 · 2026-11-22 · Bitkisel UK CoFID 2021 5. tur boşluk doldurma (+25 hücre, toplam 203)
+- `data/cofid-map.mjs` + `docs/DATA_RESEARCH.md`: B191 kuralına (yalnız bitkisel besinler) ve 1:1 tür + hazırlanma biçimi + su ±5 g + protein ±%25/±1 g + yağ ±%30/±1,5 g doğrulamasına tam uyan 21 bitkisel eşleme eklendi (`patates:firin`, `kabak:haslanmis`, `limon:suyu`, `frenk_uzumu_kirmizi:cig`, `kuru_uzum:kurutulmus`, `ispanak:haslanmis`, `nohut:haslanmis`, `misir:haslanmis`, `yerfistigi:cig`, `fistik_ezmesi:macun`, `soya_unu:toz`, `tam_bugday_unu:toz`, `tam_bugday_makarna:kuru`, `siyah_cay:demleme`, `elma_suyu:icecek`, `uzum_suyu:suyu`, `domates_suyu:icecek`, `kahve:demleme`, `kirmizi_sarap:icecek`, `beyaz_sarap:icecek`, `bira:icecek`). `cofidFilledCells`: 178 → **203** (+43 toplam `beta.68` sonrası). B157 kuru nohut Mn kuralı korundu.
+
+## B259 · 2026-11-22 · Koyu tema & tablet (768×1024) denetimi, tablet sekme düzeltmesi, sürüm 1.1.2-beta.70
+- Görsel denetimde `768×1024` tablet genişliğinde üst sekme çubuğunun `overflow-x: auto; scrollbar-width: none` nedeniyle 6. sekmeyi (`Ayarlar`) sağdan sessizce kestiği görüldü → `src/styles/forge-fixes.css` içine `701–960 px` için sarılabilir ve sıkı `.tabs` kuralı eklendi; tüm 6 sekme kesilmeden görünür. Koyu tema (`theme: 'dark'`) açılış tabağı ve Kıyasla ekranı doğrulandı.
+- Sürüm `1.1.2-beta.69` → **`1.1.2-beta.70`** (mobil derleme kodu `10102170`; `package.json`, `package-lock.json`, `src-tauri/tauri.conf.json`, `src-tauri/tauri.linux.conf.json`, `src-tauri/Cargo.toml`, `src-tauri/Cargo.lock`, `notices`, `README.md`, `RELEASE_NOTES.md`, `CURRENT_STATE.json`).
+- Kanıt: `npm run data` deterministik; `node scripts/build-notices.mjs --check` PASS (25 bildirim); `npm test` 357/357 PASS; `build` / `build:single` / `build:lite` PASS; Playwright B257–B259 + i18n/personal/header/polish doğrulaması PASS (aşağıdaki son koşuyla mühürlendi).
+- Engel: `git push origin main` HTTP 403 (`kaansavukduran/besinmatriksi` proje kaynaklarına bağlı değil); değişiklikler yerel `main` dalında birleştirildi.
+
+

@@ -9,7 +9,7 @@ Windows · macOS · Linux · Android · iPhone · tarayıcı/PWA · tek HTML.
 
 ## İndirip dene
 
-En güncel yayımlı paketler **[GitHub Releases](https://github.com/kaansavukduran/besinmatriksi/releases)** (son yayımlı ön sürüm: `v1.1.2-beta.68`, 23 varlık) üzerinden veya `release.yml` Actions çıktılarından indirilir. Kaynak deposundaki hazırlanan sürüm `1.1.2-beta.69` olup paketleme ve Release üretimi ilgili workflow ile ayrı yürütülür.
+En güncel yayımlı paketler **[GitHub Releases](https://github.com/kaansavukduran/besinmatriksi/releases)** (son yayımlı ön sürüm: `v1.1.2-beta.68`, 23 varlık) üzerinden veya `release.yml` Actions çıktılarından indirilir. Kaynak deposundaki hazırlanan sürüm `1.1.2-beta.70` olup paketleme ve Release üretimi ilgili workflow ile ayrı yürütülür.
 
 | Platform | Dosya kalıbı |
 |---|---|
@@ -55,7 +55,7 @@ Vite varlıkları, manifest ve service worker göreli yollar kullanır; aynı ç
 
 **Besin bileşimi USDA SR28 ve kayıtlarda belirtilen USDA Foundation Foods, FNDDS, SR Legacy, USDA özel bileşen veritabanları (Flavonoid, İzoflavon, İyot, Kolin, Proantosiyanidin, Pürin) ile boşluk doldurmada UK CoFID 2021'den (OGL v3.0) gelir.** IFCT verileri ve IFCT tabanlı tahminler dağıtıma dahil değildir (`ifctLinked = 0`, `estimated = 0`).
 EFSA DRV Finder ayrıca 23 bileşen / 169 PRI-AI kaydıyla isteğe bağlı grup referansıdır; besin ölçümü değildir. Ayarlar → Yüzde referansı → EFSA: yaş ve kaynak cinsiyet grubunu seç. Yetişkin çinko için fitat, yetişkin kadın demiri için menopoz grubu ayrıca seçilir. Eşleşmeyen veya kapsam dışı alanda yüzde gösterilmez. Kaynak/görüş yılı ve koşullar açılabilir tabloda, PRI/AI türü matrikste ve CSV'de korunur. Kişisel hedefler değişmez.
-**875 küratörlü besin / 1.027 tüketim biçimi** (36 biçim doğrulanmış açık kaynak bulunmadığı için dürüstçe “veri yok” olarak işaretli; 124 biçim açıkça “Tahmin (tarif)” etiketli; 178 eksik biyotin/iyot hücresi UK CoFID 2021 ile doğrulandı). Ayrıca **8.038 ek SR28 kaydı** ayrı **Tam Katalog** bölümünde erişilebilir. Niş/hayvansal gizleme tercihleri ana ekranda görünen sayıyı değiştirir.
+**875 küratörlü besin / 1.027 tüketim biçimi** (36 biçim doğrulanmış açık kaynak bulunmadığı için dürüstçe “veri yok” olarak işaretli; 124 biçim açıkça “Tahmin (tarif)” etiketli; 203 eksik bitkisel mikro besin hücresi UK CoFID 2021 ile doğrulandı). Ayrıca **8.038 ek SR28 kaydı** ayrı **Tam Katalog** bölümünde erişilebilir. Niş/hayvansal gizleme tercihleri ana ekranda görünen sayıyı değiştirir.
 
 Keşfet → **Tam Katalog** ile ayar açmadan eriş. 80 kayıtlık sayfalar, besin grubu seçimi ve özgün İngilizce ad veya NDB numarasıyla arama vardır. 2015 tarihli SR28 marka kayıtları güncel ambalaj etiketi sayılmaz; içerik ve alerjen bilgisi üründen doğrulanır. Hayvansal kayıtlar gizlenince içeriği belirsiz karma kayıtlar da gizlenir.
 

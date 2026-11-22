@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { UI_EN } from '../src/i18n-ui.js';
-import { L, setLanguage } from '../src/i18n.js';
+import { L, setLanguage, ensureLanguage } from '../src/i18n.js';
 import { EN_FOODS, EN_CATEGORIES, EN_FORMS } from '../src/i18n-foods.js';
 import { EN_NUTRIENTS } from '../src/i18n-nutrients.js';
 import { NUTRIENTS, SECTIONS, ALLERGENS } from '../src/nutrients.js';
@@ -37,7 +37,8 @@ test('veri tarafı sabit metinlerinin İngilizcesi tam', () => {
   for (const f of data.foods) { if (f.note) assert.ok(UI_EN[f.note], 'not: ' + f.id); for (const fm of f.forms) if (fm.unavailable) assert.ok(UI_EN[fm.unavailable]); }
 });
 
-test('L() dile göre çevirir ve yer tutucuları doldurur; eksik çeviride Türkçeye düşer', () => {
+test('L() dile göre çevirir ve yer tutucuları doldurur; eksik çeviride Türkçeye düşer', async () => {
+  await ensureLanguage('en');
   setLanguage('en');
   assert.equal(L('Tümü'), 'All');
   assert.equal(L('{n} kayıt daha var; aramayla daralt.', { n: 7 }), '7 more records; narrow them down with search.');

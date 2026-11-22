@@ -111,3 +111,12 @@ test('B250 og:description besin sayısı katalogdan büyük değil ve 100\'ün a
   const total = decodeDB(JSON.parse(fs.readFileSync(new URL('../src/data/foods.json', import.meta.url), 'utf8'))).foods.length;
   assert.ok(n <= total && total - n < 100, `${n}+ / ${total}`);
 });
+
+// B257: İngilizce arayüz sözlüğü (181 KB) Türkçe açılışta statik içe aktarılmaz; yalnız İngilizce seçilince yüklenir
+test('B257 İngilizce arayüz sözlüğü tembel yüklenir (Türkçe açılışta statik bağımlılık yok)', () => {
+  const i18n = fs.readFileSync(new URL('../src/i18n.js', import.meta.url), 'utf8');
+  assert.doesNotMatch(i18n, /^import\s+\{[^}]*UI_EN[^}]*\}\s+from\s+['"]\.\/i18n-ui\.js['"]/m);
+  assert.match(i18n, /import\(['"]\.\/i18n-ui\.js['"]\)/);
+  const cfg = fs.readFileSync(new URL('../vite.config.js', import.meta.url), 'utf8');
+  assert.doesNotMatch(cfg, /i18n-\[a-z-\]\+\\\.js/);
+});

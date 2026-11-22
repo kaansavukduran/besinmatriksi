@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
           codeSplitting: {
             groups: [
               { name: 'catalog', test: /src[\\/]data[\\/]foods\.json/ },
-              { name: 'content', test: /src[\\/](i18n-[a-z-]+\.js|food-art\.js|food-icons\.js|data[\\/](efsa|notices)\.json)/ },
+              { name: 'content', test: /src[\\/](i18n-foods\.js|i18n-nutrients\.js|food-art\.js|food-icons\.js|data[\\/](efsa|notices)\.json)/ },
             ],
           },
         },

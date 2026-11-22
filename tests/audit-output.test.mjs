@@ -1,7 +1,8 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';
-import {matrixCSV} from '../src/export.js';import {aggregate,scaleItem,AA_REF} from '../src/calc.js';import {setLanguage} from '../src/i18n.js';
+import {matrixCSV} from '../src/export.js';import {aggregate,scaleItem,AA_REF} from '../src/calc.js';import {setLanguage,ensureLanguage} from '../src/i18n.js';
 const v={protein:10,...Object.fromEntries(AA_REF.flatMap(([, ,keys,ref])=>keys.map(k=>[k,ref*10/keys.length])))};
-for(const language of ['tr','en'])test(`B149 CSV preserves partial/unknown amino status ${language}`,()=>{
+for(const language of ['tr','en'])test(`B149 CSV preserves partial/unknown amino status ${language}`,async()=>{
+ await ensureLanguage(language);
  setLanguage(language);
  const known=scaleItem({v,s:{}},100),label=scaleItem({v:{protein:10},s:{}},100);
  const partial=matrixCSV(aggregate([known,label]),'Partial');

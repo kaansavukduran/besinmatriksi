@@ -88,3 +88,9 @@ Mifflin 1990 DOI 10.1093/ajcn/51.2.241 / PMID 2305711 katsayıları ve çalışm
 - **Marka/formülasyon bağımlı takviye ve protein tozları (9):** `kazein`, `sigir_proteini`, `kolajen_peptit`, `bezelye_proteini`, `pirinc_proteini`, `kenevir_proteini`, `kabak_cek_proteini`, `karisik_bitkisel_protein`, `besin_mayasi_z` (marka/zenginleştirme etiketi gerekir; "Kendi besinlerim" yolu açık).
 - **Lisans engelli boşluk (1):** `jaggery` (IFCT 2017 NIN yazılı izni yok).
 
+## B258 bitkisel CoFID 2021 5. tur doğrulaması · 2026-11-22
+
+- **UK CoFID 2021 (OGL v3.0) 5. tur — 21 yeni bitkisel eşleme, +25 yeni hücre** (`cofidFilledCells`: 178 → **203**; B191 gereği yalnız bitkisel besinler; 1:1 tür + hazırlanma biçimi + su ±5 g + protein ±%25/±1 g + yağ ±%30/±1,5 g doğrulaması; `'Tr'` ve `'N'` hariç; B157 kuru nohut Mn düşürme kuralı korundu):
+  - `patates:firin` (`13-491`), `kabak:haslanmis` (`13-628`), `limon:suyu` (`14-277`), `frenk_uzumu_kirmizi:cig` (`14-249`), `kuru_uzum:kurutulmus` (`14-393`), `ispanak:haslanmis` (`13-573`), `nohut:haslanmis` (`13-662`), `misir:haslanmis` (`13-508`), `yerfistigi:cig` (`14-877`), `fistik_ezmesi:macun` (`14-892`), `soya_unu:toz` (`11-898`), `tam_bugday_unu:toz` (`11-889`), `tam_bugday_makarna:kuru` (`11-718`), `siyah_cay:demleme` (`17-165`), `elma_suyu:icecek` (`14-331`), `uzum_suyu:suyu` (`17-745`), `domates_suyu:icecek` (`13-382`), `kahve:demleme` (`17-833`), `kirmizi_sarap:icecek` (`17-752`), `beyaz_sarap:icecek` (`17-756`), `bira:icecek` (`17-749`).
+
+

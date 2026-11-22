@@ -1,9 +1,19 @@
 import './styles.css';
 import { start } from './app.js';
+import { S } from './state.js';
+import { ensureLanguage, preferredLanguage, L } from './i18n.js';
 
 window.__APP_VERSION__ = __APP_VERSION__;
-start();
-window.__bmBooted = true;
+if (preferredLanguage(S.settings.language) === 'en') {
+  ensureLanguage('en').then(() => {
+    if (S.recipes.length === 1 && !S.recipes[0].items.length && S.recipes[0].name === 'İlk tarifim') S.recipes[0].name = L("İlk tarifim");
+    start();
+    window.__bmBooted = true;
+  });
+} else {
+  start();
+  window.__bmBooted = true;
+}
 
 // PWA: yalnızca http(s) üzerinden sunulduğunda (masaüstü/mobil paketlerde gerekmez)
 const isNativeShell = !!(window.__TAURI_INTERNALS__ || window.Capacitor?.isNativePlatform?.());

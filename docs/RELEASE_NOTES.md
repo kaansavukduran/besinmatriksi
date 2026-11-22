@@ -1,4 +1,4 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 69 · Daha doğru ölçüler, akıcı kullanım ve yeni veriler
+# 🫐 Besin Matriksi 1.1.2 Beta 70 · Tembel İngilizce sözlük, tablet gezinme ve 203 CoFID hücresi
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.
@@ -20,7 +20,13 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 
 `SHA256SUMS.txt` dosya bütünlüğünü, `BUILD_INFO.json` kaynak commit'ini kaydeder.
 
-## ✨ Bu sürümde yeni (Beta 69 · B252–B256)
+## ✨ Bu sürümde yeni (Beta 70 · B257–B259)
+
+- **Türkçe açılışta %45 daha küçük içerik paketi (B257):** 180 KB’lık İngilizce arayüz sözlüğü artık ayrı parçada ve yalnızca İngilizce seçildiğinde yükleniyor (`content` paketi 440,7 → 262,3 KB; gzip 118,6 → 65,1 KB). Çevrimdışı PWA önbelleği İngilizce parçasını da sakladığı için çevrimdışıyken dil değiştirmek kesintisiz çalışır.
+- **21 bitkisel besinde +25 doğrulanmış mikro besin (B258):** Haşlanmış nohut, yer fıstığı ve yer fıstığı ezmesi, fırın patates, haşlanmış ıspanak/kabak/mısır, kuru üzüm, tam buğday unu/makarna, soya unu, limon/elma/üzüm/domates suları, siyah çay ve demleme kahvede UK CoFID 2021’den bileşim doğrulaması geçen biyotin/iyot/B5 değerleri eklendi (toplam CoFID dolgusu 178 → **203**).
+- **Tablet (768 px) üst sekme düzeltmesi (B259):** 701–960 px tablet ekranlarında sağ kenardan sessizce kesilen 6. sekme (**Ayarlar**) artık tüm sekmelerle birlikte görünür.
+
+### Beta 69'dan (B252–B256)
 
 - **Yoğunluk doğruluğu (`g` vs `mL`):** Yağ ve yoğunluğu doğrulanmamış sıvılarda “100 g ≈ mL” genellemesi kaldırıldı. USDA hacim ölçüsü bulunan sıvılarda doğrulanmış yoğunlukla yaklaşık hacim gösterilir (ör. zeytinyağı 100 g ≈ 110 mL); özel 100 mL etiket besinleri doğrudan mL kalır.
 - **Kesin miktar girişi ve sade hazır miktarlar:** Miktar satırına doğrudan sayısal giriş (ör. `137`, `42,5`) eklendi; 15 hazır düğme yerine günlük 8 miktar (`25 g – 1 kg`) önde, uç değerler (`1 g`, `5 kg`, `10 kg`…) katlanır “Diğer miktarlar” altında.
@@ -28,7 +34,7 @@ Aşağıdaki **Assets** listesinden cihazına uygun dosyaya tıkla:
 - **Kaynak şeffaflığı ve B12/D önerileri:** USDA Foundation-only kayıtlardaki “NDB undefined” metni düzeltildi, FDC/NDB kaynak kimliği görünür kılındı. Tarif eksik önerilerinde UV/D içeren mantarlar ile zenginleştirilmiş bitkisel süt/yoğurtlar dikkate alınır; güvenilir olmayan iz B12 kayıtları önerilmez.
 - **Yeni doğrulanmış besin verileri:** Siyah pirinç (kuru) USDA FoodData Central Foundation `FDC 2710825` (23 bileşen, CC0) ile bağlandı (boş form sayısı 37 → 36). 13 yaygın besinde UK CoFID 2021’den 18 eksik biyotin ve iyot hücresi bileşim doğrulamasıyla eklendi.
 - **Yeni açılış tabağı illüstrasyonu ve taslak koruyan PWA güncellemesi:** Açılışta 37 KB WebP botanik tabak illüstrasyonu eklendi (açık/koyu tema uyumlu, çevrimdışı pakete gömülü). Açık tarif/etiket taslağı varken PWA güncellemesi zorla yenilemek yerine engellemesiz şerit gösterir.
-- **Ardışık mobil derleme numaraları ve `main` Pages yayını:** Android/iOS derleme numarası her sürümde monoton artar (`1.1.2-beta.69` → `10102169`). GitHub Pages iş akışı tek kanonik dal olarak `main` üzerinden veri/bildirim/test kapılarıyla yayımlayacak biçimde hizalandı.
+- **Ardışık mobil derleme numaraları ve `main` Pages yayını:** Android/iOS derleme numarası her sürümde monoton artar (`1.1.2-beta.70` → `10102170`). GitHub Pages iş akışı tek kanonik dal olarak `main` üzerinden veri/bildirim/test kapılarıyla yayımlayacak biçimde hizalandı.
 
 ### Beta 68'den (B245–B251)
 

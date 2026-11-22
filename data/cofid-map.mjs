@@ -17,7 +17,7 @@ export const COFID_MAP = {
   domates_konserve: { konserve: '13-530' },
   balkabagi_butternut: { firin: '13-644', cig: '13-355' },
   tatli_patates: { cig: '13-463' },
-  yerfistigi: { kavrulmus: '14-878' },
+  yerfistigi: { cig: '14-877', kavrulmus: '14-878' },
   badem: { kavrulmus: '14-897' },
   kirmizi_fasulye_konserve: { konserve: '13-660' },
   pilavlik_pirinc: { kuru: '11-863' },
@@ -57,9 +57,16 @@ export const COFID_MAP = {
   kinoa: { kuru: '14-843' }, bugday_kepegi: { kuru: '11-906' }, findik: { cig: '14-874' }, kestane: { cig: '14-813' },
   brezilya_cevizi: { cig: '14-871' }, tahin: { macun: '14-847' }, maydanoz: { taze: '13-844' }, havuc_suyu: { icecek: '13-607' },
   // B254: dördüncü tur (aynı kurallar: ad + hazırlama biçimi + su ±5 g + protein ±%25/±1 g; yalnız eksik biyotin/iyot)
-  elma: { cig: '14-319' }, domates: { cig: '13-517' }, patates: { cig: '13-489', haslanmis: '13-490' },
+  elma: { cig: '14-319' }, domates: { cig: '13-517' }, patates: { cig: '13-489', haslanmis: '13-490', firin: '13-491' },
   kivi: { cig: '14-371' }, kiraz: { cig: '14-382' }, uzum: { cig: '14-350' }, greyfurt: { cig: '14-384' },
-  patlican: { cig: '13-161' }, kabak: { cig: '13-627' }, yulaf: { kuru: '11-788' }, hurma: { kurutulmus: '14-394' },
+  patlican: { cig: '13-161' }, kabak: { cig: '13-627', haslanmis: '13-628' }, yulaf: { kuru: '11-788' }, hurma: { kurutulmus: '14-394' },
+  // B258: beşinci tur (yalnız bitkisel besinler — B191 kuralı; 1:1 tür + biçim + su/protein/yağ doğrulaması)
+  limon: { suyu: '14-277' }, frenk_uzumu_kirmizi: { cig: '14-249' }, kuru_uzum: { kurutulmus: '14-393' },
+  ispanak: { haslanmis: '13-573' }, nohut: { haslanmis: '13-662' }, misir: { haslanmis: '13-508' },
+  fistik_ezmesi: { macun: '14-892' }, soya_unu: { toz: '11-898' }, tam_bugday_unu: { toz: '11-889' },
+  tam_bugday_makarna: { kuru: '11-718' }, siyah_cay: { demleme: '17-165' }, elma_suyu: { icecek: '14-331' },
+  uzum_suyu: { suyu: '17-745' }, domates_suyu: { icecek: '13-382' }, kahve: { demleme: '17-833' },
+  kirmizi_sarap: { icecek: '17-752' }, beyaz_sarap: { icecek: '17-756' }, bira: { icecek: '17-749' },
 };
 // CoFID alanı → uygulama anahtarı (birimler aynı: µg / mg)
 export const COFID_KEYS = { iodine: 'iodine', mn: 'mn', se: 'se', biotin: 'biotin', b5: 'panto', k1: 'vitk' };

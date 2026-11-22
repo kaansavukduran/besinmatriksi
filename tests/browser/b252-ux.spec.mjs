@@ -138,3 +138,33 @@ test('B255 üretilen kapak illüstrasyonu masaüstünde kırık olmadan yükleni
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
   expect(errors).toEqual([]);
 });
+
+test('B257 Türkçe açılışta İngilizce sözlük indirilmez; İngilizceye geçince canlı yüklenir', async ({ page }) => {
+  const errors = []; page.on('pageerror', (e) => errors.push(e.message));
+  const reqs = []; page.on('request', (r) => reqs.push(r.url()));
+  await page.addInitScript(() => {
+    if (!localStorage.getItem('bm.settings.v2')) localStorage.setItem('bm.settings.v2', JSON.stringify({ version: 2, settings: { language: 'tr' } }));
+  });
+  await page.goto('/');
+  await expect(page.locator('#foodlist [data-action="ex-pick"]').first()).toBeVisible();
+  expect(reqs.some((u) => /i18n-ui/.test(u))).toBe(false);
+
+  await page.locator('[data-action="tab"][data-tab="ayarlar"]').first().click();
+  await page.locator('.lang-pick button[lang="en"]').first().click();
+  await expect(page.locator('h2').first()).toContainText('Language');
+  expect(reqs.some((u) => /i18n-ui/.test(u))).toBe(true);
+  expect(errors).toEqual([]);
+});
+
+test('B259 tablet (768×1024) üst sekme çubuğunda Ayarlar dahil tüm 6 sekme kesilmeden görünür', async ({ page }) => {
+  const errors = []; page.on('pageerror', (e) => errors.push(e.message));
+  await page.setViewportSize({ width: 768, height: 1024 });
+  await page.goto('/');
+  const tabs = page.locator('nav.tabs .tab');
+  await expect(tabs).toHaveCount(6);
+  const settingsBox = await page.locator('nav.tabs [data-tab="ayarlar"]').boundingBox();
+  expect(settingsBox).not.toBeNull();
+  expect(settingsBox.x + settingsBox.width).toBeLessThanOrEqual(768);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+  expect(errors).toEqual([]);
+});

@@ -1,5 +1,14 @@
-import { UI_EN } from './i18n-ui.js';
 let language = 'tr';
+let uiEn = null;
+let uiEnPromise = null;
+export function hasUiEn() { return !!uiEn; }
+export function registerUiEn(dict) { uiEn = dict; }
+export async function ensureLanguage(value = language) {
+  const target = value === 'en' ? 'en' : 'tr';
+  if (target !== 'en' || uiEn) return true;
+  uiEnPromise ||= import('./i18n-ui.js').then((m) => { uiEn = m.UI_EN; return true; });
+  return uiEnPromise;
+}
 export function preferredLanguage(preference = 'auto', languages = globalThis.navigator?.languages || []) {
   if (['tr', 'en'].includes(preference)) return preference;
   for (const value of languages) { const code = String(value).split('-')[0].toLowerCase(); if (['tr', 'en'].includes(code)) return code; }
@@ -48,6 +57,6 @@ export const translations = TEXT;
 
 // Türkçe kaynak metni seçili dile çevirir; {ad} yer tutucularını doldurur.
 export function L(text, params = {}) {
-  const out = language === 'en' ? (UI_EN[text] ?? text) : text;
+  const out = language === 'en' ? ((uiEn && uiEn[text]) ?? text) : text;
   return out.replace(/\{(\w+)\}/g, (_, name) => String(params[name] ?? ''));
 }
