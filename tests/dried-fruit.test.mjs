@@ -9,10 +9,26 @@ test('B155 nine dried-fruit selections use their own USDA dry/prepared records a
  for(const id of ['kuru_mango','kuru_turna_yemisi','kuru_yaban_mersini']){assert.match(food(id).tr,/şekerli/);assert.match(food(id).forms[0].usda.desc,/sweetened/);}
  assert.deepEqual(food('kuru_armut').allergens,['sulfit']);assert.match(food('muz_cipsi').tr,/kızartılmış/);
 });
-test('B155 sun-dried apricot and four unmeasured dried fruits are separate honest data gaps',()=>{
- for(const id of ['gun_kurusu_kayisi','kuru_dut','kuru_cilek','kuru_ananas','kuru_kivi']){const f=food(id),fm=f.forms[0];assert.equal(categoryContains(f,'meyve'),true);assert.deepEqual(fm.v,{});assert.deepEqual(fm.s,{});assert.equal(fm.usda,null);assert.ok(fm.unavailable);}
+test('B155 sun-dried apricot and three unmeasured dried fruits are separate data gaps',()=>{
+ for(const id of ['gun_kurusu_kayisi','kuru_dut','kuru_cilek','kuru_kivi']){const f=food(id),fm=f.forms[0];assert.equal(categoryContains(f,'meyve'),true);assert.deepEqual(fm.v,{});assert.deepEqual(fm.s,{});assert.equal(fm.usda,null);assert.ok(fm.unavailable);}
  const sun=food('gun_kurusu_kayisi');for(const q of ['gün kurusu','günkurusu','gunkursu','kükürtsüz kuru kayısı','unsulfured apricot'])for(const t of norm(q).split(' '))assert.ok(searchKey(sun).includes(t),q);
  assert.equal(food('kuru_kayisi').forms[0].usda.ndb,'09032');assert.equal(food('kuru_kayisi').forms[0].v.energy,241);assert.ok(!food('kuru_kayisi').tr.includes('Gün kurusu'));
+});
+
+test('B264 kuru ananas: CoFID hesabı ve şekerli FNDDS kaydı ayrı, iz değer sayılmaz', () => {
+  const [plain] = food('kuru_ananas').forms;
+  const [sweetened] = food('kuru_ananas_sekerli').forms;
+  assert.equal(plain.cofid, '14-396');
+  assert.equal(plain.cofidCalculated, true);
+  assert.equal(plain.v.energy, 303);
+  assert.equal(plain.v.carb_avail, 75.7);
+  assert.equal(plain.v.carb, undefined);
+  assert.equal(plain.v.chloride, 127);
+  assert.equal(plain.v.iodine, undefined);
+  assert.equal(plain.v.na, undefined);
+  assert.equal(sweetened.usda.fndds, '62120100');
+  assert.equal(sweetened.usda.fdc, 2709210);
+  assert.ok(sweetened.usda.ingredients.includes('Sugars, granulated'));
 });
 test('B155 explicit dried entries preserve existing fresh-food form order and share the original analysis',()=>{
  for(const [dry,fresh] of [['kuru_turna_yemisi','kizilcik'],['kuru_yaban_mersini','yabanmersini'],['kuru_hunnap','hunnap']]){const a=food(dry).forms[0],b=food(fresh).forms[1];assert.equal(b.key,'kurutulmus');assert.equal(a.usda.ndb,b.usda.ndb);assert.deepEqual(a.v,b.v);assert.deepEqual(a.s,b.s);assert.match(food(dry).note,/ayrı bir analiz değildir/);}

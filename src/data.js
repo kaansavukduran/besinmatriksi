@@ -19,6 +19,11 @@ export const CATEGORIES = DB.categories.map(([id, name, icon]) => ({ id, name, i
 export const NAV_CATEGORIES = rootCategories(CATEGORIES);
 export const FOODS = DB.foods;
 const byId = new Map(FOODS.map((f) => [f.id, f]));
+const curatedByNdb = new Map();
+for (const food of FOODS) food.forms.forEach((form, f) => {
+  const ndb = form.usda?.ndb;
+  if (ndb && !curatedByNdb.has(ndb)) curatedByNdb.set(ndb, { t: 'c', id: food.id, f });
+});
 for (const f of FOODS) f._k = searchKey(f) + ' ' + norm(EN_FOODS[f.id] || ''); // ekranda görünen İngilizce adla da bulunur
 
 const LITE = typeof __LITE__ !== 'undefined' && __LITE__ === true;
@@ -66,11 +71,16 @@ export function resolve(ref) {
       portions: form.portions || [],
       allergens: food.allergens, note: [food.note, form.unavailable].filter(Boolean).map((x) => L(x)).join(' ') || null, sci: food.sci,
       usda: form.usda, cofid: form.cofid || null, ifct: form.ifct, estFrom: form.estFrom, recipeOf: form.recipeOf || null, recipeYield: form.recipeYield || null,
+      cofidCalculated: form.cofidCalculated || false,
     };
   }
   if (ref.t === 'x') {
     const f = extByNdb.get(ref.n);
-    if (!f) return null;
+    if (!f) {
+      // Tam Katalog'dan küratörlü kataloğa alınan aynı NDB, eski tarif ve günlük kayıtlarında açılmaya devam eder.
+      const curated = curatedByNdb.get(ref.n);
+      return curated ? { ...resolve(curated), ref } : null;
+    }
     const s = {};
     for (const k of Object.keys(f.v)) s[k] = f.fs?.[k] || 'u';
     const liquid = f.g === '1400' || f.g === '0400';

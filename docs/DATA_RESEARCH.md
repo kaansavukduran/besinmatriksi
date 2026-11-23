@@ -94,3 +94,62 @@ Mifflin 1990 DOI 10.1093/ajcn/51.2.241 / PMID 2305711 katsayıları ve çalışm
   - `patates:firin` (`13-491`), `kabak:haslanmis` (`13-628`), `limon:suyu` (`14-277`), `frenk_uzumu_kirmizi:cig` (`14-249`), `kuru_uzum:kurutulmus` (`14-393`), `ispanak:haslanmis` (`13-573`), `nohut:haslanmis` (`13-662`), `misir:haslanmis` (`13-508`), `yerfistigi:cig` (`14-877`), `fistik_ezmesi:macun` (`14-892`), `soya_unu:toz` (`11-898`), `tam_bugday_unu:toz` (`11-889`), `tam_bugday_makarna:kuru` (`11-718`), `siyah_cay:demleme` (`17-165`), `elma_suyu:icecek` (`14-331`), `uzum_suyu:suyu` (`17-745`), `domates_suyu:icecek` (`13-382`), `kahve:demleme` (`17-833`), `kirmizi_sarap:icecek` (`17-752`), `beyaz_sarap:icecek` (`17-756`), `bira:icecek` (`17-749`).
 
 
+## B264 kapsam denetimi ve katalog eklemeleri
+
+23 Kasım 2026. Taban `main/2bc46d6`. Küratörlü katalog 875 besin ve 1.027 tüketim biçiminden 884 besin ve 1.042 biçime çıktı. Bileşimi tamamen boş biçimler 36’dan 35’e indi. Hazırlama biçimlerini ve kaynak kimliklerini karşılaştırdım. Önceden kayıtlı sayısal değerler değişmedi ve mevcut biçim indeksleri korundu. Eski biçimlere 85 yeni sayısal hücre eklendi. Altı SR28 kaydı Tam Katalog’dan küratörlü kataloğa taşındı. Eski `t:x` kayıtları aynı NDB numarasıyla çözülür.
+
+### Makro, mikro ve diğer bileşenlerin kapsamı
+
+Sayılar en az bir kayıtlı sayı bulunan tüketim biçimlerini gösterir. Kaynakta varsayılan sıfırlar bu sayılara dahildir ve arayüzde `Varsayılan 0` etiketi taşır. 248 tanımlı matriks satırına hesaplanan değerler de dahildir.
+
+| Bileşen | Önce (1.027 biçim) | Sonra (1.042 biçim) | Kalan boşluk |
+| --- | ---: | ---: | ---: |
+| Enerji, protein veya yağ (her biri) | 990 | 1.006 | 36 |
+| Toplam lif | 958 | 974 | 68 |
+| Toplam şeker | 844 | 858 | 184 |
+| Potasyum | 988 | 1.004 | 38 |
+| Kolin | 763 | 772 | 270 |
+| Biyotin | 157 | 161 | 881 |
+| İyot | 161 | 163 | 879 |
+| Molibden | 25 | 25 | 1.017 |
+| Klorür | 0 | 53 | 989 |
+| Histidin | 616 | 623 | 419 |
+| Lizin | 623 | 630 | 412 |
+| Kafein | 786 | 796 | 246 |
+| Çözünür veya çözünmez lif (her biri) | 7 | 7 | 1.035 |
+| Dirençli nişasta | 1 | 1 | 1.041 |
+| MK-4 | 84 | 84 | 958 |
+
+- Kalori, protein, karbonhidrat, yağ ve lif birlikte 974 biçimde bulunur. Esansiyel dokuz amino asidin tamamı 610 biçimde bulunur. Tek MK-4 değeri tüm K2 biçimlerini temsil etmez. Krom, nikel, kobalt ve partiye özgü ağır metal satırları için küratörlü katalogda sayısal değer yok.
+- Klorür CoFID’nin mg/100 g inorganik tablosundan gelir. Mevcut eşlemelerde aynı yiyecek ve hazırlama biçimi aranır. Sayısal CoFID ve USDA sodyumu arasında en çok 5 mg/100 g veya %25 fark kabul edilir. Sodyumdan klorür hesaplanmaz. 52 eşlenmiş biçim ve CoFID kuru ananas profiliyle 53 değer görünür. Örnek olarak çiğ elma 44 mg ve kuru ananas hesabı 127 mg. Tarifte, günlükte ve karşılaştırmada mevcut miktar ve kısmi kapsam kuralları geçerlidir. 800 mg günlük etiket referansı AB Ek XIII’ten gelir. [CoFID 2021](https://www.gov.uk/government/publications/composition-of-foods-integrated-dataset-cofid) · [AB 1169/2011 Ek XIII](https://eur-lex.europa.eu/eli/reg/2011/1169/oj/eng)
+- Beş eşleme eklendi: çiğ portakal `14-327`, çiğ badem `14-896`, çiğ ceviz `14-879`, tuzsuz haşlanmış pırasa `13-625` ve pişmiş inci arpa `11-003`. USDA kayıtlarına yapılan CoFID dolguları 203’ten 263’e çıktı. Bunlar yeni tek-kaynaklı ananas profilinden ayrı sayılır. Kaynaktaki `Tr` (iz) ve `N` (bildirilmemiş) nümerik sıfıra dönüşmez.
+- Foundation Foods enerji alanında USDA `208` için `kcal` birimi eşleştirildi. Kırmızı soğan kaydındaki 44 kcal/100 g bu alandan gelir. Var olan birim dönüşümü ve SR28 önceliği geçerlidir. [Foundation Foods yöntemleri](https://fdc.nal.usda.gov/Foundation_Foods_Documentation/)
+
+### Eklenen besinler ve hazırlama biçimleri
+
+Öncelik günlük sebze, baklagil ve tahıllara, sonra tüketim biçimini değiştiren konserve ve hazırlanmış ürünlere verildi. Sıra editoryaldir. TÜBER 2022 ve Sağlık Bakanlığının örnek öğünleri Türkiye bağlamına yön verdi. [TÜBER 2022](https://hsgm.saglik.gov.tr/media/attachments/2025/05/12/turkiye-beslenme-rehberi-2022.pdf) · [Sağlık Bakanlığı örnek öğünleri](https://orduism.saglik.gov.tr/TR-339805/ramazan-ayinda-beslenme-onerileri.html)
+
+| Besin veya biçim | Kaynak kaydı |
+| --- | --- |
+| Çiğ kırmızı soğan | Foundation FDC 790577 |
+| Konserve, süzülüp durulanmış nohut | SR28 NDB 16359 |
+| Tuzsuz haşlanmış pırasa | SR28 NDB 11247 |
+| Çiğ, taşta öğütülmüş tahin | SR28 NDB 12198 |
+| Pişmiş glutensiz mısır makarnası | SR28 NDB 20092 |
+| Kılçıklı, domates sosunda konserve sardalya (süzülmüş) | SR28 NDB 15089 |
+| Süzülmüş konserve mantar | SR28 NDB 11264 |
+| Tavada yağ eklenmeden hazırlanmış yumurta | FNDDS 31105010, FDC 2707156 |
+| Laktozsuz inek sütü, dört yağ seçeneği | FNDDS 11114350, 11114330, 11114300, 11114320. ABD’de vitamin eklenmiş süt esaslı profiller. Ayrı laktoz miktarı bildirilmemiş |
+| Şekerli kuru ananas | FNDDS 62120100, FDC 2709210. Girdiler ananas ve toz şeker |
+| Yağı azaltılmış mayonez | FNDDS 83204000, FDC 2710220 |
+| Nohut patlağı | Foundation FDC 2779255 |
+| Şeker eklenmemiş kuru ananas | CoFID `14-396`. Taze `14-376` kaydından hesaplanmış profil |
+
+CoFID kuru ananasta 100 g için 303 kcal, 75,7 g kullanılabilir karbonhidrat ve 8 g lif bildirir. Kullanılabilir karbonhidrat kendi alanına aktarılır. Sodyum ve iyot iz düzeyinde bildirildiğinden sayısal alanları boş kalır. CoFID çalışma kitabının ve 5.432 kayıtlık FNDDS arşivinin SHA-256 özeti, depodaki kaynak kaydıyla birebir eşleşti. CoFID alt kümesinde yalnız `14-396` satırı genişletildi. [USDA veri indirmeleri](https://fdc.nal.usda.gov/download-datasets/) · [USDA CC0](https://fdc.nal.usda.gov/api-guide/) · [CoFID açık lisansı](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/)
+
+### Kalan boşluklar ve sıradaki araştırma
+
+1. **Yaygın ve ürün tanımı önemli.** Gün kurusu kayısı, kuru dut ve çilek, sade Türk kahvesi, ıhlamur, nane, adaçayı ve rooibos, nar ekşisi ve üzüm pekmezi. Sade Türk kahvesinde laboratuvar çalışması kafeini mg/100 mL olarak bildiriyor. Bu konsantrasyon çalışma örneklerine özgüdür ve 100 g profiline dönüştürülmedi. FNDDS’nin Türk kahvesi satırı şeker içeriyor. [Türk kahvesi kafein çalışması](https://pmc.ncbi.nlm.nih.gov/articles/PMC11496285/)
+2. **Yeni yerel hazır ürünler.** Tarhana çorbası, şalgam suyu, boza ve laktozsuz yoğurt. Tarhananın kuru ve hazırlanmış biçimlerini, şalgam suyunda tuz düzeyini, bozada ilave şekeri ayrı takip et. TürKomp’un resmî dizininde üzüm pekmezi ve kuru tarhana kayıtları bulunuyor. Kullanım sayfası doğrudan açılışta zaman aşımına uğradı. Resmî arama dizinindeki koşullar çevrimdışı yeniden dağıtım iznini doğrulamadığından veri aktarılmadı. [TürKomp veri bankası](https://turkomp.tarimorman.gov.tr/database) · [TürKomp veri kullanımı](https://turkomp.tarimorman.gov.tr/useofdata)
+3. **Mevcut besinleri derinleştirme.** Önce iyot, biyotin ve molibden için aynı besin ve hazırlama biçimini aramak en çok boşluğu hedefler. Ardından lif fraksiyonları, esansiyel amino asitler, ilave şeker ve K2 biçimleri. Toplam şeker ilave şekerin yerine kullanılamaz. Ağır metal verileri eşleşen parti, birim ve analiz yöntemiyle değerlendirilir. [USDA veri türleri ve ölçüm yöntemleri](https://fdc.nal.usda.gov/data-documentation/)
+4. **Ürün etiketi gerekenler.** Protein tozları ve zenginleştirilmiş besin mayası dahil dokuz tamamen boş biçimde içerik formülasyona bağlı. Cevizdeki veya bezelyedeki tam besin profili protein tozuna taşınmaz. Jaggery için IFCT yazılı dağıtım izni bekliyor.

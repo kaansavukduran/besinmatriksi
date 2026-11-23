@@ -1,6 +1,20 @@
 import { category, filters, tab } from './navigation.mjs';
 import {test,expect} from '@playwright/test';
 const cat = category;
+
+test('B264 laktozsuz süt filtrelenir ve her yağ biçimi kendi bileşimini gösterir', async ({ page }) => {
+  await page.goto('/');
+  await category(page, 'icecek');
+  await filters(page);
+  await page.locator('.diet-extras summary').click();
+  await page.locator('#ex-dietLactoseFree').check();
+  await page.locator('#q').fill('inek sütü');
+  await expect(page.locator('#foodlist [data-id="inek_sutu"]')).toHaveCount(0);
+  await page.locator('#foodlist [data-id="inek_sutu_laktozsuz"]').click();
+  await expect(page.locator('[data-overview="energy"]')).toContainText('61');
+  await page.getByRole('group', { name: 'Tüketim biçimi' }).getByRole('button', { name: 'Yağsız', exact: true }).click();
+  await expect(page.locator('[data-overview="energy"]')).toContainText('34');
+});
 for(const language of ['tr','en']){
  test(`B150 compact dietary filters ${language}:categories,vegetarian permissions,extras,persistence,picker and unchanged recipes`,async({page})=>{
   test.setTimeout(60_000);

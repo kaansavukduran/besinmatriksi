@@ -1,4 +1,12 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 71
+# 🫐 Besin Matriksi 1.1.2 Beta 72
+
+- 884 küratörlü besin ve 1.042 tüketim biçimi. Dört yağ oranında laktozsuz süt, kırmızı soğan, durulanmış konserve nohut ve diğer yeni besinler.
+- 53 biçimde klorür verisi. CoFID’nin şeker eklenmemiş kuru ananas hesabı ve USDA’nın şekerli kuru ananas kaydı ayrı.
+- USDA’nın varsaydığı sıfırlar ayrı etiketlenir. Tam Katalog’dan taşınan NDB kayıtları mevcut tariflerde açılır.
+
+[Kaynaklar ve veri denetimi](DATA_RESEARCH.md#b264-kapsam-denetimi-ve-katalog-eklemeleri)
+
+## Beta 71
 
 - Keşfet arama ve besin listesiyle açılıyor. Besin detayında miktar ve temel değerler ilk sırada.
 - Günlük’te besin arama, seçili tarihe kayıt ve geri alma aynı ekranda. Tarif ve Karşılaştır aynı besin seçiciyi kullanıyor.

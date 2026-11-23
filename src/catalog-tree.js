@@ -15,7 +15,7 @@ const CHILDREN = new Set(['kurumeyve','yaprak','kok','kahve','soya']);
 const TEA = new Set(['siyah_cay','yesil_cay','oolong']);
 const HERBAL = new Set(['papatya','hibiskus_cayi','bitki_cayi','adacayi_demleme','ihlamur_cayi','nane_cayi','rooibos_cayi']);
 const PLANT_MILK = new Set(['soya_sutu','soya_sutu_z','badem_sutu','pirinc_sutu','yulaf_sutu','hindistancevizi_sutu','hindistancevizi_sutu_konserve','kaju_ayrani']);
-const DAIRY_DRINK = new Set(['inek_sutu','inek_sutu_yarim','inek_sutu_yagsiz','keci_sutu','koyun_sutu','manda_sutu','kefir','ayran','ayran_yayik','ayran_yagsiz','peynir_alti']);
+const DAIRY_DRINK = new Set(['inek_sutu','inek_sutu_yarim','inek_sutu_yagsiz','inek_sutu_laktozsuz','keci_sutu','koyun_sutu','manda_sutu','kefir','ayran','ayran_yayik','ayran_yagsiz','peynir_alti']);
 const JUICE = new Set(['elma_suyu','domates_suyu','havuc_suyu','uzum_suyu','mandalina_suyu','turna_yemisi_suyu','hindistancevizi_suyu']);
 const ALCOHOL = new Set(['bira','kirmizi_sarap','beyaz_sarap']);
 export function catalogGroup(food){

@@ -1,6 +1,7 @@
 // Küratörlü besin kataloğu: bitkisel / mantar / alg ve (2026-11-12 kullanıcı kararıyla) ayrı kategorilerde hayvansal besinler.
 // Hayvansal kayıtlar `animal: true` taşır; arayüzde etiketlenir ve Ayarlar'dan gizlenebilir.
-// Her form: [formAnahtarı, USDA SR28 NDB no | null, ayrılmış alan (null), özel etiket?]
+// Her form: [formAnahtarı, kaynak kodu veya null, ayrılmış alan (null), özel etiket?]
+// Kaynak kodu: SR28 NDB no, F + Foundation no, N + FNDDS no veya B + CoFID kodu.
 // USDA tam bileşen tablosu formun kendi kaydıyla eşlenir. Kaynağı bulunmayan
 // form veri boşluğu olarak korunur; başka bir gıda veya hazırlamayla doldurulmaz.
 // Alerjen anahtarları: gluten, soya, yerfistigi, sertkabuklu, susam, hardal, kereviz, aci_bakla, sulfit
@@ -149,8 +150,9 @@ export const FOODS = [
   F('enginar', 'Enginar', 'artichoke', 'sebze', [['cig', '11007', null], ['haslanmis', '11008', null]]),
   F('kuskonmaz', 'Kuşkonmaz', 'asparagus', 'sebze', [['cig', '11011', null]]),
   F('sogan', 'Kuru soğan', 'onion', 'sebze', [['cig', '11282', null], ['haslanmis', '11283', null]]),
+  F('sogan_kirmizi', 'Kırmızı soğan (mor soğan)', 'red onion', 'sebze', [['cig', 'F100252', null]]),
   F('sarimsak', 'Sarımsak', 'garlic', 'sebze', [['cig', '11215', null]]),
-  F('pirasa', 'Pırasa', 'leek', 'sebze', [['cig', '11246', null]]),
+  F('pirasa', 'Pırasa', 'leek', 'sebze', [['cig', '11246', null], ['haslanmis', '11247', null]]),
   F('kereviz_sap', 'Kereviz sapı', 'celery', 'sebze', [['cig', '11143', null]], { allergens: ['kereviz'] }),
   F('rezene', 'Rezene (baş)', 'fennel bulb', 'sebze', [['cig', '11957', null]]),
   F('alabas', 'Alabaş (kohlrabi)', 'kohlrabi', 'sebze', [['cig', '11241', null]]),
@@ -256,6 +258,7 @@ export const FOODS = [
   F('beyaz_un', 'Beyaz un (zenginleştirilmemiş)', 'white flour', 'tahil', [['toz', '20481', null]], { allergens: ['gluten'] }),
   F('irmik', 'İrmik (zenginleştirilmemiş)', 'semolina', 'tahil', [['toz', '20466', null]], { allergens: ['gluten'] }),
   F('makarna', 'Makarna (zenginleştirilmemiş)', 'pasta', 'tahil', [['kuru', '20420', null], ['pismis', '20421', null]], { allergens: ['gluten'] }),
+  F('misir_makarnasi', 'Glutensiz mısır makarnası', 'gluten-free corn pasta', 'tahil', [['pismis', '20092', null]]),
   F('kuskus', 'Kuskus', 'couscous', 'tahil', [['kuru', '20028', null], ['pismis', '20029', null]], { allergens: ['gluten'] }),
   F('misir_tane', 'Mısır (kuru tane)', 'corn grain', 'tahil', [['kuru', '20014', null]]),
   F('misir_unu', 'Mısır unu (tam tane, sarı)', 'cornmeal', 'tahil', [['toz', '20020', null]]),
@@ -283,7 +286,7 @@ export const FOODS = [
   F('chia', 'Chia tohumu', 'chia seed', 'tohum', [['kuru', '12006', null]]),
   F('kenevir', 'Kenevir tohumu (kabuksuz)', 'hemp seed hulled', 'tohum', [['kuru', '12012', null]]),
   F('susam', 'Susam (bütün)', 'sesame seed', 'tohum', [['kuru', '12023', null]], { allergens: ['susam'] }),
-  F('tahin', 'Tahin', 'tahini', 'tohum', [['macun', '12166', null]], { allergens: ['susam'] }),
+  F('tahin', 'Tahin', 'tahini', 'tohum', [['macun', '12166', null], ['macun', '12198', null, 'Çiğ, taşta öğütülmüş']], { allergens: ['susam'] }),
   F('kabak_cekirdegi', 'Kabak çekirdeği içi', 'pumpkin seeds pepitas', 'tohum', [['kuru', '12014', null], ['kavrulmus', '12016', null]]),
   F('aycekirdegi', 'Ay çekirdeği içi', 'sunflower seeds', 'tohum', [['kuru', '12036', null], ['kavrulmus', '12037', null]]),
   F('hashas', 'Haşhaş tohumu', 'poppy seed', 'tohum', [['kuru', '02033', null]]),
@@ -291,6 +294,7 @@ export const FOODS = [
 
   // ---------------- Mantarlar ----------------
   F('kultur_mantari', 'Kültür mantarı', 'white button mushroom', 'mantar', [['cig', '11260', null], ['haslanmis', '11261', null]]),
+  F('mantar_konserve', 'Mantar (konserve)', 'canned mushrooms', 'mantar', [['konserve', '11264', null, 'Konserve, süzülmüş']]),
   F('portobello_uv', 'Portobello (UV ışığına maruz)', 'portobello uv mushroom', 'mantar', [['cig', '11998', null], ['pismis', '11939', null, 'Izgara']], { note: 'UV ile işlenmiş mantarlarda D2 vitamini yüksektir; UV görmemiş mantarlarda çok düşüktür.' }),
   F('shiitake', 'Shiitake', 'shiitake', 'mantar', [['cig', '11238', null], ['pismis', '11269', null], ['kurutulmus', '11268', null]]),
   F('istiridye_mantari', 'İstiridye mantarı', 'oyster mushroom', 'mantar', [['cig', '11987', null]]),
@@ -397,6 +401,10 @@ export const FOODS = [
   F('inek_sutu', 'İnek sütü (tam yağlı)', 'whole cow milk', 'sut', [['icecek', '01211', null, 'Tam yağlı %3,25 (vitamin eklenmemiş)']], { allergens: ['sut'] }),
   F('inek_sutu_yarim', 'İnek sütü (yarım yağlı %2)', 'reduced fat cow milk', 'sut', [['icecek', '01174', null, '%2 yağlı (vitamin eklenmemiş)']], { allergens: ['sut'] }),
   F('inek_sutu_yagsiz', 'İnek sütü (yağsız)', 'skim cow milk', 'sut', [['icecek', '01151', null, 'Yağsız (vitamin eklenmemiş)']], { allergens: ['sut'] }),
+  F('inek_sutu_laktozsuz', 'Laktozsuz inek sütü', 'lactose-free cow milk', 'sut', [
+    ['icecek', 'N11114350', null, 'Tam yağlı (%3,25)'], ['icecek', 'N11114330', null, '%2 yağlı'],
+    ['icecek', 'N11114300', null, '%1 yağlı'], ['icecek', 'N11114320', null, 'Yağsız'],
+  ], { animal: true, allergens: ['sut'], note: 'USDA FNDDS kaydı, ABD’de vitamin eklenmiş sütü temel alır. Türkiye’deki ürünün değerleri ambalaja göre değişebilir. Ayrı laktoz miktarı verilmemiştir.' }),
   F('yogurt', 'Yoğurt (tam yağlı, sade)', 'plain whole milk yogurt', 'sut', [['cig', '01116', null, 'Sade']], { allergens: ['sut'] }),
   F('suzme_yogurt', 'Süzme yoğurt (Yunan tipi, tam yağlı)', 'Greek yogurt', 'sut', [['cig', '01293', null, 'Sade']], { allergens: ['sut'] }),
   F('beyaz_peynir', 'Beyaz peynir (feta)', 'feta cheese', 'sut', [['cig', '01019', null, 'Peynir']], { allergens: ['sut'] }),
@@ -422,6 +430,7 @@ export const FOODS = [
   F('levrek', 'Levrek', 'sea bass', 'balik', [['cig', '15091', null, 'Çiğ'], ['pismis', '15092', null, 'Izgara / fırın']], { allergens: ['balik'] }),
   F('morina', 'Morina (Atlantik)', 'Atlantic cod', 'balik', [['cig', '15015', null, 'Çiğ']], { allergens: ['balik'] }),
   F('sardalya', 'Sardalya (yağda konserve)', 'sardine, canned in oil', 'balik', [['konserve', '15088', null, 'Kılçığıyla, süzülmüş']], { allergens: ['balik'] }),
+  F('sardalya_domates', 'Sardalya (domates sosunda konserve)', 'Pacific sardines canned in tomato sauce', 'balik', [['konserve', '15089', null, 'Kılçığıyla, süzülmüş']], { animal: true, allergens: ['balik'] }),
   F('ton_baligi', 'Ton balığı (suda konserve, tuzsuz)', 'light tuna, canned in water', 'balik', [['konserve', '15184', null, 'Suda, tuzsuz, süzülmüş']], { allergens: ['balik'], note: 'Ton balığında cıva bulunabilir; gebelikte ve çocuklarda tüketim önerilerine bak.' }),
   F('karides', 'Karides', 'shrimp', 'balik', [['cig', '15270', null, 'Çiğ'], ['haslanmis', '15271', null, 'Pişmiş']], { allergens: ['kabuklu'] }),
   F('midye', 'Midye', 'blue mussel', 'balik', [['cig', '15164', null, 'Çiğ'], ['haslanmis', '15165', null, 'Buharda / haşlanmış']], { allergens: ['yumusakca'] }),
@@ -701,6 +710,8 @@ export const FOODS = [
   F("pirinc_eriste", "Pirinç eriştesi", "rice noodles", "tahil", [["kuru", "20133", null, "Kuru"], ["haslanmis", "20134", null, "Haşlanmış"]]),
   F("pilavlik_pirinc", "Pilavlık pirinç (parboiled)", "parboiled rice", "tahil", [["kuru", "20446", null, "Kuru"], ["pismis", "20447", null, "Pişmiş"]]),
   F("nohut_unu", "Nohut unu", "chickpea flour besan", "baklagil", [["toz", "16157", null, "Un"]]),
+  F('nohut_konserve_durulanmis', 'Nohut (konserve, durulanmış)', 'canned chickpeas drained and rinsed', 'baklagil', [['konserve', '16359', null, 'Konserve, süzülüp durulanmış']]),
+  F('nohut_patlagi', 'Nohut patlağı', 'puffed chickpeas', 'baklagil', [['kuru', 'F100432', null, 'Patlatılmış']]),
   F("misir_irmigi", "Mısır irmiği / polenta", "corn grits polenta", "tahil", [["kuru", "08160", null, "Kuru"], ["pismis", "08164", null, "Suyla pişmiş, tuzsuz"]], { note: "Pişmiş kayıt zenginleştirilmiş (enriched) irmiğe aittir." }),
   F("granola", "Granola (ev yapımı)", "granola", "tahil", [["kuru", "08037", null, "Kuru"]], { allergens: ["gluten", "sertkabuklu"], note: "Tarife göre bal, kuruyemiş ve yağ içerir." }),
   F("badem_unu", "Badem unu", "almond flour", "kuruyemis", [["toz", "F100273", null, "Un"]], { allergens: ["sertkabuklu"] }),
@@ -722,6 +733,7 @@ export const FOODS = [
   F("tavuk_sehriye_corbasi", "Tavuk şehriye çorbası", "chicken noodle soup", "yemek", [["pismis", "N58403040", null, "Ev usulü"]], { allergens: ["gluten", "yumurta", "kereviz"], animal: true, note: "USDA FNDDS tarifi: tavuk, yumurtalı erişte, sebze karışımı (kereviz dahil), su, yağ. Tuz eklenmiş." }),
   F("patates_puresi", "Patates püresi (sütlü)", "mashed potatoes", "yemek", [["pismis", "N71501010", null, "Sütlü"]], { allergens: ["sut"], animal: true, note: "USDA FNDDS tarifi: patates, krema-süt karışımı, yağ, tuz." }),
   F("mayonez", "Mayonez", "mayonnaise", "yemek", [["macun", "04025", null, "Normal"]], { allergens: ["yumurta"], animal: true }),
+  F('mayonez_light', 'Mayonez (yağı azaltılmış)', 'light mayonnaise', 'yemek', [['macun', 'N83204000', null, 'Yağı azaltılmış']], { animal: true, allergens: ['yumurta'] }),
   F("pesto", "Pesto sos", "pesto", "yemek", [["macun", "06626", null, "Hazır, soğutulmuş"]], { allergens: ["sut"], animal: true, note: "Hazır pestolar genelde peynir ve çam fıstığı/ceviz içerir; etikete bak." }),
   F("kuru_elma", "Kuru elma (kükürtlü)", "dried apple", "kurumeyve", [["kurutulmus", "09011", null, "Kükürtlü"]]),
   F("kuru_seftali", "Kuru şeftali (kükürtlü)", "dried peach", "kurumeyve", [["kurutulmus", "09246", null, "Kükürtlü"]]),
@@ -792,7 +804,7 @@ export const FOODS = [
   F("rokfor", "Rokfor / küflü peynir", "roquefort blue cheese", "sut", [["cig", "01039", null, "Olgun"]], { allergens: ["sut"] }),
   F("taze_peynir", "Taze peynir (queso fresco)", "queso fresco", "sut", [["cig", "01228", null, "Taze"]], { allergens: ["sut"], note: "Meksika taze peyniri; Türk taze/örgü peynirine yakın ama aynı değil." }),
   F("suzme_yogurt_yagsiz", "Süzme yoğurt (yağsız)", "greek yogurt nonfat", "sut", [["cig", "01256", null, "Sade"]], { allergens: ["sut"] }),
-  F("yumurta_pismis", "Tavuk yumurtası (pişmiş)", "cooked egg", "yumurta", [["tava", "01128", null, "Sahanda (yağda)"], ["pismis", "01130", null, "Omlet"], ["haslanmis", "01131", null, "Poşe (suda)"]], { allergens: ["yumurta"] }),
+  F("yumurta_pismis", "Tavuk yumurtası (pişmiş)", "cooked egg", "yumurta", [["tava", "01128", null, "Sahanda (yağda)"], ["pismis", "01130", null, "Omlet"], ["haslanmis", "01131", null, "Poşe (suda)"], ["tava", "N31105010", null, "Tavada, yağ eklenmemiş"]], { allergens: ["yumurta"] }),
   F("cirpilmis_yumurta", "Çırpılmış yumurta (scrambled)", "scrambled egg", "yumurta", [["tava", "01132", null, "Tavada"]], { allergens: ["yumurta"] }),
   F("kuzu_pirzola", "Kuzu pirzola / kontrfile (yağlı)", "lamb loin chop", "et", [["cig", "17236", null, "Çiğ"], ["pismis", "17237", null, "Izgara"]]),
   F("kuzu_kusbasi", "Kuzu kuşbaşı (yağsız)", "lamb cubes stew", "et", [["cig", "17059", null, "Çiğ"], ["pismis", "17060", null, "Haşlama/güveç"], ["firin", "17061", null, "Izgara"]]),
@@ -934,7 +946,8 @@ export const DRIED_FRUIT_ADDITIONS = [
  F("gun_kurusu_kayisi","Gün kurusu kayısı","sun dried apricot unsulphured","kurumeyve",[["kurutulmus", null, null]],{"unavailable": "Gün kurusu kayısı için bu katalogdaki kaynaklarda doğrulanmış ayrı besin ölçümü yok. Kükürt dioksitle işlenmiş kuru kayısı değerleri buraya kopyalanmadı; ambalaj değerlerini Kendi besinim ile ekleyebilirsin."}),
  F("kuru_dut","Kuru dut","dried mulberry mulberries","kurumeyve",[["kurutulmus", null, null]],{"unavailable": "Bu kuru meyve için bu katalogdaki kaynaklarda doğrulanmış ayrı besin ölçümü yok. Taze meyve veya başka kurutulmuş ürünlerin değerleri kullanılmadı; ambalaj değerlerini Kendi besinim ile ekleyebilirsin."}),
  F("kuru_cilek","Kuru çilek","dried strawberry strawberries","kurumeyve",[["kurutulmus", null, null]],{"unavailable": "Bu kuru meyve için bu katalogdaki kaynaklarda doğrulanmış ayrı besin ölçümü yok. Taze meyve veya başka kurutulmuş ürünlerin değerleri kullanılmadı; ambalaj değerlerini Kendi besinim ile ekleyebilirsin."}),
- F("kuru_ananas","Kuru ananas","dried pineapple","kurumeyve",[["kurutulmus", null, null]],{"unavailable": "Bu kuru meyve için bu katalogdaki kaynaklarda doğrulanmış ayrı besin ölçümü yok. Taze meyve veya başka kurutulmuş ürünlerin değerleri kullanılmadı; ambalaj değerlerini Kendi besinim ile ekleyebilirsin."}),
+ F('kuru_ananas', 'Kuru ananas (şeker eklenmemiş)', 'dried pineapple without added sugar', 'kurumeyve', [['kurutulmus', 'B14-396', null, 'Kurutulmuş (CoFID hesabı)']]),
+ F('kuru_ananas_sekerli', 'Kuru ananas (şekerli)', 'sweetened dried pineapple', 'kurumeyve', [['kurutulmus', 'N62120100', null, 'Kurutulmuş, şekerli']]),
  F("kuru_kivi","Kuru kivi","dried kiwi kiwifruit","kurumeyve",[["kurutulmus", null, null]],{"unavailable": "Bu kuru meyve için bu katalogdaki kaynaklarda doğrulanmış ayrı besin ölçümü yok. Taze meyve veya başka kurutulmuş ürünlerin değerleri kullanılmadı; ambalaj değerlerini Kendi besinim ile ekleyebilirsin."}),
  F("kuru_mango","Kuru mango (şekerli)","dried mango sweetened","kurumeyve",[["kurutulmus", "09178", null]],{"note": "USDA şeker ilaveli kurutulmuş ürün kaydıdır; şekersiz ürünlerin ölçümü değildir. Ambalajdaki değerler farklı olabilir."}),
  F("kuru_armut","Kuru armut","dried pear pears","kurumeyve",[["kurutulmus", "09259", null]],{"allergens": ["sulfit"], "note": "USDA kükürt dioksitle işlenmiş kuru armut kaydıdır. İşlenmemiş armut kurusu için ayrı bir ölçüm değildir."}),

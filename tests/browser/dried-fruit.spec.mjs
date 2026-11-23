@@ -14,3 +14,15 @@ for(const language of ['tr','en']){
   const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('bm.recipes.v1')));expect(saved[0].items.map(i=>i.ref.id)).toEqual(['kuru_mango','gun_kurusu_kayisi']);await page.reload();await tab(page,'tarif');await expect(page.locator('.ing')).toHaveCount(2);await expect(page.locator('#recipe-summary [data-basic="energy"]')).toContainText('≥');
  });
 }
+
+test('B264 kuru ananas değerleri, klorür ve CoFID hesabının kaynağı görünür', async ({ page }) => {
+  await page.goto('/');
+  await page.locator('#q').fill('kuru ananas');
+  await expect(page.locator('#foodlist [data-id="kuru_ananas_sekerli"]')).toBeVisible();
+  await page.locator('#foodlist [data-id="kuru_ananas"]').click();
+  await expect(page.locator('[data-overview="energy"]')).toContainText('303');
+  await expect(page.locator('[data-micro="chloride"] .micro-value')).toHaveText('127 mg');
+  await expect(page.locator('[data-micro="iodine"]')).toHaveAttribute('data-micro-status', 'missing');
+  await expect(page.locator('#matrix .idcard')).toContainText('CoFID 14-396');
+  await expect(page.locator('#matrix .idcard')).toContainText('CoFID tarafından hesaplanan profil');
+});

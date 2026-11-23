@@ -39,6 +39,15 @@ test('USDA referans değerleri: çiğ muz (NDB 09040)', () => {
   assert.equal(b.s.k, 'u');
 });
 
+test('B264 laktozsuz süt biçimleri USDA FNDDS kayıtlarıdır ve ayrı laktoz miktarı türetilmez', () => {
+  const milk = DB.foods.find(({ id }) => id === 'inek_sutu_laktozsuz');
+  assert.deepEqual(milk.dietary, { kind: 'dairy', freeFrom: ['lactose'] });
+  assert.deepEqual(milk.allergens, ['sut']);
+  assert.deepEqual(milk.forms.map((f) => f.usda.fndds), ['11114350', '11114330', '11114300', '11114320']);
+  assert.deepEqual(milk.forms.map((f) => f.v.energy), [61, 50, 43, 34]);
+  assert.ok(milk.forms.every((f) => f.v.lactose == null));
+});
+
 test('USDA amino asit dönüşümü: kuru mercimekte lizin 1,720 g = 1720 mg', () => {
   const l = form('yesil_mercimek', 0);
   assert.equal(l.v.lys, 1720);
@@ -132,7 +141,7 @@ test('USDA flavonoid/izoflavon verisi aynı NDB kaydından gelir, etiketlidir ve
   const orange = form('portakal', 'cig');
   assert.ok(orange.v.hesperetin > 20); assert.equal(orange.s.hesperetin, 'f');
   assert.ok(!('cyanidin' in orange.v), 'portakalda ölçülmeyen antosiyanidin yazılmaz');
-  for (const food of DB.foods) for (const f of food.forms) for (const [k, s] of Object.entries(f.s)) if (s !== 'u' && s !== 'd' && s !== 'r') assert.ok(f.usda?.ndb || f.usda?.fndds || f.usda?.fdc, `${food.id}/${f.key}/${k}: NDB olmadan flavonoid yok`);
+  for (const food of DB.foods) for (const f of food.forms) for (const [k, s] of Object.entries(f.s)) if (s === 'f' || s === 'y') assert.ok(f.usda?.ndb, `${food.id}/${f.key}/${k}: NDB olmadan flavonoid yok`);
   const src = JSON.parse(fs.readFileSync(new URL('../data/raw/USDA_FLAVONOID_SOURCES.json', import.meta.url)));
   assert.equal(src.datasets.length, 2); assert.match(src.datasets[0].license, /CC0/);
 });
@@ -404,15 +413,22 @@ test('B161 yinelenen kayıtlar: lor → lor_cottage göçü, çapatiler ayırt e
 
 test('B191 UK CoFID 2021 dolgusu: yalnız elle eşlenen biçimlerde, yalnız sayısal ölçüm, etiket "B"; ölçülmüş USDA hücresinin üzerine yazmaz', async () => {
   const zlib = await import('node:zlib');
-  const { COFID_MAP, COFID_KEYS, COFID_SUGARS } = await import('../data/cofid-map.mjs');
+  const { COFID_MAP, COFID_KEYS, COFID_SUGARS, COFID_PRIMARY } = await import('../data/cofid-map.mjs');
   const cof = JSON.parse(zlib.gunzipSync(fs.readFileSync(new URL('../data/raw/CoFID_2021_SUBSET.json.gz', import.meta.url))).toString('utf8'));
-  const inv = { ...Object.fromEntries(Object.entries(COFID_KEYS).map(([c, k]) => [k, c])), ...Object.fromEntries(Object.entries(COFID_SUGARS).map(([c, k]) => [k, c])) };
   let n = 0;
   for (const f of DB.foods) for (const fm of f.forms) for (const [k, t] of Object.entries(fm.s || {})) {
     if (t !== 'B') continue; n++;
-    const code = COFID_MAP[f.id]?.[fm.key];
+    const code = fm.usda ? COFID_MAP[f.id]?.[fm.key] : fm.cofid;
     assert.ok(code, `${f.id}/${fm.key} eşlemesiz B`);
-    assert.equal(fm.v[k], Number(cof[code].v[inv[k]]), `${f.id}/${fm.key}/${k}`);
+    const map = fm.usda ? { ...COFID_KEYS, ...COFID_SUGARS, chloride: 'chloride' } : COFID_PRIMARY[code].keys;
+    const column = Object.keys(map).find((name) => map[name] === k);
+    const value = cof[code].v[column];
+    assert.ok(value != null && String(value).trim() && Number.isFinite(Number(value)), `${f.id}/${fm.key}/${k}: sayısal kayıt`);
+    assert.equal(fm.v[k], Number(value), `${f.id}/${fm.key}/${k}`);
+    if (k === 'chloride' && fm.usda) {
+      const sodium = Number(cof[code].v.na);
+      assert.ok(Math.abs(sodium - fm.v.na) <= Math.max(5, 0.25 * Math.max(sodium, fm.v.na)), `${f.id}: klorür için sodyum uyumu`);
+    }
     assert.ok(!f.animal, 'hayvansal besine CoFID dolgusu yok');
   }
   assert.ok(n >= 40, `B hücre ${n}`);

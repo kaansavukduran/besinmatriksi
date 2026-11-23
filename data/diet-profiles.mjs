@@ -22,6 +22,7 @@ export function curatedDietProfile(food, ctx = {}) {
  if(food.plantCoffee || PLANT_MILKS.has(food.id))return {kind:'plant',freeFrom:['lactose']};
  if(food.cat==='balik')return {kind:'fish',freeFrom:[]};
  if(['et','kumes'].includes(food.cat))return {kind:'meat',freeFrom:[]};
+ if(food.id==='inek_sutu_laktozsuz')return {kind:'dairy',freeFrom:['lactose']};
  if(PLAIN_DAIRY.has(food.id))return {kind:'dairy',freeFrom:[]};
  if(food.cat==='yumurta')return {kind:food.id==='cirpilmis_yumurta'?'dairy-egg':'egg',freeFrom:[]};
  if(food.animal){

@@ -12,7 +12,7 @@ for(const language of ['tr','en']){
   await expect(page.locator('.meal-table tbody tr').first().locator('[data-meal-nutrient="energy"]')).toHaveText('378 kcal');
   await expect(page.locator('.meal-table tbody tr').last().locator('[data-meal-nutrient="energy"]')).toHaveText('89 kcal');
   await expect(page.locator('#recipe-summary [data-basic="energy"]')).toContainText('467');
-  await expect(page.locator('#matrix .aas .aabar')).toHaveCount(9);await expect(page.locator('#matrix .micro-row')).toHaveCount(28);
+  await expect(page.locator('#matrix .aas .aabar')).toHaveCount(9);await expect(page.locator('#matrix .micro-row')).toHaveCount(29);
   await page.locator('[data-action="daily-recipe-basis"][data-b="serving"]').click();
   await expect(page.locator('.meal-table tbody tr').last().locator('[data-meal-nutrient="energy"]')).toContainText(language==='tr'?'44,5':'44.5');
   await expect(page.locator('#recipe-summary [data-basic="energy"]')).toContainText(language==='tr'?'423':'423');

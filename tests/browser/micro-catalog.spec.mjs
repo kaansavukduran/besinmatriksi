@@ -3,6 +3,23 @@ import { test, expect } from '@playwright/test';
 
 const micro = (page, key) => page.locator(`.micro-overview [data-micro="${key}"]`);
 
+test('B264 küratörlü kataloğa taşınan NDB eski tarifte kaybolmaz', async ({ page }) => {
+  await page.addInitScript(() => {
+    if (localStorage.getItem('bm.recipes.v1')) return;
+    localStorage.setItem('bm.recipes.v1', JSON.stringify([{
+      id: 'old', name: 'Eski nohut tarifi', servings: 1,
+      items: [{ id: 'chickpea', ref: { t: 'x', n: '16359' }, g: 100 }],
+    }]));
+  });
+  await page.goto('/');
+  await tab(page, 'tarif');
+  await expect(page.locator('.ing')).toHaveCount(1);
+  await expect(page.locator('.ing.missing')).toHaveCount(0);
+  await expect(page.locator('.ing .ingredient-info > b')).toHaveText('Nohut (konserve, durulanmış)');
+  await expect(page.locator('#recipe-summary [data-basic="energy"]')).toContainText('138');
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('bm.recipes.v1'))[0].items[0].ref)).toEqual({ t: 'x', n: '16359' });
+});
+
 async function seedSettings(page, settings) {
   await page.addInitScript(settings => {
     if (!localStorage.getItem('bm.settings.v2')) {
@@ -58,7 +75,7 @@ for (const language of ['tr', 'en']) {
     await pick(page, 'chickpea', 'nohut');
     await expect(micro(page, 'b12')).toHaveAttribute('data-micro-status', 'complete');
     await expect(micro(page, 'b12').locator('.micro-value')).toHaveText('0 µg');
-    await expect(micro(page, 'b12').locator('.micro-meta')).toContainText(language === 'en' ? 'Reported value is 0' : 'Kayıtlı değer 0');
+    await expect(micro(page, 'b12').locator('.micro-meta')).toContainText(language === 'en' ? 'Assumed 0' : 'Varsayılan 0');
     await expect(micro(page, 'vita_rae').locator('.micro-ref')).toHaveText(language === 'en' ? 'No reference' : 'Referans yok');
     await expect(micro(page, 'vita_rae').locator('.micro-track')).toHaveCount(0); // RAE is not the EU RE unit.
     await page.locator('[data-action="ex-add-recipe"]').click();
@@ -68,7 +85,7 @@ for (const language of ['tr', 'en']) {
     await page.locator('[data-action="ex-add-recipe"]').click();
     await page.locator('[data-action="ex-add-day"]').click();
     await pick(page, 'ristretto', 'ristretto');
-    await expect(page.locator('.micro-overview [data-micro-status="missing"]')).toHaveCount(28);
+    await expect(page.locator('.micro-overview [data-micro-status="missing"]')).toHaveCount(29);
     await expect(page.locator('.micro-overview .micro-track')).toHaveCount(0);
     await expect(micro(page, 'vitc').locator('.micro-value')).toHaveText(language === 'en' ? 'no data' : 'veri yok');
     await page.locator('[data-action="ex-add-recipe"]').click();

@@ -2,7 +2,7 @@
   {
     "id": "app",
     "name": "Besin Matriksi",
-    "version": "1.1.2-beta.71",
+    "version": "1.1.2-beta.72",
     "license": "MIT",
     "text": "MIT License\n\nCopyright (c) 2026 Kaan Savukduran\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE."
   },
@@ -165,7 +165,7 @@
     "name": "McCance and Widdowson's The Composition of Foods Integrated Dataset 2021",
     "version": "CoFID 2021 (19 March 2021)",
     "license": "Open Government Licence v3.0",
-    "text": "Contains public sector information licensed under the Open Government Licence v3.0. Source: Public Health England (2021). McCance and Widdowson's The Composition of Foods Integrated Dataset 2021. https://www.gov.uk/government/publications/composition-of-foods-integrated-dataset-cofid\nLicence: https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\nUsed only to fill values not measured in USDA data, for manually verified food matches (data/cofid-map.mjs)."
+    "text": "Contains public sector information licensed under the Open Government Licence v3.0. Source: Public Health England (2021). McCance and Widdowson's The Composition of Foods Integrated Dataset 2021. https://www.gov.uk/government/publications/composition-of-foods-integrated-dataset-cofid\nLicence: https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\nManually verified food matches fill gaps in USDA records. The catalogue also uses the CoFID-calculated profile for dried pineapple (14-396). See data/cofid-map.mjs."
   },
   {
     "id": "efsa",

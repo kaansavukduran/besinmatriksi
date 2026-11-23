@@ -1,5 +1,5 @@
 Besin Matriksi
-Version: 1.1.2-beta.71
+Version: 1.1.2-beta.72
 License: MIT
 
 MIT License
@@ -1106,7 +1106,7 @@ License: Open Government Licence v3.0
 
 Contains public sector information licensed under the Open Government Licence v3.0. Source: Public Health England (2021). McCance and Widdowson's The Composition of Foods Integrated Dataset 2021. https://www.gov.uk/government/publications/composition-of-foods-integrated-dataset-cofid
 Licence: https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/
-Used only to fill values not measured in USDA data, for manually verified food matches (data/cofid-map.mjs).
+Manually verified food matches fill gaps in USDA records. The catalogue also uses the CoFID-calculated profile for dried pineapple (14-396). See data/cofid-map.mjs.
 
 ========================================
 

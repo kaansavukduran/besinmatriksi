@@ -16,7 +16,7 @@ test('mikro görünüm eksik, kayıtlı sıfır ve referansı olmayan ölçümü
   const r = { n: 1, v: { b12: 0, choline: 5, vitc: 40 }, s: { b12: 'u', choline: 'u', vitc: 'u' } };
   const before = structuredClone(r);
   const summary = micronutrientSummary(r);
-  assert.equal(summary.total, 28); assert.equal(summary.known, 3); assert.equal(summary.missing, 25);
+  assert.equal(summary.total, 29); assert.equal(summary.known, 3); assert.equal(summary.missing, 26);
   assert.equal(find(summary, 'b12').reportedZero, true);
   assert.equal(find(summary, 'b12').percent, 0);
   assert.equal(find(summary, 'iodine').value, null); assert.equal(find(summary, 'iodine').percent, null);
@@ -24,10 +24,21 @@ test('mikro görünüm eksik, kayıtlı sıfır ve referansı olmayan ölçümü
   assert.equal(find(summary, 'vitc').percent, 50);
   const html = renderMicronutrients(r);
   assert.match(html, /data-micro="b12"[^>]*>[\s\S]*?0 µg/);
-  assert.match(html, /Kayıtlı değer 0/); assert.match(html, /3\/28 mikro besinde veri/);
+  assert.match(html, /Kayıtlı değer 0/); assert.match(html, /3\/29 mikro besinde veri/);
   assert.match(html, /data-micro="iodine" data-micro-status="missing"/);
   assert.match(html, /Referans yok/);
   assert.deepEqual(r, before);
+});
+
+test('klorürün 800 mg etiket referansı ve USDA varsayılan sıfırı ayrı gösterilir', () => {
+  const r = { n: 1, v: { chloride: 80, b12: 0 }, s: { chloride: 'B', b12: 'z' } };
+  const row = find(micronutrientSummary(r), 'chloride');
+  assert.equal(row.referenceValue, 800);
+  assert.equal(row.percent, 10);
+  const html = renderMicronutrients(r);
+  assert.match(html, /Klorür/);
+  assert.match(html, /Varsayılan 0/);
+  assert.doesNotMatch(html, /Kayıtlı değer 0/);
 });
 
 test('mikro kısmi tarif bilinen toplamı ve yüzdeyi alt sınır olarak gösterir', () => {
@@ -78,7 +89,7 @@ test('hedef ve görünüm aynı kaynak sahibini kullanır; µg ile mg karışmaz
 test('gizlenen mikro bölümler özette de gizlidir; kaynak etiketi veri türünü söyler', () => {
   const r = { n: 1, v: { b12: 5, vitc: 40, ca: 800 }, s: { b12: 'k', vitc: 'r', ca: 'u' } };
   const hidden = micronutrientSummary(r, { hiddenSections: ['vitamin'] });
-  assert.equal(hidden.total, 14); assert.equal(hidden.groups.length, 1);
+  assert.equal(hidden.total, 15); assert.equal(hidden.groups.length, 1);
   assert.equal(find(hidden, 'b12'), undefined);
   assert.equal(renderMicronutrients(r, { hiddenSections: ['vitamin', 'mineral'] }), '');
   const html = renderMicronutrients(r, { hiddenSections: ['mineral'] }, { open: false });
@@ -90,7 +101,7 @@ test('mikro etiketler ve yüzde biçimi seçili dilde; bilinmeyen kaynak metni H
   setLanguage('en'); configureFormatting({ decimalSeparator: 'auto', autoUnits: true });
   const html = renderMicronutrients({ n: 1, v: { vitc: 40, ca: 400 }, s: { vitc: '<script>alert(1)</script>', ca: 'u' } });
   assert.match(html, /Vitamins and minerals/); assert.match(html, /Vitamin C/);
-  assert.match(html, /50%/); assert.match(html, /2\/28 micronutrients with data/);
+  assert.match(html, /50%/); assert.match(html, /2\/29 micronutrients with data/);
   assert.doesNotMatch(html, /<script>/);
 });
 

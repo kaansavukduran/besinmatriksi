@@ -1,5 +1,6 @@
 // Central English scientific labels; user-entered food names are never translated.
 export const EN_NUTRIENTS = {
+  chloride: 'Chloride (Cl⁻)',
   water:'Water',energy:'Energy',energy_kj:'Energy',ash:'Ash (total mineral residue)',protein:'Protein (total)',his:'Histidine',ile:'Isoleucine',leu:'Leucine',lys:'Lysine',met:'Methionine',phe:'Phenylalanine',thr:'Threonine',trp:'Tryptophan',val:'Valine',cys:'Cysteine / cystine',tyr:'Tyrosine',arg:'Arginine',gly:'Glycine',pro:'Proline',ala:'Alanine',asp:'Aspartic acid',glu:'Glutamic acid',ser:'Serine',
   carb:'Total carbohydrate (by difference, including fibre)',carb_avail:'Available carbohydrate (excluding fibre)',sugars:'Total sugars',fructose:'Fructose',glucose:'Glucose',sucrose:'Sucrose',maltose:'Maltose',lactose:'Lactose',oligo:'Oligosaccharides (total)',raffinose:'Raffinose',stachyose:'Stachyose',verbascose:'Verbascose',ajugose:'Ajugose',galactose:'Galactose',starch:'Starch (total)',fiber:'Dietary fibre (total)',fiber_sol:'Soluble fibre',fiber_insol:'Insoluble fibre',
   fat:'Total fat',sfa:'Saturated fatty acids',mufa:'Monounsaturated fatty acids',pufa:'Polyunsaturated fatty acids',trans:'Trans fatty acids',n3:'Omega-3 (cis, total)',n6:'Omega-6 (cis, total)',n9:'Omega-9 (cis, total)',cholesterol:'Cholesterol',

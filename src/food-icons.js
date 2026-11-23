@@ -2,6 +2,15 @@
 // Tam karşılığı olmayan besinlerde en yakın görsel seçildi; listede olmayanlar kategori simgesine düşer.
 // Unicode 15+ (ör. zencefil, bezelye kabuğu) bazı Windows/Android sürümlerinde görünmediği için kullanılmadı.
 export const FOOD_ICONS = {
+  inek_sutu_laktozsuz: '🥛',
+  kuru_ananas_sekerli: '🍍',
+  sogan_kirmizi: '🧅',
+  nohut_konserve_durulanmis: '🥫',
+  nohut_patlagi: '🫘',
+  misir_makarnasi: '🍝',
+  mantar_konserve: '🥫',
+  sardalya_domates: '🐟',
+  mayonez_light: '🫙',
   pizza_peynirli: "🍕",
   pizza_pepperoni: "🍕",
   dondurulmus_pizza_peynirli: "🍕",

@@ -8,7 +8,7 @@ import { L } from './i18n.js';
 
 const GROUPS = [
   { id: 'vitamin', title: 'Vitaminler', keys: ['vita_rae', 'thiamin', 'riboflavin', 'niacin', 'panto', 'b6', 'biotin', 'folate', 'b12', 'vitc', 'vitd', 'vite', 'vitk', 'choline'] },
-  { id: 'mineral', title: 'Mineraller', keys: ['ca', 'fe', 'mg', 'p', 'k', 'na', 'zn', 'cu', 'mn', 'se', 'iodine', 'mo', 'cr', 'fluoride'] },
+  { id: 'mineral', title: 'Mineraller', keys: ['ca', 'fe', 'mg', 'p', 'k', 'na', 'chloride', 'zn', 'cu', 'mn', 'se', 'iodine', 'mo', 'cr', 'fluoride'] },
 ];
 
 const finitePositive = value => typeof value === 'number' && Number.isFinite(value) && value > 0;
@@ -72,7 +72,7 @@ function renderRow(row, cfg, baseSource, contributions) {
   const meta = [];
   if (row.partial) meta.push(L('Kısmi toplam · {a}/{b} malzemede veri', { a: row.contributors, b: row.count }));
   else if (row.status === 'unverified') meta.push(L('Malzeme kapsamı bilinmiyor'));
-  if (row.reportedZero) meta.push(L('Kayıtlı değer 0'));
+  if (row.reportedZero) meta.push(row.source === 'z' ? L('Varsayılan 0') : L('Kayıtlı değer 0'));
   if (!missing && cfg.showNrv && row.referenceValue == null && row.nutrient.nrvNote && row.reference.reason) meta.push(row.reference.reason);
   if (!missing && cfg.showSource && row.source !== baseSource) meta.push(sourceName(row.source));
 

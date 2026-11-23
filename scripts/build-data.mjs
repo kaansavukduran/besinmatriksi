@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 import { NUTRIENTS } from '../src/nutrients.js';
 import { FOODS, CATEGORIES, FORM_LABELS, ANIMAL_CATS } from '../data/catalog.mjs';
 import { POPULAR, NICHE } from '../data/popularity.mjs';
-import { COFID_MAP, COFID_KEYS, COFID_SUGARS } from '../data/cofid-map.mjs';
+import { COFID_MAP, COFID_KEYS, COFID_SUGARS, COFID_PRIMARY } from '../data/cofid-map.mjs';
 import { encodeDB, decodeDB, encodeExt, decodeExt } from '../src/foods-codec.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -96,7 +96,7 @@ for (const r of readCsvGz('USDA_ISOFLAV_R2.1_ISFL_DAT.csv.gz')) if (ISFL_MAP[r.N
 const FF_EXTRA = { '416': 'biotin', '316': 'mo', '314': 'iodine', '269.3': 'sugars', '526': 'cys', '236': 'citric', '243': 'malic',
   '248': 'quinic', '245': 'oxalate', '295': 'fiber_sol', '297': 'fiber_insol', '283': 'resistant_starch', '293.3': 'fiber_hmw', '293.4': 'fiber_lmw', '338.1': 'lutein', '338.2': 'zeaxanthin', '332': 'gcarotene', '288': 'raffinose', '289': 'stachyose' };
 const FF_NAME = { 'Beta-glucan': 'beta_glucan', Verbascose: 'verbascose' }; // FDC'de numarasız bileşenler
-const FF_UNIT = { G: 'g', MG: 'mg', UG: 'µg', 'µg': 'µg', g: 'g', mg: 'mg' };
+const FF_UNIT = { G: 'g', MG: 'mg', UG: 'µg', 'µg': 'µg', g: 'g', mg: 'mg', KCAL: 'kcal', kcal: 'kcal', KJ: 'kJ', kJ: 'kJ' };
 const ffByNdb = new Map();
 {
   const numToKey = new Map(Object.entries(USDA_NUTRIENTS).map(([k, v]) => [v, k]));
@@ -182,6 +182,11 @@ function fillFromCofid(foodId, formKey, v, s) {
   let n = 0;
   for (const [ck, key] of Object.entries(COFID_KEYS)) { const x = cofNum(c.v[ck]); if (x != null && v[key] == null) { v[key] = x; s[key] = 'B'; n++; } }
   if (Object.values(COFID_SUGARS).every((k) => v[k] == null)) for (const [ck, key] of Object.entries(COFID_SUGARS)) { const x = cofNum(c.v[ck]); if (x != null) { v[key] = x; s[key] = 'B'; n++; } }
+  // Klorür tuzlama ve salamuraya duyarlı. Sodyum yalnız eşleşme kontrolünde kullanılır.
+  const chloride = cofNum(c.v.chloride), sodium = cofNum(c.v.na);
+  if (chloride != null && chloride >= 0 && sodium != null && v.na != null && v.chloride == null && !deviates(sodium, v.na, 0.25, 5)) {
+    v.chloride = chloride; s.chloride = 'B'; n++;
+  }
   cofidFills += n;
   return n;
 }
@@ -367,6 +372,16 @@ for (const food of FOODS) {
     if (!FORM_LABELS[key]) throw new Error('Bilinmeyen form: ' + key);
     const v = {}, s = {}, alt = {}, sd = {};
     let usda = null, ic = null, cofidCode = null;
+    if (ndb?.startsWith('B')) {
+      const code = ndb.slice(1), profile = COFID_PRIMARY[code], record = cofid[code];
+      if (!profile || !record) throw new Error('CoFID birincil kaynak kaydı yok: ' + code);
+      for (const [column, nutrient] of Object.entries(profile.keys)) {
+        const value = cofNum(record.v[column]);
+        if (value != null && value >= 0) { v[nutrient] = value; s[nutrient] = 'B'; }
+      }
+      if (v.energy == null || v.carb_avail == null) throw new Error('CoFID temel bileşim eksik: ' + code);
+      return { key, label: custom || FORM_LABELS[key], usda: null, cofid: code, cofidCalculated: profile.calculated, ifct: null, estFrom: null, portions: [], v, s };
+    }
     if (ndb && ndb.startsWith('F')) {
       // Yalnız FDC Foundation'da olan besin (ör. aslan yelesi mantarı): tüm değerler FDC'den, etiket 'F'
       const ff = ffByNdb.get(ndb.slice(1));

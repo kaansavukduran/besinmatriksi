@@ -1,10 +1,10 @@
 {
   "schema_version": "1",
   "project": "Besin Matriksi",
-  "product_version": "1.1.2-beta.71",
-  "development_state": "WEB_DEPLOYED",
+  "product_version": "1.1.2-beta.72",
+  "development_state": "WEB_PUBLICATION_REQUESTED",
   "last_forge_at": "2026-11-23",
-  "last_completed_forge": "B262",
+  "last_completed_forge": "B264",
   "active_forge": null,
   "next_recommended_forge": "B263 ilk kullanım ve fiziksel cihaz kabulü",
   "branch": "main",
@@ -291,7 +291,7 @@
       "version": "1.1.2-beta.36"
     }
   ],
-  "publication_policy": "The user explicitly authorized publishing beta.71 on GitHub Pages and Cloudflare Pages in B262. Preserve existing tags and installer releases.",
+  "publication_policy": "The user authorized publishing verified catalogue updates on GitHub Pages in B265. Cloudflare Pages follows the same main branch. Preserve existing tags and installer releases.",
   "work_session": {
     "state": "CLOSED",
     "owner": "codex-B050-personal-daily",
@@ -371,16 +371,16 @@
   "catalog_coverage": {
     "dataset": "USDA SR28 + USDA Foundation/FNDDS/SR Legacy/Special + UK CoFID 2021 (gap fill)",
     "source_year": 2026,
-    "curated_foods": 875,
-    "curated_forms": 1027,
-    "unavailable_forms": 36,
+    "curated_foods": 884,
+    "curated_forms": 1042,
+    "unavailable_forms": 35,
     "recipe_estimated_forms": 124,
     "recipe_estimated_cells": 7384,
-    "assumed_zero_cells": 5420,
-    "cofid_filled_cells": 203,
-    "foundation_forms": 11,
-    "fndds_forms": 101,
-    "extended_records": 8038,
+    "assumed_zero_cells": 5455,
+    "cofid_filled_cells": 263,
+    "foundation_forms": 13,
+    "fndds_forms": 108,
+    "extended_records": 8032,
     "ifct_linked": 0,
     "cronometer_exact_parity": "NOT_VERIFIED"
   },

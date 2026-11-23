@@ -8,5 +8,5 @@
   "checked_on": "2026-11-18",
   "subset": "CoFID_2021_SUBSET.json.gz: 2886 besin; Proximates (su, protein, yağ, şekerler, AOAC lif), Inorganics (Na, K, Ca, Mg, P, Fe, Cu, Zn, Mn, Se, I, klorür), Vitamins (biotin, pantotenat, K1, folat, B6). Hücre metni korunur: sayı = ölçüm, 'Tr' = iz (tespit sınırının altında, 0 DEĞİL), 'N' = ölçülmemiş/veri yok.",
   "extract_script": "scripts/extract-cofid.py",
-  "note": "Amino asit içermez (CoFID'de amino asit tablosu yok). Değerler yalnız USDA'da ölçülmemiş hücreleri doldurmak için ve elle doğrulanmış besin eşlemesiyle kullanılacak (B191)."
+  "note": "Amino asit içermez. Elle doğrulanmış eşlemeler USDA boşluklarını doldurur. 14-396 kuru ananas kaydının hesaplanmış CoFID profili temel makro, mineral ve vitamin sütunlarıyla birincil kaynak olarak kullanılır."
 }

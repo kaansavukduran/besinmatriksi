@@ -8,19 +8,25 @@ want = {
   '1.5 Vitamins': {'Biotin (µg)': 'biotin', 'Pantothenate (mg)': 'b5', 'Vitamin K1 (µg)': 'k1', 'Folate (µg)': 'folate', 'Vitamin B6 (mg)': 'b6'},
 }
 foods = {}
+# Tam profil kullanılan kuru ananas satırı. Diğer besinlerde dolgu için gereken sütunlar yeterli.
+primary = {
+  '1.3 Proximates': {'Energy (kcal) (kcal)': 'energy', 'Energy (kJ) (kJ)': 'energy_kj', 'Carbohydrate (g)': 'carb_avail', 'Starch (g)': 'starch', 'Maltose (g)': 'maltose', 'Galactose (g)': 'galactose', 'Lactose (g)': 'lactose', 'Satd FA /100g fd (g)': 'sfa', 'Mono FA /100g food (g)': 'mufa', 'Poly FA /100g food (g)': 'pufa', 'Trans FAs /100g food (g)': 'trans', 'Cholesterol (mg)': 'cholesterol'},
+  '1.5 Vitamins': {'Vitamin D (µg)': 'vitd', 'Vitamin E (mg)': 'vite', 'Retinol (µg)': 'retinol', 'Thiamin (mg)': 'thiamin', 'Riboflavin (mg)': 'riboflavin', 'Niacin (mg)': 'niacin', 'Vitamin B12 (µg)': 'b12', 'Vitamin C (mg)': 'vitc'},
+}
 for sheet, cols in want.items():
     ws = wb[sheet]
     rows = ws.iter_rows(values_only=True)
     head = [str(h).strip() if h is not None else '' for h in next(rows)]
     idx = {cols[h]: i for i, h in enumerate(head) if h in cols}
+    extra = {primary[sheet][h]: i for i, h in enumerate(head) if h in primary.get(sheet, {})}
     for r in rows:
         if not r or not r[0] or r[0] == 'Food Code': continue
         code = str(r[0]).strip()
         if not code or code.startswith('('): continue
         f = foods.setdefault(code, {'name': str(r[1] or '').strip(), 'desc': str(r[2] or '').strip(), 'group': str(r[3] or '').strip(), 'ref': str(r[5] or '').strip(), 'v': {}})
-        for k, i in idx.items():
+        for k, i in (idx | extra if code == '14-396' else idx).items():
             x = r[i]
             if x is None or x == '': continue
             f['v'][k] = x if isinstance(x, (int, float)) else str(x).strip()
-with gzip.open(out, 'wt', encoding='utf-8') as fh: json.dump(foods, fh, ensure_ascii=False, separators=(',', ':'))
+with open(out, 'wb') as fh: fh.write(gzip.compress(json.dumps(foods, ensure_ascii=False, separators=(',', ':')).encode('utf-8'), mtime=0))
 print(len(foods), 'besin')

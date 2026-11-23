@@ -1518,3 +1518,13 @@
 - `node --test --test-isolation=none tests/*.test.mjs` 357/357, `npm run build` başarılı. Mevcut kurulum paketlerinin kaynağı `v1.1.2-beta.70`.
 - İlk beta.71 dağıtımı `187a96f` ile iki adreste tamamlandı. Cloudflare’ın `/index.html` → `/` yönlendirmesi ilk çevrimdışı açılışta yeniden üretildi. Service worker yönlendirilmiş yanıtı atlayıp önbellekteki ana sayfayı kullanır. Düzeltmeden sonra 16 Chromium senaryosu geçti. [İlk GitHub Pages yayını](https://github.com/kaansavukduran/besinmatriksi/actions/runs/45151450490)
 
+
+## B264 · 2026-11-23 · Katalog ve bileşim kapsamı denetimi
+
+- 884 küratörlü besin ve 1.042 biçim. 9 yeni besin, 15 yeni biçim ve CoFID `14-396` ile doldurulan 1 mevcut boş profil. 6 SR28 kaydı küratörlü kataloğa taşındı, eski NDB referansları korunuyor.
+- Klorür 53 biçimde, CoFID boşluk dolgusu toplam 263 hücre. 85 değer mevcut biçimlere eklendi. Foundation `208` enerji birimi tanındı. Tamamen boş biçim sayısı 35. Kaynaklar ve açık veri alanları [denetim raporunda](../docs/DATA_RESEARCH.md#b264-kapsam-denetimi-ve-katalog-eklemeleri).
+- Deterministik `npm run data`, `npm run build` ve 360 birim testi geçti. Geniş koşuda 48 masaüstü/telefon senaryosu geçti. Laktozsuz süt için güncellenen iki etkileşim testi ayrı koşuda geçti. Web yayını beta.71 olarak kalıyor. Sonraki açık UX doğrulaması B263.
+
+## B265 · 2026-11-23 · beta.72 web yayını
+
+- Kullanıcı B264 ve doğrulanmış sonraki veri güncellemelerinin GitHub Pages’e yayımlanmasına yetki verdi. Kaynak `main`, aynı dalı Cloudflare Pages otomatik izler.

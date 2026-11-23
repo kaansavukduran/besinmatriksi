@@ -3,7 +3,7 @@
 // Değerler YALNIZ USDA'da (ve ABD özel veritabanlarında) ölçülmemiş hücreleri doldurur; 'Tr' (iz) ve 'N' (ölçülmemiş) kullanılmaz.
 // Otomatik ad eşleşmesi güvenilmezdi (ör. pak choi→kırmızı lahana, badem→yer fıstığı, tahin→kaju, agar→kombu); bu yüzden liste elle.
 export const COFID_MAP = {
-  portakal: { suyu: '14-369' },
+  portakal: { cig: '14-327', suyu: '14-369' },
   ayva: { cig: '14-241' },
   nektarin: { cig: '14-380' },
   bogurtlen: { cig: '14-388' },
@@ -18,7 +18,7 @@ export const COFID_MAP = {
   balkabagi_butternut: { firin: '13-644', cig: '13-355' },
   tatli_patates: { cig: '13-463' },
   yerfistigi: { cig: '14-877', kavrulmus: '14-878' },
-  badem: { kavrulmus: '14-897' },
+  badem: { cig: '14-896', kavrulmus: '14-897' },
   kirmizi_fasulye_konserve: { konserve: '13-660' },
   pilavlik_pirinc: { kuru: '11-863' },
   irmik: { toz: '11-903' },
@@ -67,8 +67,25 @@ export const COFID_MAP = {
   tam_bugday_makarna: { kuru: '11-718' }, siyah_cay: { demleme: '17-165' }, elma_suyu: { icecek: '14-331' },
   uzum_suyu: { suyu: '17-745' }, domates_suyu: { icecek: '13-382' }, kahve: { demleme: '17-833' },
   kirmizi_sarap: { icecek: '17-752' }, beyaz_sarap: { icecek: '17-756' }, bira: { icecek: '17-749' },
+  // B264: aynı yenebilir kısım ve hazırlama biçimi, su/protein/yağ uyumu.
+  pirasa: { haslanmis: '13-625' }, arpa_inci: { pismis: '11-003' }, ceviz: { cig: '14-879' },
 };
 // CoFID alanı → uygulama anahtarı (birimler aynı: µg / mg)
 export const COFID_KEYS = { iodine: 'iodine', mn: 'mn', se: 'se', biotin: 'biotin', b5: 'panto', k1: 'vitk' };
 // Şekerler yalnız toplam ve alt şekerler birlikte boşsa doldurulur (üst/alt aynı kaynaktan kalsın)
 export const COFID_SUGARS = { sugars: 'sugars', fructose: 'fructose', glucose: 'glucose', sucrose: 'sucrose' };
+
+// 14-396: CoFID'nin taze ananas 14-376'dan hesapladığı kuru profil. CoFID
+// karbonhidratı kullanılabilir karbonhidrattır, USDA toplam karbonhidratı değildir.
+export const COFID_PRIMARY = {
+  '14-396': { calculated: true, keys: {
+    ...COFID_KEYS, ...COFID_SUGARS,
+    water: 'water', protein: 'protein', fat: 'fat', fiber_aoac: 'fiber',
+    energy: 'energy', energy_kj: 'energy_kj', carb_avail: 'carb_avail', starch: 'starch',
+    lactose: 'lactose', galactose: 'galactose', maltose: 'maltose',
+    sfa: 'sfa', mufa: 'mufa', pufa: 'pufa', trans: 'trans', cholesterol: 'cholesterol',
+    na: 'na', k: 'k', ca: 'ca', mg: 'mg', p: 'p', fe: 'fe', cu: 'cu', zn: 'zn', chloride: 'chloride',
+    vitd: 'vitd', vite: 'vite', retinol: 'retinol', thiamin: 'thiamin', riboflavin: 'riboflavin',
+    niacin: 'niacin', b6: 'b6', b12: 'b12', folate: 'folate', vitc: 'vitc',
+  } },
+};
