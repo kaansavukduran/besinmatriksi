@@ -1,4 +1,11 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 73
+# 🫐 Besin Matriksi 1.1.2 Beta 74
+
+- Sekiz çiğ veya kuru besinin iyot değeri eklendi. Kaynak kimliği besin ayrıntısında ve tarif katkılarında görünüyor.
+- Sade Türk kahvesinin ayrıntısına laboratuvarın 100 mL için bildirdiği kafein ölçümü ve kaynak eklendi. Tarif ve günlük, gram başına doğrulanmış ölçüm kullanır.
+
+[Kaynaklar ve denetim](DATA_RESEARCH.md#b267-iyot-kapsamı-ve-sade-türk-kahvesi)
+
+## Beta 73
 
 - Siyah beluga mercimeği ve psyllium kabuğu için kaynaklı 66 bileşen değeri. Matvaretabellen kayıt numaraları besin ve tarif kaynaklarında görünür.
 - 13 mevcut tüketim biçiminde 20 CoFID boşluğu dolduruldu. Börülceye biyotin, soya fasulyesine iyot ve biyotin, çilek ve pancara klorür eklendi.

@@ -63,6 +63,22 @@ test('B266 ilk Matvaretabellen profilleri kendi kaynak kodunu, değerini ve eksi
   assert.equal(form('siyah_mercimek').v.b12, undefined); // kaynak varsayılan 0
 });
 
+test('B267 Matvaretabellen yalnız hedeflenen çiğ ve kuru biçimlerdeki eksik iyodu tamamlar', () => {
+  const matched = DB.foods.flatMap(food => food.forms
+    .filter(f => f.usda && f.matvaretabellen)
+    .map(f => [food.id, f.key, f.v.iodine, f.matvaretabellen.id]));
+  assert.deepEqual(matched.sort(), [
+    ['brokoli', 'cig', 0.2, '06.748'], ['dereotu', 'taze', 4, '06.120'],
+    ['erik', 'cig', 0.5, '06.544'], ['maydanoz', 'taze', 5, '06.050'],
+    ['nar', 'cig', 0.5, '06.596'], ['pancar', 'cig', 0.4, '06.057'],
+    ['pirinc_esmer', 'kuru', 2, '05.021'], ['yabani_pirinc', 'kuru', 2, '05.339'],
+  ]);
+  for (const [id, key] of matched) {
+    const f = DB.foods.find(food => food.id === id).forms.find(f => f.key === key);
+    assert.deepEqual(Object.keys(f.s).filter(k => f.s[k] === 'M'), ['iodine']);
+  }
+});
+
 test('USDA amino asit dönüşümü: kuru mercimekte lizin 1,720 g = 1720 mg', () => {
   const l = form('yesil_mercimek', 0);
   assert.equal(l.v.lys, 1720);
@@ -354,11 +370,16 @@ test('B141 sütlü kahveler malzeme oranıyla tahmin edilir; ristretto/lungo iç
     assert.ok(Math.abs(fm.v.caffeine - (espresso.v.caffeine * espressoRatio + cocoaCaffeine)) < 0.002, id);
     assert.ok(Object.values(fm.s).every((s) => s === 'r'), id);
   }
-  for (const id of ['ristretto', 'lungo', 'turk_kahvesi_sade']) {
+  for (const id of ['ristretto', 'lungo']) {
     const fm = get(id).forms[0];
     assert.deepEqual(fm.v, {}, id); assert.deepEqual(fm.s, {}, id);
     assert.match(fm.unavailable, /doğrulanmış ayrı bir bileşim ölçümü yoktur/, id);
   }
+  const turkishCoffee = get('turk_kahvesi_sade');
+  assert.deepEqual(turkishCoffee.forms[0].v, {});
+  assert.deepEqual(turkishCoffee.forms[0].s, {});
+  assert.match(turkishCoffee.forms[0].unavailable, /Gram başına besin değerleri/);
+  assert.match(turkishCoffee.note, /129,6 mg kafein \/ 100 mL.*10\.3389\/fnut\.2024\.1407590/);
   assert.equal(get('kahve_kafeinsiz').forms[0].usda.ndb, '14201');
   assert.equal(get('espresso_kafeinsiz').forms[0].usda.ndb, '14202');
   assert.ok(get('kahve_kafeinsiz').forms[0].v.caffeine < get('kahve').forms[0].v.caffeine);

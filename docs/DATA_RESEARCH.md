@@ -163,3 +163,23 @@ CoFID kuru ananasta 100 g için 303 kcal, 75,7 g kullanılabilir karbonhidrat ve
 - **20 CoFID hücresi.** Çiğ çilek `14-324`, yeşil dolmalık biber `13-318`, kereviz sapı `13-636`, pancar `13-164`, kuru ve haşlanmış börülce `13-062`/`13-063`, kuru ve haşlanmış bakla `13-067`/`13-648`, kuru ve haşlanmış soya `13-115`/`13-116`, kuru maş `13-096`, kuru kırmızı fasulye `13-109` ve kuru yabani pirinç `11-872`. Sodyum uygunluğu klorür için ayrıca kontrol edildi. Toplam CoFID dolgusu 263’ten 283’e ve klorür kapsamı 53’ten 64 biçime çıktı. [CoFID 2021](https://www.gov.uk/government/publications/composition-of-foods-integrated-dataset-cofid)
 
 33 biçimde profil tamamen boş kaldı. Matvaretabellen’deki genel kuru kayısı satırının kükürt uygulaması belirtilmediğinden gün kurusuna aktarılmadı. Ciqual 2025’in açık lisanslı veri seti ve yayımlayıcı dosya özeti doğrulandı. Excel indirmesi HTTP 503 döndürdüğünden bu turda Ciqual değerleri aktarılmadı. Tarhana, nar ekşisi, pekmez ve demlemeler için ürün/hazırlama temeli doğrulaması sürer. [Ciqual 2025](https://doi.org/10.57745/RDMHWY)
+
+## B267 iyot kapsamı ve sade Türk kahvesi
+
+Sekiz biçimin iyot boşluğu Matvaretabellen ile tamamlandı. Miktarlar yenebilir 100 g içindir. Tür ve hazırlama biçimi eşleştirildi. Su, protein ve yağ bileşimi karşılaştırıldı. Bu ek kaynak yalnız iyot hücresine yazılır. Diğer USDA ve CoFID ölçümleri korunur. [Matvaretabellen API](https://www.matvaretabellen.no/en/api/) · [Lisans ve atıf](https://www.mattilsynet.no/en/food-and-beverages/matvaretabellen/download-the-norwegian-food-composition-table)
+
+| Besin | Matvaretabellen | İyot (µg/100 g) |
+|---|---|---:|
+| Pancar, çiğ | `06.057` | 0,4 |
+| Brokoli, çiğ | `06.748` | 0,2 |
+| Dereotu, taze | `06.120` | 4 |
+| Maydanoz, taze | `06.050` | 5 |
+| Erik, çiğ | `06.544` | 0,5 |
+| Nar, çiğ | `06.596` | 0,5 |
+| Esmer pirinç, kuru | `05.021` | 2 |
+| Yabani pirinç, kuru | `05.339` | 2 |
+
+Brokoli verisi Norveç Gıda Güvenliği Kurumunun 2024 sebze analizinden (`235`), diğer yedi değer Oslo Üniversitesinin 2017–2018 iyot projesinden (`325`) gelir. Çin lahanası `06.040` alt türü *pekinensis* olduğu için pak choi’ye aktarılmadı. [Matvaretabellen kaynak listesi](https://www.matvaretabellen.no/api/en/sources.json)
+
+- **Sade Türk kahvesi.** Bawazeer, Binsunaid, Alraqea, Al Fayez, Alhumaidan, Fallata, Aldahash ve Benajiba (2024), üç kavrumdaki Türk kahvesi örneklerinde ortalama 129,6 mg/100 mL kafein bildirdi. Yöntemde 20 g kahve ve 500 mL suyun 10 dakika kaynatılması yazıyor. Kullanıcıya ölçümün hacim kaynağı bir notta gösterilir. Hazır içeceğin kütle/hacim ilişkisi verilmediğinden 100 g tablosu ve gramla çalışan tarif/günlük toplamları bu ölçümü kullanmaz. [Frontiers in Nutrition, CC BY](https://doi.org/10.3389/fnut.2024.1407590)
+- **Tarhana.** Erdoğan ve Cingöz’ün yedi kuru bölgesel tarhana örneğinde nem, kül, protein, yağ, tuz ve şeker ölçümleri var. Makalenin PDF lisansı CC BY-NC 4.0. Genel bir pişmiş çorba profili ve dağıtımla uyumlu bir kaynak henüz doğrulanmadı. Kültür ve Turizm Bakanlığının tarifi hazır kuru tarhana kullanıyor. Bu tarif tek başına bileşim ve pişme sonrası 100 g değerlerini doğrulamıyor. [Araştırma PDF’si](https://dergipark.org.tr/tr/download/article-file/4386239) · [Tarhana çorbası tarifi](https://www.ktb.gov.tr/EN-99042/tarhana-soup.html)

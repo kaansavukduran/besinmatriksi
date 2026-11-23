@@ -172,7 +172,22 @@ function fillFromExtra(ndb, v, s) {
 
 // ---------- UK CoFID 2021 (B191): yalnız elle eşlenmiş besinlerde, yalnız boş hücreler ----------
 const cofid = JSON.parse(gunzipSync(fs.readFileSync(path.join(root, 'data/raw/CoFID_2021_SUBSET.json.gz'))).toString('utf8'));
-const matvaretabellen = new Map(JSON.parse(fs.readFileSync(path.join(root, 'data/raw/MATVARETABELLEN_SUBSET.json'), 'utf8')).records.map(row => [row.id, row]));
+const matvaretabellenData = JSON.parse(fs.readFileSync(path.join(root, 'data/raw/MATVARETABELLEN_SUBSET.json'), 'utf8'));
+const matvaretabellen = new Map(matvaretabellenData.records.map(row => [row.id, row]));
+const matvaretabellenIodine = new Map(matvaretabellenData.iodineRecords.map(row => [row.form, row]));
+function fillMatvaretabellenIodine(foodId, key, v, s) {
+  const row = matvaretabellenIodine.get(`${foodId}/${key}`);
+  if (!row || v.iodine != null) return null;
+  const within = (nutrient, limit) => Math.abs(v[nutrient] - row[nutrient]) <= limit;
+  if (new URL(row.url).origin !== 'https://www.matvaretabellen.no' || row.iodine.unit !== 'µg' ||
+      !Number.isFinite(row.iodine.amount) || row.iodine.amount <= 0 || !within('water', 5) ||
+      !within('protein', Math.max(1, 0.25 * v.protein)) || !within('fat', Math.max(1.5, 0.30 * v.fat))) {
+    throw new Error(`Matvaretabellen iyot karşılaştırması geçersiz: ${row.form} (${row.id})`);
+  }
+  v.iodine = row.iodine.amount;
+  s.iodine = 'M';
+  return { id: row.id, name: row.name, url: row.url };
+}
 const cofNum = (x) => (typeof x === 'number' ? x : typeof x === 'string' && /^-?\d+(\.\d+)?$/.test(x.trim()) ? Number(x) : null);
 let cofidFills = 0;
 function fillFromCofid(foodId, formKey, v, s) {
@@ -372,7 +387,7 @@ for (const food of FOODS) {
   const forms = food.forms.map(([key, ndb, ifc, custom]) => {
     if (!FORM_LABELS[key]) throw new Error('Bilinmeyen form: ' + key);
     const v = {}, s = {}, alt = {}, sd = {};
-    let usda = null, ic = null, cofidCode = null;
+    let usda = null, ic = null, cofidCode = null, iodineSource = null;
     if (ndb?.startsWith('M')) {
       const row = matvaretabellen.get(ndb.slice(1));
       if (!row || new URL(row.url).origin !== 'https://www.matvaretabellen.no') throw new Error('Matvaretabellen kaydı yok: ' + ndb);
@@ -416,6 +431,7 @@ for (const food of FOODS) {
       const ffId = fillFromFoundation(ndb, v, s);
       fillFromExtra(ndb, v, s);
       if (fillFromCofid(food.id, key, v, s) > 0) cofidCode = COFID_MAP[food.id][key];
+      iodineSource = fillMatvaretabellenIodine(food.id, key, v, s);
       usda = { ndb, desc: d.long, refuse: d.refuse, refDesc: d.refDesc || null, sci: d.sci || null, ...(ffId ? { fdc: ffId } : {}) };
     }
     if (!ndb && food.recipe) {
@@ -464,6 +480,7 @@ for (const food of FOODS) {
       label: custom || FORM_LABELS[key],
       usda,
       ...(cofidCode ? { cofid: cofidCode } : {}),
+      ...(iodineSource ? { matvaretabellen: iodineSource } : {}),
       ifct: ic,
       estFrom: null,
       ...(unavailable ? { unavailable } : {}),

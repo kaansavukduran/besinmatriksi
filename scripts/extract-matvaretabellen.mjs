@@ -1,4 +1,4 @@
-// Resmî İngilizce foods.json çıktısından elle eşlenen iki profili çıkarır.
+// Resmî İngilizce foods.json çıktısından elle eşlenen profilleri ve iyot kayıtlarını çıkarır.
 // node scripts/extract-matvaretabellen.mjs /yol/foods.json
 import fs from 'node:fs';
 import { createHash } from 'node:crypto';
@@ -19,6 +19,16 @@ const source = {
 if (sha256 !== source.sha256) throw new Error('Matvaretabellen kaynak özeti uyuşmuyor.');
 
 const names = { '05.465': 'Psyllium husk', '06.256': 'Lentils, black, beluga, uncooked' };
+const iodineMatches = [
+  ['pancar/cig', '06.057', 'Beetroot, Norwegian, raw'],
+  ['brokoli/cig', '06.748', 'Broccoli, unspecified, raw'],
+  ['dereotu/taze', '06.120', 'Dill, raw'],
+  ['maydanoz/taze', '06.050', 'Parsley, herb, Norwegian, raw'],
+  ['erik/cig', '06.544', 'Plums, raw'],
+  ['nar/cig', '06.596', 'Pomegranate, raw'],
+  ['pirinc_esmer/kuru', '05.021', 'Rice, brown, long-grain, uncooked'],
+  ['yabani_pirinc/kuru', '05.339', 'Rice, wild rice, uncooked'],
+];
 const columns = {
   Vann: 'water', Protein: 'protein', Fett: 'fat', Karbo: 'carb_avail', Fiber: 'fiber',
   Stivel: 'starch', 'Mono+Di': 'sugars', Mettet: 'sfa', Enumet: 'mufa', Flerum: 'pufa',
@@ -45,5 +55,18 @@ const records = Object.entries(names).map(([id, expectedName]) => {
   for (const entry of row.constituents) add(columns[entry.nutrientId], entry);
   return { id, name: row.foodName, url: row.uri, values };
 });
+const iodineRecords = iodineMatches.map(([form, id, expectedName]) => {
+  const row = byId.get(id);
+  const find = (nutrient) => row?.constituents.find((entry) => entry.nutrientId === nutrient);
+  const iodine = find('I');
+  if (row?.foodName !== expectedName || !['235', '325'].includes(iodine?.sourceId) || iodine.unit !== 'µg' || !(iodine.quantity > 0)) {
+    throw new Error('Matvaretabellen iyot eşleşmedi: ' + id);
+  }
+  return {
+    form, id, name: row.foodName, url: row.uri,
+    iodine: { amount: iodine.quantity, unit: iodine.unit, origin: iodine.sourceId },
+    water: find('Vann').quantity, protein: find('Protein').quantity, fat: find('Fett').quantity,
+  };
+});
 const out = new URL('../data/raw/MATVARETABELLEN_SUBSET.json', import.meta.url);
-fs.writeFileSync(out, JSON.stringify({ source, records }, null, 2) + '\n');
+fs.writeFileSync(out, JSON.stringify({ source, records, iodineRecords }, null, 2) + '\n');

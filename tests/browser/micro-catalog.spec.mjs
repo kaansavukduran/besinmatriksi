@@ -17,6 +17,27 @@ test('B266 Matvaretabellen profilleri ve tarif katkısı aynı kaynak kaydını 
   await expect(page.locator('#recipe-source-rows')).toContainText('Matvaretabellen · 06.256');
 });
 
+test('B267 eksik iyot kaynaklıdır ve kahve çalışması hacim notu olarak kalır', async ({ page }) => {
+  await page.goto('/');
+  await pick(page, 'dereotu', 'dereotu');
+  await expect(micro(page, 'iodine').locator('.micro-value')).toHaveText('4 µg');
+  await expect(page.locator('#matrix .idcard')).toContainText('06.120');
+  await page.locator('[data-action="ex-add-recipe"]').click();
+  await tab(page, 'tarif');
+  await expect(micro(page, 'iodine').locator('.micro-value')).toHaveText('4 µg');
+  await reveal(page, '.micro-overview');
+  await micro(page, 'iodine').locator('button').click();
+  await expect(page.locator('#recipe-source-nutrient')).toHaveValue('iodine');
+  await expect(page.locator('#recipe-source-rows')).toContainText('Matvaretabellen · 06.120');
+  await tab(page, 'kesfet');
+  await pick(page, 'türk kahvesi', 'turk_kahvesi_sade');
+  await expect(page.locator('.unavail')).toContainText('129,6 mg kafein / 100 mL');
+  await expect(page.locator('.unavail')).toContainText('10.3389/fnut.2024.1407590');
+  await page.locator('[data-action="ex-add-recipe"]').click();
+  await tab(page, 'tarif');
+  await expect(micro(page, 'iodine')).toHaveAttribute('data-micro-status', 'partial');
+});
+
 test('B264 küratörlü kataloğa taşınan NDB eski tarifte kaybolmaz', async ({ page }) => {
   await page.addInitScript(() => {
     if (localStorage.getItem('bm.recipes.v1')) return;

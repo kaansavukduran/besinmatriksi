@@ -10,7 +10,7 @@ Windows · macOS · Linux · Android · iPhone · tarayıcı/PWA · tek HTML.
 
 ## İndirip dene
 
-Web sürümü `1.1.2-beta.73`. İndirilebilir masaüstü ve mobil paketler [v1.1.2-beta.70](https://github.com/kaansavukduran/besinmatriksi/releases/tag/v1.1.2-beta.70) sürümünde (23 dosya).
+Web sürümü `1.1.2-beta.74`. İndirilebilir masaüstü ve mobil paketler [v1.1.2-beta.70](https://github.com/kaansavukduran/besinmatriksi/releases/tag/v1.1.2-beta.70) sürümünde (23 dosya).
 
 | Platform | Dosya kalıbı |
 |---|---|

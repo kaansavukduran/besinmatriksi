@@ -885,7 +885,10 @@ export const FOODS = [
   F("espresso_kafeinsiz", "Espresso (kafeinsiz)", "decaffeinated espresso coffee", "kahve", [["demleme", "14202", null, "Demlenmiş"]]),
   F("ristretto", "Ristretto", "ristretto coffee short espresso", "kahve", [["demleme", null, null, "Kısa çekim"]], {"unavailable": "Ristretto için bu katalogda doğrulanmış ayrı bir bileşim ölçümü yoktur. Kısa çekim süresi ve kahve dozu kafeini değiştirir; espresso değerleri aynen kopyalanmadı."}),
   F("lungo", "Lungo", "lungo coffee long espresso", "kahve", [["demleme", null, null, "Uzun çekim"]], {"unavailable": "Lungo için bu katalogda doğrulanmış ayrı bir bileşim ölçümü yoktur. Uzun çekim, espressoya su eklemekle aynı değildir; Americano verileri kullanılmadı."}),
-  F("turk_kahvesi_sade", "Türk kahvesi (sade)", "unsweetened turkish coffee", "kahve", [["demleme", null, null, "Şekersiz"]], {"unavailable": "Sade Türk kahvesi için bu katalogda doğrulanmış ayrı bir bileşim ölçümü yoktur. Şekerli FNDDS kaydı veya filtre kahve değerleri sade Türk kahvesi diye sunulmadı."}),
+  F("turk_kahvesi_sade", "Türk kahvesi (sade)", "unsweetened turkish coffee", "kahve", [["demleme", null, null, "Şekersiz"]], {
+    note: "Bir laboratuvar çalışmasında üç farklı kavrumdaki Türk kahvesi örneklerinde ortalama 129,6 mg kafein / 100 mL bildirildi. Kahve dozu ve pişirme yöntemi fincandaki miktarı değiştirir. Bawazeer ve ark., Frontiers in Nutrition (2024), DOI 10.3389/fnut.2024.1407590.",
+    unavailable: "Gram başına besin değerleri için doğrulanmış bileşim verisi yok. Hacim üzerinden bildirilen kafein ölçümü tarif ve günlük toplamlarına dahil edilmez.",
+  }),
   // B156: fast food, atıştırmalık, dondurma, çikolata, suşi, buzlu mocha
   F("sosisli", "Sosisli sandviç", "hot dog sandwich", "fastfood", [["pismis", "21118", null, "Sade sosisli"]], {"animal": true, "allergens": ["gluten"], "note": "USDA genel ürün kaydıdır; marka, tarif ve porsiyon değişebilir. Ambalaj etiketi farklıysa Kendi besinim ile ürününü ekle."}),
   F("corn_dog", "Corn dog (mısır unlu sosis)", "corndog corn dog", "fastfood", [["pismis", "21120", null, "Mısır unu kaplı"]], {"animal": true, "allergens": ["gluten"], "note": "USDA genel ürün kaydıdır; marka, tarif ve porsiyon değişebilir. Ambalaj etiketi farklıysa Kendi besinim ile ürününü ekle."}),
