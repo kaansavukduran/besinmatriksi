@@ -1,5 +1,5 @@
 Besin Matriksi
-Version: 1.1.2-beta.74
+Version: 1.1.2-beta.75
 License: MIT
 
 MIT License
@@ -1136,3 +1136,14 @@ The Norwegian Food Safety Authority. www.matvaretabellen.no (matvaretabellen.no)
 Source: https://www.matvaretabellen.no/api/en/foods.json
 Licence: https://creativecommons.org/licenses/by/4.0/
 An extracted subset of the original, with selected constituents and application nutrient keys. See data/raw/MATVARETABELLEN_SUBSET.json.
+
+========================================
+
+Anses–Ciqual French Food Composition Table
+Version: 2025 (2025-11-03 workbook)
+License: CC BY 4.0
+
+Anses. Du Chaffaut, L., Oseredczuk, M. and Gauvreau-Béziat, J. Table de composition nutritionnelle des aliments Ciqual 2025. https://doi.org/10.57745/RDMHWY
+English workbook: https://doi.org/10.5281/zenodo.17550133
+Licence: https://creativecommons.org/licenses/by/4.0/
+Adapted subset with selected positive numerical values and app nutrient keys. See data/raw/CIQUAL_2025_SUBSET.json.

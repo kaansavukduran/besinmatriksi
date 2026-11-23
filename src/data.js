@@ -73,6 +73,7 @@ export function resolve(ref) {
       usda: form.usda, cofid: form.cofid || null, ifct: form.ifct, estFrom: form.estFrom, recipeOf: form.recipeOf || null, recipeYield: form.recipeYield || null,
       cofidCalculated: form.cofidCalculated || false,
       matvaretabellen: form.matvaretabellen || null,
+      ciqual: form.ciqual || null,
     };
   }
   if (ref.t === 'x') {

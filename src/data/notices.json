@@ -2,7 +2,7 @@
   {
     "id": "app",
     "name": "Besin Matriksi",
-    "version": "1.1.2-beta.74",
+    "version": "1.1.2-beta.75",
     "license": "MIT",
     "text": "MIT License\n\nCopyright (c) 2026 Kaan Savukduran\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE."
   },
@@ -180,5 +180,12 @@
     "version": "2026-11-23 snapshot",
     "license": "CC BY 4.0",
     "text": "The Norwegian Food Safety Authority. www.matvaretabellen.no (matvaretabellen.no)\nSource: https://www.matvaretabellen.no/api/en/foods.json\nLicence: https://creativecommons.org/licenses/by/4.0/\nAn extracted subset of the original, with selected constituents and application nutrient keys. See data/raw/MATVARETABELLEN_SUBSET.json."
+  },
+  {
+    "id": "anses-ciqual",
+    "name": "Anses–Ciqual French Food Composition Table",
+    "version": "2025 (2025-11-03 workbook)",
+    "license": "CC BY 4.0",
+    "text": "Anses. Du Chaffaut, L., Oseredczuk, M. and Gauvreau-Béziat, J. Table de composition nutritionnelle des aliments Ciqual 2025. https://doi.org/10.57745/RDMHWY\nEnglish workbook: https://doi.org/10.5281/zenodo.17550133\nLicence: https://creativecommons.org/licenses/by/4.0/\nAdapted subset with selected positive numerical values and app nutrient keys. See data/raw/CIQUAL_2025_SUBSET.json."
   }
 ]

@@ -20,6 +20,7 @@ export const EN_CATEGORIES = {
 
 export const EN_FORMS = { "Bitkisel sütle (USDA FNDDS)": "With plant milk (USDA FNDDS)", "Suyla pişmiş": "Cooked with water", "Buharda": "Steamed", "Közlenmiş": "Roasted", "Sade sosisli": "Plain hot dog", "Mısır unu kaplı": "Corn flour coated", "Ekmekte": "In a bun", "Sert kabuk": "Hard shell", "Peynirsiz": "No cheese", "Peynir soslu": "With cheese", "Tartar soslu": "With tartar sauce", "Beyaz ekmekte, marul ve domatesle": "On white bread with lettuce and tomato", "Marul ve mayonezle": "With lettuce and mayonnaise", "Kıtır, tuzlu": "Hard, salted", "Yağlı, mikrodalga": "Oil-popped, microwave", "Karamel kaplı": "Caramel-coated", "Esmer pirinç, sade": "Brown rice, plain", "Damla": "Chips", "Rulo": "Roll", "Buzlu": "Iced", "Buzlu, bitkisel sütle": "Iced, with plant milk",
   "Normal taban": "Regular crust",
+  "Haşlanmış, tuz eklenmemiş": "Boiled, no added salt",
   "İnce taban": "Thin crust",
   "Fırınlanmış, normal taban": "Baked, regular crust",
   "Fırınlanmış, kabaran taban": "Baked, rising crust",
@@ -83,6 +84,10 @@ export const EN_FORMS = { "Bitkisel sütle (USDA FNDDS)": "With plant milk (USDA
 };
 
 export const EN_FOODS = {
+  pirinc_misir_makarnasi: 'Rice and corn pasta',
+  kirmizi_mercimek_makarnasi: 'Red lentil pasta',
+  adacayi_taze: 'Fresh sage',
+  su_kefiri: 'Water kefir',
   gun_kurusu_kayisi: "Sun-dried apricots (unsulphured)",
   kuru_dut: "Dried mulberries",
   kuru_cilek: "Dried strawberries",

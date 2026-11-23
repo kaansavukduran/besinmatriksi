@@ -19,6 +19,7 @@ export function curatedDietProfile(food, ctx = {}) {
  const simple = kind => ({kind,freeFrom:EXTRAS.filter(k=>k!=='lactose'?!allergens.has(k):kind!=='dairy')});
  if(food.id==='bal')return {kind:'honey',freeFrom:EXTRAS};
  if(PLAIN_COFFEE.has(food.id))return simple('plant');
+ if(food.id==='su_kefiri')return {kind:'plant',freeFrom:[]};
  if(food.plantCoffee || PLANT_MILKS.has(food.id))return {kind:'plant',freeFrom:['lactose']};
  if(food.cat==='balik')return {kind:'fish',freeFrom:[]};
  if(['et','kumes'].includes(food.cat))return {kind:'meat',freeFrom:[]};

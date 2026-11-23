@@ -183,3 +183,18 @@ Brokoli verisi Norveç Gıda Güvenliği Kurumunun 2024 sebze analizinden (`235`
 
 - **Sade Türk kahvesi.** Bawazeer, Binsunaid, Alraqea, Al Fayez, Alhumaidan, Fallata, Aldahash ve Benajiba (2024), üç kavrumdaki Türk kahvesi örneklerinde ortalama 129,6 mg/100 mL kafein bildirdi. Yöntemde 20 g kahve ve 500 mL suyun 10 dakika kaynatılması yazıyor. Kullanıcıya ölçümün hacim kaynağı bir notta gösterilir. Hazır içeceğin kütle/hacim ilişkisi verilmediğinden 100 g tablosu ve gramla çalışan tarif/günlük toplamları bu ölçümü kullanmaz. [Frontiers in Nutrition, CC BY](https://doi.org/10.3389/fnut.2024.1407590)
 - **Tarhana.** Erdoğan ve Cingöz’ün yedi kuru bölgesel tarhana örneğinde nem, kül, protein, yağ, tuz ve şeker ölçümleri var. Makalenin PDF lisansı CC BY-NC 4.0. Genel bir pişmiş çorba profili ve dağıtımla uyumlu bir kaynak henüz doğrulanmadı. Kültür ve Turizm Bakanlığının tarifi hazır kuru tarhana kullanıyor. Bu tarif tek başına bileşim ve pişme sonrası 100 g değerlerini doğrulamıyor. [Araştırma PDF’si](https://dergipark.org.tr/tr/download/article-file/4386239) · [Tarhana çorbası tarifi](https://www.ktb.gov.tr/EN-99042/tarhana-soup.html)
+
+## B268 Ciqual 2025 kayıtları
+
+Anses’in Ciqual 2025 İngilizce çalışma kitabı Zenodo üzerinden indirildi ve yayımlanan `a953e8c473d8cee24a32f89a48fbd54d` MD5 özetiyle doğrulandı. İçe aktarma, açık lisanslı tablonun yalnız aşağıdaki kayıt ve bileşenlerini kullanır. Kaynaktaki iz, raporlama sınırı ve sıfır olarak bildirilen değerler bu alt kümeye alınmadı. Ciqual karbonhidratı lif hariçtir. Enerji için tablonun AB 1169/2011 sütunu kullanılır. [Anses veri yayını](https://doi.org/10.57745/RDMHWY) · [İngilizce çalışma kitabı](https://doi.org/10.5281/zenodo.17550133)
+
+| Besin | Ciqual | Örnek değerler, 100 g |
+|---|---|---|
+| Pirinç ve mısır makarnası, haşlanmış, tuz eklenmemiş | `9875` | 170 kcal, 3,15 g protein, 1,3 g lif |
+| Kırmızı mercimek makarnası, haşlanmış, tuz eklenmemiş | `9876` | 168 kcal, 11,7 g protein, 4,9 g lif |
+| Adaçayı, taze | `11069` | 34,9 kcal, 7 g lif, 107 mg klorür |
+| Su kefiri, hazır | `18316` | 3,6 kcal, 0,4 g toplam şeker. Yağ `< 0,5 g` olarak verildiğinden sayısal alan boş. |
+| Brokoli, çiğ | `20057` | 89 mg klorür. Diğer değerler mevcut kaynaklarından gelir. |
+| Ispanak, çiğ | `20059` | 98 mg klorür. Diğer değerler mevcut kaynaklarından gelir. |
+
+Klorür için mevcut kaydın hazırlama biçimi, su, protein, yağ ve sodyum değerleri karşılaştırıldı. Havuç ve kırmızı lahanada sodyum farkı mevcut çapraz kaynak ölçütünü aştığı için bu değerler eklenmedi. Ciqual’ın genel bitki demlemesi `18022` kaydı var, ancak adaçayı, ıhlamur, nane ve rooibos için ayrı demleme değerleri vermiyor. Kuru kayısı kaynak satırlarında kükürt uygulaması belirtilmiyor. Nar ekşisiyle kamış melası ayrı ürünlerdir. Bu kayıtlar açık veri boşluğu olarak duruyor. [Ciqual yöntem belgesi](https://ciqual.anses.fr/cms/sites/default/files/inline-files/Table%20Ciqual%202025%20doc%20ENG_2025_11_19.pdf)

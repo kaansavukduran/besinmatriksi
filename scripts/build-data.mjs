@@ -175,6 +175,23 @@ const cofid = JSON.parse(gunzipSync(fs.readFileSync(path.join(root, 'data/raw/Co
 const matvaretabellenData = JSON.parse(fs.readFileSync(path.join(root, 'data/raw/MATVARETABELLEN_SUBSET.json'), 'utf8'));
 const matvaretabellen = new Map(matvaretabellenData.records.map(row => [row.id, row]));
 const matvaretabellenIodine = new Map(matvaretabellenData.iodineRecords.map(row => [row.form, row]));
+const ciqualData = JSON.parse(fs.readFileSync(path.join(root, 'data/raw/CIQUAL_2025_SUBSET.json'), 'utf8'));
+const ciqual = new Map(ciqualData.records.filter(row => !row.form).map(row => [row.id, row]));
+const ciqualChloride = new Map(ciqualData.records.filter(row => row.form).map(row => [row.form, row]));
+function fillCiqualChloride(foodId, key, v, s) {
+  const row = ciqualChloride.get(`${foodId}/${key}`);
+  if (!row || v.chloride != null) return null;
+  const other = row.values;
+  const compatible = (nutrient, tolerance) => Math.abs(v[nutrient] - other[nutrient]) <= tolerance;
+  if (!Number.isFinite(other.chloride) || other.chloride <= 0 || !compatible('water', 3) ||
+      !compatible('protein', 1) || !compatible('fat', 1) ||
+      !Number.isFinite(other.na) || !Number.isFinite(v.na) || deviates(other.na, v.na, 0.25, 5)) {
+    throw new Error(`Ciqual klorür karşılaştırması geçersiz: ${row.form} (${row.id})`);
+  }
+  v.chloride = other.chloride;
+  s.chloride = 'A';
+  return { id: row.id, name: row.name };
+}
 function fillMatvaretabellenIodine(foodId, key, v, s) {
   const row = matvaretabellenIodine.get(`${foodId}/${key}`);
   if (!row || v.iodine != null) return null;
@@ -387,7 +404,19 @@ for (const food of FOODS) {
   const forms = food.forms.map(([key, ndb, ifc, custom]) => {
     if (!FORM_LABELS[key]) throw new Error('Bilinmeyen form: ' + key);
     const v = {}, s = {}, alt = {}, sd = {};
-    let usda = null, ic = null, cofidCode = null, iodineSource = null;
+    let usda = null, ic = null, cofidCode = null, iodineSource = null, chlorideSource = null;
+    if (ndb?.startsWith('A')) {
+      const row = ciqual.get(ndb.slice(1));
+      if (!row || row.values.energy == null || row.values.protein == null) throw new Error('Ciqual profili eksik: ' + ndb);
+      for (const [nutrient, amount] of Object.entries(row.values)) {
+        if (!NUTRIENT_BY_KEY[nutrient] || !Number.isFinite(amount) || amount <= 0) {
+          throw new Error(`Ciqual birim/değer uyuşmuyor: ${row.id}/${nutrient}`);
+        }
+        v[nutrient] = amount;
+        s[nutrient] = 'A';
+      }
+      return { key, label: custom || FORM_LABELS[key], usda: null, ciqual: { id: row.id, name: row.name }, ifct: null, estFrom: null, portions: [], v, s };
+    }
     if (ndb?.startsWith('M')) {
       const row = matvaretabellen.get(ndb.slice(1));
       if (!row || new URL(row.url).origin !== 'https://www.matvaretabellen.no') throw new Error('Matvaretabellen kaydı yok: ' + ndb);
@@ -432,6 +461,7 @@ for (const food of FOODS) {
       fillFromExtra(ndb, v, s);
       if (fillFromCofid(food.id, key, v, s) > 0) cofidCode = COFID_MAP[food.id][key];
       iodineSource = fillMatvaretabellenIodine(food.id, key, v, s);
+      chlorideSource = fillCiqualChloride(food.id, key, v, s);
       usda = { ndb, desc: d.long, refuse: d.refuse, refDesc: d.refDesc || null, sci: d.sci || null, ...(ffId ? { fdc: ffId } : {}) };
     }
     if (!ndb && food.recipe) {
@@ -481,6 +511,7 @@ for (const food of FOODS) {
       usda,
       ...(cofidCode ? { cofid: cofidCode } : {}),
       ...(iodineSource ? { matvaretabellen: iodineSource } : {}),
+      ...(chlorideSource ? { ciqual: chlorideSource } : {}),
       ifct: ic,
       estFrom: null,
       ...(unavailable ? { unavailable } : {}),
@@ -606,7 +637,7 @@ for (const fm of allForms) {
   if (fm.usda?.fndds) fnddsForms++;
 }
 const meta = {
-  sources: 'USDA SR28 (2015) tam ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015); USDA SR Legacy (2018); USDA İyot 4.0 (2024); USDA Kolin 2 (2008); USDA Proantosiyanidin 2.1 (2018); USDA Pürin 3 (2026); UK CoFID 2021 (boşluk doldurma); Matvaretabellen (CC BY 4.0)',
+  sources: 'USDA SR28 (2015) tam ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015); USDA SR Legacy (2018); USDA İyot 4.0 (2024); USDA Kolin 2 (2008); USDA Proantosiyanidin 2.1 (2018); USDA Pürin 3 (2026); UK CoFID 2021 (boşluk doldurma); Matvaretabellen (CC BY 4.0); Anses–Ciqual 2025 (CC BY 4.0)',
   dataPolicy: 'USDA public domain / CC0; IFCT ve IFCT tabanlı tahminler dağıtıma dahil değil',
   unavailableForms: allForms.filter((f) => f.unavailable).length,
   curated: foods.length,

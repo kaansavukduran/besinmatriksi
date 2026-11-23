@@ -1,4 +1,11 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 74
+# 🫐 Besin Matriksi 1.1.2 Beta 75
+
+- Pirinç ve mısır makarnası, kırmızı mercimek makarnası, taze adaçayı ve su kefiri eklendi. İki makarnanın değerleri haşlanmış ve tuz eklenmemiş biçim içindir.
+- Brokoli ve ıspanakta klorür değeri eklendi. Ciqual kayıt kodları besin ayrıntısı, tarif katkısı ve veri kaynaklarında görülebilir.
+
+[Kaynaklar ve denetim](DATA_RESEARCH.md#b268-ciqual-2025-kayıtları)
+
+## Beta 74
 
 - Sekiz çiğ veya kuru besinin iyot değeri eklendi. Kaynak kimliği besin ayrıntısında ve tarif katkılarında görünüyor.
 - Sade Türk kahvesinin ayrıntısına laboratuvarın 100 mL için bildirdiği kafein ölçümü ve kaynak eklendi. Tarif ve günlük, gram başına doğrulanmış ölçüm kullanır.

@@ -71,7 +71,7 @@ export function renderSettings() {
     <section class="card"><h2>${L("Matriks gösterimi")}</h2><button class="btn ghost" data-action="reset-group" data-group="matrix">${L("Matriks ayarlarını sıfırla")}</button>
       ${tog('showNrv', L("Yüzde referansı çubukları"), L("Seçili BRD, elle girilen hedef veya EFSA PRI/AI referansıyla karşılaştırma; kişisel ihtiyaç veya emilim ölçümü değildir."))}
       ${tog('showSource', L("Kaynak etiketleri (USDA / Hesap / Etiket)"))}
-      ${tog('showAlt', L("Varsa ikinci kaynağı göster (bu sürümde ikinci veri seti yok)"))}
+      ${tog('showAlt', L('Varsa ikinci ölçümü göster'))}
       ${tog('showSd', L("Varsa kaynak standart sapmasını göster"))}
       ${tog('showNiche', L("Az bilinen besinleri de listele (ör. jackfruit, teff); kapalıyken yalnız aramada çıkar"))}
       ${tog('catGrid', L("Keşfet'te kategorileri eşit kutulu ızgara olarak göster"))}
@@ -156,12 +156,12 @@ export function renderAbout() {
     <h3>${L("Veri dürüstlüğü")}</h3>
     <ul>
       <li>${L("Ölçülmemiş bileşen <b>“veri yok”</b> olarak gösterilir, asla 0 yazılmaz. 0 yalnızca kaynak 0 bildirdiğinde görünür.")}</li>
-      <li>${L("Veriler kaynakta tanımlanan besin ve hazırlama biçimine aittir; çeşit, toprak, olgunluk ve yöntem değerleri değiştirebilir. Bu sürümde ikinci veri seti yoktur.")}</li>
+      <li>${L('Değerler kaynakta belirtilen besin ve hazırlama biçimine aittir. Çeşit, toprak, olgunluk ve yöntem değerleri değiştirebilir.')}</li>
       <li>${L("Varlık ≠ ölçülen miktar ≠ emilen miktar ≠ sağlık etkisi. Göstergeler eğitim amaçlıdır, tıbbi tavsiye değildir.")}</li>
       <li>${L("%BRD, AB/TGK etiket referansıdır; kişisel ihtiyacın yaşa, cinsiyete, sağlık durumuna göre değişir.")}</li>
       <li>${L("EFSA seçeneği, çocuk/yetişkin grup referanslarındaki PRI ve AI türlerini ayırır; üst sınır veya kişisel hedef önermez. Kaynak koşulları ve görüş yılı Ayarlar'daki referans tablosunda okunur.")}</li>
     </ul>
-    <details class="about-more"><summary><h3>${L("Veri kaynakları")} <span class="cnt">12</span></h3></summary>
+    <details class="about-more"><summary>${L('Veri kaynakları')} <span class="cnt">15</span></summary>
     <ul>
       <li><b>${esc(SOURCES.u.short)}</b>: ${esc(L(SOURCES.u.long))}. ${L("Su, enerji, makrolar, lif, şeker, vitaminler, mineraller, yağ sınıfları; pişmiş formlar dahil.")}</li>
       <li><b>${L("USDA tam bileşim tablosu:")}</b> ${L("Ölçümü bulunan amino asitler, şeker türleri, yağ asitleri, D2/D3, tokoferoller, fitosteroller, kafein ve betain. Eksik değerler sıfıra çevrilmez.")}</li>
@@ -175,6 +175,8 @@ export function renderAbout() {
       <li><b>${esc(L(SOURCES.P.short))}</b>: ${esc(L(SOURCES.P.long))}. ${L("Proantosiyanidin (yoğunlaşmış tanen) fraksiyonları; 0 = saptanmadı, bazı iz değerler tespit sınırından tahmin edilmiştir.")}</li>
       <li><b>${esc(L(SOURCES.U.short))}</b>: ${esc(L(SOURCES.U.long))}. ${L("Adenin, guanin, hipoksantin, ksantin ve toplamları (gut/ürik asit açısından); USDA kaydına adla eşlendi, Japonya örneklerinden gelen değerler etiketin açıklamasında belirtilir.")}</li>
       <li><b>${esc(SOURCES.B.short)}</b>: ${esc(L(SOURCES.B.long))}. ${L("İyot, biyotin, selenyum, pantotenik asit ve şeker türleri; yalnız ad, hazırlama biçimi ve ana bileşimi (su, protein) uyuşan besinlerde. İz (Tr) ve ölçülmemiş (N) değerler kullanılmaz.")}</li>
+      <li><a href="https://www.matvaretabellen.no/en/">${esc(SOURCES.M.short)}</a> · ${esc(L('Beluga mercimeği, psyllium ve bazı iyot değerleri.'))}</li>
+      <li><a href="https://doi.org/10.57745/RDMHWY">${esc(SOURCES.A.short)}</a> · ${esc(L('Bazı makarna, taze ot, içecek ve klorür kayıtları.'))}</li>
       <li><b>IFCT 2017:</b> ${L("NIN ürün kullanım izni doğrulanmadığı için veri ve bu veriye dayanan tahminler bu sürümde dağıtılmıyor.")}</li>
     </ul>
     </details>

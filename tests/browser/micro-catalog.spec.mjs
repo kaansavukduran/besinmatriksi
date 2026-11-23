@@ -38,6 +38,27 @@ test('B267 eksik iyot kaynaklıdır ve kahve çalışması hacim notu olarak kal
   await expect(micro(page, 'iodine')).toHaveAttribute('data-micro-status', 'partial');
 });
 
+test('B268 Ciqual arama, besin ayrıntısı, tarif kaynağı ve İngilizce kaynak listesinde görünür', async ({ page }) => {
+  await seedSettings(page, { language: 'en' });
+  await page.goto('/');
+  await pick(page, 'red lentil pasta', 'kirmizi_mercimek_makarnasi');
+  await expect(page.locator('[data-overview="energy"]')).toContainText('168');
+  await expect(page.locator('#matrix .idcard')).toContainText('9876');
+  await expect(page.locator('#matrix .idcard [lang="en"]')).toContainText('from red lentils');
+  await page.locator('[data-action="ex-add-recipe"]').click();
+  await tab(page, 'tarif');
+  await expect(page.locator('#recipe-source-rows')).toContainText('Anses–Ciqual 2025 · 9876');
+  await tab(page, 'kesfet');
+  await pick(page, 'broccoli', 'brokoli');
+  await expect(micro(page, 'chloride').locator('.micro-value')).toHaveText('89 mg');
+  await expect(page.locator('#matrix .idcard')).toContainText('Chloride source');
+  await pick(page, 'water kefir', 'su_kefiri');
+  await expect(page.locator('[data-overview="energy"]')).toContainText('3.6');
+  await tab(page, 'hakkinda');
+  await page.locator('summary').filter({ hasText: /^Data sources\s+15$/ }).click();
+  await expect(page.getByRole('link', { name: 'Anses–Ciqual 2025' })).toHaveAttribute('href', 'https://doi.org/10.57745/RDMHWY');
+});
+
 test('B264 küratörlü kataloğa taşınan NDB eski tarifte kaybolmaz', async ({ page }) => {
   await page.addInitScript(() => {
     if (localStorage.getItem('bm.recipes.v1')) return;

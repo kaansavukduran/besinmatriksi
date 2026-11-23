@@ -20,7 +20,7 @@ test('her formun doğrulanmış değerleri veya açık kaynak boşluğu var', ()
       else if (fm.computed) assert.ok(Object.values(fm.s).every((x) => x === 'd'), `${f.id}/${fm.key}`);
       else assert.ok(fm.v.energy != null && fm.v.protein != null, `${f.id}/${fm.key}`);
       for (const k of Object.keys(fm.v)) assert.ok(keys.has(k), `bilinmeyen anahtar ${k}`);
-      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P', 'U', 'z', 'B', 'M'].includes(s), `${f.id} ${k} ${s}`);
+      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P', 'U', 'z', 'B', 'M', 'A'].includes(s), `${f.id} ${k} ${s}`);
     }
   }
 });
@@ -76,6 +76,28 @@ test('B267 Matvaretabellen yalnız hedeflenen çiğ ve kuru biçimlerdeki eksik 
   for (const [id, key] of matched) {
     const f = DB.foods.find(food => food.id === id).forms.find(f => f.key === key);
     assert.deepEqual(Object.keys(f.s).filter(k => f.s[k] === 'M'), ['iodine']);
+  }
+});
+
+test('B268 Ciqual değerleri kaynaklıdır, iz ve ölçüm sınırları sayıya çevrilmez', () => {
+  const get = (id) => DB.foods.find(food => food.id === id).forms[0];
+  const ricePasta = get('pirinc_misir_makarnasi');
+  const lentilPasta = get('kirmizi_mercimek_makarnasi');
+  assert.equal(ricePasta.v.energy, 170);
+  assert.equal(ricePasta.v.sugars, undefined); // traces
+  assert.equal(ricePasta.v.na, undefined); // < 5
+  assert.equal(lentilPasta.v.protein, 11.7);
+  assert.equal(lentilPasta.v.carb_avail, 25.1);
+  assert.equal(lentilPasta.v.carb, undefined); // lif hariç sütun, toplam alanına yazılamaz
+  assert.equal(lentilPasta.ciqual.id, '9876');
+  assert.equal(get('adacayi_taze').v.chloride, 107);
+  assert.equal(get('su_kefiri').v.fat, undefined); // < 0,5
+  assert.equal(get('su_kefiri').v.sugars, 0.4);
+  for (const [id, code, amount] of [['brokoli', '20057', 89], ['ispanak', '20059', 98]]) {
+    const f = get(id);
+    assert.equal(f.ciqual.id, code);
+    assert.equal(f.v.chloride, amount);
+    assert.deepEqual(Object.keys(f.s).filter(key => f.s[key] === 'A'), ['chloride']);
   }
 });
 
