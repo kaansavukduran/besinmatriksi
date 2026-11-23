@@ -3,6 +3,20 @@ import { test, expect } from '@playwright/test';
 
 const micro = (page, key) => page.locator(`.micro-overview [data-micro="${key}"]`);
 
+test('B266 Matvaretabellen profilleri ve tarif katkısı aynı kaynak kaydını gösterir', async ({ page }) => {
+  await page.goto('/');
+  await pick(page, 'beluga', 'siyah_mercimek');
+  await expect(page.locator('[data-overview="energy"]')).toContainText('278');
+  await expect(page.locator('#matrix .idcard')).toContainText('06.256');
+  await page.locator('[data-action="ex-add-recipe"]').click();
+  await pick(page, 'psyllium', 'psyllium');
+  await expect(page.locator('[data-overview="fiber"]')).toContainText('78');
+  await expect(page.locator('#matrix .idcard')).toContainText('05.465');
+  await tab(page, 'tarif');
+  await expect(page.locator('#recipe-summary [data-basic="energy"]')).toContainText('278');
+  await expect(page.locator('#recipe-source-rows')).toContainText('Matvaretabellen · 06.256');
+});
+
 test('B264 küratörlü kataloğa taşınan NDB eski tarifte kaybolmaz', async ({ page }) => {
   await page.addInitScript(() => {
     if (localStorage.getItem('bm.recipes.v1')) return;

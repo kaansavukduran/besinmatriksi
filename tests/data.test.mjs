@@ -20,7 +20,7 @@ test('her formun doğrulanmış değerleri veya açık kaynak boşluğu var', ()
       else if (fm.computed) assert.ok(Object.values(fm.s).every((x) => x === 'd'), `${f.id}/${fm.key}`);
       else assert.ok(fm.v.energy != null && fm.v.protein != null, `${f.id}/${fm.key}`);
       for (const k of Object.keys(fm.v)) assert.ok(keys.has(k), `bilinmeyen anahtar ${k}`);
-      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P', 'U', 'z', 'B'].includes(s), `${f.id} ${k} ${s}`);
+      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P', 'U', 'z', 'B', 'M'].includes(s), `${f.id} ${k} ${s}`);
     }
   }
 });
@@ -46,6 +46,21 @@ test('B264 laktozsuz süt biçimleri USDA FNDDS kayıtlarıdır ve ayrı laktoz 
   assert.deepEqual(milk.forms.map((f) => f.usda.fndds), ['11114350', '11114330', '11114300', '11114320']);
   assert.deepEqual(milk.forms.map((f) => f.v.energy), [61, 50, 43, 34]);
   assert.ok(milk.forms.every((f) => f.v.lactose == null));
+});
+
+test('B266 ilk Matvaretabellen profilleri kendi kaynak kodunu, değerini ve eksiklerini korur', () => {
+  const records = JSON.parse(fs.readFileSync(new URL('../data/raw/MATVARETABELLEN_SUBSET.json', import.meta.url))).records;
+  for (const [id, code] of [['psyllium', '05.465'], ['siyah_mercimek', '06.256']]) {
+    const [f] = DB.foods.find(food => food.id === id).forms;
+    assert.equal(f.matvaretabellen.id, code);
+    assert.equal(f.unavailable, undefined);
+    assert.ok(Object.values(f.s).every(source => source === 'M'));
+    assert.deepEqual(f.v, Object.fromEntries(Object.entries(records.find(row => row.id === code).values).map(([key, entry]) => [key, entry.amount])));
+    assert.equal(f.v.biotin, undefined);
+  }
+  assert.equal(form('siyah_mercimek').v.protein, 22.5);
+  assert.equal(form('psyllium').v.fiber, 78);
+  assert.equal(form('siyah_mercimek').v.b12, undefined); // kaynak varsayılan 0
 });
 
 test('USDA amino asit dönüşümü: kuru mercimekte lizin 1,720 g = 1720 mg', () => {
@@ -104,7 +119,7 @@ test('dağıtımda IFCT değerleri, alternatifleri ve bunlardan tahminler bulunm
   for (const food of DB.foods) for (const f of food.forms) {
     assert.equal(f.ifct, null); assert.equal(f.estFrom, null);
     assert.deepEqual(f.alt || {}, {}); assert.deepEqual(f.sd || {}, {});
-    assert.ok(Object.values(f.s).every(s => ['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P', 'U', 'z', 'B'].includes(s)));
+    assert.ok(Object.values(f.s).every(s => s !== 'i' && s !== 'e'));
   }
   assert.equal(fs.existsSync(new URL('../data/raw/IFCT2017.csv', import.meta.url)), false);
 });

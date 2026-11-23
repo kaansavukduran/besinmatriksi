@@ -1,0 +1,359 @@
+{
+  "source": {
+    "name": "Norwegian Food Composition Table (Matvaretabellen)",
+    "publisher": "Norwegian Food Safety Authority",
+    "url": "https://www.matvaretabellen.no/api/en/foods.json",
+    "dataDocs": "https://www.matvaretabellen.no/en/api/",
+    "licence": "CC BY 4.0",
+    "licenceURL": "https://creativecommons.org/licenses/by/4.0/",
+    "sourceTerms": "https://www.mattilsynet.no/en/food-and-beverages/matvaretabellen/download-the-norwegian-food-composition-table",
+    "checkedOn": "2026-11-23",
+    "sha256": "89b8f5f494a79731bf7d8d98065ee66c55263ccdbb519e7c87941218be6c948d"
+  },
+  "records": [
+    {
+      "id": "05.465",
+      "name": "Psyllium husk",
+      "url": "https://www.matvaretabellen.no/en/psyllium-husk/",
+      "values": {
+        "energy": {
+          "amount": 206,
+          "unit": "kcal",
+          "origin": "MI0115"
+        },
+        "energy_kj": {
+          "amount": 834,
+          "unit": "kJ",
+          "origin": "MI0114"
+        },
+        "fat": {
+          "amount": 0.5,
+          "unit": "g",
+          "origin": "400i"
+        },
+        "vitd": {
+          "amount": 0,
+          "unit": "µg",
+          "origin": "400i"
+        },
+        "p": {
+          "amount": 41,
+          "unit": "mg",
+          "origin": "400i"
+        },
+        "water": {
+          "amount": 10,
+          "unit": "g",
+          "origin": "MI0142"
+        },
+        "retinol": {
+          "amount": 0,
+          "unit": "µg",
+          "origin": "400i"
+        },
+        "pufa": {
+          "amount": 0,
+          "unit": "g",
+          "origin": "MI0212"
+        },
+        "folate": {
+          "amount": 58,
+          "unit": "µg",
+          "origin": "400i"
+        },
+        "cholesterol": {
+          "amount": 0,
+          "unit": "mg",
+          "origin": "400i"
+        },
+        "mufa": {
+          "amount": 0,
+          "unit": "g",
+          "origin": "MI0210"
+        },
+        "na": {
+          "amount": 74,
+          "unit": "mg",
+          "origin": "400i"
+        },
+        "k": {
+          "amount": 965,
+          "unit": "mg",
+          "origin": "400i"
+        },
+        "bcarotene": {
+          "amount": 0,
+          "unit": "µg",
+          "origin": "400i"
+        },
+        "zn": {
+          "amount": 0.3,
+          "unit": "mg",
+          "origin": "400i"
+        },
+        "n6": {
+          "amount": 0,
+          "unit": "g",
+          "origin": "400i"
+        },
+        "sugars": {
+          "amount": 0,
+          "unit": "g",
+          "origin": "400i"
+        },
+        "riboflavin": {
+          "amount": 0,
+          "unit": "mg",
+          "origin": "400i"
+        },
+        "fiber": {
+          "amount": 78,
+          "unit": "g",
+          "origin": "400i"
+        },
+        "vitc": {
+          "amount": 0,
+          "unit": "mg",
+          "origin": "400i"
+        },
+        "sfa": {
+          "amount": 0,
+          "unit": "g",
+          "origin": "MI0208"
+        },
+        "thiamin": {
+          "amount": 0.04,
+          "unit": "mg",
+          "origin": "400i"
+        },
+        "b6": {
+          "amount": 0.1,
+          "unit": "mg",
+          "origin": "400i"
+        },
+        "ca": {
+          "amount": 184,
+          "unit": "mg",
+          "origin": "400i"
+        },
+        "protein": {
+          "amount": 1.2,
+          "unit": "g",
+          "origin": "400i"
+        },
+        "b12": {
+          "amount": 0,
+          "unit": "µg",
+          "origin": "400i"
+        },
+        "mg": {
+          "amount": 24,
+          "unit": "mg",
+          "origin": "400i"
+        },
+        "iodine": {
+          "amount": 0,
+          "unit": "µg",
+          "origin": "400i"
+        },
+        "fe": {
+          "amount": 8.6,
+          "unit": "mg",
+          "origin": "400i"
+        },
+        "carb_avail": {
+          "amount": 10,
+          "unit": "g",
+          "origin": "MI0181"
+        },
+        "se": {
+          "amount": 0,
+          "unit": "µg",
+          "origin": "400i"
+        },
+        "starch": {
+          "amount": 10,
+          "unit": "g",
+          "origin": "400i"
+        },
+        "n3": {
+          "amount": 0,
+          "unit": "g",
+          "origin": "400i"
+        },
+        "niacin": {
+          "amount": 0.4,
+          "unit": "mg",
+          "origin": "400i"
+        }
+      }
+    },
+    {
+      "id": "06.256",
+      "name": "Lentils, black, beluga, uncooked",
+      "url": "https://www.matvaretabellen.no/en/lentils-black-beluga-uncooked/",
+      "values": {
+        "energy": {
+          "amount": 278,
+          "unit": "kcal",
+          "origin": "MI0115"
+        },
+        "energy_kj": {
+          "amount": 1166.7,
+          "unit": "kJ",
+          "origin": "MI0114"
+        },
+        "mg": {
+          "amount": 102,
+          "unit": "mg",
+          "origin": "616"
+        },
+        "na": {
+          "amount": 2,
+          "unit": "mg",
+          "origin": "616"
+        },
+        "water": {
+          "amount": 21,
+          "unit": "g",
+          "origin": "MI0142"
+        },
+        "sugars": {
+          "amount": 1.6,
+          "unit": "g",
+          "origin": "MI0512"
+        },
+        "folate": {
+          "amount": 164,
+          "unit": "µg",
+          "origin": "616"
+        },
+        "se": {
+          "amount": 63,
+          "unit": "µg",
+          "origin": "616"
+        },
+        "p": {
+          "amount": 330,
+          "unit": "mg",
+          "origin": "616"
+        },
+        "vitc": {
+          "amount": 7,
+          "unit": "mg",
+          "origin": "616"
+        },
+        "k": {
+          "amount": 915,
+          "unit": "mg",
+          "origin": "616"
+        },
+        "fat": {
+          "amount": 2,
+          "unit": "g",
+          "origin": "616"
+        },
+        "protein": {
+          "amount": 22.5,
+          "unit": "g",
+          "origin": "616"
+        },
+        "n6": {
+          "amount": 0.62,
+          "unit": "g",
+          "origin": "MI0232"
+        },
+        "fe": {
+          "amount": 5.8,
+          "unit": "mg",
+          "origin": "616"
+        },
+        "pufa": {
+          "amount": 0.8,
+          "unit": "g",
+          "origin": "MI0232"
+        },
+        "riboflavin": {
+          "amount": 1.6,
+          "unit": "mg",
+          "origin": "616"
+        },
+        "starch": {
+          "amount": 28.9,
+          "unit": "g",
+          "origin": "616"
+        },
+        "n3": {
+          "amount": 0.17,
+          "unit": "g",
+          "origin": "MI0232"
+        },
+        "ca": {
+          "amount": 53,
+          "unit": "mg",
+          "origin": "616"
+        },
+        "trans": {
+          "amount": 0,
+          "unit": "g",
+          "origin": "MI0232"
+        },
+        "niacin": {
+          "amount": 2,
+          "unit": "mg",
+          "origin": "616"
+        },
+        "b6": {
+          "amount": 0.4,
+          "unit": "mg",
+          "origin": "616"
+        },
+        "cu": {
+          "amount": 0.87,
+          "unit": "mg",
+          "origin": "616"
+        },
+        "mufa": {
+          "amount": 0.3,
+          "unit": "g",
+          "origin": "MI0232"
+        },
+        "zn": {
+          "amount": 3.7,
+          "unit": "mg",
+          "origin": "616"
+        },
+        "fiber": {
+          "amount": 24,
+          "unit": "g",
+          "origin": "420i"
+        },
+        "carb_avail": {
+          "amount": 30.5,
+          "unit": "g",
+          "origin": "MI0181"
+        },
+        "thiamin": {
+          "amount": 0.5,
+          "unit": "mg",
+          "origin": "616"
+        },
+        "bcarotene": {
+          "amount": 66,
+          "unit": "µg",
+          "origin": "616"
+        },
+        "iodine": {
+          "amount": 0,
+          "unit": "µg",
+          "origin": "616"
+        },
+        "sfa": {
+          "amount": 0.2,
+          "unit": "g",
+          "origin": "MI0232"
+        }
+      }
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 // Küratörlü besin kataloğu: bitkisel / mantar / alg ve (2026-11-12 kullanıcı kararıyla) ayrı kategorilerde hayvansal besinler.
 // Hayvansal kayıtlar `animal: true` taşır; arayüzde etiketlenir ve Ayarlar'dan gizlenebilir.
 // Her form: [formAnahtarı, kaynak kodu veya null, ayrılmış alan (null), özel etiket?]
-// Kaynak kodu: SR28 NDB no, F + Foundation no, N + FNDDS no veya B + CoFID kodu.
+// Kaynak kodu: SR28 NDB no, F + Foundation no, N + FNDDS no, B + CoFID ya da M + Matvaretabellen kodu.
 // USDA tam bileşen tablosu formun kendi kaydıyla eşlenir. Kaynağı bulunmayan
 // form veri boşluğu olarak korunur; başka bir gıda veya hazırlamayla doldurulmaz.
 // Alerjen anahtarları: gluten, soya, yerfistigi, sertkabuklu, susam, hardal, kereviz, aci_bakla, sulfit
@@ -460,7 +460,7 @@ export const FOODS = [
   F('irlanda_yosunu', 'İrlanda yosunu (sea moss)', 'irish moss', 'alg', [['cig', '11444', null]]),
   F('soya_filizi', 'Soya filizi', 'soybean sprouts', 'soya', [['filiz', '11452', null]]),
   F('besin_mayasi_z', 'Besin mayası (nutritional yeast)', 'nutritional yeast', 'diger', [['toz', null, null]], { unavailable: 'Besin mayası USDA SR28 / FoodData Central (Foundation, FNDDS) tablolarında yok; değerler markaya ve B12 zenginleştirmesine göre çok değişir. Ürün etiketindeki 100 g değerleriyle “Kendi besinlerim”den ekle.' }),
-  F('psyllium', 'Karnıyarık otu tohumu kabuğu (psyllium)', 'psyllium husk', 'tohum', [['toz', null, null]], { unavailable: 'Psyllium kabuğu USDA SR28 / FoodData Central (Foundation, FNDDS) tablolarında yok. Ürün etiketindeki 100 g değerleriyle “Kendi besinlerim”den ekle; çoğunlukla çözünür liftir.' }),
+  F('psyllium', 'Karnıyarık otu tohumu kabuğu (psyllium)', 'psyllium husk', 'tohum', [['toz', 'M05.465', null]], { note: 'Matvaretabellen profili Plantago ovata kabuğu içindir. Marka ve formülasyon değişebilir.' }),
   // B117 (2026-11-13): içecekler ve tahıl çeşitliliği
   F('hibiskus_cayi', 'Hibiskus çayı (bamya çiçeği)', 'hibiscus tea', 'icecek', [['demleme', '14649', null]]),
   F('bitki_cayi', 'Bitki çayı (genel USDA kaydı)', 'herbal tea', 'icecek', [['demleme', '14381', null]]),
@@ -471,7 +471,7 @@ export const FOODS = [
   F('americano', 'Americano', 'americano coffee', 'kahve', [['icecek', null, null, 'Ev tarifi']], {"recipePortion": 150, "recipe": [["14210", 30], ["14411", 120, "inert"]], "note": "Ölçüm değil, tarif hesabı (tahmin): 30 g hazır espresso + 120 g içme suyu. Fincan oranı ve kafein, kullanılan espressoya göre değişir."}),
   F('siyez_bulguru', 'Siyez bulguru', 'einkorn bulgur', 'tahil', [['kuru', null, null]], { unavailable: 'Siyez bulguru için USDA SR28 / FoodData Central’da kayıt yok (yalnız tam siyez buğdayı kaydı var; bulgura aktarılmadı). Paket etiketindeki 100 g değerleriyle “Kendi besinlerim”den ekle.' }),
   F('siyah_pirinc', 'Siyah pirinç', 'black rice', 'tahil', [['kuru', 'F100349', null]], { note: 'USDA FoodData Central Foundation Foods (2026, FDC 2710825; zenginleştirilmemiş kuru siyah pirinç).' }),
-  F('siyah_mercimek', 'Siyah mercimek (beluga)', 'black beluga lentil', 'baklagil', [['kuru', null, null]], { unavailable: 'USDA tabloları mercimeği renk/çeşide göre ayırmaz; siyah (beluga) için ölçülmüş kayıt yok. Genel değerler için “Yeşil mercimek”e bak ya da etiketten ekle.' }),
+  F('siyah_mercimek', 'Siyah mercimek (beluga)', 'black beluga lentil', 'baklagil', [['kuru', 'M06.256', null, 'Pişmemiş']], { note: 'Matvaretabellen kara beluga mercimeğinin pişmemiş kaydıdır. Kaynak örneğinde 100 g başına 21 g su vardır.' }),
   // B119 (2026-11-13): deniz ürünleri ve Türkiye'ye özgü besinler
   F('lufer', 'Lüfer', 'bluefish', 'balik', [['cig', '15005', null, 'Çiğ']], { allergens: ['balik'] }),
   F('istavrit', 'İstavrit', 'jack mackerel', 'balik', [['cig', '15050', null, 'Çiğ']], { allergens: ['balik'] }),

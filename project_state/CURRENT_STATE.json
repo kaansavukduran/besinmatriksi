@@ -1,12 +1,12 @@
 {
   "schema_version": "1",
   "project": "Besin Matriksi",
-  "product_version": "1.1.2-beta.72",
+  "product_version": "1.1.2-beta.73",
   "development_state": "WEB_PUBLICATION_REQUESTED",
   "last_forge_at": "2026-11-23",
-  "last_completed_forge": "B264",
+  "last_completed_forge": "B266",
   "active_forge": null,
-  "next_recommended_forge": "B263 ilk kullanım ve fiziksel cihaz kabulü",
+  "next_recommended_forge": "B267 öncelikli veri boşluklarının kaynak taraması",
   "branch": "main",
   "pull_request": null,
   "validated_code_commit": "187a96f5ad7621f3054e2912337482377d9bf90c",
@@ -77,7 +77,7 @@
     "B052-signing"
   ],
   "continuation": {
-    "schedule": "on-demand",
+    "schedule": "daily",
     "timezone": "Europe/Istanbul",
     "trigger": null,
     "stop_when": "Tüm uygulanabilir yol haritası işleri ve son kapılar doğrulandığında."
@@ -373,11 +373,11 @@
     "source_year": 2026,
     "curated_foods": 884,
     "curated_forms": 1042,
-    "unavailable_forms": 35,
+    "unavailable_forms": 33,
     "recipe_estimated_forms": 124,
     "recipe_estimated_cells": 7384,
     "assumed_zero_cells": 5455,
-    "cofid_filled_cells": 263,
+    "cofid_filled_cells": 283,
     "foundation_forms": 13,
     "fndds_forms": 108,
     "extended_records": 8032,

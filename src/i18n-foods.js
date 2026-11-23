@@ -79,6 +79,7 @@ export const EN_FORMS = { "Bitkisel sütle (USDA FNDDS)": "With plant milk (USDA
   'Patlatılmış': 'Puffed', 'Yağı azaltılmış': 'Reduced fat', 'Tavada, yağ eklenmemiş': 'Pan-cooked, no added fat',
   'Kurutulmuş (CoFID hesabı)': 'Dried (CoFID calculation)',
   'Tam yağlı (%3,25)': 'Whole (3.25% fat)', '%2 yağlı': '2% fat', '%1 yağlı': '1% fat',
+  'Pişmemiş': 'Uncooked',
 };
 
 export const EN_FOODS = {

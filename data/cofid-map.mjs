@@ -51,8 +51,8 @@ export const COFID_MAP = {
   lahana: { cig: '13-509', haslanmis: '13-584' }, karnabahar: { cig: '13-512', haslanmis: '13-513' },
   bamya: { haslanmis: '13-652' }, balkabagi: { cig: '13-326', haslanmis: '13-549' }, enginar: { cig: '13-153' },
   kuskonmaz: { cig: '13-157' }, edamame: { pismis: '13-667' }, karalahana: { cig: '13-234', haslanmis: '13-649' },
-  hindiba: { cig: '13-240' }, pancar: { haslanmis: '13-633' }, kirmizi_mercimek: { kuru: '13-657' },
-  yesil_mercimek: { haslanmis: '13-661' }, kirmizi_fasulye: { haslanmis: '13-659' }, mas: { haslanmis: '13-664' },
+  hindiba: { cig: '13-240' }, pancar: { cig: '13-164', haslanmis: '13-633' }, kirmizi_mercimek: { kuru: '13-657' },
+  yesil_mercimek: { haslanmis: '13-661' }, kirmizi_fasulye: { kuru: '13-109', haslanmis: '13-659' }, mas: { kuru: '13-096', haslanmis: '13-664' },
   urad: { kuru: '13-056' }, pirinc_beyaz: { pismis: '11-862' }, bulgur: { kuru: '11-904' }, pirinc_esmer: { pismis: '11-869' },
   kinoa: { kuru: '14-843' }, bugday_kepegi: { kuru: '11-906' }, findik: { cig: '14-874' }, kestane: { cig: '14-813' },
   brezilya_cevizi: { cig: '14-871' }, tahin: { macun: '14-847' }, maydanoz: { taze: '13-844' }, havuc_suyu: { icecek: '13-607' },
@@ -69,6 +69,10 @@ export const COFID_MAP = {
   kirmizi_sarap: { icecek: '17-752' }, beyaz_sarap: { icecek: '17-756' }, bira: { icecek: '17-749' },
   // B264: aynı yenebilir kısım ve hazırlama biçimi, su/protein/yağ uyumu.
   pirasa: { haslanmis: '13-625' }, arpa_inci: { pismis: '11-003' }, ceviz: { cig: '14-879' },
+  // B266: bütün kuru tohum/yenebilir kısım ve tuzsuz pişirme şekli doğrulandı.
+  cilek: { cig: '14-324' }, biber_yesil: { cig: '13-318' }, kereviz_sap: { cig: '13-636' },
+  borulce: { kuru: '13-062', haslanmis: '13-063' }, kuru_bakla: { kuru: '13-067', haslanmis: '13-648' },
+  soya_fasulyesi: { kuru: '13-115', haslanmis: '13-116' }, yabani_pirinc: { kuru: '11-872' },
 };
 // CoFID alanı → uygulama anahtarı (birimler aynı: µg / mg)
 export const COFID_KEYS = { iodine: 'iodine', mn: 'mn', se: 'se', biotin: 'biotin', b5: 'panto', k1: 'vitk' };

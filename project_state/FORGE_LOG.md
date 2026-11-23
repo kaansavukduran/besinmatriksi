@@ -1528,3 +1528,10 @@
 ## B265 · 2026-11-23 · beta.72 web yayını
 
 - Kullanıcı B264 ve doğrulanmış sonraki veri güncellemelerinin GitHub Pages’e yayımlanmasına yetki verdi. Kaynak `main`, aynı dalı Cloudflare Pages otomatik izler.
+- Beta.72 `e46b632` ile GitHub Pages ve Cloudflare Pages’te açıldı. Kuru ananas klorürü, Günlük kaydı ve çevrimdışı yeniden yükleme iki adreste doğrulandı. [Pages](https://github.com/kaansavukduran/besinmatriksi/actions/runs/45158289270)
+
+## B266 · 2026-11-23 · Matvaretabellen ve CoFID veri dolumu
+
+- Matvaretabellen CC BY 4.0 kaynağından beluga mercimeği ve psyllium kabuğuna 66 sayısal değer eklendi. 13 eşleme ile 20 CoFID boşluğu dolduruldu. Tamamen boş biçimler 35’ten 33’e indi.
+- Kaynak kimlikleri besin detayı, tarif katkıları ve CSV’de korunur. [Kaynak denetimi](../docs/DATA_RESEARCH.md#b266-beluga-mercimeği-psyllium-ve-mikro-besin-dolgusu)
+- Matvaretabellen alt kümesi ve oluşturulan veri ikinci üretimde aynı SHA-256 sonucunu verdi. 26 lisans bildirimi, 361 birim ve 32 hedefli masaüstü/telefon senaryosu geçti. Beta.73 web yayını için `main` güncellendi.

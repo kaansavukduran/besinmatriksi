@@ -57,7 +57,7 @@ test('B252-D: meta gerçek tarif tahmini, varsayılan sıfır ve CoFID hücre sa
   assert.ok(DB.meta.recipeEstimatedCells >= 7000, `recipeEstimatedCells=${DB.meta.recipeEstimatedCells}`);
   assert.ok(DB.meta.assumedZeroCells >= 5000, `assumedZeroCells=${DB.meta.assumedZeroCells}`);
   assert.ok(DB.meta.cofidFilledCells >= 120, `cofidFilledCells=${DB.meta.cofidFilledCells}`);
-  assert.equal(DB.meta.unavailableForms, 35); // B264: CoFID 14-396, kuru ananas
+  assert.equal(DB.meta.unavailableForms, 33); // B266: Matvaretabellen beluga ve psyllium
 });
 
 test('B254: siyah pirinç USDA Foundation 2710825 ile, elma/domates/patates/kabak/yulaf/hurma UK CoFID 2021 ile doğrulandı', () => {

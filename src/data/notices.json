@@ -2,7 +2,7 @@
   {
     "id": "app",
     "name": "Besin Matriksi",
-    "version": "1.1.2-beta.72",
+    "version": "1.1.2-beta.73",
     "license": "MIT",
     "text": "MIT License\n\nCopyright (c) 2026 Kaan Savukduran\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE."
   },
@@ -173,5 +173,12 @@
     "version": "2026-11-09 snapshot",
     "license": "Re-use with EFSA source acknowledgement",
     "text": "European Food Safety Authority – EFSA\nSource: DRV Finder, English data snapshot retrieved 9 November 2026.\nhttps://multimedia.efsa.europa.eu/drvs/assets/data/languages/en/data.json\nWebsite copyright/re-use notice (verified 9 November 2026):\nhttps://www.efsa.europa.eu/en/legalnotice\n\nCopyright © for the entire content of this website unless otherwise stated: European Food Safety Authority – EFSA. Re-use is authorised, provided that EFSA is acknowledged as the source of the material.\nFor individual documents, the general principle of re-use outlined above may be subject to specific conditions as indicated in individual copyright notices contained therein. Users are advised to refer to these individual copyright notices.\nThe EFSA logo is the exclusive property of the European Food Safety Authority – EFSA and is registered under Article 6ter of the Paris Convention for the protection of industrial property. Its use is prohibited without the prior written permission of EFSA.\n\nBesin Matriksi transforms a subset of numerical PRI/AI records from the EFSA website JSON into an offline reference table. This is an independent transformation, not an EFSA product or endorsement. No EFSA logo or third-party images are used. Journal PDFs/figures are not redistributed. Opinion years, original units and source row positions are retained; EFSA reference values are not personal requirements or medical advice. The application code's MIT license does not relicense EFSA material."
+  },
+  {
+    "id": "matvaretabellen",
+    "name": "The Norwegian Food Composition Table",
+    "version": "2026-11-23 snapshot",
+    "license": "CC BY 4.0",
+    "text": "The Norwegian Food Safety Authority. www.matvaretabellen.no (matvaretabellen.no)\nSource: https://www.matvaretabellen.no/api/en/foods.json\nLicence: https://creativecommons.org/licenses/by/4.0/\nAn extracted subset of the original, with selected constituents and application nutrient keys. See data/raw/MATVARETABELLEN_SUBSET.json."
   }
 ]

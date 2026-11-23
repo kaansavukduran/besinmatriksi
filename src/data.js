@@ -72,6 +72,7 @@ export function resolve(ref) {
       allergens: food.allergens, note: [food.note, form.unavailable].filter(Boolean).map((x) => L(x)).join(' ') || null, sci: food.sci,
       usda: form.usda, cofid: form.cofid || null, ifct: form.ifct, estFrom: form.estFrom, recipeOf: form.recipeOf || null, recipeYield: form.recipeYield || null,
       cofidCalculated: form.cofidCalculated || false,
+      matvaretabellen: form.matvaretabellen || null,
     };
   }
   if (ref.t === 'x') {

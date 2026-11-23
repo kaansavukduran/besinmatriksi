@@ -14,10 +14,11 @@ const MEASURED_ZERO_SRC = new Set(['u', 'i', 'k', 'f', 'F', 'N', 'y', 'L', 'I', 
 
 const nl = nutrientLabel;
 
-const SRC_LABEL = { r: 'Tahmin (tarif)', u: 'USDA', N: 'USDA FNDDS', F: 'USDA FDC', f: 'USDA Flavonoid', y: 'USDA İzoflavon', L: 'USDA SR Legacy', I: 'USDA İyot', C: 'USDA Kolin', P: 'USDA Proantosiyanidin', U: 'USDA Pürin', B: 'UK CoFID 2021', z: 'Varsayılan 0', i: 'IFCT', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
+const SRC_LABEL = { r: 'Tahmin (tarif)', u: 'USDA', N: 'USDA FNDDS', F: 'USDA FDC', f: 'USDA Flavonoid', y: 'USDA İzoflavon', L: 'USDA SR Legacy', I: 'USDA İyot', C: 'USDA Kolin', P: 'USDA Proantosiyanidin', U: 'USDA Pürin', B: 'UK CoFID 2021', M: SOURCES.M.short, z: 'Varsayılan 0', i: 'IFCT', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
 const SRC_TITLE = {
   r: SOURCES.r.long, u: SOURCES.u.long, N: SOURCES.N.long, F: SOURCES.F.long, f: SOURCES.f.long, y: SOURCES.y.long, L: SOURCES.L.long, I: SOURCES.I.long, C: SOURCES.C.long, P: SOURCES.P.long, B: SOURCES.B.long, U: SOURCES.U.long, z: SOURCES.z.long, i: SOURCES.i.long, e: SOURCES.e.long,
   d: 'Diğer ölçülmüş değerlerden hesaplandı (ör. tuz = sodyum × 2,5)', m: 'Tarifteki malzemeler farklı kaynaklardan', k: 'Kullanıcının ürün etiketinden girdiği değer',
+  M: SOURCES.M.long,
 };
 
 export function dominantSource(sources) {
@@ -33,6 +34,7 @@ export function sourceRecordId(s, item) {
   if (s === 'F' && item.usda?.fdc) return `FDC ${item.usda.fdc}` + (item.usda.ndb ? ` (NDB ${item.usda.ndb})` : '');
   if ((s === 'u' || s === 'f' || s === 'y' || s === 'L' || s === 'I' || s === 'C' || s === 'P' || s === 'U' || s === 'z') && item.usda?.ndb) return `NDB ${item.usda.ndb}`;
   if (s === 'B' && item.cofid) return `CoFID ${item.cofid}`;
+  if (s === 'M' && item.matvaretabellen) return `Matvaretabellen ${item.matvaretabellen.id}`;
   if (s === 'i' && item.ifct?.code) return `IFCT ${item.ifct.code}`;
   return '';
 }
@@ -269,6 +271,10 @@ function identityCard(item, r, cfg, ctx) {
     if (item.cofid) {
       const detail = item.cofidCalculated ? L('CoFID tarafından hesaplanan profil') : L("yalnız USDA'da eksik ölçümler için");
       rows.push(['UK CoFID 2021', `<span class="muted">CoFID ${esc(item.cofid)}</span> · ${detail}`]);
+    }
+    if (item.matvaretabellen) {
+      const row = item.matvaretabellen;
+      rows.push(['Matvaretabellen', `<a href="${esc(row.url)}" target="_blank" rel="noopener">${esc(row.name)}</a> · ${esc(row.id)}`]);
     }
     if (item.recipeOf) rows.push(['Tahmin (tarif)', L("Ölçüm değil; USDA malzemelerinden şu oranla hesaplandı:") + ' ' + item.recipeOf.map((x) => `${pctText(fmtNum(x.pct))} ${esc(x.desc)}`).join(' + ')]);
     if (item.recipeYield) rows.push([L('Pişme verimi'), L("Pişmiş ağırlık / çiğ malzeme ağırlığı: %{n}; kayıp su sayıldı. Vitaminler, şeker türleri, amino asitler ve yağ asidi ayrıntısı ısıyla değiştiği için hesaplanmadı (veri yok).", { n: fmtNum(item.recipeYield) })]);

@@ -1,12 +1,12 @@
 // Matriksi Türkçe Excel uyumlu CSV'ye çevirir (; ayraç, ondalık virgül, UTF-8 BOM)
-import { NUTRIENTS, SECTIONS } from './nutrients.js';
+import { NUTRIENTS, SECTIONS, SOURCES } from './nutrients.js';
 import { referenceFor, normalizeSettings } from './settings.js';
 import { derive } from './calc.js';
 import { referenceLabel, percentColumnLabel } from './references.js';
 import { L } from './i18n.js';
 import { nutrientLabel } from './i18n-nutrients.js';
 
-export const SRC = { u: 'USDA SR28', N: 'USDA FNDDS', F: 'USDA FDC', f: 'USDA Flavonoid', y: 'USDA İzoflavon', L: 'USDA SR Legacy', I: 'USDA İyot', C: 'USDA Kolin', P: 'USDA Proantosiyanidin', U: 'USDA Pürin', B: 'UK CoFID 2021', z: 'Varsayılan 0', r: 'Tahmin (tarif)', i: 'IFCT 2017', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
+export const SRC = { u: 'USDA SR28', N: 'USDA FNDDS', F: 'USDA FDC', f: 'USDA Flavonoid', y: 'USDA İzoflavon', L: 'USDA SR Legacy', I: 'USDA İyot', C: 'USDA Kolin', P: 'USDA Proantosiyanidin', U: 'USDA Pürin', B: 'UK CoFID 2021', M: SOURCES.M.short, z: 'Varsayılan 0', r: 'Tahmin (tarif)', i: 'IFCT 2017', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
 // CSV formül enjeksiyonunu önle (=, +, -, @ ile başlayan metin hücreleri)
 const text = (s) => (/^[=+\-@\t\r]/.test(String(s)) ? "'" + s : s);
 const num = (x) => (x == null ? '' : String(Number(x.toPrecision(6))).replace('.', ','));

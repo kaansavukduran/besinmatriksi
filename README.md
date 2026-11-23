@@ -10,7 +10,7 @@ Windows · macOS · Linux · Android · iPhone · tarayıcı/PWA · tek HTML.
 
 ## İndirip dene
 
-Web sürümü `1.1.2-beta.72`. İndirilebilir masaüstü ve mobil paketler [v1.1.2-beta.70](https://github.com/kaansavukduran/besinmatriksi/releases/tag/v1.1.2-beta.70) sürümünde (23 dosya).
+Web sürümü `1.1.2-beta.73`. İndirilebilir masaüstü ve mobil paketler [v1.1.2-beta.70](https://github.com/kaansavukduran/besinmatriksi/releases/tag/v1.1.2-beta.70) sürümünde (23 dosya).
 
 | Platform | Dosya kalıbı |
 |---|---|
@@ -55,9 +55,9 @@ Vite varlıkları, manifest ve service worker göreli yollar kullanır; aynı ç
 
 ## Veri kapsamı ve lisanslar
 
-**Besin bileşimi USDA SR28, USDA Foundation Foods, FNDDS, SR Legacy, USDA özel bileşen veritabanları (Flavonoid, İzoflavon, İyot, Kolin, Proantosiyanidin, Pürin) ve UK CoFID 2021'den (OGL v3.0) gelir.** IFCT verileri ve IFCT tabanlı tahminler dağıtıma dahil değildir (`ifctLinked = 0`, `estimated = 0`).
+**Besin bileşimi USDA SR28, USDA Foundation Foods, FNDDS, SR Legacy, USDA özel bileşen veritabanları (Flavonoid, İzoflavon, İyot, Kolin, Proantosiyanidin, Pürin), UK CoFID 2021 (OGL v3.0) ve Matvaretabellen’den (CC BY 4.0) gelir.** IFCT verileri ve IFCT tabanlı tahminler dağıtıma dahil değildir (`ifctLinked = 0`, `estimated = 0`).
 EFSA DRV Finder ayrıca 23 bileşen / 169 PRI-AI kaydıyla isteğe bağlı grup referansıdır; besin ölçümü değildir. Ayarlar → Yüzde referansı → EFSA: yaş ve kaynak cinsiyet grubunu seç. Yetişkin çinko için fitat, yetişkin kadın demiri için menopoz grubu ayrıca seçilir. Eşleşmeyen veya kapsam dışı alanda yüzde gösterilmez. Kaynak/görüş yılı ve koşullar açılabilir tabloda, PRI/AI türü matrikste ve CSV'de korunur. Kişisel hedefler değişmez.
-**884 küratörlü besin / 1.042 tüketim biçimi**. 35 biçimin bileşim kaydı eksik. 124 biçim “Tahmin (tarif)” etiketi taşır. UK CoFID 2021, USDA kayıtlarındaki 263 boş bileşen hücresini doldurur ve kuru ananas için hesaplanmış profil sağlar. Ayrıca **8.032 ek SR28 kaydı** ayrı **Tam Katalog** bölümünde erişilebilir. Niş/hayvansal gizleme tercihleri ana ekranda görünen sayıyı değiştirir. [Veri envanteri ve kaynaklar](docs/DATA_RESEARCH.md#b264-kapsam-denetimi-ve-katalog-eklemeleri)
+**884 küratörlü besin / 1.042 tüketim biçimi**. 33 biçimin bileşim kaydı eksik. 124 biçim “Tahmin (tarif)” etiketi taşır. UK CoFID 2021, USDA kayıtlarındaki 283 boş bileşen hücresini doldurur ve kuru ananas için hesaplanmış profil sağlar. Ayrıca **8.032 ek SR28 kaydı** ayrı **Tam Katalog** bölümünde erişilebilir. Niş/hayvansal gizleme tercihleri ana ekranda görünen sayıyı değiştirir. [Veri envanteri ve kaynaklar](docs/DATA_RESEARCH.md#b264-kapsam-denetimi-ve-katalog-eklemeleri)
 
 Keşfet → **Tam Katalog** ile ayar açmadan eriş. 80 kayıtlık sayfalar, besin grubu seçimi ve özgün İngilizce ad veya NDB numarasıyla arama vardır. 2015 tarihli SR28 marka kayıtları güncel ambalaj etiketi sayılmaz; içerik ve alerjen bilgisi üründen doğrulanır. Hayvansal kayıtlar gizlenince içeriği belirsiz karma kayıtlar da gizlenir.
 

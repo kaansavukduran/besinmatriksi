@@ -10,7 +10,7 @@ const CALCULATIONS = {
   carb_avail: { keys: ['carb', 'fiber'], label: 'Lif hariç karbonhidrat = en az 0 olacak şekilde toplam karbonhidrat − lif' },
   carb: { keys: ['carb_avail', 'fiber'], label: 'Toplam karbonhidrat = etiket karbonhidratı + lif' },
 };
-export const LABELS = { u: 'USDA SR28 (2015)', N: 'USDA FNDDS', F: 'USDA FDC', f: 'USDA Flavonoid', y: 'USDA İzoflavon', L: 'USDA SR Legacy', I: 'USDA İyot', C: 'USDA Kolin', P: 'USDA Proantosiyanidin', U: 'USDA Pürin', B: 'UK CoFID 2021', z: 'Varsayılan 0', r: 'Tahmin (tarif)', k: 'Kullanıcının ürün etiketi', d: 'Hesaplanan değer', i: 'IFCT 2017', e: 'Tahmin' };
+export const LABELS = { u: 'USDA SR28 (2015)', N: 'USDA FNDDS', F: 'USDA FDC', f: 'USDA Flavonoid', y: 'USDA İzoflavon', L: 'USDA SR Legacy', I: 'USDA İyot', C: 'USDA Kolin', P: 'USDA Proantosiyanidin', U: 'USDA Pürin', B: 'UK CoFID 2021', M: 'Matvaretabellen', z: 'Varsayılan 0', r: 'Tahmin (tarif)', k: 'Kullanıcının ürün etiketi', d: 'Hesaplanan değer', i: 'IFCT 2017', e: 'Tahmin' };
 export const usdaRecord = (u) => (!u ? '' : u.ndb ? `NDB ${u.ndb}` : u.fndds ? `FNDDS ${u.fndds}` : u.fdc ? `FDC ${u.fdc}` : '');
 
 // Kaydı bulunamayan malzeme ve ölçülmüş sıfır da ayrı satır olarak korunur.
@@ -25,6 +25,7 @@ export function recipeContributions(recipe, resolve, key, factor = 1) {
       grams: ingredient.g, factor, missingRecord: !item,
       value: scaled?.v[key] == null ? null : scaled.v[key] * factor,
       source, usda: item?.usda || null,
+      matvaretabellen: item?.matvaretabellen || null,
       formula: calculation ? L(calculation.label) : null,
       inputs: (calculation?.keys || []).map(k => ({ key: k, value: scaled.v[k] == null ? null : scaled.v[k] * factor, source: scaled.s[k] })),
     };
@@ -48,7 +49,8 @@ export function renderRecipeSourceRows(recipe, resolve, key, factor, precision) 
     <ul class="source-ingredients">${rows.map(row => {
       const source = L(LABELS[row.source] || 'Kaynak belirtilmemiş');
       const record = row.usda && (['u', 'N', 'F', 'f', 'y', 'L', 'I', 'C', 'P', 'U', 'z'].includes(row.source) || row.inputs.some(input => input.source === 'u'))
-        ? ` · ${esc(usdaRecord(row.usda))} · ${esc(row.usda.desc)}` : '';
+        ? ` · ${esc(usdaRecord(row.usda))} · ${esc(row.usda.desc)}`
+        : row.source === 'M' && row.matvaretabellen ? ` · ${esc(row.matvaretabellen.id)}` : '';
       return `<li><div class="source-contribution"><b>${esc(row.name)}</b><strong>${amount(row.value, nutrient.unit, precision)}</strong></div>
         <p>${esc(row.form)} · ${fmtNum(row.grams)} g ${L('malzeme')}${factor !== 1 ? ` × ${fmtNum(factor, 'high')} ${L('hesap payı')}` : ''}</p>
         <p>${row.value == null ? row.missingRecord ? L("Kayıt bulunamadı; katkı bilinmiyor.") : L("Bu malzemede bu bileşen için veri yok.") : `${esc(source)}${record}${row.value === 0 ? ' · ' + L("kaynak/hesap sonucu 0") : ''}`}</p>

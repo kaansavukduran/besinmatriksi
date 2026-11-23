@@ -8,7 +8,7 @@ import { gunzipSync } from 'node:zlib';
 import { USDA_NUTRIENTS, unitFactor } from '../data/usda-nutrients.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { NUTRIENTS } from '../src/nutrients.js';
+import { NUTRIENTS, NUTRIENT_BY_KEY } from '../src/nutrients.js';
 import { FOODS, CATEGORIES, FORM_LABELS, ANIMAL_CATS } from '../data/catalog.mjs';
 import { POPULAR, NICHE } from '../data/popularity.mjs';
 import { COFID_MAP, COFID_KEYS, COFID_SUGARS, COFID_PRIMARY } from '../data/cofid-map.mjs';
@@ -172,6 +172,7 @@ function fillFromExtra(ndb, v, s) {
 
 // ---------- UK CoFID 2021 (B191): yalnız elle eşlenmiş besinlerde, yalnız boş hücreler ----------
 const cofid = JSON.parse(gunzipSync(fs.readFileSync(path.join(root, 'data/raw/CoFID_2021_SUBSET.json.gz'))).toString('utf8'));
+const matvaretabellen = new Map(JSON.parse(fs.readFileSync(path.join(root, 'data/raw/MATVARETABELLEN_SUBSET.json'), 'utf8')).records.map(row => [row.id, row]));
 const cofNum = (x) => (typeof x === 'number' ? x : typeof x === 'string' && /^-?\d+(\.\d+)?$/.test(x.trim()) ? Number(x) : null);
 let cofidFills = 0;
 function fillFromCofid(foodId, formKey, v, s) {
@@ -372,6 +373,17 @@ for (const food of FOODS) {
     if (!FORM_LABELS[key]) throw new Error('Bilinmeyen form: ' + key);
     const v = {}, s = {}, alt = {}, sd = {};
     let usda = null, ic = null, cofidCode = null;
+    if (ndb?.startsWith('M')) {
+      const row = matvaretabellen.get(ndb.slice(1));
+      if (!row || new URL(row.url).origin !== 'https://www.matvaretabellen.no') throw new Error('Matvaretabellen kaydı yok: ' + ndb);
+      for (const [nutrient, { amount, unit }] of Object.entries(row.values)) {
+        if (NUTRIENT_BY_KEY[nutrient]?.unit !== unit || !Number.isFinite(amount) || amount < 0) {
+          throw new Error(`Matvaretabellen birim/değer uyuşmuyor: ${row.id}/${nutrient}`);
+        }
+        v[nutrient] = amount; s[nutrient] = 'M';
+      }
+      return { key, label: custom || FORM_LABELS[key], usda: null, matvaretabellen: { id: row.id, name: row.name, url: row.url }, ifct: null, estFrom: null, portions: [], v, s };
+    }
     if (ndb?.startsWith('B')) {
       const code = ndb.slice(1), profile = COFID_PRIMARY[code], record = cofid[code];
       if (!profile || !record) throw new Error('CoFID birincil kaynak kaydı yok: ' + code);
@@ -577,7 +589,7 @@ for (const fm of allForms) {
   if (fm.usda?.fndds) fnddsForms++;
 }
 const meta = {
-  sources: 'USDA SR28 (2015) tam ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015); USDA SR Legacy (2018); USDA İyot 4.0 (2024); USDA Kolin 2 (2008); USDA Proantosiyanidin 2.1 (2018); USDA Pürin 3 (2026); UK CoFID 2021 (boşluk doldurma)',
+  sources: 'USDA SR28 (2015) tam ASCII; USDA FoodData Central Foundation Foods (2026); USDA Flavonoid 3.3 (2018); USDA İzoflavon 2.1 (2015); USDA SR Legacy (2018); USDA İyot 4.0 (2024); USDA Kolin 2 (2008); USDA Proantosiyanidin 2.1 (2018); USDA Pürin 3 (2026); UK CoFID 2021 (boşluk doldurma); Matvaretabellen (CC BY 4.0)',
   dataPolicy: 'USDA public domain / CC0; IFCT ve IFCT tabanlı tahminler dağıtıma dahil değil',
   unavailableForms: allForms.filter((f) => f.unavailable).length,
   curated: foods.length,

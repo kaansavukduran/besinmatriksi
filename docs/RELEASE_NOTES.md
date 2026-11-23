@@ -1,4 +1,12 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 72
+# 🫐 Besin Matriksi 1.1.2 Beta 73
+
+- Siyah beluga mercimeği ve psyllium kabuğu için kaynaklı 66 bileşen değeri. Matvaretabellen kayıt numaraları besin ve tarif kaynaklarında görünür.
+- 13 mevcut tüketim biçiminde 20 CoFID boşluğu dolduruldu. Börülceye biyotin, soya fasulyesine iyot ve biyotin, çilek ve pancara klorür eklendi.
+- Tamamen boş biçim sayısı 35’ten 33’e indi.
+
+[Kaynaklar ve denetim](DATA_RESEARCH.md#b266-beluga-mercimeği-psyllium-ve-mikro-besin-dolgusu)
+
+## Beta 72
 
 - 884 küratörlü besin ve 1.042 tüketim biçimi. Dört yağ oranında laktozsuz süt, kırmızı soğan, durulanmış konserve nohut ve diğer yeni besinler.
 - 53 biçimde klorür verisi. CoFID’nin şeker eklenmemiş kuru ananas hesabı ve USDA’nın şekerli kuru ananas kaydı ayrı.
