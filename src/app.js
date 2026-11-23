@@ -1,7 +1,6 @@
 import NOTICES from './data/notices.json'; // B209 değerlendirmesi: tembel yükleme ilk açılıştan hemen sonra çevrimdışı kalınca Bilgi sayfasını kırıyordu; gömülü kalır
 import { catalogGroup, categoryContains, catalogSections, DRINK_GROUPS } from './catalog-tree.js';
 import { DIET_KEYS, dietActive } from './diet.js';
-import { renderDietFilter } from './diet-view.js';
 import { setDietSettings, eligibleFood, eligibleRef, setNicheVisible, extAnimalGroup, setAnimalVisible, visibleFoods, ANIMAL_CATS, foodName, categoryName, formName, CATEGORIES, NAV_CATEGORIES, FOODS, META, resolve, refKey, search, loadExt, extLoaded, isLite, extGroups, extMeta, extFoods, setCustomFoods, customFoods } from './data.js';
 import { NUTRIENTS, NUTRIENT_BY_KEY, SECTIONS, SOURCES } from './nutrients.js';
 import { scaleItem, aggregate, scaleAggregate, assessAmino } from './calc.js';
@@ -11,7 +10,7 @@ import { renderMatrix, basicCard, BASIC_KEYS, macroPie } from './matrix.js';
 import { createPrintController } from './print.js';
 import { FONTS, fontStack, ensureFont, headingFont, ensureHeadingFont } from './fonts.js';
 import { loadSettings, saveSettings, DEFAULT_SETTINGS, THEMES, ACCENTS, loadRecipes, saveRecipes, newRecipe, exportPayload, parseImport, mergeImport, saveImportState, loadCustom, saveCustom, loadSearches, saveSearches, loadProfiles, loadCollections, loadRecent, saveRecent, pushRecent } from './store.js';
-import { esc, fmtNum, fmtAmount, clamp, download, uid, configureFormatting, norm, pctText, fmtPct } from './util.js';
+import { esc, fmtNum, fmtAmount, fmtExactAmount, clamp, download, uid, configureFormatting, norm, pctText, fmtPct } from './util.js';
 import { matrixCSV } from './export.js';
 import { contrastRatio, accentText, parseTheme, COLOR_LABELS, validColor, themeTextContrast } from './theme.js';
 import { renderThemeEditor, themePreview } from './theme-editor.js';
@@ -23,7 +22,7 @@ import { renderEfsaSettings } from './efsa-ui.js';
 import { t as tr, setLanguage, preferredLanguage, ensureLanguage, hasUiEn, L } from './i18n.js';
 import { renderAppearance, settingSlider } from './appearance.js';
 import { energyEstimate, loadPersonal, savePersonal, mergePersonalFoods, localDay, validDay, dayResult, PERSONAL_KEY } from './personal.js';
-import { renderPersonal, renderEnergy, renderDaySources } from './personal-view.js';
+import { dateText, renderPersonal, renderEnergy, renderDaySources } from './personal-view.js';
 import { nutrientLabel } from './i18n-nutrients.js';
 import { getLanguage } from './i18n.js';
 import { SLIDER_STEPS, sliderToGrams, gramsToSlider, MAX_GRAMS, kgLabel } from './amount-scale.js';
@@ -39,15 +38,15 @@ import { morphHtml } from './morph.js';
 import { routeOf, parseRoute } from './route.js';
 import { withSettingsToc } from './settings-toc.js';
 import { compareChart, compareAminoChart } from './compare-chart.js';
-import { brandMark, plateIllustration } from './kitchen-art.js';
+import { brandMark } from './kitchen-art.js';
 import { referenceFor, normalizeSettings, parseSettings, MATRIX_SECTIONS, SHORTCUT_ACTIONS, shortcutKey, migrateFontV2, migrateAionOff } from './settings.js';
 import { S } from './state.js';
 import { catIcon, foodIcon, persona, isPhone } from './views/common.js';
 import { PRESETS, MAX_G, amountUnitText, amountControls, perServing, miniAmount } from './views/amount.js';
-import { compareResults, renderCompare } from './views/compare.js';
-import { setRenderer, toast, requestExtCatalog, catalogPending, activeRecipe, recipeItemCount, persistRecipes, servingKcal } from './views/ui.js';
+import { renderCompare } from './views/compare.js';
+import { setRenderer, toast, requestExtCatalog, catalogPending, activeRecipe, persistRecipes, servingKcal } from './views/ui.js';
 import { renderSettings, renderAbout, RELEASES_URL } from './views/settings.js';
-import { catName, foodCategoryPath, foodButton, quickFacts, SORTS, sortFoods, sortBar, extButton, categoryNav, refButton, collectionList, customButton, knownFood, recentRow, LIST_CHUNK, listLimit, moreButton, foodList, fullCatalogSearch, formChips, similarRow, renderExplore, welcome, visibleCurated, catalogHeading, matrixForExplore } from './views/explore.js';
+import { browseControls, knownFood, listLimit, foodList, formChips, renderExplore, matrixForExplore } from './views/explore.js';
 import { recipeResult, recipeTotalModel, selectedRecipeResult, renderRecipe, renderRecipeSummary, renderRecipeGaps } from './views/recipe.js';
 import { DAY_ACTIONS, bindDayActions } from './actions/day.js';
 import { EXPLORE_ACTIONS, bindExploreActions } from './actions/explore.js';
@@ -66,6 +65,16 @@ let modalOpener = null;
 let printController;
 
 // ---------------------------------------------------------------- ayarlar
+function updateLayout() {
+  const s = S.settings, r = document.documentElement;
+  const width = window.innerWidth / (s.uiScale / 100);
+  r.dataset.uiNarrow = String(width < 900);
+  const compact = String(width < 300 || (width < 540 && s.fontSize >= 24));
+  const changed = r.dataset.uiCompact !== compact;
+  r.dataset.uiCompact = compact;
+  return changed;
+}
+
 function applySettings() {
   setDietSettings(S.settings);
   setAnimalVisible(S.settings.showAnimal); setNicheVisible(S.settings.showNiche);
@@ -75,7 +84,7 @@ function applySettings() {
   if (lang === 'en' && !hasUiEn()) ensureLanguage('en').then(() => render());
   r.style.zoom = String(s.uiScale / 100); r.style.setProperty('--ui-zoom', s.uiScale / 100);
   r.dataset.uiScaled = String(s.uiScale !== 100);
-  r.dataset.uiNarrow = String(window.innerWidth / (s.uiScale / 100) < 900);
+  updateLayout();
   configureFormatting(s);
   for (const key of ['bg', 'fg', 'card', 'card2', 'muted', 'line', 'ac0', 'ac-fg', 'ok', 'warn', 'bad', 'okbg', 'warnbg', 'badbg']) r.style.removeProperty('--' + key);
   const effectiveTheme = s.theme === 'system' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : s.theme;
@@ -126,25 +135,73 @@ function updateDiet(patch) {
 
 
 
+function pickerPreview(item, g) {
+  const { v } = scaleItem(item, g);
+  return [v.energy != null ? `${fmtNum(v.energy)} kcal` : '', v.protein != null ? `${fmtNum(v.protein)} g ${L("protein")}` : '', v.fiber != null ? `${fmtNum(v.fiber)} g ${L("lif")}` : ''].filter(Boolean).join(' · ') || L("veri yok");
+}
+
 function renderPicker() {
   const P = S.picker;
-  if (!P) return '';
   const item = P.sel ? resolve(P.sel) : null;
-  return `<div class="modal" role="dialog" aria-modal="true" aria-label="${L("Besin seç")}">
-    <div class="modal-box">
-      <div class="modal-h"><h2>${P.target === 'recipe' ? L("Tarife malzeme ekle") : L("Karşılaştırmaya besin ekle")}</h2>
-        <button class="btn ghost" data-action="pk-close" aria-label="${L("Kapat")}">✕ ${L("Kapat")}</button></div>
-      ${item ? `<div class="pk-sel"><button class="back show" data-action="pk-back">← ${L("Geri")}</button><h3>${esc(item.name)}</h3>
-          ${formChips('pk', P.sel)}
-          ${amountControls('pk', P.amount, item.portions, { liquid: item.liquid, density: item.density, customLiquid: item.customLiquid })}
-          <div class="pk-prev">${item.v.energy != null ? `${fmtNum((item.v.energy * P.amount) / 100)} kcal · ` : ''}${item.v.protein != null ? `${fmtNum((item.v.protein * P.amount) / 100)} g protein · ` : ''}${item.v.fiber != null ? `${fmtNum((item.v.fiber * P.amount) / 100)} g ${L("lif")}` : ''}</div>
-          <button class="btn primary big" data-action="pk-confirm">${P.target === 'recipe' ? '＋ ' + L("Tarife ekle") : '＋ ' + L("Karşılaştırmaya ekle")}</button>
-          ${P.target === 'recipe' ? `<button class="btn" data-action="pk-confirm-more">＋ ${L("Ekle ve başka seç")}</button>` : ''}</div>`
-      : `<search class="pk-search"><div class="searchbar"><input type="search" id="pq" placeholder="${L("Besin ara: mercimek, muz, yulaf…")}" value="${esc(P.q)}" autocomplete="off" enterkeyhint="search" aria-label="${L("Besin ara")}"><button class="btn ghost" data-action="pk-clear"${P.q ? '' : ' hidden'}>${L("Temizle")}</button></div></search>
-        ${renderDietFilter(S.settings,'pk',S.dietOpen.pk)}
-        <nav class="cats pk-cats-nav${P.catsOpen ? ' cats-grid' : ''}" data-strip="${P.catsOpen ? 'false' : 'true'}" aria-label="${L("Kategoriler")}"><button class="cats-toggle" data-action="pk-cats-toggle" aria-expanded="${P.catsOpen ? 'true' : 'false'}">${P.catsOpen ? L("Daha az") : L("Tüm kategoriler")}</button>${categoryNav('pk', P.cat)}</nav>
-        <div class="pk-list">${foodList('pk', P.cat, P.q, P.extGroup)}</div>`}
-    </div></div>`;
+  const title = P.target === 'recipe' ? L("Tarife malzeme ekle") : P.target === 'day' ? tr('addDay') : L("Karşılaştırmaya besin ekle");
+  const duplicate = P.target === 'compare' && P.sel && S.compare.some(c => refKey(c.ref) === refKey(P.sel));
+  const confirm = P.target === 'recipe' ? tr('addRecipe') : P.target === 'day' ? tr('addDay') : tr('addCompare');
+  return `<div class="modal-box">
+    <div class="modal-h"><h2 id="picker-title">${title}</h2>
+      <button type="button" class="btn ghost" data-action="pk-close">${L("Kapat")}</button></div>
+    ${P.target === 'day' ? `<p class="picker-date"><time datetime="${esc(P.day)}">${esc(dateText(P.day))}</time></p>` : ''}
+    ${P.notice ? `<p class="picker-status" role="status">${esc(P.notice)}</p>` : ''}
+    ${item ? `<div class="pk-sel"><button type="button" class="back show" data-action="pk-back">← ${L("Geri")}</button><h3 id="picker-food-title" tabindex="-1">${esc(item.name)}</h3>
+      ${formChips('pk', P.sel)}
+      ${amountControls('pk', P.amount, item.portions, { density: item.density, customLiquid: item.customLiquid })}
+      <p class="pk-prev">${esc(pickerPreview(item, P.amount))}</p>
+      ${P.error ? `<p class="picker-error" role="alert">${esc(P.error)}</p>` : ''}
+      ${duplicate ? `<p class="hint">${L("Karşılaştırmada zaten var")}</p>` : ''}
+      <div class="picker-actions">
+        <button type="button" class="btn primary" data-action="pk-confirm" ${duplicate ? 'disabled' : ''}>${confirm}</button>
+        ${P.target === 'recipe' ? `<button type="button" class="btn" data-action="pk-confirm-more">${L("Ekle ve başka seç")}</button>` : ''}
+      </div>
+    </div>` : `<search class="pk-search"><div class="searchbar">
+      <label for="pq">${L("Besin ara")}</label>
+      <div class="search-input-row"><input type="search" id="pq" placeholder="${L("ör. mercimek, latte, pizza")}" value="${esc(P.q)}" autocomplete="off" enterkeyhint="search" autocapitalize="none" spellcheck="false" autofocus>
+      <button type="button" class="btn ghost" data-action="pk-clear"${P.q ? '' : ' hidden'}>${L("Temizle")}</button></div>
+    </div></search>
+    ${browseControls('pk', P.cat, { catsOpen: !!P.catsOpen, filtersOpen: !!P.filtersOpen })}
+    <div class="pk-list">${foodList('pk', P.cat, P.q, P.extGroup)}</div>`}
+  </div>`;
+}
+
+function syncPicker() {
+  let modal = $('#food-picker');
+  if (!S.picker || S.customEdit) {
+    if (modal?.open) modal.close();
+    modal?.remove();
+    return;
+  }
+  if (modal) {
+    morphHtml(modal, renderPicker());
+    return;
+  }
+  const native = typeof window.HTMLDialogElement?.prototype.showModal === 'function';
+  modal = document.createElement(native ? 'dialog' : 'div');
+  modal.id = 'food-picker';
+  modal.className = 'modal food-picker';
+  modal.setAttribute('aria-labelledby', 'picker-title');
+  modal.innerHTML = renderPicker();
+  app().after(modal);
+  if (native) {
+    modal.setAttribute('closedby', 'any');
+    modal.addEventListener('close', () => {
+      if (!modal.isConnected) return;
+      S.picker = null;
+      render();
+    });
+    modal.showModal();
+  } else {
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    $('#pq', modal)?.focus({ preventScroll: true });
+  }
 }
 
 // ---------------------------------------------------------------- KOLEKSİYONA EKLE (modal)
@@ -197,21 +254,36 @@ function saveCustomEdit() {
   if (!saveCustom(list)) { toast(L("Kaydedilemedi: cihaz depolaması kullanılamıyor")); return false; }
   setCustomFoods(list);
   S.customEdit = null;
-  S.cat = 'custom';
-  S.sel = { t: 'u', id: rec.id };
+  const ref = { t: 'u', id: rec.id };
+  if (S.picker) { S.picker.cat = 'custom'; S.picker.sel = ref; S.picker.amount = S.settings.defaultAmount; }
+  else { S.cat = 'custom'; S.sel = ref; }
   return true;
 }
 
 // ---------------------------------------------------------------- render
-const TAB_SHORT = { kesfet: () => L("Keşfet"), tarif: () => L("Tarif"), gunluk: () => L("Günlük"), karsilastir: () => L("Kıyasla"), hakkinda: () => L("Bilgi"), ayarlar: () => L("Ayarlar") };
-const TABS = [['kesfet', '🔎'], ['tarif', '🥣'], ['gunluk', '📒'], ['karsilastir', '⚖️'], ['hakkinda', 'ℹ️'], ['ayarlar', '🎨']];
+const PRIMARY_TABS = ['kesfet', 'tarif', 'gunluk', 'karsilastir'];
+const SECONDARY_TABS = ['hakkinda', 'ayarlar'];
+const TAB_LABELS = { kesfet: 'Keşfet', tarif: 'Tarif', gunluk: 'Günlük', karsilastir: 'Karşılaştır', hakkinda: 'Hakkında', ayarlar: 'Ayarlar' };
+
+function navigation() {
+  const link = id => `<a class="tab${S.tab === id ? ' on' : ''}" href="${routeOf(id)}" data-action="tab" data-tab="${id}" ${S.tab === id ? 'aria-current="page"' : ''}>${L(TAB_LABELS[id])}</a>`;
+  const compact = document.documentElement.dataset.uiCompact === 'true';
+  const primary = `<div id="nav-primary" class="nav-primary" data-open="${!!S.moreNav}">${PRIMARY_TABS.map(link).join('')}</div>`;
+  return `<nav class="tabs" aria-label="${tr('navigation')}">
+    ${compact ? '' : primary}
+    <button type="button" id="nav-more-button" class="tab nav-more${SECONDARY_TABS.includes(S.tab) ? ' on' : ''}" data-action="nav-more" aria-controls="${compact ? 'nav-primary nav-overflow' : 'nav-overflow'}" aria-expanded="${!!S.moreNav}">${L(compact ? "Menü" : "Daha fazla")}</button>
+    ${compact ? primary : ''}
+    <div id="nav-overflow" class="nav-overflow" data-open="${!!S.moreNav}">${SECONDARY_TABS.map(link).join('')}</div>
+  </nav>`;
+}
 
 // B233: açık/kapalı durumu kaydedilen <details> bölümleri. "toggle" olayı ayrı bir görev olarak sonradan gelir;
 // EFSA tablosunda açılıştan hemen sonra ayar değişince (yeniden çizim) durum kayboluyordu: render() onu çizmeden önce DOM'dan okur.
 // Yalnız tekil bölüm: recipe-sources sayfada birden çok kez bulunabilir, DOM'dan toplu okumak birinin durumunu ötekine yazar.
-const REMEMBERED_DETAILS = 'details.efsa-table';
+const REMEMBERED_DETAILS = 'details.efsa-table, details[data-ux-details]';
 function rememberDetails(d) {
   if (!d.isConnected) return;
+  if (d.dataset?.uxDetails && !printController?.active) S.uxDetails[d.dataset.uxDetails] = d.open;
   if (d.matches?.('details.recipe-sources')) S.recipeSourcesOpen = d.open;
   if (d.matches?.('details.efsa-table')) S.efsaTableOpen = d.open;
   if (d.matches?.('details.cmp-amino')) S.cmpAminoOpen = d.open;
@@ -231,19 +303,22 @@ export function render() {
   const selStart = document.activeElement?.selectionStart;
   let view = '';
   if (S.tab === 'kesfet') view = renderExplore();
-  else if (S.tab === 'gunluk') view = renderPersonal(S.personal, S.personalDraft, S.personalDay, S.consumedOnly, S.settings, resolve, S.personalSource, S.personalSourceOpen, S.personalUndo, S.personalReadError, isPhone() ? (S.dayMicroOpen ?? false) : !S.closed.has('micro'), S.daySecOpen, isPhone(), S.weekKey, S.hist || {});
+  else if (S.tab === 'gunluk') view = renderPersonal(S.personal, S.personalDraft, S.personalDay, S.consumedOnly, S.settings, resolve, S.personalSource, S.personalSourceOpen, S.personalUndo, S.personalReadError, isPhone() ? (S.dayMicroOpen ?? false) : !S.closed.has('micro'), S.daySecOpen, isPhone(), S.weekKey, S.hist || {}, { open: S.uxDetails, feedback: S.dayFeedback });
   else if (S.tab === 'tarif') view = renderRecipe();
   else if (S.tab === 'karsilastir') view = renderCompare();
   else if (S.tab === 'ayarlar') view = renderSettings();
   else view = renderAbout();
+  const title = S.tab === 'kesfet' && S.sel ? resolve(S.sel)?.name : L(TAB_LABELS[S.tab]);
+  document.title = title ? `${title} | Besin Matriksi` : 'Besin Matriksi';
   app().innerHTML = `
     <header class="top">
       <button type="button" class="brand" data-action="ex-home" aria-label="${L("Besin Matriksi: Keşfet'e dön")}">${S.settings.emoji ? `<span class="logo">${brandMark}</span>` : ''}<b>Besin Matriksi</b></button>
-      <nav class="tabs" aria-label="${tr('navigation')}">${TABS.map(([id, ic]) => `<button class="tab ${S.tab === id ? 'on' : ''}" data-action="tab" data-tab="${id}" ${S.tab === id ? 'aria-current="page"' : ''}><span class="ti" aria-hidden="true">${S.settings.emoji ? ic : ''}</span><span class="tt">${tr(id)}</span><span class="tt-short">${TAB_SHORT[id]()}</span>${id === 'tarif' && recipeItemCount() ? `<span class="badge">${recipeItemCount()}</span>` : ''}${id === 'karsilastir' && S.compare.length ? `<span class="badge">${S.compare.length}</span>` : ''}</button>`).join('')}</nav>
+      ${navigation()}
     </header>
     ${S.profiles.length ? `<div class="profile-bar" role="group" aria-label="${L("Görünüm profilleri")}"><span class="hint">${L("Görünüm:")}</span>${S.profiles.map(p => `<button class="pchip" data-action="profile-apply" data-id="${p.id}">${esc(p.name)}</button>`).join('')}</div>` : ''}
     <main class="view view-${S.tab}">${view}</main>
-    ${renderPicker()}${renderColPicker()}${renderCustomEditor()}${renderThemeEditor(S.themeEditor, S.settings.customTheme)}`;
+    ${renderColPicker()}${renderCustomEditor()}${renderThemeEditor(S.themeEditor, S.settings.customTheme)}`;
+  syncPicker();
   aionMood(aionMoodFor());
   celebrateGoals();
   if (S.tab === 'ayarlar') applySettingsFilter();
@@ -257,9 +332,6 @@ export function render() {
     if (el) { el.focus(); if (selStart != null && el.setSelectionRange) try { el.setSelectionRange(selStart, selStart); } catch {} }
   }
   syncRoute();
-  // B207: şeritte seçili kategori görünür kalsın (yalnız şeridi kaydırır, sayfayı değil)
-  const strip = document.querySelector('.explore > .cats[data-strip="true"]'), onCat = strip?.querySelector('.cat.on');
-  if (onCat) { const a = strip.getBoundingClientRect(), b = onCat.getBoundingClientRect(); if (b.right > a.right - 48) strip.scrollLeft += b.left - a.left - 48; }
   // B198: "daha göster" düğmesi görünür alana yaklaşınca kendiliğinden yükle (düğme klavye/ekran okuyucu için de kalır)
   if ('IntersectionObserver' in window) document.querySelectorAll('.list-more').forEach((btn) => {
     const io = new IntersectionObserver((es) => { if (es.some((e) => e.isIntersecting)) { io.disconnect(); btn.click(); } }, { rootMargin: '600px 0px' });
@@ -274,7 +346,7 @@ function quickKeys(e) {
   const t = e.target, typing = !!t.closest?.('input, textarea, select, [contenteditable="true"]');
   if (e.key === '/' && !typing) {
     e.preventDefault();
-    if (S.tab !== 'kesfet') { S.tab = 'kesfet'; render(); }
+    if (S.tab !== 'kesfet' || S.sel) { S.tab = 'kesfet'; S.sel = null; render(); }
     $('#q')?.focus(); $('#q')?.select(); return true;
   }
   if (S.tab !== 'kesfet') return false;
@@ -288,7 +360,7 @@ function quickKeys(e) {
   }
   if (e.key === 'Escape') {
     if (t.id === 'q' && t.value) { e.preventDefault(); t.value = ''; t.dispatchEvent(new Event('input', { bubbles: true })); return true; }
-    if (S.sel && !typing) { e.preventDefault(); const id = S.sel.id; S.sel = null; render(); window.scrollTo(0, S.browseScrollY || 0); (document.querySelector(`#foodlist [data-id="${CSS.escape(id || '')}"]`) || $('#q'))?.focus(); return true; }
+    if (S.sel && !typing) { e.preventDefault(); EXPLORE_ACTIONS['ex-back'](); return true; }
   }
   return false;
 }
@@ -320,7 +392,7 @@ function refreshMatrix() {
     const rc = activeRecipe();
     const { r, basisLabel, factor } = recipeResult(rc);
     morphHtml(m, renderMatrix(r, S.settings, { recipe: rc, basisLabel, closed: S.closed, aminoProfile: S.personal.profile }));
-    const summary = $('#recipe-summary'); if (summary) summary.innerHTML = renderRecipeSummary(rc, r);
+    const summary = $('#recipe-summary'); if (summary) morphHtml(summary, renderRecipeSummary(rc, r));
     const gapsEl = $('#recipe-gaps'); if (gapsEl) gapsEl.innerHTML = renderRecipeGaps(r);
     const sources = $('#recipe-sources'); if (sources) sources.innerHTML = renderRecipeSources(rc, resolve, { key: S.recipeSource, factor, basisLabel, open: S.recipeSourcesOpen, precision: S.settings.precision });
     rc.items.forEach((it) => {
@@ -362,7 +434,7 @@ function setAmount(target, g, { fromSlider = false, fromInput = false } = {}) {
     const unitEl = box.querySelector('.amount-unit');
     if (unitEl) unitEl.textContent = amountUnitText(g, { oz, density, customLiquid });
     const inp = box.querySelector('.amt-input');
-    if (inp && !fromInput) { inp.value = fmtNum(g); inp.removeAttribute('aria-invalid'); }
+    if (inp && !fromInput) { inp.value = fmtExactAmount(g); clearAmountError(inp); }
     const sl = box.querySelector('.slider');
     if (sl && !fromSlider) sl.value = String(gramsToSlider(g, MAX_G));
     if (sl) { sl.style.setProperty('--fill', gramsToSlider(g, MAX_G) / SLIDER_STEPS * 100 + '%'); sl.setAttribute('aria-valuetext', `${fmtNum(g)} ${customLiquid ? 'mL' : 'g'}`); }
@@ -373,11 +445,11 @@ function setAmount(target, g, { fromSlider = false, fromInput = false } = {}) {
   if (target === 'pk') {
     const item = resolve(S.picker.sel);
     const pv = $('.pk-prev');
-    if (pv && item) pv.textContent = [item.v.energy != null ? `${fmtNum((item.v.energy * g) / 100)} kcal` : null, item.v.protein != null ? `${fmtNum((item.v.protein * g) / 100)} g protein` : null, item.v.fiber != null ? `${fmtNum((item.v.fiber * g) / 100)} g ${L("lif")}` : null].filter(Boolean).join(' · ');
+    if (pv && item) pv.textContent = pickerPreview(item, g);
   } else if (target.startsWith('cmp:')) {
     // Sürüklenen kaydırıcı DOM'dan silinmesin: yalnız pasta + tablo bölümü yenilenir
     const t = $('#cmp-table');
-    if (t) { const tmp = document.createElement('div'); tmp.innerHTML = renderCompare(); t.replaceWith(tmp.querySelector('#cmp-table')); } else render();
+    if (t) { const tmp = document.createElement('div'); tmp.innerHTML = renderCompare(); morphHtml(t, tmp.querySelector('#cmp-table').innerHTML); } else render();
   } else scheduleRefresh();
 }
 
@@ -420,12 +492,15 @@ function selectFood(prefix, ref) {
 
   if (prefix === 'ex' && ref?.t === 'c') { S.recent = pushRecent(S.recent, ref, knownFood); saveRecent(S.recent); }
   if (prefix === 'ex') {
-    if (!S.sel) S.browseScrollY = window.scrollY;
-    S.sel = ref; S.amount = S.settings.defaultAmount; render();
+    if (!S.sel) { S.browseScrollY = window.scrollY; S.browseOpener = focusSelector(document.activeElement); }
+    S.dayFeedback = null; S.sel = ref; S.amount = S.settings.defaultAmount; render();
     const d = $('.detail'); if (d) d.scrollTop = 0;
-    window.scrollTo(0, 0);
+    window.scrollTo(0, 0); $('#food-title')?.focus({ preventScroll: true });
+  } else {
+    S.picker.sel = ref; S.picker.amount = S.settings.defaultAmount; S.picker.notice = null; S.picker.error = null;
+    delete S.uxDetails['pk-amount'];
+    render(); $('#picker-food-title')?.focus({ preventScroll: true });
   }
-  else { S.picker.sel = ref; S.picker.amount = S.settings.defaultAmount; render(); }
 }
 
 // Günlük hedeflerine ulaşıldıysa Aion o gün için bir kez kutlar (cihazda hatırlanır; yeniden açılışta tekrar etmez)
@@ -467,6 +542,8 @@ function addToRecipe(ref, g, quiet = false) {
 }
 function addToCompare(ref, g) {
   if (S.compare.length >= 4) { toast(L("En fazla 4 besin karşılaştırılabilir")); return false; }
+  if (!ref || !resolve(ref)) return false;
+  if (S.compare.some(c => refKey(c.ref) === refKey(ref))) { toast(L("Karşılaştırmada zaten var")); return false; }
   S.compare.push({ ref: { ...ref }, g });
   toast(L("Karşılaştırmaya eklendi: {n}", { n: resolve(ref).name }));
   return true;
@@ -512,7 +589,15 @@ async function onClick(e) {
   const b = e.target.closest('[data-action]');
   if (!b) return;
   const a = b.dataset.action;
+  if (b.matches('a[href]')) {
+    if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+  }
   if (!document.querySelector('.modal')) modalOpener = focusSelector(b);
+  if (['pk-confirm', 'pk-confirm-more', 'ex-add-day', 'ex-add-recipe', 'ex-add-compare'].includes(a)) {
+    const exact = $(`[data-amtinput="${a.startsWith('pk-') ? 'pk' : 'ex'}"]`);
+    if (exact && !validateAmount(exact)) { exact.focus(); return; }
+  }
   if (Object.hasOwn(EXPLORE_ACTIONS, a)) return EXPLORE_ACTIONS[a](b); // B239: src/actions/explore.js
   if (Object.hasOwn(SETTINGS_ACTIONS, a)) return SETTINGS_ACTIONS[a](b); // B238: src/actions/settings.js
   if (Object.hasOwn(PICK_ACTIONS, a)) return PICK_ACTIONS[a](b); // B236: src/actions/pick.js
@@ -523,11 +608,20 @@ async function onClick(e) {
     case 'settings-jump': { const el = document.getElementById(b.dataset.id); if (el) { el.scrollIntoView({ block: 'start' }); el.querySelector('h2')?.focus({ preventScroll: true }); } break; }
     case 'aion-demo': aionPlay(b.dataset.anim || 'celebrate'); aionSay(tr('aionHello'), 4000); break;
     case 'setting-reset': if (Object.hasOwn(DEFAULT_SETTINGS, b.dataset.key)) { setSetting(b.dataset.key, DEFAULT_SETTINGS[b.dataset.key]); render(); } break;
+    case 'nav-more': S.moreNav = !S.moreNav; render(); break;
+    case 'browse-filters': {
+      if (b.dataset.prefix === 'pk') S.picker.filtersOpen = !S.picker.filtersOpen;
+      else S.browseFilters.ex = !S.browseFilters.ex;
+      render(); break;
+    }
     case 'tab': {
       // B177: etkin Keşfet sekmesine yeniden dokunmak (telefonda besin ayrıntısındayken) listeye döner; kategori ve arama korunur
-      const backToList = S.tab === 'kesfet' && b.dataset.tab === 'kesfet' && !!S.sel;
+      const backToList = b.dataset.tab === 'kesfet' && !!S.sel;
       if (backToList) S.sel = null;
-      S.tab = b.dataset.tab; render(); window.scrollTo(0, backToList ? (S.browseScrollY || 0) : 0); break;
+      const fromMore = $('#nav-more-button').getClientRects().length && (S.moreNav && (b.closest('.nav-overflow') || document.documentElement.dataset.uiCompact === 'true'));
+      S.moreNav = false; S.tab = b.dataset.tab; render(); window.scrollTo(0, backToList ? (S.browseScrollY || 0) : 0);
+      if (fromMore) $('#nav-more-button')?.focus({ preventScroll: true });
+      break;
     }
     case 'pwa-reload': flushSave(); location.reload(); break;
     case 'pwa-dismiss': $('#pwa-update-bar')?.remove(); break;
@@ -635,7 +729,7 @@ function applySettingsFilter() {
 
 function parseExactAmount(raw) {
   const s = String(raw ?? '').trim().replace(/\s+/g, '');
-  if (!s) return null;
+  if (!/^\d+(?:[.,]\d+)*$/.test(s)) return null;
   // Türkçe (1.250,5 veya 42,5) ve İngilizce (1,250.5 veya 42.5) ondalık girişleri kabul et
   const normalized = s.includes(',') && s.includes('.')
     ? (s.lastIndexOf(',') > s.lastIndexOf('.') ? s.replace(/\./g, '').replace(',', '.') : s.replace(/,/g, ''))
@@ -648,12 +742,12 @@ function onInput(e) {
   const t = e.target;
   if (t.dataset.amtinput) {
     const val = parseExactAmount(t.value);
-    if (val != null) { t.removeAttribute('aria-invalid'); setAmount(t.dataset.amtinput, val, { fromInput: true }); }
+    if (val != null) { clearAmountError(t); setAmount(t.dataset.amtinput, val, { fromInput: true }); }
     return;
   }
   if (t.id === 'rc-q') { S.rcQ = t.value; applyRecipeFilter(); return; }
   if (t.id === 'settings-q') { S.settingsQ = t.value; applySettingsFilter(); return; }
-  if (t.id === 'cmp-q') { S.cmpQ = t.value; const box = document.getElementById('cmp-found'); if (box) box.innerHTML = compareResults(S.cmpQ); return; }
+
   if (t.dataset.personalField) { updatePersonalDraft(t); return; }
   if (t.dataset.settingRange || t.dataset.settingNumber) { updateNumericSetting(t); return; }
   if (S.themeEditor && ['theme-color-picker', 'theme-color-hex'].includes(t.id)) {
@@ -692,7 +786,7 @@ function onInput(e) {
   if (t.dataset.slider) { setAmount(t.dataset.slider, sliderToGrams(t.value, MAX_G), { fromSlider: true }); return; }
   if (t.id === 'q') {
     S.q = t.value; S.extPage = 0; $('#foodlist').innerHTML = foodList('ex', S.cat, S.q, S.extGroup);
-    if (S.q) $('.welcome')?.remove();
+    $('[data-action="ex-clear"]').hidden = !S.q;
     return;
   }
   if (t.id === 'pq') {
@@ -703,13 +797,23 @@ function onInput(e) {
   }
   if (t.id === 'rc-name') { activeRecipe().name = t.value.slice(0, 80) || L("Adsız tarif"); persistRecipes(); return; }
 }
-function onChange(e) {
-  if (e.target.dataset.amtinput) {
-    const val = parseExactAmount(e.target.value);
-    if (val != null) { e.target.removeAttribute('aria-invalid'); setAmount(e.target.dataset.amtinput, val); }
-    else { e.target.setAttribute('aria-invalid', 'true'); toast(L("Miktar 1 ile 10.000 arasında bir sayı olmalı.")); }
-    return;
+function clearAmountError(input) {
+  input.removeAttribute('aria-invalid');
+  document.getElementById(input.getAttribute('aria-describedby')).hidden = true;
+}
+function validateAmount(input) {
+  const amount = parseExactAmount(input.value);
+  if (amount == null) {
+    input.setAttribute('aria-invalid', 'true');
+    document.getElementById(input.getAttribute('aria-describedby')).hidden = false;
+    return false;
   }
+  clearAmountError(input);
+  setAmount(input.dataset.amtinput, amount);
+  return true;
+}
+function onChange(e) {
+  if (e.target.dataset.amtinput) { validateAmount(e.target); return; }
   // B200: Kıyasla kartında biçim (çiğ/pişmiş…) yerinde değişir; miktar korunur
   if (e.target.dataset.cmpform != null) { const c = S.compare[+e.target.dataset.cmpform]; const f = +e.target.value; if (c?.ref?.t === 'c' && FOODS.find((x) => x.id === c.ref.id)?.forms[f]) { c.ref = { ...c.ref, f }; render(); $(`[data-cmpform="${e.target.dataset.cmpform}"]`)?.focus(); } return; }
   if (e.target.dataset.colTransfer && e.target.value) {
@@ -772,7 +876,7 @@ function onChange(e) {
 }
 
 function hasActiveDraft() {
-  if (S.customEdit || S.themeEditor) return true;
+  if (S.customEdit || S.themeEditor || S.picker?.sel) return true;
   if (JSON.stringify(S.personalDraft) !== JSON.stringify(S.personal.profile)) return true;
   const a = document.activeElement;
   if (a && a.matches?.('input:not([type="search"]):not([type="range"]), textarea')) return true;
@@ -804,10 +908,15 @@ export function start() {
   if (S.settings.showExt || S.recipes.some(r => r.items.some(it => it.ref.t === 'x'))) requestExtCatalog();
   if (S.personal.entries.some(e => e.ref.t === 'x')) requestExtCatalog();
   if (S.collections.some(c => c.items.some(r => r.t === 'x'))) requestExtCatalog(); // B165
-  window.addEventListener('resize', () => { document.documentElement.dataset.uiNarrow = String(window.innerWidth / (S.settings.uiScale / 100) < 900); });
+  window.addEventListener('resize', () => { if (updateLayout()) render(); });
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { if (S.settings.theme === 'system') applySettings(); });
   if (location.hash && location.hash !== '#/') applyRoute(location.hash);
-  window.addEventListener('popstate', () => { applyRoute(location.hash); render(); window.scrollTo(0, 0); });
+  window.addEventListener('popstate', () => {
+    const wasDetail = S.tab === 'kesfet' && !!S.sel;
+    S.moreNav = false; S.picker = null; applyRoute(location.hash);
+    if (wasDetail && S.tab === 'kesfet' && !S.sel) EXPLORE_ACTIONS['ex-back']();
+    else { render(); window.scrollTo(0, 0); }
+  });
   mountAion();
   configureAion(S.settings);
   render();
@@ -828,7 +937,7 @@ export function start() {
     S.recipes = loadRecipes(); if (!S.recipes.length) S.recipes = [newRecipe(L("İlk tarifim"))];
     if (!S.recipes.some((r) => r.id === S.activeRecipe)) S.activeRecipe = S.recipes[0].id;
     setCustomFoods(loadCustom()); S.collections = loadCollections(); S.profiles = loadProfiles();
-    const p = loadPersonal(); S.personal = p.state; S.personalReadError = p.error;
+    const p = loadPersonal(); S.personal = p.state; S.personalReadError = p.error; lastSavedPersonal = structuredClone(p.state);
     // B166: ayarlar da eşitlenir; yoksa bu sekme eski ayarlarla bir sonraki kayıtta diğer sekmenin değişikliğini ezer
     if (e.key === 'bm.settings.v2') { S.settings = loadSettings(); applySettings(); if (S.settings.showExt) requestExtCatalog(); }
     render();
@@ -859,9 +968,12 @@ export function start() {
       const key = shortcutKey(e); const target = Object.keys(SHORTCUT_ACTIONS).find(id => S.settings.shortcuts[id] === `Alt+${key}`);
       if (target) { e.preventDefault(); S.tab = target; render(); window.scrollTo(0, 0); document.querySelector(`[data-tab="${target}"]`)?.focus(); return; }
     }
+    if (e.key === 'Enter' && e.target.dataset.amtinput && !e.isComposing) { e.preventDefault(); validateAmount(e.target); return; }
+    if ($('dialog.food-picker[open]')) return;
+    if (e.key === 'Escape' && S.moreNav) { S.moreNav = false; render(); $('#nav-more-button')?.focus(); return; }
     trapModalTab(e); if (!e.defaultPrevented && e.key === 'Escape' && (S.picker || S.customEdit || S.themeEditor || S.colPicker)) { if (S.themeEditor) S.themeEditor = null; else if (S.customEdit) S.customEdit = null; else if (S.colPicker) S.colPicker = false; else S.picker = null; render(); } });
   // Modal arka planına tıklayınca kapat
-  document.addEventListener('mousedown', (e) => { if (e.target.classList?.contains('modal') && !e.target.classList.contains('dlg') && !S.customEdit) { S.picker = null; S.colPicker = false; render(); } });
+  document.addEventListener('mousedown', (e) => { if (e.target.classList?.contains('modal') && e.target.tagName !== 'DIALOG' && !e.target.classList.contains('dlg') && !S.customEdit) { S.picker = null; S.colPicker = false; render(); } });
   const ruler = $('#ruler');
   document.addEventListener('pointermove', (e) => { if (S.settings.ruler && ruler) ruler.style.transform = `translateY(${e.clientY - 22}px)`; }, { passive: true });
 }

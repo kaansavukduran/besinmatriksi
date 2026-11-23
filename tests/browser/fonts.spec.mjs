@@ -1,6 +1,6 @@
+import { tab } from './navigation.mjs';
 import { test, expect } from '@playwright/test';
 
-const tab = (page, id) => page.locator(`[data-action="tab"][data-tab="${id}"]`).click();
 
 test('başlık kimliği yerel Bricolage dosyalarıyla Türkçe karakterleri yükler', async ({ page, baseURL }) => {
   const externalFonts = [];

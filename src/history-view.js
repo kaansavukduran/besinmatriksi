@@ -84,7 +84,7 @@ export function historyRange(state, day, resolve, consumedOnly, { mode = '7', mo
   return rangeSummary(state, end, n, resolve, consumedOnly);
 }
 
-export function renderHistory(state, day, resolve, consumedOnly, { mode = '7', month = null, key = 'energy' } = {}) {
+export function renderHistory(state, day, resolve, consumedOnly, { mode = '7', month = null, key = 'energy', displayHeading = true } = {}) {
   const [k, unit, title] = WEEK_KEYS.find((x) => x[0] === key) || WEEK_KEYS[0];
   const today = localDay();
   const modeChips = MODES.map(([m, t]) => `<button class="pchip ${m === mode ? 'on' : ''}" aria-pressed="${m === mode}" data-action="hist-mode" data-mode="${m}">${L(t)}</button>`).join('');
@@ -100,7 +100,7 @@ export function renderHistory(state, day, resolve, consumedOnly, { mode = '7', m
   const body = mode === 'month' ? calendar(state, month || day.slice(0, 7), day, k, unit, resolve, consumedOnly) : sum.logged ? bars(sum.days, day, k, unit, mode === '30') : '';
   const empty = !sum.logged ? `<p class="empty hist-empty">${L("Bu aralıkta kayıt yok. Keşfet'te bir besin seç ve “Günlüğe ekle”ye dokun; günlerin burada birikir.")} <button class="btn" data-action="tab" data-tab="kesfet">${L("Keşfet'e git")}</button></p>` : '';
   return `<section class="history" aria-labelledby="hist-h" data-hist-mode="${mode}">
-    <div class="hist-head"><h3 id="hist-h">📅 ${L("Geçmiş")}</h3><div class="presets" role="group" aria-label="${L("Aralık")}">${modeChips}</div></div>
+    <div class="hist-head"><h3 id="hist-h"${displayHeading ? '' : ' class="sr"'}>${L("Geçmiş")}</h3><div class="presets" role="group" aria-label="${L("Aralık")}">${modeChips}</div></div>
     <div class="week" data-week-key="${k}"><div class="week-head"><p class="hint">${esc(L("Grafikte: {n} ({u})", { n: L(title).toLocaleLowerCase(locale()), u: unit }))}</p><div class="presets week-keys" role="group" aria-label="${L("Grafikte gösterilecek değer")}">${keyChips}</div></div>
     ${body}</div>
     ${empty}${sum.logged ? tiles(sum, k, delta, deltaLabel, streak) + `<p class="hint">${L("Ortalama yalnız kayıt olan günlerden; boş günler 0 sayılmaz. ≥: bazı kayıtlarda ölçüm yok, gerçek değer daha yüksek olabilir.")}</p>` + topFoods(sum) + `<p class="hist-export"><button class="btn ghost" data-action="hist-csv">⬇ ${L("Bu aralığı tablo (CSV) olarak indir")}</button></p>` : ''}

@@ -6,7 +6,7 @@ import { withSettingsToc } from '../src/settings-toc.js';
 test('B214 styles.css yalnız sıralı @import dizini; her modül var ve boş değil', () => {
   const index = fs.readFileSync(new URL('../src/styles.css', import.meta.url), 'utf8');
   const imports = [...index.matchAll(/@import '\.\/styles\/([a-z-]+)\.css';/g)].map((m) => m[1]);
-  assert.deepEqual(imports, ['tokens', 'base', 'explore', 'matrix', 'views', 'responsive', 'forms-print', 'aion-collections', 'components', 'forge-fixes']);
+  assert.deepEqual(imports, ['tokens', 'base', 'explore', 'matrix', 'views', 'responsive', 'forms-print', 'aion-collections', 'components', 'forge-fixes', 'task-views', 'recipe-compare-ux']);
   assert.equal(index.replace(/\/\*[\s\S]*?\*\//g, '').replace(/@import [^;]+;/g, '').trim(), '');
   for (const name of imports) assert.ok(fs.readFileSync(new URL(`../src/styles/${name}.css`, import.meta.url), 'utf8').trim().length > 100, name);
   assert.match(fs.readFileSync(new URL('../src/styles/tokens.css', import.meta.url), 'utf8'), /^\/\* =+ Tema belirteçleri/); // belirteçler en önde
@@ -43,7 +43,7 @@ test('B218 görünüm modülleri: her çağrılan ad içe aktarılmış ya da ta
 test('B230 Günlük eylemleri ayrı modülde ve app.js ile çakışmaz', () => {
   const day = fs.readFileSync(new URL('../src/actions/day.js', import.meta.url), 'utf8');
   const app = fs.readFileSync(new URL('../src/app.js', import.meta.url), 'utf8');
-  const keys = [...day.matchAll(/^  '([a-z0-9-]+)': async \(b\) =>/gm)].map((m) => m[1]);
+  const keys = [...day.matchAll(/^  '([a-z0-9-]+)': async \((b)?\) =>/gm)].map((m) => m[1]);
   for (const k of ['personal-goto-day', 'personal-save', 'personal-undo', 'personal-copy-day', 'rc-to-day', 'ex-add-day', 'hist-mode', 'hist-month', 'hist-csv', 'hist-add', 'hist-open', 'week-key']) assert.ok(keys.includes(k), k);
   for (const k of keys) assert.ok(!app.includes(`case '${k}'`), `app.js hâlâ ${k} içeriyor`);
   assert.match(app, /Object\.hasOwn\(DAY_ACTIONS, a\)/);
@@ -54,7 +54,7 @@ test('B230 Günlük eylemleri ayrı modülde ve app.js ile çakışmaz', () => {
 test('B232 koleksiyon eylemleri ayrı modülde ve app.js ile çakışmaz', () => {
   const col = fs.readFileSync(new URL('../src/actions/collections.js', import.meta.url), 'utf8');
   const app = fs.readFileSync(new URL('../src/app.js', import.meta.url), 'utf8');
-  const keys = [...col.matchAll(/^  '([a-z0-9-]+)': async \(b\) =>/gm)].map((m) => m[1]);
+  const keys = [...col.matchAll(/^  '([a-z0-9-]+)': async \((b)?\) =>/gm)].map((m) => m[1]);
   assert.deepEqual(keys, ['col-pick', 'col-pick-close', 'col-toggle', 'col-create-add', 'col-new', 'col-sub', 'col-rename', 'col-delete', 'col-move', 'col-remove-item']);
   for (const k of keys) assert.ok(!app.includes(`case '${k}'`), `app.js hâlâ ${k} içeriyor`);
   assert.match(app, /Object\.hasOwn\(COLLECTION_ACTIONS, a\)/);
@@ -66,7 +66,7 @@ test('B232 koleksiyon eylemleri ayrı modülde ve app.js ile çakışmaz', () =>
 test('B235 Tarif eylemleri ayrı modülde ve app.js ile çakışmaz', () => {
   const rc = fs.readFileSync(new URL('../src/actions/recipe.js', import.meta.url), 'utf8');
   const app = fs.readFileSync(new URL('../src/app.js', import.meta.url), 'utf8');
-  const keys = [...rc.matchAll(/^  '([a-z0-9-]+)': async \(b\) =>/gm)].map((m) => m[1]);
+  const keys = [...rc.matchAll(/^  '([a-z0-9-]+)': async \((b)?\) =>/gm)].map((m) => m[1]);
   assert.deepEqual(keys.sort(), ['daily-recipe-basis', 'rc-add', 'rc-basis', 'rc-cw', 'rc-cw-clear', 'rc-cw-set', 'rc-daily-total', 'rc-del-item', 'rc-delete', 'rc-dup', 'rc-move', 'rc-new', 'rc-open', 'rc-serv']);
   for (const k of keys) assert.ok(!app.includes(`case '${k}'`), `app.js hâlâ ${k} içeriyor`);
   assert.match(app, /Object\.hasOwn\(RECIPE_ACTIONS, a\)/);
@@ -78,8 +78,8 @@ test('B236 seçici ve Kıyasla eylemleri ayrı modülde ve app.js ile çakışma
   const pk = fs.readFileSync(new URL('../src/actions/pick.js', import.meta.url), 'utf8');
   const app = fs.readFileSync(new URL('../src/app.js', import.meta.url), 'utf8');
   const keys = [...pk.matchAll(/^  '([a-z0-9-]+)': async \((b)?\) =>/gm)].map((m) => m[1]);
-  for (const k of ['cmp-pick', 'cmp-add', 'cmp-del', 'cmp-sec', 'cmp-same', 'pk-close', 'pk-clear', 'pk-cats-toggle', 'pk-cat', 'pk-pick', 'pk-form', 'pk-back', 'pk-confirm', 'pk-confirm-more', 'pk-full-search', 'pk-extpage']) assert.ok(keys.includes(k), k);
-  assert.equal(keys.length, 20);
+  for (const k of ['cmp-add', 'cmp-del', 'cmp-sec', 'cmp-same', 'pk-close', 'pk-clear', 'pk-cats-toggle', 'pk-cat', 'pk-pick', 'pk-form', 'pk-back', 'pk-confirm', 'pk-confirm-more', 'pk-full-search', 'pk-extpage']) assert.ok(keys.includes(k), k);
+  assert.equal(keys.length, 19);
   for (const k of keys) assert.ok(!app.includes(`case '${k}'`), `app.js hâlâ ${k} içeriyor`);
   assert.match(app, /bindPickActions\(\{ render, selectFood, addToRecipe, addToCompare \}\)/);
 });
@@ -88,7 +88,7 @@ test('B236 seçici ve Kıyasla eylemleri ayrı modülde ve app.js ile çakışma
 test('B238 Ayarlar eylemleri ayrı modülde ve app.js ile çakışmaz', async () => {
   const st = fs.readFileSync(new URL('../src/actions/settings.js', import.meta.url), 'utf8');
   const app = fs.readFileSync(new URL('../src/app.js', import.meta.url), 'utf8');
-  const keys = [...st.matchAll(/^  '([a-z0-9-]+)': async \(b\) =>/gm)].map((m) => m[1]);
+  const keys = [...st.matchAll(/^  '([a-z0-9-]+)': async \((b)?\) =>/gm)].map((m) => m[1]);
   assert.equal(keys.length, 20);
   for (const k of ['theme-color-save', 'target-add', 'profile-save', 'profile-apply', 'section-move', 'reset-group', 'set', 'font', 'setstep', 'preset']) assert.ok(keys.includes(k), k);
   for (const k of keys) assert.ok(!app.includes(`case '${k}'`), `app.js hâlâ ${k} içeriyor`);
@@ -101,7 +101,7 @@ test('B238 Ayarlar eylemleri ayrı modülde ve app.js ile çakışmaz', async ()
 test('B239 Keşfet eylemleri ayrı modülde ve app.js ile çakışmaz', () => {
   const ex = fs.readFileSync(new URL('../src/actions/explore.js', import.meta.url), 'utf8');
   const app = fs.readFileSync(new URL('../src/app.js', import.meta.url), 'utf8');
-  const keys = [...ex.matchAll(/^  '([a-z0-9-]+)': async \(b\) =>/gm)].map((m) => m[1]);
+  const keys = [...ex.matchAll(/^  '([a-z0-9-]+)': async \((b)?\) =>/gm)].map((m) => m[1]);
   assert.equal(keys.length, 31);
   for (const k of ['ex-cat', 'ex-pick', 'ex-back', 'multi-add', 'cu-save', 'cu-delete', 'cats-toggle', 'ex-add-recipe', 'ex-add-compare', 'recent-clear']) assert.ok(keys.includes(k), k);
   for (const k of keys) assert.ok(!app.includes(`case '${k}'`), `app.js hâlâ ${k} içeriyor`);

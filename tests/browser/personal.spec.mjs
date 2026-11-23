@@ -1,6 +1,6 @@
+import { reveal, tab } from './navigation.mjs';
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-const tab = (page, id) => page.locator(`.tabs [data-action="tab"][data-tab="${id}"]`).click();
 for (const language of ['tr', 'en']) test(`kişisel profil, günlük ve görünüm ${language}: kayıt/ölçek/çevrimdışı akış`, async ({ page, context }, testInfo) => {
   test.setTimeout(90000);
   // Gün dönümünde (00:00) kayıt önceki güne düşmesin: sayfa saatini sabitle, zamanlayıcılar normal akar.
@@ -9,11 +9,15 @@ for (const language of ['tr', 'en']) test(`kişisel profil, günlük ve görün�
   await expect(page.locator('html')).toHaveAttribute('lang', language);
   await page.locator('[data-setbool="progressEnabled"]').locator('..').click();
   await tab(page, 'gunluk');
-  await expect(page.locator('h1')).toHaveText(language === 'en' ? 'Daily food plan & personal profile' : 'Günlük besin planı ve kişisel profil');
+  await expect(page.locator('h1')).toHaveText(language === 'en' ? 'Daily' : 'Günlük');
+  await expect(page.locator('[data-ux-details="diary-profile"]')).not.toHaveAttribute('open', '');
+  await reveal(page, '[data-ux-details="diary-profile"]');
   for (const [key, value] of Object.entries({ age: '35', height: '172', weight: '80' })) await page.locator(`[data-personal-field="${key}"]`).fill(value);
-  await page.locator('[data-personal-field="sex"]').selectOption('male'); await page.locator('[data-personal-field="activity"]').selectOption('1.6');
+  await page.locator('[data-personal-field="sex"]').selectOption('male');
+  await page.locator('[data-personal-field="activity"]').selectOption('1.6');
   await page.locator('.personal-profile details summary').click();
-  await page.locator('[data-personal-field="bodyFat"]').fill('25'); await page.locator('[data-personal-field="waterPct"]').fill('55');
+  await page.locator('[data-personal-field="bodyFat"]').fill('25');
+  await page.locator('[data-personal-field="waterPct"]').fill('55');
   await page.locator('[data-personal-field="note"]').fill('Fişim İı Şş ğü · keep my text');
   await page.locator('[data-action="personal-save"]').click();
   await expect(page.locator('#personal-save-status')).toContainText(language === 'en' ? 'Saved' : 'kaydedildi');
@@ -21,6 +25,7 @@ for (const language of ['tr', 'en']) test(`kişisel profil, günlük ve görün�
   await expect(page.locator('#personal-preview')).toContainText(language === 'en' ? '2,731' : '2.731');
   await tab(page, 'kesfet'); await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
   await page.locator('[data-action="ex-add-day"]').click(); await tab(page, 'gunluk');
+  await reveal(page, '[data-ux-details="diary-nutrients"]');
   await expect(page.locator('[data-daily-nutrient="energy"]')).toContainText('89');
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('bm.personal.v1')).entries[0].consumed)).toBe(false);
   await page.locator('.personal-sources > summary').click(); await expect(page.locator('.exploration-progress progress')).toHaveAttribute('value', '3');
@@ -30,7 +35,7 @@ for (const language of ['tr', 'en']) test(`kişisel profil, günlük ve görün�
   await page.locator('[data-action="personal-mode"][data-mode="consumed"]').click(); await expect(page.locator('[data-daily-nutrient="energy"]')).toContainText('89');
   await page.locator('[data-action="personal-remove"]').click(); await page.locator('[data-action="personal-undo"]').click();
   await expect(page.locator('[data-daily-nutrient="energy"]')).toContainText('89');
-  const promise = page.waitForEvent('download'); await page.locator('[data-action="personal-export"]').click();
+  const promise = page.waitForEvent('download'); await reveal(page, '[data-ux-details="diary-backup"]'); await page.locator('[data-action="personal-export"]').click();
   const stream = await (await promise).createReadStream(), chunks = []; for await (const chunk of stream) chunks.push(chunk);
   const buffer = Buffer.concat(chunks), payload = JSON.parse(buffer.toString('utf8'));
   expect(payload.personal.profile.note).toContain('Fişim İı Şş');
@@ -53,6 +58,7 @@ for (const language of ['tr', 'en']) test(`kişisel profil, günlük ve görün�
   await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' }); await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await page.locator('[data-setbool="progressEnabled"]').locator('..').click();
   await tab(page, 'gunluk'); await expect(page.locator('.exploration-progress')).toHaveCount(0);
+  await reveal(page, '[data-ux-details="diary-profile"]');
   const save = page.locator('[data-action="personal-save"]'); await save.scrollIntoViewIfNeeded(); await expect(save).toBeInViewport();
   const rect = await page.locator('.personal').boundingBox(); expect(rect.x + rect.width).toBeLessThanOrEqual((await page.viewportSize()).width + 2);
   await page.locator('[data-personal-field="age"]').focus(); await page.keyboard.press('Tab'); await expect(page.locator('[data-personal-field="height"]')).toBeFocused();
@@ -66,6 +72,7 @@ for (const language of ['tr', 'en']) test(`kişisel profil, günlük ve görün�
   await expect(page.locator('[data-personal-field="weight"]')).toHaveValue('80');
   await page.evaluate(async () => { await navigator.serviceWorker.ready; if (!navigator.serviceWorker.controller) await new Promise(resolve => navigator.serviceWorker.addEventListener('controllerchange', resolve, { once: true })); });
   await context.setOffline(true); await page.reload(); await tab(page, 'gunluk');
+  await reveal(page, '[data-ux-details="diary-nutrients"]');
   await expect(page.locator('[data-daily-nutrient="energy"]')).toContainText('89');
   await expect(page.locator('[data-daily-nutrient="polyphenols"]')).toContainText(language === 'en' ? 'No defined daily reference' : 'Tanımlı günlük referans yok');
   await expect(page.locator('[data-daily-nutrient="lys"]')).toContainText(language === 'en' ? 'Lysine' : 'Lizin');
@@ -74,6 +81,6 @@ test.describe('device language', () => {
   test.use({ locale: 'en-US' });
   test('yeni kurulum desteklenen cihaz dilini seçer', async ({ page }) => {
     await page.goto('/'); await expect(page.locator('html')).toHaveAttribute('lang', 'en'); await tab(page, 'gunluk');
-    await expect(page.locator('h1')).toHaveText('Daily food plan & personal profile');
+    await expect(page.locator('h1')).toHaveText('Daily');
   });
 });

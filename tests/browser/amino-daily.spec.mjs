@@ -1,5 +1,5 @@
+import { reveal, tab } from './navigation.mjs';
 import { test, expect } from '@playwright/test';
-const tab = (p, id) => p.locator(`.tabs [data-tab="${id}"]`).click();
 const aa = (p, key) => p.locator(`#matrix [data-sec="protein"] [data-nutrient="${key}"]`);
 for (const language of ['tr', 'en']) {
   test(`B146 daily amino bars ${language}: partial, amount, saved body weight and bottom catalogue`, async ({page}) => {
@@ -11,7 +11,7 @@ for (const language of ['tr', 'en']) {
     for (const key of ['his','ile','leu','lys','met','phe','thr','trp','val']) await expect(aa(page,key).locator('.bar')).toHaveCount(1);
     await expect(aa(page,'his').locator('.nrv')).toHaveAttribute('title', /70 kg/);
     const width = await aa(page,'his').locator('.bar i').getAttribute('style');
-    await page.locator('[data-amount="ex"] [data-delta="10"]').click();
+    await reveal(page, '[data-amount="ex"] .amount-options'); await page.locator('[data-amount="ex"] [data-delta="10"]').click();
     await expect(aa(page,'his').locator('.bar i')).not.toHaveAttribute('style',width);
     await page.locator('[data-action="ex-add-recipe"]').click(); await page.locator('[data-action="ex-add-day"]').click();
     if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
@@ -23,7 +23,7 @@ for (const language of ['tr', 'en']) {
     await expect(aa(page,'met').locator('.aa-joint')).toBeVisible();
     await expect(aa(page,'protein').locator('.nrv')).not.toHaveAttribute('title',/WHO/);
     await tab(page,'gunluk');
-    await page.locator('[data-personal-field="age"]').fill('30');await page.locator('[data-personal-field="weight"]').fill('80');
+    await reveal(page, '[data-ux-details="diary-profile"]'); await page.locator('[data-personal-field="age"]').fill('30');await reveal(page, '[data-ux-details="diary-profile"]'); await page.locator('[data-personal-field="weight"]').fill('80');
     await page.locator('[data-action="personal-save"]').click();
     await expect(page.locator('[data-daily-nutrient="his"] .nrv')).toHaveAttribute('title',/80 kg/);
     await tab(page,'tarif');await expect(aa(page,'his').locator('.nrv')).toHaveAttribute('title',/80 kg/);

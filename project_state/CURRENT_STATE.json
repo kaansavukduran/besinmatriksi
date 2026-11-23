@@ -1,16 +1,16 @@
 {
   "schema_version": "1",
   "project": "Besin Matriksi",
-  "product_version": "1.1.2-beta.70",
-  "development_state": "READY_TO_PUSH",
-  "last_forge_at": "2026-11-22",
-  "last_completed_forge": "B259",
-  "active_forge": null,
-  "next_recommended_forge": "B260 uzak depo bağlantısı sonrası main push, varsayılan dalı main yapma, GitHub Pages + Release doğrulaması",
+  "product_version": "1.1.2-beta.71",
+  "development_state": "WEB_PUBLICATION_REQUESTED",
+  "last_forge_at": "2026-11-23",
+  "last_completed_forge": "B261",
+  "active_forge": "B262",
+  "next_recommended_forge": "B262 GitHub Pages ve Cloudflare Pages canlı doğrulama",
   "branch": "main",
   "pull_request": null,
-  "validated_code_commit": "local-main-pending-push",
-  "package_source_commit": "a0d815a",
+  "validated_code_commit": "c7164871f2e94c939459f82359a7190b3c71c808",
+  "package_source_commit": "c7164871f2e94c939459f82359a7190b3c71c808",
   "verified_gates": [
     {
       "id": "data",
@@ -39,24 +39,16 @@
     },
     {
       "id": "remote-publish",
-      "result": "BLOCKED HTTP 403 Permission denied pushing to kaansavukduran/besinmatriksi.git (repo not attached to cloud project resources); live GitHub Pages still serves beta.68",
-      "level": "BLOCKED"
+      "result": "PASS B260 beta.70 on c7164871f2e94c939459f82359a7190b3c71c808; CI 45087277902, Pages 45087277961 and prerelease 45087300424.",
+      "level": "PACKAGED"
     },
     {
       "id": "native-runtime",
-      "result": "NOT_RUN physical devices (Android/iOS/Windows/macOS/Linux native), screen reader, and remote cross-browser Firefox/WebKit CI on beta.70",
+      "result": "NOT_RUN physical Android/iOS/Windows/macOS/Linux acceptance and screen reader. Published beta.70 Firefox/WebKit CI passed.",
       "level": "NOT_RUN"
     }
   ],
   "blockers": [
-    {
-      "forge": "B256-push-publish",
-      "state": "BLOCKED_ENVIRONMENT",
-      "reason": "2026-11-22: git push to github.com/kaansavukduran/besinmatriksi.git returns HTTP 403 Permission denied because kaansavukduran/besinmatriksi is not attached to the cloud conversation's project resources.",
-      "last_attempt_date": "2026-11-22",
-      "retry_not_before": null,
-      "next_step": "Attach kaansavukduran/besinmatriksi to the project (or push local main from an authorized token), switch GitHub default branch from ccr-1e1934aa-iv8aev to main, and verify CI + GitHub Pages + Release on the pushed SHA."
-    },
     {
       "forge": "B021",
       "state": "BLOCKED_ENVIRONMENT",
@@ -69,7 +61,7 @@
       "forge": "B031",
       "state": "NOT_RUN",
       "reason": "Native OS/device acceptance NOT_RUN in cloud Linux VM; package creation is not runtime proof.",
-      "next_step": "Run release.yml after push and perform physical device verification separately."
+      "next_step": "Use published beta.70 packages for native physical device verification."
     },
     {
       "forge": "B052-signing",
@@ -79,7 +71,7 @@
     }
   ],
   "remaining_forges": [
-    "B260-push-pages-release",
+    "B262-web-verification",
     "B031",
     "B021",
     "B052-signing"
@@ -299,7 +291,7 @@
       "version": "1.1.2-beta.36"
     }
   ],
-  "publication_policy": "No public Release or store publication. Only workflow_dispatch with publish=false; never move v1.1.1 tag. Latest user instruction confirmed this boundary.",
+  "publication_policy": "The user explicitly authorized publishing beta.71 on GitHub Pages and Cloudflare Pages in B262. Preserve existing tags and installer releases.",
   "work_session": {
     "state": "CLOSED",
     "owner": "codex-B050-personal-daily",
@@ -325,28 +317,28 @@
   },
   "pending_forges": [
     {
-      "id": "B257-push-pages-release",
-      "state": "BLOCKED_ENVIRONMENT",
-      "reason": "Local main is verified and ready at 1.1.2-beta.69, but remote git push returned HTTP 403 because kaansavukduran/besinmatriksi is not attached to cloud project resources."
+      "id": "B262-web-verification",
+      "state": "DEPLOY_AND_VERIFY",
+      "reason": "The user authorized beta.71 web publication. Verify both production destinations at the same commit. First-use research and physical device tests are pending separately."
     }
   ],
   "remaining": [
-    "B257-push-pages-release",
+    "B262-web-verification",
     "B021",
     "B031",
     "B052-signing"
   ],
   "latest_release": {
-    "tag": "v1.1.2-beta.68",
-    "run": 44895981769,
-    "source_sha": "a0d815a",
+    "tag": "v1.1.2-beta.70",
+    "run": 45087300424,
+    "source_sha": "c7164871f2e94c939459f82359a7190b3c71c808",
     "assets": 23,
-    "contains": "B196–B251"
+    "contains": "B196–B259"
   },
   "current_forge": {
-    "id": "B259",
-    "base_commit": "8229f200d4ad0a817258912f1dc98b60b6340f2e",
-    "local_evidence": "docs/DATA_RESEARCH.md",
+    "id": "B261",
+    "base_commit": "c7164871f2e94c939459f82359a7190b3c71c808",
+    "local_evidence": "docs/evidence/B261/VERIFY.md",
     "level": "RUNTIME_TESTED"
   },
   "validation_base_commit": "0c67cda9824150f30389e27d222f7be3913b76bd",
@@ -400,5 +392,12 @@
       "resolved_at": "2026-11-15",
       "evidence": "Actual fresh-browser entry at https://kaansavukduran.github.io/besinmatriksi/ succeeded on beta.35 before B149 rollout; HTTP200, chickpea selection and nutrition values, no page error. New deployment receipt reported separately after publish."
     }
-  ]
+  ],
+  "ux_preview": {
+    "base_commit": "c7164871f2e94c939459f82359a7190b3c71c808",
+    "evidence": "docs/evidence/B261/VERIFY.md",
+    "technical_verification": "357 unit tests and three web builds passed. The final build passed 38 targeted Chromium cases after fixing all failures from the initial full suite. Key flows checked in Firefox and WebKit.",
+    "product_acceptance": "NOT_RUN",
+    "production_target": "GitHub Pages and Cloudflare Pages, explicitly authorized in B262"
+  }
 }

@@ -1,5 +1,5 @@
+import { reveal } from './navigation.mjs';
 import { test, expect } from '@playwright/test';
-const tab = (page, id) => page.locator(`.tabs [data-action="tab"][data-tab="${id}"]`).first().click();
 
 test('B217 Günlük geçmişi: 7 gün / 30 gün / takvim, ortalama yalnız kayıtlı günlerden, takvimden güne git, sık yeneni aç', async ({ page }) => {
   const errors = []; page.on('pageerror', (error) => errors.push(error.message));
@@ -12,6 +12,7 @@ test('B217 Günlük geçmişi: 7 gün / 30 gün / takvim, ortalama yalnız kayı
     ] }));
   });
   await page.goto('/#/diary');
+  await reveal(page, '[data-ux-details="diary-history"]');
   const hist = page.locator('.history');
   await expect(hist).toHaveAttribute('data-hist-mode', '7');
   await expect(hist.locator('.week-bars .wk')).toHaveCount(7);
@@ -54,10 +55,10 @@ test('B217 Günlük geçmişi: 7 gün / 30 gün / takvim, ortalama yalnız kayı
   expect(errors).toEqual([]);
 });
 
-test('B217 Günlük geçmişi boşken rehber ve Keşfet düğmesi', async ({ page }) => {
+test('B217 boş Günlük ve besin ekleme düğmesi', async ({ page }) => {
   await page.goto('/#/diary');
-  // Bugüne kayıt yokken geçmiş bölümü günün kartında boş durum gösterir (kayıt varken geçmiş görünür)
-  await expect(page.locator('.day-empty, .hist-empty').first()).toBeVisible();
+  await expect(page.locator('.day-empty')).toBeVisible();
+  await expect(page.locator('[data-action="personal-add-food"]')).toBeVisible();
 });
 
 test('B220 geçmiş günü bugüne kopyala: plan olarak eklenir, geri alınabilir', async ({ page }) => {
@@ -72,6 +73,7 @@ test('B220 geçmiş günü bugüne kopyala: plan olarak eklenir, geri alınabili
   });
   await page.goto('/#/diary');
   await expect(page.locator('[data-action="personal-copy-day"]')).toHaveCount(0); // bugün seçiliyken yok
+  await reveal(page, '[data-ux-details="diary-history"]');
   await page.locator('.history .wk[data-day="2026-11-18"]').click();
   await page.locator('[data-action="personal-copy-day"]').click();
   await expect(page.locator('#personal-day')).toHaveValue('2026-11-19');
@@ -94,6 +96,7 @@ test('B227 sık yenenden "＋ Bugüne": olağan miktarla bugüne plan, geri alı
     ] }));
   });
   await page.goto('/#/diary');
+  await reveal(page, '[data-ux-details="diary-history"]');
   const add = page.locator('.history [data-action="hist-add"]').first();
   await expect(add).toContainText('120 g');
   await add.click();

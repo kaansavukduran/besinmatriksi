@@ -5,7 +5,6 @@ import { catalogGroup, catalogSections, categoryContains, DRINK_GROUPS } from '.
 import { dietActive } from '../diet.js';
 import { renderDietFilter } from '../diet-view.js';
 import { collectionRefs, collectionTree, hasRef } from '../collections.js';
-import { plateIllustration } from '../kitchen-art.js';
 import { similarFoods } from '../similar.js';
 import { renderMatrix } from '../matrix.js';
 import { scaleItem } from '../calc.js';
@@ -14,6 +13,7 @@ import { L, t as tr, getLanguage } from '../i18n.js';
 import { amountControls } from './amount.js';
 import { foodIcon, persona } from './common.js';
 import { catalogPending } from './ui.js';
+import { diaryAddedText } from '../personal-view.js';
 export function catName(id) {
   if (id?.startsWith('ext:')) return 'USDA: ' + L(extGroups()[id.slice(4)] || '');
   const c = NAV_CATEGORIES.find(c=>c.id===id) || DRINK_GROUPS.find(c=>c.id===id) || CATEGORIES.find(c=>c.id===id);
@@ -50,13 +50,14 @@ export function quickFacts(v) {
 export const SORTS = { default: () => 0, name: (a, b) => foodName(a).localeCompare(foodName(b), getLanguage() === 'en' ? 'en' : 'tr'),
   energy: (a, b) => (b.forms[0].v.energy ?? -1) - (a.forms[0].v.energy ?? -1), protein: (a, b) => (b.forms[0].v.protein ?? -1) - (a.forms[0].v.protein ?? -1), fiber: (a, b) => (b.forms[0].v.fiber ?? -1) - (a.forms[0].v.fiber ?? -1) };
 export const sortFoods = (list) => (S.sort === 'default' ? list : list.slice().sort(SORTS[S.sort] || SORTS.default));
-export function sortBar(prefix) {
-  if (prefix !== 'ex') return '';
+function sortBar() {
   const opts = [['default', L("Önerilen")], ['name', L("A–Z")], ['energy', L("Enerji")], ['protein', L("Protein")], ['fiber', L("Lif")]];
-  const multiBtn = `<button class="pchip ${S.multi ? 'on' : ''}" aria-pressed="${S.multi}" data-action="multi-toggle">☑ ${L("Çoklu seç")}</button>`;
-  const multiBar = S.multi ? `<div class="multibar" role="status"><span>${S.picked.length ? L("{n} besin seçildi", { n: S.picked.length }) : L("Tarife eklemek istediğin besinlere dokun.")}</span>
+  return `<div class="sortbar" role="group" aria-label="${L("Sırala")}"><span class="hint">${L("Sırala:")}</span>${opts.map(([id, label]) => `<button class="pchip ${S.sort === id ? 'on' : ''}" aria-pressed="${S.sort === id}" data-action="sort" data-s="${id}">${label}</button>`).join('')}</div>${['energy', 'protein', 'fiber'].includes(S.sort) ? `<p class="hint">${L("100 g ve ilk biçime göre, en yüksekten. Veri olmayanlar sonda.")}</p>` : ''}`;
+}
+
+function multiSelection() {
+  return S.multi ? `<div class="multibar"><span role="status">${S.picked.length ? L("{n} besin seçildi", { n: S.picked.length }) : L("Tarife eklemek istediğin besinlere dokun.")}</span>
     <button class="btn primary" data-action="multi-add" ${S.picked.length ? '' : 'disabled'}>＋ ${L("Tarife ekle (her biri 100 g)")}</button><button class="btn ghost" data-action="multi-toggle">${L("Vazgeç")}</button></div>` : '';
-  return multiBar + `<div class="sortbar" role="group" aria-label="${L("Sırala")}"><span class="hint">${L("Sırala:")}</span>${opts.map(([id, label]) => `<button class="pchip ${S.sort === id ? 'on' : ''}" aria-pressed="${S.sort === id}" data-action="sort" data-s="${id}">${label}</button>`).join('')}${multiBtn}</div>${S.sort === 'energy' || S.sort === 'protein' || S.sort === 'fiber' ? `<p class="hint">${L("100 g ve ilk biçime göre, en yüksekten. Veri olmayanlar sonda.")}</p>` : ''}`;
 }
 export function extButton(f, action) {
   return `<button class="food ext" data-action="${action}" data-ndb="${esc(f.n)}"><span class="fn">${esc(f.en)}</span><span class="ff">USDA SR28 · 2015 · NDB ${esc(f.n)}${f.a ? ` · ${L("Hayvansal")}` : f.diet === 'unknown' ? ` · ${L("İçerik doğrulanmalı")}` : ''}${f.branded ? ` · ${L("Markalı kaynak kaydı")}` : ''}</span></button>`;
@@ -65,21 +66,36 @@ export function extButton(f, action) {
 // ---------------------------------------------------------------- KEŞFET
 export function categoryNav(prefix, current) {
   const vis = visibleFoods();
-  const all = `<button class="cat ${!current ? 'on' : ''}" data-action="${prefix}-cat" data-cat=""><span class="cat-i">${S.settings.emoji ? '✨' : ''}</span><span class="cat-l">${L("Tümü")}</span> <span class="cnt">${vis.length}</span></button>`;
+  const all = `<button class="cat ${!current ? 'on' : ''}" aria-pressed="${!current}" data-action="${prefix}-cat" data-cat=""><span class="cat-i">${S.settings.emoji ? '✨' : ''}</span><span class="cat-l">${L("Tümü")}</span> <span class="cnt">${vis.length}</span></button>`;
   const cats = NAV_CATEGORIES.filter((c) => S.settings.showAnimal || !ANIMAL_CATS.has(c.id)).map((c) => {
     const n = vis.filter(f=>categoryContains(f,c.id)).length;
-    return `<button class="cat ${current === c.id ? 'on' : ''}" data-action="${prefix}-cat" data-cat="${c.id}"><span class="cat-i">${S.settings.emoji ? c.icon : ''}</span><span class="cat-l">${esc(categoryName(c))}</span> <span class="cnt">${n}</span></button>`;
+    return `<button class="cat ${current === c.id ? 'on' : ''}" aria-pressed="${current === c.id}" data-action="${prefix}-cat" data-cat="${c.id}"><span class="cat-i">${S.settings.emoji ? c.icon : ''}</span><span class="cat-l">${esc(categoryName(c))}</span> <span class="cnt">${n}</span></button>`;
   }).join('');
-  const ext = `<button class="cat ${current === 'ext' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="ext"><span class="cat-i">${S.settings.emoji ? '🗂️' : ''}</span><span class="cat-l">${L("Tam Katalog")}</span> <span class="cnt">${fmtNum(META.ext)}</span></button>`;
-  const cu = `<button class="cat ${current === 'custom' ? 'on' : ''}" data-action="${prefix}-cat" data-cat="custom"><span class="cat-i">${S.settings.emoji ? '🏷️' : ''}</span><span class="cat-l">${L("Kendi besinlerim")}</span> <span class="cnt">${customFoods().filter(eligibleFood).length}</span></button>`;
+  const ext = `<button class="cat ${current === 'ext' ? 'on' : ''}" aria-pressed="${current === 'ext'}" data-action="${prefix}-cat" data-cat="ext"><span class="cat-i">${S.settings.emoji ? '🗂️' : ''}</span><span class="cat-l">${L("Tam Katalog")}</span> <span class="cnt">${fmtNum(META.ext)}</span></button>`;
+  const cu = `<button class="cat ${current === 'custom' ? 'on' : ''}" aria-pressed="${current === 'custom'}" data-action="${prefix}-cat" data-cat="custom"><span class="cat-i">${S.settings.emoji ? '🏷️' : ''}</span><span class="cat-l">${L("Kendi besinlerim")}</span> <span class="cnt">${customFoods().filter(eligibleFood).length}</span></button>`;
   const colBtn = (c, sub) => {
     const n = (sub ? c.items : collectionRefs(S.collections, c.id)).filter(eligibleRef).length;
-    return `<button class="cat ${sub ? 'sub' : ''} ${current === 'col:' + c.id ? 'on' : ''}" data-action="${prefix}-cat" data-cat="col:${c.id}"><span class="cat-i">${sub ? '↳' : S.settings.emoji ? '📁' : ''}</span><span class="cat-l">${esc(c.name)}</span> <span class="cnt">${n}</span></button>`;
+    return `<button class="cat ${sub ? 'sub' : ''} ${current === 'col:' + c.id ? 'on' : ''}" aria-pressed="${current === 'col:' + c.id}" data-action="${prefix}-cat" data-cat="col:${c.id}"><span class="cat-i">${sub ? '↳' : S.settings.emoji ? '📁' : ''}</span><span class="cat-l">${esc(c.name)}</span> <span class="cnt">${n}</span></button>`;
   };
   const tree = collectionTree(S.collections);
   const cols = `<div class="cat-group" role="presentation">${L("Koleksiyonlarım")}</div>${tree.map((c) => colBtn(c, false) + c.children.map((ch) => colBtn(ch, true)).join('')).join('')}${prefix === 'ex' ? `<button class="cat add" data-action="col-new">＋ ${L("Yeni koleksiyon")}</button>` : ''}`;
   // B185: koleksiyon varsa "Tümü"nün hemen ardından gelir (telefonda şerit ~5950 px; koleksiyonlar 5165. pikseldeydi)
   return S.collections.length ? all + cols + cats + cu + ext : all + cats + cu + cols + ext;
+}
+
+export function browseControls(prefix, cat, { catsOpen, filtersOpen } = {}) {
+  const picker = prefix === 'pk';
+  const category = cat === 'ext' ? L("Tam Katalog") : cat?.startsWith('col:') ? S.collections.find((c) => `col:${c.id}` === cat)?.name : catName(cat);
+  const diet = S.settings.dietPattern;
+  const dietLabel = { vegan: L("Vegan"), vegetarian: L("Vejetaryen"), pescatarian: L("Pesketaryen") }[diet];
+  const activeFilters = dietActive(S.settings) || (!picker && S.sort !== 'default');
+  return `<div class="browse-tools">
+    <button type="button" class="cats-toggle" data-action="${picker ? 'pk-cats-toggle' : 'cats-toggle'}" aria-controls="${prefix}-categories" aria-expanded="${catsOpen}">${L("Kategoriler")}${category ? ` <span class="tool-current">· ${esc(category)}</span>` : ''}</button>
+    <button type="button" class="filters-toggle" data-action="browse-filters" data-prefix="${prefix}" aria-controls="${prefix}-filters" aria-expanded="${filtersOpen}">${L("Filtreler")}${activeFilters ? ` <span class="tool-current">· ${dietLabel || L("Etkin")}</span>` : ''}</button>
+    ${picker ? '' : `<button type="button" class="browse-multi" data-action="multi-toggle" aria-pressed="${S.multi}">${L("Çoklu seç")}</button>`}
+  </div>
+  <nav id="${prefix}-categories" class="cats browse-categories${picker ? ' pk-cats-nav' : ''}${S.settings.catGrid && !picker ? ' cats-grid' : ''}" aria-label="${L("Kategoriler")}" ${catsOpen ? '' : 'hidden'}>${categoryNav(prefix, cat)}</nav>
+  <div id="${prefix}-filters" class="browse-filters" ${filtersOpen ? '' : 'hidden'}>${renderDietFilter(S.settings, prefix, S.dietOpen[prefix])}${picker ? '' : sortBar()}</div>`;
 }
 
 export function refButton(ref, prefix, colId, index = -1, count = 0) {
@@ -170,7 +186,7 @@ export function foodList(prefix, cat, q, extGroup) {
   }
   const res = search(q, { cat, ext: S.settings.showExt && extLoaded() && !!q });
   if (!res.curated.length && !res.ext.length && !res.custom.length) return emptySearch(prefix, q, cat);
-  let html = (prefix === 'ex' ? catalogHeading(cat, q, res.curated.length + res.ext.length + res.custom.length) : '') + (!q && !cat ? recentRow(prefix) : '') + sortBar(prefix);
+  let html = (prefix === 'ex' ? catalogHeading(cat, q, res.curated.length + res.ext.length + res.custom.length) + multiSelection() : '') + (!q && !cat ? recentRow(prefix) : '');
   const groupedCategory = ['meyve','sebze','baklagil','icecek'].includes(cat);
   if (prefix==='ex' && groupedCategory && !q && S.sort!=='default') html += `<p class="hint">${L("Her alt başlık kendi içinde sıralanır.")}</p>`;
   const capped = !cat; // kategori listeleri kısa (≤ ~90); ana sayfa ve kategorisiz aramalar uzun
@@ -180,12 +196,13 @@ export function foodList(prefix, cat, q, extGroup) {
     for (const group of catalogSections(res.curated,CATEGORIES)) {
       if (budget <= 0) break;
       const title=categoryName(group);
-      const heading=prefix==='ex' && !q && cat && title===catName(cat) ? '' : `<h3 class="grp">${esc(title)}</h3>`;
-      const gf = (q?group.foods:sortFoods(group.foods)).slice(0, budget); budget -= gf.length;
+      const level = prefix === 'ex' && !cat && !q ? 'h2' : 'h3';
+      const heading = prefix === 'ex' && !q && cat && title === catName(cat) ? '' : `<${level} class="grp">${esc(title)}</${level}>`;
+      const gf = sortFoods(group.foods).slice(0, budget); budget -= gf.length;
       html += `<section class="catalog-section" data-catalog-group="${group.id}" aria-label="${esc(title)}">${heading}<div class="foods">${gf.map(f=>foodButton(f,prefix+'-pick')).join('')}</div></section>`;
     }
   } else {
-    const list = (q ? res.curated : sortFoods(res.curated)).slice(0, budget); budget -= list.length;
+    const list = sortFoods(res.curated).slice(0, budget); budget -= list.length;
     html += `<div class="foods">${list.map((f) => foodButton(f, prefix + '-pick')).join('')}</div>`;
   }
   if (capped && Number.isFinite(budget)) html += moreButton(prefix, total - (S.listLimit[prefix].n - Math.max(0, budget)));
@@ -215,62 +232,60 @@ export function similarRow(item) {
     <div class="presets">${list.map((f) => `<button class="pchip" data-action="ex-pick" data-id="${esc(f.id)}">${esc(foodName(f))}</button>`).join('')}</div></div>`;
 }
 
-// İlk kullanım turu: listenin başında akışta duran küçük kart (hiçbir şeyin üstünü örtmez), hedefi vurgular
-
 export function renderExplore() {
   const item = S.sel ? resolve(S.sel) : null;
+  const inCollection = !!item && S.collections.some(c => hasRef(c, S.sel));
   const detail = item
-    ? `<div class="dhead">
-        <button class="back" data-action="ex-back" aria-label="${L("Listeye dön")}">← ${L("Liste")}</button>
-        <div class="dtitle"><h2>${S.settings.emoji && item.food ? foodIcon(item.food, 40) + ' ' : ''}${esc(item.name)}</h2>
+    ? `<section class="detail food-detail" aria-labelledby="food-title">
+      <div class="dhead">
+        <button class="back" data-action="ex-back">← ${L("Listeye dön")}</button>
+        <div class="dtitle"><h1 id="food-title" tabindex="-1">${S.settings.emoji && item.food ? foodIcon(item.food, 32) + ' ' : ''}${esc(item.name)}</h1>
           <div class="dsub">${item.animal ? `<span class="tag-animal">${L("Hayvansal")}</span> ` : ''}${esc(item.food ? foodCategoryPath(item.food) : catName(item.cat))}${item.sci ? ` · <i>${esc(item.sci)}</i>` : ''}</div></div>
       </div>
       ${formChips('ex', S.sel)}
-      ${amountControls('ex', S.amount, item.portions, { liquid: item.liquid, density: item.density, customLiquid: item.customLiquid })}
-      <div class="dact" role="toolbar" aria-label="${L("Besin eylemleri")}">
-        <button class="btn primary" data-action="ex-add-recipe">＋ ${tr('addRecipe')}</button>
-        <button class="btn" data-action="ex-add-day">＋ ${tr('addDay')}</button>
-        <span class="dact-more">
-          <button class="btn icon" data-action="ex-add-compare" title="${tr('addCompare')}" aria-label="${tr('addCompare')}">⇄<span class="lbl-opt"> ${tr('addCompare')}</span></button>
-          <button class="btn icon ${S.collections.some((c) => hasRef(c, S.sel)) ? 'starred' : ''}" data-action="col-pick" title="${L("Koleksiyona ekle")}" aria-label="${L("Koleksiyona ekle")}">${S.collections.some((c) => hasRef(c, S.sel)) ? '★' : '☆'}<span class="lbl-opt"> ${L("Koleksiyon")}</span></button>
-          ${item.custom ? `<button class="btn icon" data-action="cu-edit" title="${L("Düzenle")}" aria-label="${L("Düzenle")}">✎<span class="lbl-opt"> ${L("Düzenle")}</span></button>` : ''}
-          <button class="btn icon ghost" data-action="csv" title="${L("Matriksi tablo (CSV) olarak indir")}" aria-label="${L("Matriksi tablo (CSV) olarak indir")}">⬇<span class="lbl-opt"> CSV</span></button>
-          <button class="btn icon ghost" data-action="print" title="${L("Yazdır veya PDF olarak kaydet")}" aria-label="${L("Yazdır veya PDF olarak kaydet")}">🖨<span class="lbl-opt"> ${L("Yazdır")}</span></button>
-          ${location.protocol.startsWith('http') && !item.custom ? `<button class="btn icon ghost" data-action="copy-link" title="${L("Bu besinin bağlantısını kopyala")}" aria-label="${L("Bu besinin bağlantısını kopyala")}">🔗<span class="lbl-opt"> ${L("Bağlantı")}</span></button>` : ''}
-        </span>
+      ${amountControls('ex', S.amount, item.portions, { density: item.density, customLiquid: item.customLiquid })}
+      <div class="dact" role="group" aria-label="${L("Besin eylemleri")}">
+        <button class="btn primary" data-action="ex-add-day">${tr('addDay')}</button>
+        <button class="btn" data-action="ex-add-recipe">${tr('addRecipe')}</button>
       </div>
-      ${item.food && !Object.keys(item.v || {}).length ? `<div class="card unavail"><p>${esc(item.note || '')}</p><button class="btn primary" data-action="cu-new" data-name="${esc(item.name)}">＋ ${L("Etiketten kendi besinim olarak ekle")}</button></div>` : ''}
+      <div id="food-day-feedback" class="day-feedback">${renderDayFeedback()}</div>
+      ${item.food && !Object.keys(item.v || {}).length ? `<div class="unavail"><p>${esc(item.note || '')}</p><button class="btn" data-action="cu-new" data-name="${esc(item.name)}">＋ ${L("Etiketten kendi besinim olarak ekle")}</button></div>` : ''}
+      <details class="food-tools" data-ux-details="food-tools" ${S.uxDetails['food-tools'] ? 'open' : ''}>
+        <summary>${L("Besin işlemleri")}</summary>
+        <div class="presets">
+          <button class="btn" data-action="ex-add-compare">${tr('addCompare')}</button>
+          <button class="btn" data-action="col-pick">${inCollection ? L("Koleksiyonda") : L("Koleksiyona ekle")}</button>
+          ${item.custom ? `<button class="btn" data-action="cu-edit">${L("Düzenle")}</button>` : ''}
+          <button class="btn" data-action="csv">${L("CSV indir")}</button>
+          <button class="btn" data-action="print">${L("Yazdır")}</button>
+          ${location.protocol.startsWith('http') && !item.custom ? `<button class="btn" data-action="copy-link">${L("Bağlantıyı kopyala")}</button>` : ''}
+        </div>
+      </details>
+      <div id="matrix" class="matrix">${matrixForExplore(item)}</div>
       ${similarRow(item)}
-      <div id="matrix" class="matrix">${matrixForExplore(item)}</div>`
-    : '';
+    </section>` : '';
   return `<div class="explore ${item ? 'has-sel' : ''}">
-    <nav class="cats ${S.settings.catGrid ? 'cats-grid' : ''}" aria-label="${L("Kategoriler")}" data-strip="${!S.settings.catGrid && !S.catsOpen}">${categoryNav('ex', S.cat)}${S.settings.catGrid ? '' : `<button class="cats-toggle" data-action="cats-toggle" aria-expanded="${!!S.catsOpen}">${S.catsOpen ? L("Daha az") : L("Tüm kategoriler")}</button>`}</nav>
     <section class="list" aria-label="${L("Besinler")}">
-      ${!item && !S.cat && !S.q ? welcome() : ''}
-      <search><div class="searchbar"><input type="search" id="q" placeholder="${L("Bir besin bul: mercimek, latte, pizza…")}" value="${esc(S.q)}" autocomplete="off" enterkeyhint="search" aria-label="${L("Besin ara")}" aria-keyshortcuts="/" title="${L("Kısayol: / ara · ↓ sonuçlara geç · Esc temizle")}">
-      ${S.q ? `<button class="btn ghost" data-action="ex-clear">${L("Temizle")}</button>` : ''}</div></search>
+      <search><div class="searchbar">
+        ${item ? `<label for="q">${L("Besin ara")}</label>` : `<h1><label for="q">${L("Besin ara")}</label></h1>`}
+        <div class="search-input-row"><input type="search" id="q" placeholder="${L("ör. mercimek, latte, pizza")}" value="${esc(S.q)}" autocomplete="off" enterkeyhint="search" autocapitalize="none" spellcheck="false" aria-keyshortcuts="/">
+        <button type="button" class="btn ghost" data-action="ex-clear" ${S.q ? '' : 'hidden'}>${L("Temizle")}</button></div>
+      </div></search>
+      ${browseControls('ex', S.cat, { catsOpen: S.catsOpen ?? S.settings.catGrid, filtersOpen: !!S.browseFilters.ex })}
       ${S.searches.length ? `<div class="recent-searches" aria-label="${L("Son aramalar")}"><span class="hint">${L("Son aramalar")}</span><div class="presets">${S.searches.map(q => `<button class="pchip" data-action="search-recent" data-q="${esc(q)}">${esc(q)}</button>`).join('')}<button class="btn ghost" data-action="search-clear">${L("Geçmişi temizle")}</button></div></div>` : ''}
-      ${renderDietFilter(S.settings,'ex',S.dietOpen.ex)}
       <div id="foodlist">${foodList('ex', S.cat, S.q, S.extGroup)}</div>
     </section>
-    <section class="detail" aria-label="${L("Besin matriksi")}">${detail}</section>
+    ${detail}
   </div>`;
 }
 
-// Katalog başlangıcı: yemek odağında kısa tanıtım; kategoriler üst sırada.
-export function welcome() {
-  const foods = visibleCurated();
-  return `<div class="welcome">
-    <div class="welcome-copy">
-      <h1>${L("Tabağında ne var?")}</h1>
-      <p>${L("Bir fincan kahveden akşam yemeğine, yediklerini biraz daha yakından tanı.")}</p>
-      <p class="welcome-meta">${L("{foods} besin · {forms} tüketim biçimi", { foods: foods.length, forms: foods.reduce((a, f) => a + f.forms.length, 0) })}<span>${L("Cihazında çalışır. Çevrimdışı da yanında.")}</span></p>
-    </div>
-    ${S.settings.emoji ? plateIllustration : ''}
-  </div>`;
+function renderDayFeedback() {
+  const feedback = S.dayFeedback;
+  if (!feedback || feedback.key !== refKey(S.sel)) return '';
+  return `<p role="status">${esc(diaryAddedText(feedback, resolve))}</p>
+    <button class="linkish" data-action="personal-show-added">${L("Günlüğü aç")}</button>`;
 }
 
-export const visibleCurated = () => search('', { cat: null }).curated;
 // B247: boş sonuçta nedenini ve tek dokunuşluk çıkışları göster: kategori daraltıyorsa tümünde ara, beslenme filtresi açıksa sıfırla, aramayı temizle
 export function emptySearch(prefix, q, cat) {
   const actions = [];
@@ -282,13 +297,13 @@ export function emptySearch(prefix, q, cat) {
 }
 
 export function catalogHeading(cat, q, count) {
-  const title = q ? L("“{q}” için sonuçlar", { q }) : cat ? catName(cat) : L("Besinleri keşfet");
-  return `<div class="catalog-heading ${['meyve','sebze','baklagil','icecek'].includes(cat)?'grouped-heading':''}"><h2>${esc(title)}</h2><span class="hint">${L("{n} besin", { n: count })}</span></div>`;
+  const title = q ? L("“{q}” için sonuçlar", { q }) : cat ? catName(cat) : "";
+  return `<div class="catalog-heading ${['meyve','sebze','baklagil','icecek'].includes(cat)?'grouped-heading':''}">${title ? `<h2>${esc(title)}</h2>` : ''}<span class="hint">${L("{n} besin", { n: count })}</span></div>`;
 }
 
 export function matrixForExplore(item) {
   const r = scaleItem(item, S.amount);
-  return renderMatrix(r, S.settings, { item, closed: S.closed, aminoProfile: S.personal.profile, persona: persona() });
+  return renderMatrix(r, S.settings, { item, overview: true, overviewOpen: S.uxDetails['food-reference'], closed: S.closed, aminoProfile: S.personal.profile, persona: persona() });
 }
 
 // ---------------------------------------------------------------- TARİF

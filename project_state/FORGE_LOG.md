@@ -1501,4 +1501,19 @@
 - Kanıt: `npm run data` deterministik; `node scripts/build-notices.mjs --check` PASS (25 bildirim); `npm test` 357/357 PASS; `build` / `build:single` / `build:lite` PASS; Playwright B257–B259 + i18n/personal/header/polish doğrulaması PASS (aşağıdaki son koşuyla mühürlendi).
 - Engel: `git push origin main` HTTP 403 (`kaansavukduran/besinmatriksi` proje kaynaklarına bağlı değil); değişiklikler yerel `main` dalında birleştirildi.
 
+## B260 · 2026-11-23 · beta.70 yayın doğrulaması
+
+- `main/c716487` GitHub’a gönderildi. Varsayılan dal ve `github-pages` dağıtım izni `main` olarak doğrulandı. Aynı commit’te CI `45087277902`, Pages `45087277961` ve `v1.1.2-beta.70` ön sürümü `45087300424` başarılı. [Yayın kaydı](https://github.com/kaansavukduran/besinmatriksi/releases/tag/v1.1.2-beta.70)
+
+## B261 · 2026-11-23 · İlk kullanım arayüzü ve çevrimdışı önizleme
+
+- Keşfet arama ve besin listesiyle açılır. Miktar ve temel değerler ilk sırada. Kategori, filtre ve ayrıntılar gerektiğinde açılır. Bricolage Grotesque başlıklar ve besin çizimleri kullanılır.
+- Günlük seçili tarihte doğrudan besin aramayı, kayıt onayını ve geri almayı sunar. Tarif ile Karşılaştır aynı seçiciyi kullanır. Günlük Toplam Tarif, amino asit skoru, ölçüm ve hesap verileri erişilebilir.
+- `main/c716487` tabanındaki yerel önizleme, 357 birim testi, üç web derlemesi ve son üretim derlemesinde 38 hedefli Chromium doğrulamasıyla hazır. Firefox ve WebKit’te ana akışlar denendi. Katılımcı, fiziksel cihaz ve ekran okuyucu kabulü bekliyor. [Doğrulama](../docs/evidence/B261/VERIFY.md)
+
+## B262 · 2026-11-23 · beta.71 web yayını
+
+- Kullanıcı GitHub Pages ve Cloudflare Pages web yayınına yetki verdi. Cloudflare üretim dalı `main` olarak ayarlandı ve otomatik dağıtım doğrulandı.
+- İki web adresi README’nin üstüne eklendi, Vercel yapılandırması depodan çıkarıldı ve Vercel projesi duraklatıldı. GitHub Hakkında kutusunun düzenlenmesi için API HTTP 403 döndürdü.
+- `node --test --test-isolation=none tests/*.test.mjs` 357/357, `npm run build` başarılı. Mevcut kurulum paketlerinin kaynağı `v1.1.2-beta.70`.
 

@@ -57,7 +57,7 @@ test('dil, ölçek ve font ayarları göç eder; görünüm gerçek ölçümleri
   for (const uiScale of [79, 201, 137, NaN]) assert.equal(normalizeSettings({ uiScale }).uiScale, 100);
   for (const n of NUTRIENTS) assert.ok(EN_NUTRIENTS[n.key], 'English label missing: ' + n.key);
   const state = emptyPersonal(), before = structuredClone(state);
-  for (const language of ['tr', 'en']) { setLanguage(language); const html = renderPersonal(state, state.profile, '2026-11-09', false, cfg, () => null, 'energy', false, null, false); assert.ok(html.includes(t('dailyTitle'))); }
+  for (const language of ['tr', 'en']) { setLanguage(language); const html = renderPersonal(state, state.profile, '2026-11-09', false, cfg, () => null, 'energy', false, null, false); assert.match(html, /id="diary-title"/); }
   assert.deepEqual(state, before); setLanguage('tr');
 });
 test('localStorage getter erişimi reddedilse bile tek HTML başlangıcı hata fırlatmaz', () => {

@@ -15,12 +15,14 @@ export function norm(s) {
 const fmtCache = new Map();
 let formatPreferences = { decimalSeparator: 'comma', autoUnits: true };
 export function configureFormatting(settings = {}) { formatPreferences = { decimalSeparator: settings.decimalSeparator || 'comma', autoUnits: settings.autoUnits !== false }; }
-function nf(min, max) {
+function nf(min, max, useGrouping = true) {
   const locale = formatPreferences.decimalSeparator === 'dot' || (formatPreferences.decimalSeparator === 'auto' && getLanguage() === 'en') ? 'en-US' : 'tr-TR';
-  const k = locale + ':' + min + ':' + max;
-  if (!fmtCache.has(k)) fmtCache.set(k, new Intl.NumberFormat(locale, { minimumFractionDigits: min, maximumFractionDigits: max }));
+  const k = locale + ':' + min + ':' + max + ':' + useGrouping;
+  if (!fmtCache.has(k)) fmtCache.set(k, new Intl.NumberFormat(locale, { minimumFractionDigits: min, maximumFractionDigits: max, useGrouping }));
   return fmtCache.get(k);
 }
+
+export const fmtExactAmount = (value) => nf(0, 2, false).format(value);
 
 // Uyarlanabilir hassasiyet: büyük değerler tam, küçük değerler 3 anlamlı basamak
 export function fmtNum(x, precision = 'normal') {

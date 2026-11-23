@@ -1,3 +1,4 @@
+import { category, filters } from './navigation.mjs';
 import { test, expect } from '@playwright/test';
 
 // B247: boş sonuçta nedeni ve tek dokunuşluk çıkışlar
@@ -11,14 +12,14 @@ test('B247 boş arama: temizle, kategoriyi genişlet ve beslenme filtresini sıf
   await expect(page.locator('#foodlist [data-action="ex-pick"]').first()).toBeVisible();
 
   // kategori daraltıyorsa: tüm kategorilerde ara (arama korunur)
-  await page.locator('.cats [data-action="ex-cat"][data-cat="meyve"]').first().click();
+  await category(page, 'meyve');
   await page.locator('#q').fill('mercimek');
   await page.locator('#foodlist .empty-state [data-action="ex-cat"]').click();
   await expect(page.locator('#q')).toHaveValue('mercimek');
   await expect(page.locator('#foodlist [data-id="kirmizi_mercimek"]')).toBeVisible();
 
   // beslenme filtresi gizliyorsa: neden + sıfırla
-  await page.locator('#ex-diet-pattern').selectOption('vegan');
+  await filters(page); await page.locator('#ex-diet-pattern').selectOption('vegan');
   await page.locator('#q').fill('simit');
   await expect(page.locator('#foodlist .empty-state')).toContainText('Beslenme filtresi açık');
   await page.locator('#foodlist .empty-state [data-action="diet-reset"]').click();

@@ -1,3 +1,4 @@
+import { tab as goToTab } from './navigation.mjs';
 import { test, expect } from '@playwright/test';
 import { UI_EN } from '../../src/i18n-ui.js';
 
@@ -30,7 +31,7 @@ test('B171 İngilizce arayüzde görünür Türkçe metin yok (tüm sekmeler, be
   await page.goto('/'); add(await scan(page));
   await page.locator('#q').fill('nohut'); await page.locator('#foodlist [data-id="nohut"]').click(); add(await scan(page));
   await page.locator('[data-action="ex-add-recipe"]').click(); await page.locator('[data-action="ex-add-day"]').click();
-  for (const tab of ['tarif', 'gunluk', 'karsilastir', 'ayarlar', 'hakkinda']) { await page.locator(`[data-action="tab"][data-tab="${tab}"]`).first().click(); add(await scan(page)); }
+  for (const tab of ['tarif', 'gunluk', 'karsilastir', 'ayarlar', 'hakkinda']) { await goToTab(page, tab); add(await scan(page)); }
   expect([...found]).toEqual([]);
 });
 
@@ -40,10 +41,11 @@ test('B172 alt sekme etiketleri sözcük ortasından bölünmez ve düğmesine s
     await page.addInitScript((lang) => localStorage.setItem('bm.settings.v2', JSON.stringify({ version: 2, settings: { language: lang } })), lang);
     await page.goto('/'); await page.evaluate(() => document.fonts.ready);
     const bad = await page.evaluate(() => [...document.querySelectorAll('.tabs .tab')].flatMap((t) => {
-      const s = t.querySelector('.tt-short'); const r = document.createRange(); r.selectNodeContents(s);
+      if (!t.getClientRects().length) return [];
+      const r = document.createRange(); r.selectNodeContents(t);
       const lines = new Set([...r.getClientRects()].map((x) => Math.round(x.top))).size;
       const tb = t.getBoundingClientRect(), rb = r.getBoundingClientRect();
-      return lines > 1 || rb.left < tb.left - 1 || rb.right > tb.right + 1 ? [`${s.textContent} satır=${lines}`] : [];
+      return lines > t.textContent.trim().split(/\s+/).length || rb.left < tb.left - 1 || rb.right > tb.right + 1 ? [`${t.textContent} satır=${lines}`] : [];
     }));
     expect(bad, `${lang} ${width}px`).toEqual([]);
   }

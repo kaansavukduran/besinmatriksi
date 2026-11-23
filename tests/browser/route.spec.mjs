@@ -10,15 +10,15 @@ test('B205 adres çubuğu: sekme ve besin bağlantısı, Geri/İleri, doğrudan 
   await expect(page).toHaveURL(/#\/compare$/);
   await page.goBack();
   await expect(page).toHaveURL(/#\/food\/nohut$/);
-  await expect(page.locator('.detail h2')).toContainText('Nohut');
+  await expect(page.locator('#food-title')).toContainText('Nohut');
   await page.goBack();
-  await expect(page).toHaveURL(/4173\/(#\/)?$/);
+  await expect(page).toHaveURL(url => url.pathname === '/' && ['', '#/'].includes(url.hash));
   await expect(page.locator('#matrix')).toHaveCount(0);
   await page.goForward();
-  await expect(page.locator('.detail h2')).toContainText('Nohut');
+  await expect(page.locator('#food-title')).toContainText('Nohut');
   // paylaşılan bağlantıyla doğrudan açılış (biçim dahil), bilinmeyen bağlantı Keşfet'e düşer
   await page.goto('/#/food/nohut/1');
-  await expect(page.locator('.detail h2')).toContainText('Nohut');
+  await expect(page.locator('#food-title')).toContainText('Nohut');
   await expect(page.locator('.forms [aria-pressed="true"]')).toHaveText(/Haşlanmış/);
   await page.goto('/#/settings');
   await expect(page.locator('.settings')).toBeVisible();

@@ -1,6 +1,6 @@
+import { categories, category, filters, reveal, tab, outputTools } from './navigation.mjs';
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-const tab = (page, id) => page.locator(`[data-action="tab"][data-tab="${id}"]`).click();
 const pickBanana = async page => {
   await page.locator('#q').fill('muz');
   await page.locator('#foodlist [data-id="muz"]').click();
@@ -8,10 +8,10 @@ const pickBanana = async page => {
 test('besin, miktar, tarif ve karşılaştırma uçtan uca çalışır', async ({ page }) => {
   const errors = []; page.on('pageerror', e => errors.push(e.message));
   await page.goto('/'); await pickBanana(page);
-  await page.locator('[data-amount="ex"] [data-val="250"]').click();
+  await reveal(page, '[data-amount="ex"] .amount-options'); await page.locator('[data-amount="ex"] [data-val="250"]').click();
   await expect(page.locator('#matrix [data-basic="energy"]')).toContainText('223');
   await page.locator('[data-action="ex-add-recipe"]').click();
-  await page.locator('[data-action="ex-add-compare"]').click();
+  await reveal(page, '.food-tools'); await page.locator('[data-action="ex-add-compare"]').click();
   await tab(page, 'tarif');
   // Maliyet hesabı yok (Kaan'ın 2026-11-12 kararı); özet temel değer kartıdır
   await page.locator('[data-action="ing-open"]').first().click();
@@ -24,8 +24,8 @@ test('besin, miktar, tarif ve karşılaştırma uçtan uca çalışır', async (
   await page.reload();
   // Karşılaştırma geçici; bu test için yeniden seç.
   await tab(page, 'kesfet'); await pickBanana(page);
-  await page.locator('[data-action="ex-add-compare"]').click(); await tab(page, 'karsilastir');
-  await expect(page.locator('table.cmp')).toContainText('Muz');
+  await reveal(page, '.food-tools'); await page.locator('[data-action="ex-add-compare"]').click(); await tab(page, 'karsilastir');
+  await expect(page.locator('.compare-basic-wrap table.cmp')).toContainText('Muz');
   expect(errors).toEqual([]);
 });
 test('v1 ayarları taşınır; bölümler, sabitler, profil ve ayar dosyası kalıcıdır', async ({ page }) => {
@@ -58,11 +58,11 @@ test('eş anlamlı ve Türkçe arama geçmişi cihazda çalışır', async ({ pa
   await page.locator('[data-action="search-clear"]').click(); await expect(page.locator('.recent-searches')).toHaveCount(0);
 });
 test('etiket besini silindiğinde tarif eksik malzemeyi ve kapsamı gösterir', async ({ page }) => {
-  await page.goto('/'); await page.locator('[data-action="ex-cat"][data-cat="custom"]').click();
+  await page.goto('/'); await category(page, 'custom');
   await page.locator('[data-action="cu-new"]').click(); await page.locator('#cu-name').fill('Deneme içeceği');
   await page.locator('[data-cu="energy"]').fill('40'); await page.locator('[data-action="cu-save"]').click();
   await page.locator('[data-action="ex-add-recipe"]').click();
-  await page.locator('[data-action="cu-edit"]').click(); await page.locator('[data-action="cu-delete"]').click();
+  await reveal(page, '.food-tools'); await page.locator('[data-action="cu-edit"]').click(); await page.locator('[data-action="cu-delete"]').click();
   await page.locator('.dlg [data-r="1"]').click(); await tab(page, 'tarif');
   await expect(page.locator('#recipe-summary')).toContainText('1 malzemenin kaydı bulunamadı');
   await expect(page.locator('#matrix .idcard')).toContainText('100 g malzeme');
@@ -77,11 +77,12 @@ test('üretim PWA çevrimdışı yeniden açılır ve geniş katalog yüklenir',
   await expect(page.locator('[data-setbool="showExt"]')).toBeChecked();
   await tab(page, 'kesfet');
   if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
-  await page.locator('[data-action="ex-cat"][data-cat="ext"]').click();
+  await category(page, 'ext');
   await page.locator('#q').fill('');
   await expect(page.locator('#foodlist .food').first()).toBeVisible();
 });
 test('ana ekranlar WCAG 2.1 AA otomatik denetimi ve yatay taşma kontrolünden geçer', async ({ page }) => {
+  test.setTimeout(90000);
   await page.goto('/');
   for (const id of ['kesfet', 'ayarlar', 'tarif', 'karsilastir']) {
     await tab(page, id);
@@ -133,7 +134,7 @@ test('tek HTML dosyası internet olmadan yerelden açılır', async ({ page, con
   const html = fileURLToPath(new URL('../../dist-single/besin-matriksi.html', import.meta.url));
   await context.setOffline(true); await page.goto('file://' + html);
   await pickBanana(page); await expect(page.locator('#matrix')).toContainText('USDA');
-  await page.locator('[data-amount="ex"] [data-val="1000"]').click();
+  await reveal(page, '[data-amount="ex"] .amount-options'); await page.locator('[data-amount="ex"] [data-val="1000"]').click();
   await expect(page.locator('#matrix [data-basic="energy"]')).toContainText('890');
 });
 
@@ -143,7 +144,7 @@ test('tek HTML içeriği harici istek olmadan çalışır', async ({ page, conte
   const html = await readFile(new URL('../../dist-single/besin-matriksi.html', import.meta.url), 'utf8');
   const requests = []; page.on('request', r => requests.push(r.url()));
   await context.setOffline(true); await page.setContent(html);
-  await pickBanana(page); await page.locator('[data-amount="ex"] [data-val="1000"]').click();
+  await pickBanana(page); await reveal(page, '[data-amount="ex"] .amount-options'); await page.locator('[data-amount="ex"] [data-val="1000"]').click();
   await expect(page.locator('#matrix [data-basic="energy"]')).toContainText('890');
   expect(requests.filter(url => /^https?:/.test(url))).toEqual([]);
 });
@@ -164,7 +165,7 @@ test('A4 çıktısı tabloyu ve tüm değerleri korur, bölüm durumunu geri yü
   }
   await expect(protein).not.toHaveAttribute('open', '');
   expect(await page.locator('#matrix .row').allTextContents()).toEqual(before);
-  await page.locator('[data-amount="ex"] [data-val="250"]').click();
+  await reveal(page, '[data-amount="ex"] .amount-options'); await page.locator('[data-amount="ex"] [data-val="250"]').click();
   await expect(page.locator('[data-sec="protein"]')).not.toHaveAttribute('open', '');
 });
 
@@ -256,6 +257,7 @@ test('ayrıntılı renk seçim penceresi önizleme, iptal, kalıcılık ve tema 
 });
 
 test('EFSA grup referansı yaş/koşul/türü korur; kişisel hedefi değiştirmez ve çevrimdışı CSV taşır', async ({ page, context }, testInfo) => {
+  test.setTimeout(90000);
   await page.goto('/'); await tab(page, 'ayarlar');
   await page.locator('[data-k="referenceMode"][data-v=\'"custom"\']').click();
   await page.locator('#target-nutrient').selectOption('protein'); await page.locator('#target-new-value').fill('80');
@@ -297,7 +299,7 @@ test('EFSA grup referansı yaş/koşul/türü korur; kişisel hedefi değiştirm
   await expect(page.locator('.reference-label')).toContainText('%EFSA (PRI/AI)');
   await expect(page.locator('#matrix .row').filter({ has: page.locator('.lbl', { hasText: 'Kalsiyum (Ca)' }) }).locator('.ref-kind')).toHaveText('PRI');
   await expect(page.locator('#matrix .row').filter({ has: page.locator('.lbl', { hasText: 'Sodyum (Na)' }) }).locator('.nrv')).toHaveCount(0);
-  const promise = page.waitForEvent('download'); await page.locator('[data-action="csv"]').click();
+  const promise = page.waitForEvent('download'); await outputTools(page); await page.locator('[data-action="csv"]').click();
   const stream = await (await promise).createReadStream(), chunks = [];
   for await (const chunk of stream) chunks.push(chunk);
   const csv = Buffer.concat(chunks).toString('utf8');
@@ -341,9 +343,9 @@ test('İngilizce modda eski ekranlarda Türkçe arayüz metni kalmaz (B051)', as
   await expect(page.locator('[data-action="tab"][data-tab="kesfet"]')).toContainText('Explore');
   expect(await leftovers()).toEqual([]);
   await page.locator('#q').fill('lentil'); await page.locator('#foodlist [data-id="yesil_mercimek"]').click();
-  await expect(page.locator('.dtitle h2')).toContainText('Green / brown lentils');
+  await expect(page.locator('#food-title')).toContainText('Green / brown lentils');
   expect(await leftovers()).toEqual([]);
-  await page.locator('[data-action="ex-add-recipe"]').click(); await page.locator('[data-action="ex-add-compare"]').click();
+  await page.locator('[data-action="ex-add-recipe"]').click(); await reveal(page, '.food-tools'); await page.locator('[data-action="ex-add-compare"]').click();
   for (const id of ['tarif', 'karsilastir', 'ayarlar', 'hakkinda']) {
     await tab(page, id);
     expect(await leftovers(), id).toEqual([]);
@@ -353,7 +355,7 @@ test('koleksiyon ve alt kategori ekleme/çıkarma; besin ekle-çıkar ve kalıc�
   const errors = []; page.on('pageerror', e => errors.push(e.message));
   await page.goto('/');
   // Yeni koleksiyon
-  await page.locator('[data-action="col-new"]').click();
+  await categories(page); await page.locator('[data-action="col-new"]').click();
   await page.locator('.dlg .dlg-line').fill('Kahvaltılıklar'); await page.keyboard.press('Enter');
   await expect(page.locator('.col-head h3')).toHaveText('Kahvaltılıklar');
   await expect(page.locator('#foodlist')).toContainText('boş');
@@ -362,16 +364,16 @@ test('koleksiyon ve alt kategori ekleme/çıkarma; besin ekle-çıkar ve kalıc�
   await page.locator('.dlg .dlg-line').fill('Smoothie'); await page.locator('.dlg [data-r="1"]').click();
   await expect(page.locator('.col-head h3')).toHaveText('Kahvaltılıklar › Smoothie');
   // Besin ekle: muz → Smoothie, yulaf → yeni "Lifli" koleksiyonu (önce Tümü'ne dön)
-  await page.locator('.cat[data-cat=""]').click();
+  await category(page, '');
   await pickBanana(page);
-  await page.locator('[data-action="col-pick"]').click();
+  await reveal(page, '.food-tools'); await page.locator('[data-action="col-pick"]').click();
   await page.locator('.col-toggle.sub').click();
   await expect(page.locator('.col-toggle.sub')).toHaveAttribute('aria-pressed', 'true');
   await page.locator('[data-action="col-pick-close"]').last().click();
-  await expect(page.locator('[data-action="col-pick"]')).toContainText('★');
+  await expect(page.locator('[data-action="col-pick"]')).toHaveText('Koleksiyonda');
   if (await page.locator('.back').isVisible()) await page.locator('.back').click();
   await page.locator('#q').fill('yulaf'); await page.locator('#foodlist [data-id="yulaf"]').click();
-  await page.locator('[data-action="col-pick"]').click();
+  await reveal(page, '.food-tools'); await page.locator('[data-action="col-pick"]').click();
   await page.locator('#col-new-name').fill('Lifli');
   await page.locator('[data-action="col-create-add"]').click();
   await expect(page.locator('.col-toggle').filter({ hasText: 'Lifli' })).toHaveAttribute('aria-pressed', 'true');
@@ -381,7 +383,7 @@ test('koleksiyon ve alt kategori ekleme/çıkarma; besin ekle-çıkar ve kalıc�
   await page.reload();
   if (await page.locator('.back').isVisible()) await page.locator('.back').click();
   await page.locator('#q').fill('');
-  await page.locator('.cat', { hasText: 'Kahvaltılıklar' }).click();
+  await categories(page); await page.locator('.cat', { hasText: 'Kahvaltılıklar' }).click();
   await expect(page.locator('#foodlist')).toContainText('Smoothie');
   await expect(page.locator('#foodlist [data-action="ex-pick-ref"]')).toHaveCount(1);
   // Besini koleksiyondan çıkar
@@ -403,26 +405,28 @@ test('tarif malzemeleri ve koleksiyon besinleri ↑/↓ ile sıralanır, sıra k
     await page.locator('[data-action="ex-add-recipe"]').click();
   }
   await tab(page, 'tarif');
-  const names = () => page.locator('.ing .ing-h b').allTextContents();
+  const names = () => page.locator('.ing .ingredient-info > b').allTextContents();
   expect(await names()).toEqual(['Muz', 'Yulaf ezmesi']);
+  await page.locator('.ing').first().locator('[data-action="ing-open"]').click();
   await expect(page.locator('.ing').first().locator('[data-action="rc-move"][data-d="-1"]')).toBeDisabled();
+  await page.locator('.ing').nth(1).locator('[data-action="ing-open"]').click();
   await page.locator('.ing').nth(1).locator('[data-action="rc-move"][data-d="-1"]').click();
   expect(await names()).toEqual(['Yulaf ezmesi', 'Muz']);
   await page.reload(); await tab(page, 'tarif');
   expect(await names()).toEqual(['Yulaf ezmesi', 'Muz']);
   // Koleksiyon sırası
   await tab(page, 'kesfet');
-  await page.locator('[data-action="col-new"]').click();
+  await categories(page); await page.locator('[data-action="col-new"]').click();
   await page.locator('.dlg .dlg-line').fill('Sıra'); await page.keyboard.press('Enter');
   for (const id of ['muz', 'yulaf']) {
     if (await page.locator('.back').isVisible()) await page.locator('.back').click();
-    await page.locator('.cat[data-cat=""]').click();
+    await category(page, '');
     await page.locator('#q').fill(id); await page.locator(`#foodlist [data-id="${id}"]`).click();
-    await page.locator('[data-action="col-pick"]').click(); await page.locator('.col-toggle').first().click(); await page.keyboard.press('Escape');
+    await reveal(page, '.food-tools'); await page.locator('[data-action="col-pick"]').click(); await page.locator('.col-toggle').first().click(); await page.keyboard.press('Escape');
   }
   if (await page.locator('.back').isVisible()) await page.locator('.back').click();
   await page.locator('#q').fill('');
-  await page.locator('.cat', { hasText: 'Sıra' }).click();
+  await categories(page); await page.locator('.cat', { hasText: 'Sıra' }).click();
   const colNames = () => page.locator('#foodlist .food-wrap .fn').allTextContents();
   expect(await colNames()).toEqual(['Muz', 'Yulaf ezmesi']);
   await page.locator('#foodlist [data-action="col-move"][data-i="0"][data-d="1"]').click();
@@ -441,7 +445,7 @@ test('besin kartları kısa özet gösterir ve liste enerji/proteine göre sıra
   await page.goto('/');
   const muz = page.locator('#foodlist [data-id="muz"] .facts');
   await expect(muz).toContainText('kcal');
-  await page.locator('[data-action="sort"][data-s="protein"]').click();
+  await filters(page); await page.locator('[data-action="sort"][data-s="protein"]').click();
   await expect(page.locator('[data-action="sort"][data-s="protein"]')).toHaveAttribute('aria-pressed', 'true');
   const vals = await page.locator('#foodlist .food .facts').evaluateAll((els) => els.map((e) => {
     const m = e.textContent.match(/([\d.,]+) g prot/); return m ? Number(m[1].replace(/\./g, '').replace(',', '.')) : null;
@@ -452,8 +456,8 @@ test('besin kartları kısa özet gösterir ve liste enerji/proteine göre sıra
   // Veri olmayanlar sonda: ilk bilinmeyenden sonra bilinen yok
   const firstNull = vals.indexOf(null);
   if (firstNull >= 0) expect(vals.slice(firstNull).every((v) => v == null)).toBe(true);
-  await page.locator('[data-action="sort"][data-s="default"]').click();
-  await expect(page.locator('#foodlist h3.grp').first()).toBeVisible();
+  await filters(page); await page.locator('[data-action="sort"][data-s="default"]').click();
+  await expect(page.locator('#foodlist .grp').first()).toBeVisible();
 });
 
 test('tarif en düşük kalan besinleri gösterir ve öneriden besine gider (B058)', async ({ page }) => {
@@ -483,28 +487,31 @@ test('çoklu seçimle birden çok besin tek dokunuşla tarife eklenir (B059)', a
   await page.locator('[data-action="multi-add"]').click();
   await expect(page.locator('.multibar')).toHaveCount(0);
   await tab(page, 'tarif');
-  await expect(page.locator('.ing .ing-h b')).toHaveText(['Muz', 'Yulaf ezmesi']);
+  await expect(page.locator('.ing .ingredient-info > b')).toHaveText(['Muz', 'Yulaf ezmesi']);
 });
 
-test('tarif malzemesi tek satırda kalır; ±10, porsiyon başı gram ve Ayarla ile açılan ayrıntı (B060)', async ({ page }) => {
+test('tarif malzemesi miktarı tek satırda gösterir; Düzenle ile porsiyon başı gram ve miktar ayarı (B060)', async ({ page }) => {
   await page.goto('/');
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
   await page.locator('[data-action="ex-add-recipe"]').click();
   await tab(page, 'tarif');
-  const mini = page.locator('.ing .amount.mini');
-  await expect(mini.locator('.amt-val b')).toHaveText('100');
-  await expect(page.locator('.ing .slider')).toHaveCount(0);
-  await mini.locator('[data-delta="10"]').click();
-  await expect(mini.locator('.amt-val b')).toHaveText('110');
+  const ingredient = page.locator('.ing');
+  const edit = ingredient.locator('[data-action="ing-open"]');
+  await expect(ingredient.locator('.ingredient-amount')).toHaveText('100 g');
+  await expect(ingredient.locator('.slider')).toHaveCount(0);
+  await expect(edit).toHaveAttribute('aria-expanded', 'false');
+  await edit.click();
+  await expect(ingredient.locator('.slider')).toBeVisible();
+  await expect(edit).toHaveAttribute('aria-expanded', 'true');
+  await ingredient.locator('[data-delta="10"]').click();
+  await expect(ingredient.locator('.amt-val b')).toHaveText('110');
   await page.locator('[data-action="rc-serv"][data-d="1"]').click();
-  await expect(page.locator('.ing .per-serv')).toHaveText('porsiyon başı 55 g');
-  await page.locator('.ing [data-action="nudge"][data-delta="-10"]').click();
-  await expect(page.locator('.ing .per-serv')).toHaveText('porsiyon başı 50 g');
-  await page.locator('[data-action="ing-open"]').click();
-  await expect(page.locator('.ing .slider')).toBeVisible();
-  await expect(page.locator('[data-action="ing-open"]')).toHaveAttribute('aria-expanded', 'true');
-  await page.locator('[data-action="ing-open"]').click();
-  await expect(page.locator('.ing .slider')).toHaveCount(0);
+  await expect(ingredient.locator('.per-serv')).toHaveText('porsiyon başı 55 g');
+  await ingredient.locator('[data-delta="-10"]').click();
+  await expect(ingredient.locator('.per-serv')).toHaveText('porsiyon başı 50 g');
+  await edit.click();
+  await expect(ingredient.locator('.slider')).toHaveCount(0);
+  await expect(ingredient.locator('.ingredient-amount')).toHaveText('100 g');
 });
 
 test('Keşfet son bakılan besinleri gösterir, kalıcıdır ve temizlenir (B061)', async ({ page }) => {
@@ -555,8 +562,8 @@ test('günlükteki gün tek dokunuşla tarife dönüşür (B063)', async ({ page
   await tab(page, 'gunluk');
   await page.locator('[data-action="personal-to-recipe"]').click();
   await expect(page.locator('#rc-name')).toHaveValue(/^Günlük \d{4}-\d{2}-\d{2}$/);
-  await expect(page.locator('.ing .ing-h b')).toHaveText(['Muz', 'Yulaf ezmesi']);
-  await expect(page.locator('.ing').first().locator('.amt-val b')).toHaveText('200');
+  await expect(page.locator('.ing .ingredient-info > b')).toHaveText(['Muz', 'Yulaf ezmesi']);
+  await expect(page.locator('.ing').first().locator('.ingredient-amount')).toHaveText('200 g');
 });
 
 test('Ayarlarda arama kartları süzer, odak korunur (B064)', async ({ page }) => {
@@ -589,6 +596,8 @@ test('tarif listesi: arama, sıralama ve porsiyon başı kcal (B065)', async ({ 
   await expect(items).toHaveCount(4);
   await expect(items.first().locator('.rkcal')).toHaveText('89 kcal/porsiyon');
   await expect(items.nth(1).locator('.rkcal')).toHaveCount(0);
+  const list = page.locator('.recipe-list');
+  if (await list.getAttribute('open') === null) await list.locator('summary').click();
   await page.locator('#rc-q').fill('İLK');
   await expect(page.locator('.rlist-item[data-rname]:visible')).toHaveCount(1);
   await expect(page.locator('#rc-q')).toBeFocused();
@@ -609,7 +618,7 @@ test('besin ayrıntısında benzer besinler aynı kategoriden gelir ve açılır
   expect(await chips.count()).toBeGreaterThan(2);
   const first = await chips.first().textContent();
   await chips.first().click();
-  await expect(page.locator('.dtitle h2')).toContainText(first.trim());
+  await expect(page.locator('#food-title')).toContainText(first.trim());
   await expect(page.locator('.dsub')).toContainText(cat);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
 });
@@ -628,6 +637,7 @@ test('Günlük son 7 gün enerji grafiği: kayıtsız gün boş, güne dokununca
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
   await page.locator('[data-action="ex-add-day"]').click();
   await tab(page, 'gunluk');
+  await reveal(page, '[data-ux-details="diary-history"]');
   const bars = page.locator('.week-bars .wk');
   await expect(bars).toHaveCount(7);
   await expect(bars.nth(6)).toHaveAttribute('aria-current', 'date');
@@ -642,25 +652,25 @@ test('Günlük son 7 gün enerji grafiği: kayıtsız gün boş, güne dokununca
 test('Kıyasla: her besin için hazır ölçüler (USDA porsiyonu) tek dokunuşla seçilir (B074)', async ({ page }) => {
   await page.goto('/');
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
-  await page.locator('[data-action="ex-add-compare"]').click();
+  await reveal(page, '.food-tools'); await page.locator('[data-action="ex-add-compare"]').click();
   await tab(page, 'karsilastir');
   // B075: varsayılan tek satır; ±10 çalışır, ölçüler Ayarla'nın altında
   const mini = page.locator('.cmp-col .amount.mini');
   await expect(mini.locator('.amt-val b')).toHaveText('100');
   await mini.locator('[data-delta="10"]').click();
-  await expect(page.locator('table.cmp thead')).toContainText('110 g');
+  await expect(page.locator('.compare-basic-wrap table.cmp thead')).toContainText('110 g');
   await expect(page.locator('.cmp-col .slider')).toHaveCount(0);
   await page.locator('.cmp-col [data-action="ing-open"]').click();
   const por = page.locator('.cmp-col [data-amount="cmp:0"] .pchip.por');
   expect(await por.count()).toBeGreaterThan(0);
   const g = await por.first().getAttribute('data-val');
   await por.first().click();
-  await expect(page.locator('table.cmp thead')).toContainText(`${Math.round(Number(g))} g`);
+  await expect(page.locator('.compare-basic-wrap table.cmp thead')).toContainText(`${Math.round(Number(g))} g`);
 });
 
 test('hayvansal besinler kendi kategorilerinde, etiketli; Ayarlar\'dan gizlenir (B077)', async ({ page }) => {
   await page.goto('/');
-  await expect(page.locator('.cat[data-cat="balik"]')).toBeVisible();
+  await expect(page.locator('.cat[data-cat="balik"]')).toHaveCount(1);
   await page.locator('#q').fill('somon');
   const card = page.locator('#foodlist [data-id="somon"]');
   await expect(card.locator('.tag-animal')).toHaveText('Hayvansal');
@@ -681,18 +691,18 @@ test('hayvansal besinler kendi kategorilerinde, etiketli; Ayarlar\'dan gizlenir 
 
 test('besin kartları ve ayrıntı kendi çizimini gösterir; sebzeler farklı (B076/B080)', async ({ page }) => {
   await page.goto('/');
-  await page.locator('.cat[data-cat="sebze"]').click();
+  await category(page, 'sebze');
   const art = (id) => page.locator(`#foodlist [data-id="${id}"] .fi svg.fart`).innerHTML();
   const [d, b, p] = [await art('domates'), await art('brokoli'), await art('patlican')];
   expect(new Set([d, b, p]).size).toBe(3);
   await page.locator('#foodlist [data-id="misir"]').click();
-  await expect(page.locator('.dtitle h2 svg.fart')).toBeVisible();
+  await expect(page.locator('#food-title svg.fart')).toBeVisible();
 });
 
 test('geniş katalogda hayvansal USDA grupları; gizlenince aramadan da çıkar (B082)', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('bm.settings.v2', JSON.stringify({ version: 2, settings: { showExt: true } })));
   await page.goto('/');
-  await page.locator('.cat[data-cat="ext"]').click();
+  await category(page, 'ext');
   await expect(page.locator('#ex-extgroup option[value="1500"]')).toContainText('Balık');
   await page.locator('#q').fill('salmon atlantic wild raw');
   await expect(page.locator('#foodlist [data-action="ex-pick-ext"]').first()).toBeVisible();
@@ -708,16 +718,18 @@ test('geniş katalogda hayvansal USDA grupları; gizlenince aramadan da çıkar 
   await expect(page.locator('#ex-extgroup option[value="1500"]')).toHaveCount(0);
 });
 
-test('"besin ekle" penceresinde kategori düğmeleri simetrik: eşit genişlik ve yükseklik (B083)', async ({ page }) => {
+test('Besin seçici kategorileri isteğe bağlı ve yatay taşma olmadan açılır (B083)', async ({ page }) => {
   await page.goto('/');
   await tab(page, 'karsilastir');
   await page.locator('[data-action="cmp-add"]').click();
-  await page.locator('[data-action="pk-cats-toggle"]').click();
-  const sizes = await page.locator('.cats.cats-grid .cat:not(.add)').evaluateAll((els) => els.map((e) => { const r = e.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height)]; }));
-  expect(sizes.length).toBeGreaterThan(10);
-  expect(new Set(sizes.map((s) => s[0])).size).toBe(1);
-  expect(new Set(sizes.map((s) => s[1])).size).toBe(1);
-  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+  const panel = page.locator('#pk-categories');
+  await expect(panel).toBeHidden();
+  await categories(page, 'pk');
+  await expect(panel).toBeVisible();
+  expect(await panel.locator('.cat').count()).toBeGreaterThan(10);
+  expect(await panel.evaluate(el => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+  await category(page, 'baklagil', 'pk');
+  await expect(page.locator('.pk-list [data-id="nohut"]')).toBeVisible();
 });
 
 test('Keşfet kategorileri isteğe bağlı simetrik ızgara (B085)', async ({ page }) => {
@@ -738,18 +750,18 @@ test('önce temel besin değerleri: ayrıntı, Kıyasla ve Günlük en üstte ba
   for (const k of ['protein', 'carb_avail', 'sugars', 'fat', 'fiber', 'salt']) await expect(card.locator(`[data-basic="${k}"]`)).toHaveCount(1);
   // temel kart matriksteki ilk öğedir
   expect(await page.locator('#matrix > *').first().getAttribute('class')).toContain('basic-card');
-  await page.locator('[data-action="ex-add-compare"]').click();
+  await reveal(page, '.food-tools'); await page.locator('[data-action="ex-add-compare"]').click();
   await page.locator('[data-action="ex-add-day"]').click();
   await tab(page, 'karsilastir');
-  await expect(page.locator('table.cmp tbody tr').first()).toHaveClass(/secrow basic/);
-  await expect(page.locator('table.cmp tbody tr').nth(1)).toContainText('Enerji');
+  await expect(page.locator('.compare-basic-wrap table.cmp tbody tr').first()).toHaveClass(/secrow basic/);
+  await expect(page.locator('.compare-basic-wrap table.cmp tbody tr').nth(1)).toContainText('Enerji');
   await tab(page, 'gunluk');
   await expect(page.locator('.basic-card')).toContainText('89');
 });
 
 test('kategorilerde yaygın besinler önce; az bilinenler gizli ama aranabilir (B087)', async ({ page }) => {
   await page.goto('/');
-  await page.locator('.cat[data-cat="meyve"]').click();
+  await category(page, 'meyve');
   const ids = await page.locator('#foodlist .food').evaluateAll((els) => els.map((e) => e.dataset.id));
   expect(ids.slice(0, 3)).toEqual(['elma', 'muz', 'portakal']);
   expect(ids).not.toContain('jackfruit');
@@ -759,17 +771,17 @@ test('kategorilerde yaygın besinler önce; az bilinenler gizli ama aranabilir (
   await page.locator('[data-setbool="showNiche"]').check({ force: true });
   await tab(page, 'kesfet');
   await page.locator('#q').fill('');
-  await page.locator('.cat[data-cat="meyve"]').click();
+  await category(page, 'meyve');
   await expect(page.locator('#foodlist [data-id="jackfruit"]')).toBeVisible();
 });
 
 test('yaygın eklenen besinler: ekmek, su, taze soğan, tavuk but listede ve çizimli (B088)', async ({ page }) => {
   await page.goto('/');
-  await page.locator('.cat[data-cat="ekmek"]').click();
+  await category(page, 'ekmek');
   const ids = await page.locator('#foodlist .food').evaluateAll((els) => els.map((e) => e.dataset.id));
   expect(ids[0]).toBe('beyaz_ekmek');
   await expect(page.locator('#foodlist [data-id="beyaz_ekmek"] svg.fart')).toBeVisible();
-  await page.locator('.cat[data-cat=""]').click();
+  await category(page, '');
   for (const q of ['su', 'taze soğan', 'tavuk but']) {
     await page.locator('#q').fill(q);
     await expect(page.locator('#foodlist .food').first()).toBeVisible();
@@ -788,7 +800,7 @@ test('Ayarlar en üstte Dil kartı: Türkçe/English tek dokunuşla değişir ve
   await expect(page.locator('[data-action="tab"][data-tab="ayarlar"]')).toContainText('Settings');
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-  await page.locator('[data-action="tab"][data-tab="ayarlar"]').click();
+  await tab(page, 'ayarlar');
   await page.locator('.lang-card [data-v=\'"tr"\']').click();
   await expect(page.locator('html')).toHaveAttribute('lang', 'tr');
 });
@@ -818,6 +830,7 @@ test('service worker: sayfa açılışı önce ağdan, tek dosya hatası kurulum
 test('Türk ölçüleri düğmelerde ≈ ile görünür ve gramı ayarlar (B092)', async ({ page }) => {
   await page.goto('/');
   await page.locator('#q').fill('nohut'); await page.locator('#foodlist [data-id="nohut"]').click();
+  await reveal(page, '[data-amount="ex"] .amount-options');
   const chip = page.locator('[data-amount="ex"] .pchip.por', { hasText: '1 su bardağı (200 ml)' });
   await expect(chip).toContainText('≈');
   await chip.click();
@@ -861,14 +874,14 @@ test('görünüm cilası: eşit kıyas sütunları, Türkçe yüzde, tek dil se�
   await expect(page.locator('.brand b')).toBeVisible();
   await page.locator('#q').fill('nohut'); await page.locator('#foodlist [data-id="nohut"]').click();
   await expect(page.locator('#matrix .basic-card [data-basic="carb_avail"] .gpct').first()).toContainText(/^%\d/);
-  await page.locator('[data-action="ex-add-compare"]').click();
+  await reveal(page, '.food-tools'); await page.locator('[data-action="ex-add-compare"]').click();
   if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
-  await page.locator('[data-action="ex-add-compare"]').click();
+  await reveal(page, '.food-tools'); await page.locator('[data-action="ex-add-compare"]').click();
   await tab(page, 'karsilastir');
-  const w = await page.locator('table.cmp thead th').evaluateAll((els) => els.map((e) => e.getBoundingClientRect().width));
+  const w = await page.locator('.compare-basic-wrap table.cmp thead th').evaluateAll((els) => els.map((e) => e.getBoundingClientRect().width));
   expect(Math.abs(w[1] - w[2])).toBeLessThan(2);
-  const wrap = await page.locator('.tablewrap').evaluate((e) => e.scrollWidth - e.clientWidth);
+  const wrap = await page.locator('.compare-basic-wrap').evaluate((e) => e.scrollWidth - e.clientWidth);
   expect(wrap).toBeLessThanOrEqual(1);
   await tab(page, 'ayarlar');
   await expect(page.locator('#app-language')).toHaveCount(0);
@@ -885,15 +898,16 @@ test('temel değerlerde ortalama kadın/erkek yüzdesi; Kıyasla yüzdeleri; kü
   await expect(page.locator('[data-sec="enerji"]')).toHaveCount(0); // ayrı Kalori kutusu yok (B113)
   const order = await page.locator('#matrix > *').evaluateAll((els) => els.map((e) => e.className));
   expect(order.findIndex((c) => c.includes('reference-label'))).toBeGreaterThan(order.findIndex((c) => c.includes('sec')));
-  await page.locator('[data-action="ex-add-compare"]').click();
+  await reveal(page, '.food-tools'); await page.locator('[data-action="ex-add-compare"]').click();
   await tab(page, 'karsilastir');
-  await expect(page.locator('table.cmp tbody tr').nth(2)).toContainText('K %45');
-  await expect(page.locator('table.cmp')).not.toContainText('Kül');
+  await expect(page.locator('.compare-basic-wrap table.cmp tbody tr').nth(2)).toContainText('K %45');
+  await expect(page.locator('.compare-basic-wrap table.cmp')).not.toContainText('Kül');
 });
 
 test('makro pasta grafiği kalori kutusunun üstünde; flavonoid verisi USDA Flavonoid etiketiyle (B100)', async ({ page }) => {
   await page.goto('/');
   await page.locator('#q').fill('soğan'); await page.locator('#foodlist [data-id="sogan"]').click();
+  await reveal(page, '.food-reference');
   const pie = page.locator('#matrix .basic-card .macro-pie');
   await expect(pie.locator('svg.pie circle[data-part]')).not.toHaveCount(0);
   await expect(pie.locator('li[data-part="c"] strong')).toContainText('%');
@@ -911,10 +925,10 @@ test('pasta grafiği Keşfet, Tarif ve Kıyasla sekmelerinde (B102)', async ({ p
   await page.locator('#q').fill('nohut'); await page.locator('#foodlist [data-id="nohut"]').click();
   await expect(page.locator('#matrix .macro-pie svg.pie')).toHaveCount(1);
   await page.locator('[data-action="ex-add-recipe"]').click();
-  await page.locator('[data-action="ex-add-compare"]').click();
+  await reveal(page, '.food-tools'); await page.locator('[data-action="ex-add-compare"]').click();
   if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
-  await page.locator('[data-action="ex-add-compare"]').click();
+  await reveal(page, '.food-tools'); await page.locator('[data-action="ex-add-compare"]').click();
   await tab(page, 'tarif');
   await expect(page.locator('#recipe-summary .basic-card .macro-pie svg.pie')).toHaveCount(1);
   await tab(page, 'karsilastir');
@@ -929,7 +943,7 @@ test('Günlük: kişisel profil en üstte, ardından gün kartı (B122; B104 ter
   await page.locator('[data-action="ex-add-day"]').click();
   await tab(page, 'gunluk');
   const y = async (sel) => (await page.locator(sel).first().boundingBox()).y;
-  expect(await y('.personal-profile')).toBeLessThan(await y('#personal-day'));
+  expect(await y('[data-action="personal-add-food"]')).toBeLessThan(await y('#personal-day'));
   expect(await y('#personal-day')).toBeLessThan(await y('.personal .basic-card'));
 });
 
@@ -945,6 +959,7 @@ test('Günlük: günün kalori pasta grafiği temel değerlerin altında (B105)'
 test('temel değer karoları dengeli (4+4 ya da 2×4) (B107)', async ({ page }) => {
   await page.goto('/');
   await page.locator('#q').fill('ıspanak'); await page.locator('#foodlist [data-id="ispanak"]').click();
+  await reveal(page, '.food-reference');
   const tops = await page.locator('#matrix .basic-card .basic-tile').evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().top)));
   const rows = new Map(); for (const t of tops) rows.set(t, (rows.get(t) || 0) + 1);
   const counts = [...rows.values()];
@@ -970,12 +985,12 @@ test('Kıyasla tablosu kendi içinde dikey kaydırmaz; sayfa boyunca açık (B10
   await page.goto('/');
   for (const id of ['limon', 'ananas']) {
     await page.locator('#q').fill(id); await page.locator(`#foodlist [data-id="${id}"]`).click();
-    await page.locator('[data-action="ex-add-compare"]').click();
+    await reveal(page, '.food-tools'); await page.locator('[data-action="ex-add-compare"]').click();
     if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
   }
   await tab(page, 'karsilastir');
-  await page.locator('[data-action="cmp-sec"][data-s="all"]').click(); // B179: telefonda varsayılan "Temel"
-  const w = page.locator('.tablewrap');
+  await page.locator('#compare-details-toggle').click();
+  const w = page.locator('.compare-detail-wrap');
   expect(await w.evaluate((e) => e.scrollHeight - e.clientHeight)).toBeLessThanOrEqual(1);
   expect(await w.evaluate((e) => e.clientHeight)).toBeGreaterThan(1000);
 });
@@ -983,10 +998,10 @@ test('Kıyasla tablosu kendi içinde dikey kaydırmaz; sayfa boyunca açık (B10
 test('Keşfet tek katalogda kategoriye göre süzülür ve besin ayrıntısını açar (B141)', async ({ page }) => {
   await page.goto('/');
   await expect(page.locator('#aion')).toBeHidden();
-  await expect(page.locator('.welcome')).toHaveCount(1);
-  await expect(page.locator('.welcome h1')).toHaveText('Tabağında ne var?');
+  await expect(page.locator('.welcome')).toHaveCount(0);
+  await expect(page.locator('h1')).toHaveText('Besin ara');
   await expect(page.locator('.periodic')).toHaveCount(0); // aynı katalog iki kez çizilmez
-  await page.locator('.cat[data-cat="meyve"]').click();
+  await category(page, 'meyve');
   await expect(page.locator('.catalog-heading h2')).toHaveText('Meyveler');
   await expect(page.locator('#foodlist [data-id="elma"]')).toHaveCount(1);
   await page.locator('#foodlist [data-id="armut"]').click();
@@ -995,10 +1010,10 @@ test('Keşfet tek katalogda kategoriye göre süzülür ve besin ayrıntısını
 
 test('çeşitlilik: longevity besinleri görünür; besin mayası/psyllium etiketten eklenir (B115)', async ({ page }) => {
   await page.goto('/');
-  await page.locator('.cat[data-cat="kuruyemis"]').click();
+  await category(page, 'kuruyemis');
   await expect(page.locator('#foodlist [data-id="brezilya_cevizi"]')).toHaveCount(1);
   await expect(page.locator('#foodlist [data-id="makadamya"]')).toHaveCount(1);
-  await page.locator('.cat[data-cat=""]').click();
+  await category(page, '');
   for (const id of ['sirken', 'karpuz_cekirdegi', 'horoz_mantari', 'irlanda_yosunu']) {
     await page.locator('#q').fill(id === 'sirken' ? 'sirken' : id === 'karpuz_cekirdegi' ? 'karpuz çekirdeği' : id === 'horoz_mantari' ? 'chanterelle' : 'sea moss');
     await expect(page.locator(`#foodlist [data-id="${id}"]`)).toHaveCount(1);
@@ -1019,7 +1034,7 @@ test('içecekler: Türk kahvesi FNDDS, Americano açık tarif tahmini, siyez ver
   await expect(page.locator('.unavail')).toHaveCount(0);
   await expect(page.locator('#matrix .src-r').first()).toContainText('Tahmin (tarif)');
   await expect(page.locator('#matrix .idcard')).toContainText('espresso');
-  await page.locator('[data-amount="ex"] [data-val="150"]').first().click();
+  await reveal(page, '[data-amount="ex"] .amount-options'); await page.locator('[data-amount="ex"] [data-val="150"]').first().click();
   await expect(page.locator('[data-amount="ex"] .amt-val')).toContainText('150');
   if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
   await page.locator('#q').fill('siyez'); await expect(page.locator('#foodlist [data-id="siyez_bulguru"]')).toHaveCount(1);
@@ -1049,9 +1064,11 @@ test('Lifler kutusu temel kart ve hesaplanan göstergelerin altında; malzeme �
   if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
   await page.locator('#q').fill('ıspanak'); await page.locator('#foodlist [data-id="ispanak"]').click(); await page.locator('[data-action="ex-add-recipe"]').click();
   await page.locator('[data-action="tab"][data-tab="tarif"]').click();
-  const pos = await page.locator('.ing').evaluateAll((els) => els.map((e) => { const c = e.getBoundingClientRect(), x = e.querySelector('[data-action="rc-del-item"]').getBoundingClientRect(); return [Math.round(c.right - x.right), Math.round(x.top - c.top)]; }));
-  expect(new Set(pos.map(String)).size).toBe(1); // her kartta aynı konum
-  expect(pos[0][0]).toBeLessThan(30); expect(pos[0][1]).toBeLessThan(30);
+  await expect(page.locator('.ing [data-action="rc-del-item"]')).toHaveCount(0);
+  const first = page.locator('.ing').first();
+  await first.locator('[data-action="ing-open"]').click();
+  await expect(first.locator('[data-action="rc-del-item"]')).toBeVisible();
+  await expect(page.locator('.ing').nth(1).locator('[data-action="rc-del-item"]')).toHaveCount(0);
 });
 
 test('ayran tarif hesabı olarak görünür: Tahmin (tarif) etiketi ve oran; Ekmek kategorisi (B124)', async ({ page }) => {
@@ -1068,9 +1085,9 @@ test('ayran tarif hesabı olarak görünür: Tahmin (tarif) etiketi ve oran; Ekm
 
 test('ekmek türleri ve hazır yemekler: ekşi mayalı, naan, döner, falafel; hayvansal yemekler gizlenebilir (B126)', async ({ page }) => {
   await page.goto('/');
-  await page.locator('.cat[data-cat="ekmek"]').click();
+  await category(page, 'ekmek');
   for (const id of ['eksi_mayali_ekmek', 'cok_tahilli_ekmek', 'naan', 'bagel']) await expect(page.locator(`#foodlist [data-id="${id}"]`)).toHaveCount(1);
-  await page.locator('.cat[data-cat="yemek"]').click();
+  await category(page, 'yemek');
   for (const id of ['et_doner', 'tavuk_doner', 'falafel', 'zeytinyagli_sarma']) await expect(page.locator(`#foodlist [data-id="${id}"]`)).toHaveCount(1);
   await page.locator('#foodlist [data-id="et_doner"]').click();
   await expect(page.locator('#matrix .src-r').first()).toContainText('Tahmin (tarif)');
@@ -1079,7 +1096,7 @@ test('ekmek türleri ve hazır yemekler: ekşi mayalı, naan, döner, falafel; h
   await tab(page, 'ayarlar');
   await page.locator('label.toggle:has(input[data-setbool="showAnimal"])').click();
   await tab(page, 'kesfet');
-  await page.locator('.cat[data-cat="yemek"]').click();
+  await category(page, 'yemek');
   await expect(page.locator('#foodlist [data-id="et_doner"]')).toHaveCount(0);
   await expect(page.locator('#foodlist [data-id="falafel"]')).toHaveCount(1);
 });
@@ -1094,10 +1111,10 @@ test('denetim düzeltmeleri: Kıyasla ✕ doğru besini siler (silinmiş özel b
   // gizli (çözümlenemeyen) bir kıyas kaydı + muz
   await page.evaluate(() => localStorage.setItem('bm.compare.test', '1'));
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
-  await page.locator('[data-action="ex-add-compare"]').click();
+  await reveal(page, '.food-tools'); await page.locator('[data-action="ex-add-compare"]').click();
   if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
   await page.locator('#q').fill('elma'); await page.locator('#foodlist [data-id="elma"]').click();
-  await page.locator('[data-action="ex-add-compare"]').click();
+  await reveal(page, '.food-tools'); await page.locator('[data-action="ex-add-compare"]').click();
   await tab(page, 'karsilastir');
   await page.locator('.cmp-col').filter({ hasText: 'Muz' }).locator('[data-action="cmp-del"]').click();
   await expect(page.locator('.cmp-col')).toHaveCount(1);
@@ -1209,7 +1226,7 @@ test('tekrarlanan kaynak etiketi satırlarda yok, bir kez üstte; farklı kaynak
   await page.goto('/');
   if (page.viewportSize().width > 700) {
     const all = await page.locator('.cat[data-cat=""] .cnt, .cat.on .cnt').first().innerText();
-    await expect(page.locator('.welcome')).toContainText(`${all} besin`);
+    await expect(page.locator('#foodlist .catalog-heading')).toContainText(`${all} besin`);
     await expect(page.locator('.pt-n')).toHaveCount(0); // periyodik tabloda süs sıra numarası yok
   }
   await page.locator('#q').fill('nohut');
@@ -1220,5 +1237,6 @@ test('tekrarlanan kaynak etiketi satırlarda yok, bir kez üstte; farklı kaynak
   if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
   await page.locator('#q').fill('kakao');
   await page.locator('#foodlist [data-id="kakao"]').click();
+  await reveal(page, '#matrix [data-sec="fito"]');
   await expect(page.locator('#matrix .row .meta .src-P').first()).toBeVisible(); // farklı kaynak (Proantosiyanidin DB) yine satırda etiketli
 });

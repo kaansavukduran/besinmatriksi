@@ -1,4 +1,11 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 70 · Tembel İngilizce sözlük, tablet gezinme ve 203 CoFID hücresi
+# 🫐 Besin Matriksi 1.1.2 Beta 71
+
+- Keşfet arama ve besin listesiyle açılıyor. Besin detayında miktar ve temel değerler ilk sırada.
+- Günlük’te besin arama, seçili tarihe kayıt ve geri alma aynı ekranda. Tarif ve Karşılaştır aynı besin seçiciyi kullanıyor.
+- Karşılaştırmada temel tablo önde. Tarifin ayrıntılı besin değerleri, amino asit skoru ve Günlük Toplam Tarif erişilebilir.
+- Web sürümü [GitHub Pages](https://kaansavukduran.github.io/besinmatriksi/) ve [Cloudflare Pages](https://besinmatriksi.pages.dev/) üzerinden dağıtılır. [Beta 70 kurulum paketleri](https://github.com/kaansavukduran/besinmatriksi/releases/tag/v1.1.2-beta.70) ayrıca erişilebilir.
+
+## Beta 70 · Tembel İngilizce sözlük, tablet gezinme ve 203 CoFID hücresi
 
 Besinlerin ayrıntılı besin matriksini gösteren, **internetsiz çalışan** uygulama (bitkisel ağırlıklı; hayvansal besinler ayrı ve etiketli).
 Pembe-mavi aksolotl **Aion** artık rehberin: dokununca ipucu verir, besin ekleyince sevinir.

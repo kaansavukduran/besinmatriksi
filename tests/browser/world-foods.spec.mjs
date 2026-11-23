@@ -1,3 +1,4 @@
+import { filters } from './navigation.mjs';
 import { test, expect } from '@playwright/test';
 
 test('B210/B211 dünya ve Anadolu yemekleri aranır; vegan filtresi doğrulanmış bitkisel tarifleri gösterir', async ({ page }) => {
@@ -12,7 +13,7 @@ test('B210/B211 dünya ve Anadolu yemekleri aranır; vegan filtresi doğrulanmı
   await page.locator('#foodlist [data-id="icli_kofte_etsiz"]').click();
   await expect(page.locator('#matrix .idcard')).toContainText('Tahmin');
   if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
-  await page.locator('#ex-diet-pattern').selectOption('vegan');
+  await filters(page); await page.locator('#ex-diet-pattern').selectOption('vegan');
   await page.locator('#q').fill('köfte');
   await expect(page.locator('#foodlist [data-id="icli_kofte_etsiz"]')).toBeVisible();
   await expect(page.locator('#foodlist [data-id="icli_kofte"]')).toHaveCount(0);

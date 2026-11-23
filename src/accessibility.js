@@ -7,16 +7,17 @@ export function focusSelector(el) {
 }
 export function syncModalFocus(preferred = null) {
   const modals = [...document.querySelectorAll('.modal')], modal = modals.at(-1);
-  document.querySelectorAll('.top, .profile-bar, .view').forEach(el => { el.inert = !!modal; });
-  modals.forEach(el => { el.inert = el !== modal; });
+  const manual = !!modal && modal.tagName !== 'DIALOG';
+  document.querySelectorAll('.top, .profile-bar, .view').forEach(el => { el.inert = manual; });
+  modals.forEach(el => { el.inert = manual && el !== modal; });
   const target = preferred ? document.querySelector(preferred) : null;
   if (target && (!modal || modal.contains(target)) && !target.closest('[inert]')) target.focus({ preventScroll: true });
-  else if (modal && !modal.contains(document.activeElement)) modal.querySelector(focusable)?.focus({ preventScroll: true });
+  else if (manual && !modal.contains(document.activeElement)) (modal.querySelector('[autofocus]') || modal.querySelector(focusable))?.focus({ preventScroll: true });
 }
 export function trapModalTab(e) {
   if (e.key !== 'Tab') return;
   const modal = [...document.querySelectorAll('.modal')].at(-1);
-  if (!modal) return;
+  if (!modal || modal.tagName === 'DIALOG') return;
   const list = [...modal.querySelectorAll(focusable)].filter(el => el.getClientRects().length && !el.closest('[inert]'));
   if (!list.length) { e.preventDefault(); return; }
   const first = list[0], last = list.at(-1);

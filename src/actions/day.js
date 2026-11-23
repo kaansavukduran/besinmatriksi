@@ -2,7 +2,7 @@
 // app.js'e bağımlı yardımcılar (render, kalıcı kayıt, iletişim kutusu, besin seçme, ayar yazma) bindDayActions ile verilir; döngüsel içe aktarma yok.
 import { S } from '../state.js';
 import { L, t as tr } from '../i18n.js';
-import { resolve, customFoods } from '../data.js';
+import { resolve, customFoods, refKey } from '../data.js';
 import { newRecipe } from '../store.js';
 import { uid, clamp, fmtNum, download } from '../util.js';
 import { normalizeCustom } from '../records.js';
@@ -20,8 +20,30 @@ export function bindDayActions(deps) {
   ({ render, persistPersonal, uiDialog, selectFood, setSetting } = deps);
 }
 
+export function addDiaryFood(ref, g, day) {
+  if (!validDay(day) || !resolve(ref)) return false;
+  const entry = { id: uid(), day, ref: { ...ref }, g, consumed: false };
+  S.personal.entries.push(entry);
+  S.personal.milestones.food = true;
+  if (!persistPersonal()) return false;
+  S.dayFeedback = { ...entry, key: refKey(ref) };
+  S.personalUndo = { type: 'add', id: entry.id };
+  aionPlay('celebrate');
+  return true;
+}
+
 export const DAY_ACTIONS = {
-  'personal-goto-day': async (b) => { if (validDay(b.dataset.day)) { const fromCal = !!b.closest('.cal'); S.personalDay = b.dataset.day; S.personalDayAuto = b.dataset.day === localDay(); render(); if (fromCal) { const h = document.querySelector('#personal-day'); h?.closest('.card')?.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); h?.focus({ preventScroll: true }); } } return; },
+  'personal-add-food': async () => {
+    S.picker = { target: 'day', day: S.personalDayAuto ? localDay() : S.personalDay, cat: null, q: '', sel: null, amount: S.settings.defaultAmount };
+    render();
+  },
+  'personal-show-added': async () => {
+    const day = S.dayFeedback?.day;
+    if (!validDay(day)) return;
+    S.personalDay = day; S.personalDayAuto = day === localDay(); S.consumedOnly = false; S.tab = 'gunluk';
+    render(); window.scrollTo(0, 0); $('#diary-title')?.focus({ preventScroll: true });
+  },
+  'personal-goto-day': async (b) => { if (validDay(b.dataset.day)) { const fromCal = !!b.closest('.cal'); S.personalDay = b.dataset.day; S.personalDayAuto = b.dataset.day === localDay(); render(); if (fromCal) { const h = document.querySelector('#personal-day'); h?.closest('.diary-day')?.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); h?.focus({ preventScroll: true }); } } return; },
   'personal-to-recipe': async (b) => {
       const { items, capped } = dayToRecipeItems(S.personal.entries, S.personalDay, { consumedOnly: S.consumedOnly, maxG: MAX_G });
       if (!items.length) return;
@@ -43,11 +65,10 @@ export const DAY_ACTIONS = {
       toast(L("{n} kayıt bugünün günlüğüne eklendi", { n: entries.length }) + (skipped ? ' · ' + L("{n} malzeme atlandı (bulunamadı veya 1 g altı)", { n: skipped }) : ''));
       aionPlay('celebrate'); return;
     },
-  'ex-add-day': async (b) => {
+  'ex-add-day': async () => {
       if (!S.sel || !resolve(S.sel)) return;
-      if (S.personalDayAuto) S.personalDay = localDay(); // uygulama gece yarısını açık geçirdiyse bugüne yaz
-      S.personal.entries.push({ id: uid(), day: S.personalDay, ref: { ...S.sel }, g: S.amount, consumed: false });
-      S.personal.milestones.food = true; if (!persistPersonal()) return; toast(tr('dayAdded')); aionPlay('celebrate'); return;
+      if (S.personalDayAuto) S.personalDay = localDay();
+      if (addDiaryFood(S.sel, S.amount, S.personalDay)) render();
     },
   'personal-save': async (b) => {
       if ([...document.querySelectorAll('[data-personal-field]')].some(el => !el.checkValidity())) { toast(tr('profile.invalid')); return; }
@@ -78,9 +99,12 @@ export const DAY_ACTIONS = {
   'personal-undo': async (b) => {
       const undo = S.personalUndo;
       if (undo?.type === 'entry' && !S.personal.entries.some(e => e.id === undo.entry.id)) S.personal.entries.push(undo.entry);
+      if (undo?.type === 'add') S.personal.entries = S.personal.entries.filter(e => e.id !== undo.id);
       if (undo?.type === 'profile') { S.personal.profile = undo.profile; S.personalDraft = structuredClone(undo.profile); }
       if (undo?.type === 'copy') { const ids = new Set(undo.ids); S.personal.entries = S.personal.entries.filter((e) => !ids.has(e.id)); }
-      S.personalUndo = null; persistPersonal(); render(); return;
+      if (!persistPersonal()) return;
+      if (undo?.type === 'add' && S.dayFeedback?.id === undo.id) S.dayFeedback = null;
+      S.personalUndo = null; render(); return;
     },
   'personal-efsa': async (b) => {
       const p = S.personal.profile;

@@ -17,7 +17,7 @@ export function compareChart(foods, rows, fmt = (x, unit) => `${x} ${unit}`) {
       return `<div class="cc-bar" title="${esc(title)}"><span class="cc-track"><i class="s${i + 1}" style="width:${w.toFixed(1)}%"></i></span><span class="cc-v${x === max && max > 0 ? ' best' : ''}">${esc(fmt(x, unit))}</span></div>`;
     }).join('')}</div></div>`;
   }).join('');
-  return `<figure class="cmp-chart" aria-label="${L("Temel değerler grafiği")}"><figcaption>${L("Temel değerler, satırdaki en yüksek değere göre")}</figcaption>${legend}<div class="cc-body">${body}</div><p class="hint">${L("Her satır kendi içinde ölçeklenir; tam sayılar aşağıdaki tabloda.")}</p></figure>`;
+  return `<figure class="cmp-chart" aria-label="${L("Temel değerler grafiği")}"><figcaption>${L("Temel değerler, satırdaki en yüksek değere göre")}</figcaption>${legend}<div class="cc-body">${body}</div><p class="hint">${L("Her satır kendi içinde ölçeklenir; kesin değerler temel besin değerleri tablosunda.")}</p></figure>`;
 }
 
 // B201: amino asit profili kıyası. Değer = mg/g protein ÷ WHO/FAO/UNU 2007 referansı (%); çizgi %100.

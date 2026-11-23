@@ -1,5 +1,11 @@
+import { tab } from './navigation.mjs';
 import { test, expect } from '@playwright/test';
-const tab = (page, id) => page.locator(`.tabs [data-action="tab"][data-tab="${id}"]`).first().click();
+async function addComparisonFood(page, query) {
+  await page.locator('[data-action="cmp-add"]').click();
+  await page.locator('#pq').fill(query);
+  await page.locator('.pk-list [data-action="pk-pick"]').first().click();
+  await page.locator('[data-action="pk-confirm"]').click();
+}
 
 test('B200 Günlük telefonda yalnız Enerji açık; açılan bölüm hatırlanır', async ({ page }, testInfo) => {
   const errors = []; page.on('pageerror', (error) => errors.push(error.message));
@@ -7,6 +13,7 @@ test('B200 Günlük telefonda yalnız Enerji açık; açılan bölüm hatırlan�
   await page.goto('/');
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
   await page.locator('[data-action="ex-add-day"]').click(); await tab(page, 'gunluk');
+  await page.locator('[data-ux-details="diary-nutrients"] > summary').click();
   await expect(page.locator('[data-daily-nutrient="energy"]')).toContainText('89');
   const sec = (id) => page.locator(`.personal-section[data-psec="${id}"]`);
   await expect(sec('enerji')).toHaveAttribute('open', '');
@@ -30,7 +37,7 @@ test('B200 Kıyasla kartında biçim yerinde değişir, miktar korunur', async (
   const errors = []; page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/');
   await tab(page, 'karsilastir');
-  await page.locator('#cmp-q').fill('nohut'); await page.locator('[data-action="cmp-pick"]').first().click();
+  await addComparisonFood(page, 'nohut');
   const form = page.locator('.cmp-col select.cmp-form').first();
   await expect(form).toBeVisible();
   const before = await page.locator('#cmp-table').textContent();
@@ -48,7 +55,8 @@ test('B201 Kıyasla grafikleri ve haftalık değer seçimi', async ({ page }) =>
   const errors = []; page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/');
   await tab(page, 'karsilastir');
-  for (const q of ['nohut', 'pirinç']) { await page.locator('#cmp-q').fill(q); await page.locator('[data-action="cmp-pick"]:not([disabled])').first().click(); }
+  for (const q of ['nohut', 'pirinç']) await addComparisonFood(page, q);
+  await page.locator('#compare-charts-toggle').click();
   const chart = page.locator('.cmp-chart').first();
   await expect(chart).toBeVisible();
   await expect(chart.locator('.cc-legend li')).toHaveCount(2);
@@ -64,6 +72,7 @@ test('B201 Kıyasla grafikleri ve haftalık değer seçimi', async ({ page }) =>
   await tab(page, 'kesfet');
   await page.locator('#q').fill('nohut'); await page.locator('#foodlist [data-id="nohut"]').click();
   await page.locator('[data-action="ex-add-day"]').click(); await tab(page, 'gunluk');
+  await page.locator('[data-ux-details="diary-history"] > summary').click();
   const week = page.locator('.week');
   await expect(week).toHaveAttribute('data-week-key', 'energy');
   await week.locator('[data-action="week-key"][data-key="protein"]').click();

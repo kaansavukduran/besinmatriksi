@@ -1,6 +1,6 @@
+import { category, reveal, tab } from './navigation.mjs';
 import { test, expect } from '@playwright/test';
 
-const tab = (page, id) => page.locator(`[data-action="tab"][data-tab="${id}"]`).click();
 const micro = (page, key) => page.locator(`.micro-overview [data-micro="${key}"]`);
 
 async function seedSettings(page, settings) {
@@ -78,6 +78,7 @@ for (const language of ['tr', 'en']) {
     await expect(micro(page, 'vitc')).toHaveAttribute('data-micro-status', 'partial');
     await expect(micro(page, 'vitc').locator('.micro-value')).toContainText('≥');
     await expect(micro(page, 'vitc').locator('.micro-meta')).toContainText('2/3');
+    await reveal(page, '.micro-overview');
     await micro(page, 'vitc').locator('button').click();
     await expect(page.locator('#recipe-source-nutrient')).toHaveValue('vitc');
     await expect(page.locator('#recipe-source-rows .source-ingredients > li')).toHaveCount(3);
@@ -86,9 +87,10 @@ for (const language of ['tr', 'en']) {
     await expect(page.locator('#recipe-source-rows .source-total')).toContainText(language === 'en' ? 'Iron' : 'Demir');
 
     await tab(page, 'gunluk');
-    // B200: telefonda Günlük mikro özeti kapalı gelir; kullanıcı gibi aç
-    if (!(await page.locator('.personal .micro-overview').getAttribute('open') !== null)) await page.locator('.personal .micro-overview > summary').click();
+    await reveal(page, '[data-ux-details="diary-nutrients"]');
+    await reveal(page, '.personal .micro-overview');
     await expect(micro(page, 'vitc')).toHaveAttribute('data-micro-status', 'partial');
+    await reveal(page, '.micro-overview');
     await micro(page, 'vitc').locator('button').click();
     await expect(page.locator('#personal-source-key')).toHaveValue('vitc');
     await expect(page.locator('#personal-sources-content .source-ingredients > li')).toHaveCount(3);
@@ -98,7 +100,7 @@ for (const language of ['tr', 'en']) {
     await expect(page.locator('.micro-overview')).not.toHaveAttribute('open');
     await tab(page, 'tarif');
     await expect(page.locator('.micro-overview')).not.toHaveAttribute('open');
-    await page.locator('.micro-overview > summary').click();
+    await reveal(page, '.micro-overview');
     await expectMicroFits(page);
     expect(errors).toEqual([]);
   });
@@ -110,14 +112,17 @@ test('B142 mikro satırları 320 px ve 28 px yazı/%200 ölçekte sığar; mikta
   await blockExternalRequests(page);
   await page.goto('/');
   await pick(page, 'chickpea', 'nohut');
+  await reveal(page, '.micro-overview');
   await expectMicroFits(page);
   await expect(micro(page, 'vitc').locator('.micro-value')).toHaveText('4 mg');
-  await page.locator('[data-amount="ex"] [data-delta="10"]').click();
+  await reveal(page, '[data-amount="ex"] .amount-options'); await page.locator('[data-amount="ex"] [data-delta="10"]').click();
   await expect(page.locator('[data-amount="ex"] .amt-val')).toContainText('110');
   await expect(micro(page, 'vitc').locator('.micro-value')).toHaveText('4.4 mg');
+  await reveal(page, '.micro-overview');
   await expectMicroFits(page);
   await page.locator('[data-action="ex-add-recipe"]').click();
   await tab(page, 'tarif');
+  await reveal(page, '.micro-overview');
   await expectMicroFits(page);
   await micro(page, 'vitc').locator('button').click();
   await expect(page.locator('#recipe-source-nutrient')).toHaveValue('vitc');
@@ -129,7 +134,7 @@ test('B142 tam katalog ayar kapalıyken erişilir; sayfa, grup, NDB arama ve kay
   await seedSettings(page, { language: 'tr', showExt: false });
   await blockExternalRequests(page);
   await page.goto('/');
-  await page.locator('[data-action="ex-cat"][data-cat="ext"]').click();
+  await category(page, 'ext');
   await expect(page.locator('#foodlist .food.ext')).toHaveCount(80);
   const first = await page.locator('#foodlist .food.ext').first().getAttribute('data-ndb');
   await page.locator('[data-action="ex-extpage"][data-page="1"]').click();
@@ -145,7 +150,7 @@ test('B142 tam katalog ayar kapalıyken erişilir; sayfa, grup, NDB arama ve kay
   await page.locator('[data-action="ex-add-recipe"]').click();
   await page.reload();
   await tab(page, 'tarif');
-  await expect(page.locator('.ing .ing-h b')).toHaveText(name);
+  await expect(page.locator('.ing .ingredient-info > b')).toHaveText(name);
   await expect(page.locator('.ing.missing')).toHaveCount(0);
   expect(errors).toEqual([]);
 });
@@ -161,7 +166,7 @@ test('B142 yalnız koleksiyonda saklanan USDA kaydı katalog ayarı kapalıyken 
   await blockExternalRequests(page);
   await page.goto('/');
   // There is no extended-catalog recipe/day entry to trigger eager loading.
-  await page.locator('[data-action="ex-cat"][data-cat="col:saved-soup"]').click();
+  await category(page, 'col:saved-soup');
   const saved = page.locator('#foodlist [data-action="ex-pick-ref"]');
   await expect(saved).toBeVisible();
   await expect(page.locator('#foodlist .missing-ref')).toHaveCount(0);
@@ -186,16 +191,16 @@ test.describe('B142 katalog yükleme hatası', () => {
     await page.locator('[data-action="ex-add-recipe"]').click();
     const back = page.locator('[data-action="ex-back"]');
     if (await back.isVisible()) await back.click();
-    await page.locator('[data-action="ex-cat"][data-cat="ext"]').click();
+    await category(page, 'ext');
     await expect(page.locator('#foodlist [role="alert"]')).toContainText('USDA kataloğu yüklenemedi');
     expect(blocked).toBeGreaterThan(0);
     rejectCatalog = false;
     await page.locator('[data-action="ext-reload"]').click();
-    await page.locator('[data-action="ex-cat"][data-cat="ext"]').click();
+    await category(page, 'ext');
     await expect(page.locator('#foodlist .food.ext')).toHaveCount(80);
     await expect(page.locator('#foodlist [role="alert"]')).toHaveCount(0);
     await tab(page, 'tarif');
-    await expect(page.locator('.ing .ing-h b')).toHaveText('Nohut');
-    await expect(page.locator('.ing .amt-val')).toContainText('100');
+    await expect(page.locator('.ing .ingredient-info > b')).toHaveText('Nohut');
+    await expect(page.locator('.ing .ingredient-amount')).toContainText('100 g');
   });
 });

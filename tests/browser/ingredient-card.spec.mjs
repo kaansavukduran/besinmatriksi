@@ -1,3 +1,4 @@
+import { categories, category, reveal, tab } from './navigation.mjs';
 import { test, expect } from '@playwright/test';
 
 // Kaan'ın ekran görüntüsü (B156): tarif malzeme kartında ↓ ve ✕ üst üste biniyor, kart altında boşluk kalıyordu.
@@ -16,10 +17,11 @@ for (const width of [1280, 1024, 820, 390, 320]) {
     await addFood(page, 'ıspanak', 'ispanak');
     await addFood(page, 'elma', 'elma');
     await page.locator('[data-action="tab"][data-tab="tarif"]').first().click();
+    const closedHeights = await page.locator('.ing').evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height));
     await page.locator('[data-action="ing-open"]').nth(1).click();
     const cards = await page.locator('.ing').evaluateAll((els) => els.map((ing) => {
       const r = (e) => e.getBoundingClientRect();
-      const btns = [...ing.querySelectorAll('.ing-h .btn')].map(r);
+      const btns = [...ing.querySelectorAll('.ingredient-line .btn, .ingredient-tools .btn')].map(r);
       let overlap = false;
       for (let i = 0; i < btns.length; i++) for (let j = i + 1; j < btns.length; j++) {
         const a = btns[i], b = btns[j];
@@ -32,8 +34,8 @@ for (const width of [1280, 1024, 820, 390, 320]) {
     }));
     expect(cards).toHaveLength(3);
     for (const c of cards) { expect(c.overlap).toBe(false); expect(c.inside).toBe(true); expect(c.emptyBelow).toBeLessThan(40); }
-    expect(Math.abs(cards[0].h - cards[2].h)).toBeLessThan(2); // açılan ortadaki kart diğerlerini uzatmaz
-    // ✕ gerçek tıklamayla doğru malzemeyi siler
+    for (const i of [0, 2]) expect(Math.abs(cards[i].h - closedHeights[i])).toBeLessThan(2);
+    await page.locator('.ing').first().locator('[data-action="ing-open"]').click();
     await page.locator('.ing').first().locator('[data-action="rc-del-item"]').click();
     await expect(page.locator('.ing')).toHaveCount(2);
   });
@@ -66,7 +68,7 @@ test('B162 boş günde bileşen matrisi yerine kısa yönlendirme; besin eklenin
   await expect(page.locator('.day-empty')).toHaveCount(0);
   expect(await page.locator('.personal-section').count()).toBeGreaterThan(3);
   await page.locator('[data-action="tab"][data-tab="tarif"]').first().click();
-  await expect(page.locator('.rhead [data-action="rc-delete"]')).toHaveText('Tarifi sil');
+  await expect(page.locator('.recipe-tools [data-action="rc-delete"]')).toHaveText('Tarifi sil');
   await expect(page.locator('.rlist [data-action="rc-delete"]')).toHaveCount(0);
 });
 
@@ -75,7 +77,7 @@ test('B163 enerji "ikisi" kcal ile kJ birlikte; "Varsayılana dön" onay ister, 
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
   await expect(page.locator('#matrix [data-basic="energy"]')).toContainText('kcal');
   await expect(page.locator('#matrix [data-basic="energy"]')).toContainText('kJ');
-  await page.locator('[data-action="tab"][data-tab="ayarlar"]').first().click();
+  await tab(page, 'ayarlar');
   await page.locator('[data-k="energyUnit"][data-v=\'"kcal"\']').click();
   await page.locator('[data-action="preset"][data-p="reset"]').click();
   await expect(page.locator('.dlg [role="alertdialog"]')).toBeVisible();
@@ -84,7 +86,7 @@ test('B163 enerji "ikisi" kcal ile kJ birlikte; "Varsayılana dön" onay ister, 
   await page.goto('/');
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
   await expect(page.locator('#matrix [data-basic="energy"]')).not.toContainText('kJ');
-  await page.locator('[data-action="tab"][data-tab="ayarlar"]').first().click();
+  await tab(page, 'ayarlar');
   await page.locator('[data-action="preset"][data-p="reset"]').click();
   await page.locator('.dlg [data-r="1"]').click();
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem('bm.settings.v2') || '{}').settings?.energyUnit)).toBe('both');
@@ -93,7 +95,7 @@ test('B163 enerji "ikisi" kcal ile kJ birlikte; "Varsayılana dön" onay ister, 
 test('B164 + B197 üst sınır (10 kg) sessizce kırpılmaz: tarifte birikince ve +10 ile bildirim', async ({ page }) => {
   await page.goto('/');
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
-  await page.locator('[data-amount="ex"] details.amt-more > summary').click();
+  await reveal(page, '[data-amount="ex"] .amount-options'); await page.locator('[data-amount="ex"] details.amt-more > summary').click();
   await page.locator('[data-amount="ex"] [data-action="amt"][data-val="5000"]').click();
   await expect(page.locator('[data-amount="ex"] [data-action="amt"][data-val="5000"]')).toHaveText('5 kg');
   await page.locator('[data-action="ex-add-recipe"]').click();
@@ -111,7 +113,8 @@ test('B164 + B197 üst sınır (10 kg) sessizce kırpılmaz: tarifte birikince v
 test('B168 + B197 gram kaydırıcısı: küp ölçek (1 g – 10 kg), dokunuşla küçük miktar seçilir, hazır miktarla konum eşleşir, tarifte 44 px', async ({ page }) => {
   await page.goto('/');
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
-  const sl = page.locator('[data-amount="ex"] .slider');
+  await reveal(page, '[data-amount="ex"] .amount-options');
+    const sl = page.locator('[data-amount="ex"] .slider');
   await page.locator('[data-amount="ex"] [data-action="amt"][data-val="250"]').click();
   await expect(sl).toHaveValue('292'); // B197 küp ölçek: (249/9999)^(1/3) = 0,292 → 250 g
   await sl.fill('100'); // %10 konum
@@ -152,6 +155,7 @@ test('B169 ölçek etiketleri: 320 px normal yazıda dördü çakışmadan gör�
   const check = async (fs, sc, n) => {
     await page.addInitScript(([fs, sc]) => localStorage.setItem('bm.settings.v2', JSON.stringify({ version: 2, settings: { language: 'tr', fontSize: fs, uiScale: sc } })), [fs, sc]);
     await page.goto('/'); await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+    await reveal(page, '[data-amount="ex"] .amount-options');
     const r = await page.evaluate(() => { const sp = [...document.querySelectorAll('[data-amount="ex"] .slider-scale span')].map((e) => e.getBoundingClientRect()).filter((r) => r.width); return { shown: sp.length, ov: sp.some((a, i) => i && a.left < sp[i - 1].right + 2) }; });
     expect(r).toEqual({ shown: n, ov: false });
   };
@@ -163,6 +167,7 @@ test('B169 ölçek etiketleri: 320 px normal yazıda dördü çakışmadan gör�
 test('B170 miktar düğmeleri 320 px telefonda tek satırda (+10 alta düşmez); 1000 g taşmaz', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 800 });
   await page.goto('/'); await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
+  await reveal(page, '[data-amount="ex"] .amount-options');
   for (const g of ['100', '1000']) {
     await page.locator(`[data-amount="ex"] [data-action="amt"][data-val="${g}"]`).click();
     const r = await page.evaluate(() => { const n = [...document.querySelectorAll('[data-amount="ex"] .amt-main > .nudge')].map((e) => Math.round(e.getBoundingClientRect().top)); const v = document.querySelector('[data-amount="ex"] .amt-val'); return { tops: new Set(n).size, over: v.scrollWidth > v.clientWidth + 1, doc: document.documentElement.scrollWidth <= innerWidth + 1 }; });
@@ -173,7 +178,7 @@ test('B170 miktar düğmeleri 320 px telefonda tek satırda (+10 alta düşmez);
 test('B173 koleksiyon öğesi alt kategoriye taşınır; hedefte varsa kopya oluşmaz', async ({ page }) => {
   await page.addInitScript(() => localStorage.setItem('bm.collections.v1', JSON.stringify([{ id: 'a', name: 'Kahvaltı', items: [{ t: 'c', id: 'muz', f: 0 }, { t: 'c', id: 'nohut', f: 0 }] }, { id: 'b', name: 'Meyveler', parent: 'a', items: [{ t: 'c', id: 'nohut', f: 0 }] }])));
   await page.goto('/');
-  await page.locator('[data-action="ex-cat"][data-cat="col:a"]').first().click();
+  await category(page, 'col:a');
   const store = () => page.evaluate(() => JSON.parse(localStorage.getItem('bm.collections.v1')).map((c) => [c.id, c.items.map((i) => i.id)]));
   await page.locator('[data-col-transfer="a"]').first().selectOption('b');
   await expect(page.locator('.toast')).toContainText('Meyveler');
@@ -215,7 +220,7 @@ test('B175 telefonda Günlük Toplam başlığı tek satır, tarif kartları eş
 test('B176 Aion kapalıyken işlemeyen seçenekler gösterilmez; açınca gelir', async ({ page }) => {
   await page.addInitScript(() => { localStorage.setItem('bm.aionOffV1', '1'); localStorage.setItem('bm.settings.v2', JSON.stringify({ version: 2, settings: { language: 'tr', aionEnabled: false } })); });
   await page.goto('/');
-  await page.locator('[data-action="tab"][data-tab="ayarlar"]').first().click();
+  await tab(page, 'ayarlar');
   const sec = page.locator('.aion-settings');
   await expect(sec.locator('[data-k="aionSize"]')).toHaveCount(0);
   await expect(sec.locator('[data-action="aion-demo"]')).toHaveCount(0);
@@ -232,7 +237,7 @@ test('B177 telefonda Kıyasla kartları kısa; Keşfet sekmesine yeniden dokunma
   for (const id of ['muz', 'nohut', 'elma']) {
     if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="tab"][data-tab="kesfet"]').first().click();
     await page.locator('#q').fill(id); await page.locator(`#foodlist [data-id="${id}"]`).click();
-    await page.locator('[data-action="ex-add-compare"]').click();
+    await reveal(page, '.food-tools'); await page.locator('[data-action="ex-add-compare"]').click();
   }
   await page.locator('[data-action="tab"][data-tab="kesfet"]').first().click();
   await expect(page.locator('#q')).toBeVisible();
@@ -250,33 +255,38 @@ test('B178 yana kayan tablolar devam gölgesi taşır; ilk sütun kayarken yerin
   for (const id of ['muz', 'nohut']) {
     if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="tab"][data-tab="kesfet"]').first().click();
     await page.locator('#q').fill(id); await page.locator(`#foodlist [data-id="${id}"]`).click();
-    await page.locator('[data-action="ex-add-compare"]').click();
+    await reveal(page, '.food-tools'); await page.locator('[data-action="ex-add-compare"]').click();
   }
   await page.locator('[data-action="tab"][data-tab="karsilastir"]').first().click();
-  const wrap = page.locator('#cmp-table .tablewrap');
+  const wrap = page.locator('.compare-basic-wrap');
   await expect(wrap).toBeVisible();
   const r = await wrap.evaluate((e) => { const cs = getComputedStyle(e); const before = e.querySelector('tbody th[scope="row"]').getBoundingClientRect().left; e.scrollLeft = 120; const after = e.querySelector('tbody th[scope="row"]').getBoundingClientRect().left; return { scrolls: e.scrollWidth > e.clientWidth, grads: (cs.backgroundImage.match(/linear-gradient/g) || []).length, local: cs.backgroundAttachment.includes('local'), sticky: Math.abs(after - before) < 2 }; });
   expect(r).toEqual({ scrolls: true, grads: 2, local: true, sticky: true });
 });
 
-test('B179 Kıyasla telefonda Temel besin değerleriyle açılır, masaüstünde Tümü', async ({ page }, info) => {
-  const phone = (page.viewportSize()?.width || 1280) <= 600;
+test('B179 Karşılaştırma temel tabloyla açılır, ayrıntı istendiğinde gösterilir', async ({ page }) => {
   await page.goto('/');
   for (const id of ['muz', 'nohut']) {
     if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="tab"][data-tab="kesfet"]').first().click();
     await page.locator('#q').fill(id); await page.locator(`#foodlist [data-id="${id}"]`).click();
-    await page.locator('[data-action="ex-add-compare"]').click();
+    await reveal(page, '.food-tools'); await page.locator('[data-action="ex-add-compare"]').click();
   }
   await page.locator('[data-action="tab"][data-tab="karsilastir"]').first().click();
-  await expect(page.locator(`[data-action="cmp-sec"][data-s="${phone ? 'temel' : 'all'}"]`)).toHaveClass(/\bon\b/);
-  const h = await page.locator('#cmp-table .tablewrap').evaluate((e) => e.getBoundingClientRect().height);
-  if (phone) expect(h).toBeLessThan(1500); else expect(h).toBeGreaterThan(1500);
+  await expect(page.locator('.compare-basic-wrap')).toBeVisible();
+  await expect(page.locator('.compare-detail-wrap')).toBeHidden();
+  await page.locator('#compare-details-toggle').click();
+  await expect(page.locator('[data-action="cmp-sec"][data-s="all"]')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('.compare-detail-wrap')).toBeVisible();
+  expect(await page.locator('.compare-detail-wrap tbody tr').count()).toBeGreaterThan(await page.locator('.compare-basic-wrap tbody tr').count());
+  await page.locator('[data-action="cmp-sec"][data-s="protein"]').click();
+  await expect(page.locator('.compare-detail-wrap')).toBeVisible();
+  await expect(page.locator('.compare-basic-wrap')).toBeVisible();
 });
 
 test('B180 Bilgi ekranı kısa: veri dürüstlüğü açık, kaynaklar ve lisanslar katlanır (sayılarıyla), içerik kaybolmaz', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });
   await page.goto('/');
-  await page.locator('[data-action="tab"][data-tab="hakkinda"]').first().click();
+  await tab(page, 'hakkinda');
   const about = page.locator('.about');
   await expect(about.getByRole('heading', { name: 'Veri dürüstlüğü' })).toBeVisible();
   const more = about.locator('details.about-more');
@@ -292,7 +302,7 @@ test('B180 Bilgi ekranı kısa: veri dürüstlüğü açık, kaynaklar ve lisans
 test('B181 Ayarlar bölüm şeridi: her karta atlar, aramada gizlenen kartın düğmesi de gizlenir', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });
   await page.goto('/');
-  await page.locator('[data-action="tab"][data-tab="ayarlar"]').first().click();
+  await tab(page, 'ayarlar');
   const chips = page.locator('.settings-toc [data-action="settings-jump"]');
   expect(await chips.count()).toBe(await page.locator('.settings > [id^="set-"]').count());
   await chips.filter({ hasText: 'Yedekleme' }).click();
@@ -306,7 +316,7 @@ test('B181 Ayarlar bölüm şeridi: her karta atlar, aramada gizlenen kartın d�
 test('B182 telefonda yazı tipi kartları iki sütun, adlar sözcük ortasından bölünmez, seçili tam genişlik', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });
   await page.goto('/'); await page.evaluate(() => document.fonts.ready);
-  await page.locator('[data-action="tab"][data-tab="ayarlar"]').first().click();
+  await tab(page, 'ayarlar');
   const r = await page.evaluate(() => {
     const btns = [...document.querySelectorAll('.fonts .fontbtn')];
     const cols = new Set(btns.filter((b) => !b.classList.contains('on')).map((b) => Math.round(b.getBoundingClientRect().left))).size;
@@ -320,7 +330,7 @@ test('B182 telefonda yazı tipi kartları iki sütun, adlar sözcük ortasından
 test('B183 matriks bölümü satırlarında sarılan ad onay kutusunun altına düşmez; oklar aynı satırda', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });
   await page.goto('/');
-  await page.locator('[data-action="tab"][data-tab="ayarlar"]').first().click();
+  await tab(page, 'ayarlar');
   const bad = await page.evaluate(() => [...document.querySelectorAll('.section-option')].filter((row) => {
     const box = row.querySelector('input').getBoundingClientRect();
     const label = row.querySelector('label');
@@ -336,7 +346,7 @@ test('B183 matriks bölümü satırlarında sarılan ad onay kutusunun altına d
 test('B184 telefonda Kendi temam renkleri iki sütun; adlar sözcük ortasından bölünmez; diğer formlar etkilenmez', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });
   await page.goto('/'); await page.evaluate(() => document.fonts.ready);
-  await page.locator('[data-action="tab"][data-tab="ayarlar"]').first().click();
+  await tab(page, 'ayarlar');
   const r = await page.evaluate(() => {
     const f = [...document.querySelectorAll('.theme-colors .color-field')];
     const cols = new Set(f.map((b) => Math.round(b.getBoundingClientRect().left))).size;
@@ -356,6 +366,7 @@ test('B185 koleksiyon varsa kategori şeridinde Tümü\'nün hemen ardından gel
   await page.reload();
   expect(await firstAfterAll()).toContain('cat-group');
   // B207: şeridin başında "Tüm kategoriler" çipi var; koleksiyon "Tümü"ye yakın kalmalı
+  await categories(page);
   const x = await page.locator('.explore .cats [data-cat="col:a"]').evaluate((e) => e.getBoundingClientRect().left - e.parentElement.querySelector('[data-cat=""]').getBoundingClientRect().left);
   expect(x).toBeLessThan(400);
 });
@@ -364,7 +375,7 @@ test('B186 telefonda Aion konuşunca kenarda beklemez: "Kutlamayı dene" baloncu
   await page.setViewportSize({ width: 320, height: 568 });
   await page.addInitScript(() => { localStorage.setItem('bm.aionOffV1', '1'); localStorage.setItem('bm.settings.v2', JSON.stringify({ version: 2, settings: { language: 'tr', aionEnabled: true, aionTips: true } })); });
   await page.goto('/');
-  await page.locator('[data-action="tab"][data-tab="ayarlar"]').first().click();
+  await tab(page, 'ayarlar');
   await page.locator('.aion-settings [data-action="aion-demo"]').scrollIntoViewIfNeeded();
   await page.locator('.aion-settings [data-action="aion-demo"]').click();
   await expect(page.locator('#aion .aion-bubble')).toBeVisible({ timeout: 800 });
@@ -377,6 +388,7 @@ test('B187 telefonda Günlük: yaş/boy/kilo tek satır, başlık en fazla iki s
   await page.setViewportSize({ width: 320, height: 568 });
   await page.goto('/'); await page.evaluate(() => document.fonts.ready);
   await page.locator('[data-action="tab"][data-tab="gunluk"]').first().click();
+  await reveal(page, '[data-ux-details="diary-profile"]');
   const r = await page.evaluate(() => {
     const ins = ['age', 'height', 'weight'].map((k) => document.querySelector(`.profile-basic [data-personal-field="${k}"]`).getBoundingClientRect());
     const h = document.querySelector('.personal > header h1'); const lh = parseFloat(getComputedStyle(h).lineHeight);
@@ -387,31 +399,37 @@ test('B187 telefonda Günlük: yaş/boy/kilo tek satır, başlık en fazla iki s
   await expect(page.locator('.profile-basic [data-personal-field="weight"]')).toHaveValue('70');
 });
 
-test('B189 bildirim telefonda ekranın yarısına sıkışmaz: uzun mesaj geniş ve en fazla üç satır, ekrandan taşmaz', async ({ page }) => {
+test('B189 günlük kayıt bildirimi küçük telefonda geniş ve en fazla üç satır, ekrandan taşmaz', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 568 });
   await page.goto('/');
   await page.locator('#q').fill('muz'); await page.locator('#foodlist [data-id="muz"]').click();
   await page.locator('[data-action="ex-add-day"]').click();
-  const t = page.locator('.toast'); await expect(t).toBeVisible();
+  const t = page.locator('#food-day-feedback [role="status"]'); await expect(t).toBeVisible();
   const r = await t.evaluate((e) => { const b = e.getBoundingClientRect(); const lh = parseFloat(getComputedStyle(e).lineHeight); const pad = parseFloat(getComputedStyle(e).paddingTop) * 2; return { w: b.width, lines: Math.round((b.height - pad) / lh), inside: b.left >= 0 && b.right <= innerWidth }; });
   expect(r.w).toBeGreaterThan(220); expect(r.lines).toBeLessThanOrEqual(3); expect(r.inside).toBe(true);
 });
 
-test('B194 Kıyasla sekmesinde doğrudan arama: yaz, dokun, iki besin yan yana; 4 sınırında arama yerine uyarı', async ({ page }) => {
+test('B194 Karşılaştırma ortak seçiciyi kullanır, yinelenen biçimi ve beşinci besini engeller', async ({ page }) => {
   await page.goto('/');
   await page.locator('[data-action="tab"][data-tab="karsilastir"]').first().click();
-  const q = page.locator('#cmp-q');
-  await expect(q).toBeVisible();
-  await q.fill('nohut');
-  await expect(page.locator('[data-action="cmp-pick"]').first()).toContainText('Nohut');
-  await page.locator('[data-action="cmp-pick"]').first().click();
-  await expect(q).toHaveValue('');
-  await q.fill('yulaf'); await page.locator('[data-action="cmp-pick"]').first().click();
+  const add = page.locator('[data-action="cmp-add"]');
+  await expect(add).toHaveCount(1);
+  const select = async (q, id = q) => {
+    await add.click();
+    await page.locator('#pq').fill(q);
+    await page.locator(`.pk-list [data-action="pk-pick"][data-id="${id}"]`).click();
+  };
+  const confirm = page.locator('[data-action="pk-confirm"]');
+  await select('nohut');
+  await confirm.click();
+  await select('yulaf');
+  await confirm.click();
   await expect(page.locator('.cmp-col')).toHaveCount(2);
-  await expect(page.locator('#cmp-table table')).toHaveCount(1);
-  await q.fill('nohut');
-  await expect(page.locator('[data-action="cmp-pick"]').first()).toBeDisabled(); // zaten eklenmiş biçim
-  for (const id of ['elma', 'muz']) { await q.fill(id); await page.locator('[data-action="cmp-pick"]:not([disabled])').first().click(); }
+  await expect(page.locator('.compare-basic-wrap table')).toBeVisible();
+  await select('nohut');
+  await expect(confirm).toBeDisabled();
+  await page.locator('[data-action="pk-close"]').click();
+  for (const id of ['elma', 'muz']) { await select(id); await confirm.click(); }
   await expect(page.locator('.cmp-col')).toHaveCount(4);
-  await expect(page.locator('#cmp-q')).toHaveCount(0);
+  await expect(add).toHaveCount(0);
 });

@@ -1,6 +1,6 @@
+import { category, reveal, tab } from './navigation.mjs';
 import { test, expect } from '@playwright/test';
 
-const tab = (page, id) => page.locator(`[data-action="tab"][data-tab="${id}"]`).click();
 const widths = [320, 390, 768, 1440];
 const backToList = async page => {
   const back = page.locator('[data-action="ex-back"]');
@@ -20,12 +20,12 @@ async function expectCardFits(card) {
     const shown = el => el.getClientRects().length && rect(el).width > 0 && rect(el).height > 0;
     const parent = rect(box), owner = rect(box.parentElement), problems = [];
     if (parent.left < owner.left - 1 || parent.right > owner.right + 1) problems.push('card outside layout');
-    for (const el of box.querySelectorAll('button, input, output, .ing-h > b, .ing-h > .muted, .cmp-h > b, .cmp-h > .muted')) {
+    for (const el of box.querySelectorAll('button, input, output, .ingredient-info > b, .ingredient-info > .muted, .cmp-h > b, .cmp-h > .muted')) {
       if (!shown(el)) continue;
       const r = rect(el);
       if (r.left < parent.left - 1 || r.right > parent.right + 1 || r.top < parent.top - 1 || r.bottom > parent.bottom + 1) problems.push(`outside: ${el.outerHTML.slice(0, 100)}`);
     }
-    for (const selector of ['.ing-h', '.cmp-h', '.amount.mini', '.amt-main']) {
+    for (const selector of ['.ingredient-line', '.cmp-h', '.amount.mini', '.amt-main']) {
       const group = box.querySelector(selector);
       if (!group) continue;
       const children = [...group.children].filter(shown);
@@ -54,17 +54,17 @@ test('eski favori ve son bakılan kayıtları açılır, kaydedilir ve yeniden a
   await recent.click();
   await expect(page.locator('#matrix .idcard')).toContainText('Kudret narı');
   await backToList(page);
-  await page.locator('[data-action="ex-cat"][data-cat="col:saved"]').click();
+  await category(page, 'col:saved');
   await expect(page.locator('#foodlist .missing-ref')).toHaveCount(0);
   await page.locator('#foodlist [data-action="ex-pick-ref"]').click();
   await expect(page.locator('#matrix .idcard')).toContainText('Kudret narı');
   await backToList(page);
-  await page.locator('[data-action="ex-cat"][data-cat="col:saved"]').click();
+  await category(page, 'col:saved');
   await page.locator('[data-action="col-rename"][data-id="saved"]').click();
   await page.locator('.dlg input').fill('Kaydedilen favoriler');
   await page.locator('.dlg [data-r="1"]').click();
   await page.reload();
-  await page.locator('[data-action="ex-cat"][data-cat="col:saved"]').click();
+  await category(page, 'col:saved');
   await expect(page.locator('#foodlist')).toContainText('Kaydedilen favoriler');
   await expect(page.locator('#foodlist [data-action="ex-pick-ref"]')).toContainText('Kudret narı');
   expect(await page.evaluate(() => ({
@@ -89,10 +89,10 @@ for (const large of [false, true]) {
       const card = page.locator('.ing').first();
       await card.scrollIntoViewIfNeeded();
       await expectCardFits(card);
+      await card.locator('[data-action="ing-open"]').click();
       const before = Number((await card.locator('.amt-val b').textContent()).replace(',', '.'));
       await card.locator('[data-delta="-10"]').click();
       await expect(card.locator('.amt-val b')).toHaveText(String(before - 10));
-      await card.locator('[data-action="ing-open"]').click();
       await expectCardFits(card);
       await card.locator('.presets > [data-action="amt"][data-val="500"]').click();
       await expect(card.locator('.amt-val b')).toHaveText('500');
@@ -102,7 +102,7 @@ for (const large of [false, true]) {
       await page.waitForTimeout(350); // miktar kaydının mevcut 300 ms gecikmesini tamamla
       await page.reload();
       await tab(page, 'tarif');
-      await expect(page.locator('.ing').first().locator('.amt-val b')).toHaveText('500');
+      await expect(page.locator('.ing').first().locator('.ingredient-amount')).toHaveText('500 g');
     }
   });
 
@@ -117,7 +117,7 @@ for (const large of [false, true]) {
       for (const id of ['nohut', 'tahin']) {
         await page.locator('#q').fill(id);
         await page.locator(`#foodlist [data-id="${id}"]`).click();
-        await page.locator('[data-action="ex-add-compare"]').click();
+        await reveal(page, '.food-tools'); await page.locator('[data-action="ex-add-compare"]').click();
         await backToList(page);
       }
       await tab(page, 'karsilastir');
@@ -131,7 +131,7 @@ for (const large of [false, true]) {
       await expectCardFits(card);
       await card.locator('.presets > [data-action="amt"][data-val="200"]').click();
       await expect(card.locator('.amt-val b')).toHaveText('200');
-      await expect(page.locator('table.cmp .cmp-food').first()).toContainText('200 g');
+      await expect(page.locator('.compare-basic-wrap table.cmp .cmp-food').first()).toContainText('200 g');
       await card.locator('[data-action="ing-open"]').click();
       await expectCardFits(card);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), `comparison ${width}px`).toBe(true);

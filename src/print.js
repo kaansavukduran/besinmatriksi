@@ -4,7 +4,7 @@ export function createPrintController(doc, view) {
   const media = view.matchMedia?.('print');
   function prepare() {
     if (snapshot) return;
-    snapshot = [...doc.querySelectorAll('details.sec')].map(el => ({ el, open: el.open }));
+    snapshot = [...doc.querySelectorAll('details.sec, details.micro-overview, details.food-reference')].map(el => ({ el, open: el.open }));
     for (const { el } of snapshot) el.open = true;
   }
   function restore() {

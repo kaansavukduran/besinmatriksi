@@ -3,13 +3,14 @@
 Türkçe ve English arayüzlü, çevrimdışı besin matriksi, günlük ve tarif hesaplayıcı. Bitkisel ağırlıklı küratörlü katalog ve hayvansal içerik filtresiyle tam USDA SR28 kaynak kataloğu.
 Windows · macOS · Linux · Android · iPhone · tarayıcı/PWA · tek HTML.
 
+**[GitHub Pages](https://kaansavukduran.github.io/besinmatriksi/)** ·
+**[Cloudflare Pages](https://besinmatriksi.pages.dev/)** ·
 **[Sürümler / Releases](https://github.com/kaansavukduran/besinmatriksi/releases)** ·
-**[Canlı Web / PWA (GitHub Pages)](https://kaansavukduran.github.io/besinmatriksi/)** ·
 [Kurulum adımları](docs/INSTALL.md) · [Sürüm notları](docs/RELEASE_NOTES.md)
 
 ## İndirip dene
 
-En güncel yayımlı paketler **[GitHub Releases](https://github.com/kaansavukduran/besinmatriksi/releases)** (son yayımlı ön sürüm: `v1.1.2-beta.68`, 23 varlık) üzerinden veya `release.yml` Actions çıktılarından indirilir. Kaynak deposundaki hazırlanan sürüm `1.1.2-beta.70` olup paketleme ve Release üretimi ilgili workflow ile ayrı yürütülür.
+Web sürümü `1.1.2-beta.71`. İndirilebilir masaüstü ve mobil paketler [v1.1.2-beta.70](https://github.com/kaansavukduran/besinmatriksi/releases/tag/v1.1.2-beta.70) sürümünde (23 dosya).
 
 | Platform | Dosya kalıbı |
 |---|---|
@@ -29,8 +30,8 @@ Windows WebView2 gerektirir. Fiziksel cihaz kabulü paket üretiminden ayrıdır
 
 ## Kullanım
 
-- **Keşfet:** kategori → besin → tüketim biçimi → 1 g – 10 kg. Kesin sayısal miktar girişi, günlük hazır miktarlar (`25 g – 1 kg`), katlanır uç miktarlar (`1 g – 10 kg`), kaydırıcı, ±1/±10 ve kaynakta varsa ev ölçüleri; yağ/sıvılarda yalnız USDA hacim ölçüsünden doğrulanmış yoğunlukla yaklaşık mL gösterimi. İsteğe bağlı ons gösterimi.
-- **Günlük ve profil:** yaş, boy, kilo, aktivite ve isteğe bağlı Tanita fişi alanlarını kaydet. Günlük enerji ihtiyacı **tahmini**, planlanan/tüketilen besinler, 7/30 günlük ve aylık geçmiş ile 244+ bileşenin miktar/kapsam/referans farklarını incele. [Profil ve günlük rehberi](docs/PERSONAL_DAILY.md).
+- **Keşfet:** besini ara, seçili tüketim biçimi ve miktarla birlikte temel değerleri gör. **Kategoriler** ve **Filtreler** aramanın altında açılır. **Diğer miktarlar** altında günlük hazır miktarlar (`25 g – 1 kg`), katlanır uç miktarlar (`1 g – 10 kg`), kaydırıcı, ±1/±10 ve kaynakta varsa ev ölçüleri; yağ/sıvılarda yalnız USDA hacim ölçüsünden doğrulanmış yoğunlukla yaklaşık mL gösterimi. İsteğe bağlı ons gösterimi.
+- **Günlük:** tarihe bak, **Besin ekle** ile doğrudan kayıt oluştur. **Profil ve enerji hedefi** altında yaş, boy, kilo, aktivite ve isteğe bağlı Tanita fişi alanlarını düzenle. Günlük enerji ihtiyacı **tahmini**, planlanan/tüketilen besinler, 7/30 günlük ve aylık geçmiş ile 244+ bileşenin miktar/kapsam/referans farklarını incele. [Profil ve günlük rehberi](docs/PERSONAL_DAILY.md).
 - **Tarif oluştur:** malzemeleri ekle, porsiyon veya pişmiş son ağırlık seç. Toplam/1 porsiyon/son ürünün 100 g'ı. Eksik besin bilgisi kısmi kapsamla gösterilir. Malzeme ve kaynak dökümünde her bileşenin malzeme katkısı, USDA kayıt no/etiket kaynağı ve hesap girdileri incelenir.
 - **Karşılaştır:** 2–4 besini aynı miktar ve biçimde yan yana incele. En yüksek değer vurgusu sağlık açısından 'en iyi' anlamına gelmez.
 - **Ayarlar:** görünüm kartında TR/EN, sistem/açık/koyu/yüksek kontrast tema, %80–200 bağımsız arayüz ölçeği (elle %135 dahil), yazı boyutu ve aralık kaydırıcıları; isteğe bağlı sakin keşif ilerlemesi. 9 tema ve yedi renk alanlı özel tema; renk seçim penceresi, hazır renkler/HEX, canlı önizleme ve metin kontrast ölçümü; 8 gömülü font ve sistem fontu; OpenDyslexic, Atkinson, Lexend; punto ve aralıklar; okuma cetveli; büyük imleç; atanabilir kısayollar; 12 görünüm profili.
@@ -43,9 +44,8 @@ PWA'nın ilk çevrimiçi yüklemesi önbelleğe alınmalıdır; tek HTML dosyas�
 
 ## Web yayını
 
-- GitHub Pages (birincil): **https://kaansavukduran.github.io/besinmatriksi/** (22 Kasım 2026 kontrol: HTTP 200).
-- Cloudflare Pages (ayrı ayna): **https://besinmatriksi.pages.dev/** (22 Kasım 2026 kontrol: HTTP 200).
-- Vercel (`https://besinmatriksi.vercel.app/`): 22 Kasım 2026 kontrolünde HTTP 402 döndürdüğü için etkin yayın adresi olarak varsayılmaz.
+- [GitHub Pages](https://kaansavukduran.github.io/besinmatriksi/) birincil adres.
+- [Cloudflare Pages](https://besinmatriksi.pages.dev/) ikinci web adresi.
 
 `.github/workflows/pages.yml`, kanonik yayın dalı `main` güncellendiğinde (veya elle `workflow_dispatch` ile) veri determinizmi, bildirim doğrulaması, birim testleri ve web derlemesini çalıştırır, ardından `dist` çıktısını GitHub Pages'e yayımlar. Yeni bir depo kurulumunda yönetici **Settings → Pages → Build and deployment → Source → GitHub Actions** seçmelidir. Dağıtım durumu [Pages iş akışında](https://github.com/kaansavukduran/besinmatriksi/actions/workflows/pages.yml) izlenebilir.
 
@@ -60,8 +60,8 @@ EFSA DRV Finder ayrıca 23 bileşen / 169 PRI-AI kaydıyla isteğe bağlı grup 
 Keşfet → **Tam Katalog** ile ayar açmadan eriş. 80 kayıtlık sayfalar, besin grubu seçimi ve özgün İngilizce ad veya NDB numarasıyla arama vardır. 2015 tarihli SR28 marka kayıtları güncel ambalaj etiketi sayılmaz; içerik ve alerjen bilgisi üründen doğrulanır. Hayvansal kayıtlar gizlenince içeriği belirsiz karma kayıtlar da gizlenir.
 
 Sol üstteki **Besin Matriksi** logosuna veya adına tıklayarak Keşfet ana
-görünümüne dönülür. Masaüstünde kategori düğmeleri satırlara yerleşir; yatay
-kaydırma gerekmez. Telefonda dokunarak yatay kaydırma kullanılabilir.
+görünümüne dönülür. **Kategoriler** açıldığında masaüstünde satırlara, telefonda
+dikey listeye yerleşir. **Tam Katalog** listenin sonundadır.
 
 **Kategori düzeni:** Meyveler, normal meyveler ile Kuru meyveler'i birlikte;
 Sebzeler, sebzeler, Yeşil yapraklılar ve Kök ve yumrular'ı; Baklagiller ise

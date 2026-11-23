@@ -15,8 +15,14 @@ export function bindExploreActions(deps) {
 }
 
 export const EXPLORE_ACTIONS = {
-  'ex-home': async (b) => { S.tab = 'kesfet'; S.sel = null; S.cat = null; S.q = ''; S.extGroup = null; S.extPage = 0; render(); window.scrollTo(0, 0); return; },
-  'ex-cat': async (b) => { S.sel = null; S.cat = b.dataset.cat || null; S.extGroup = null; S.extPage = 0; render(); $('.list') && ($('.list').scrollTop = 0); return; },
+  'ex-home': async () => { S.tab = 'kesfet'; S.sel = null; S.cat = null; S.q = ''; S.extGroup = null; S.extPage = 0; S.catsOpen = undefined; S.browseFilters.ex = false; S.moreNav = false; render(); window.scrollTo(0, 0); },
+  'ex-cat': async (b) => {
+    S.sel = null; S.cat = b.dataset.cat || null; S.extGroup = null; S.extPage = 0;
+    S.catsOpen = S.settings.catGrid;
+    render();
+    $('.list').scrollTop = 0;
+    if (!S.catsOpen) $('.cats-toggle')?.focus({ preventScroll: true });
+  },
   'ex-full-search': async (b) => { S.sel = null; S.cat = 'ext'; S.extGroup = null; S.extPage = 0; render(); return; },
   'ex-extpage': async (b) => { S.extPage = Math.max(0, Number(b.dataset.page) || 0); render(); $('#foodlist .catalog-heading h2')?.focus(); $('#foodlist .catalog-heading')?.scrollIntoView({ block: 'start' }); return; },
   'ex-extgroup': async (b) => { S.extGroup = S.extGroup === b.dataset.g ? null : b.dataset.g; render(); return; },
@@ -43,7 +49,7 @@ export const EXPLORE_ACTIONS = {
   'cu-edit': async (b) => { const f = customFoods().find((x) => x.id === S.sel?.id); if (f) { S.customEdit = JSON.parse(JSON.stringify(f)); render(); } return; },
   'cu-close': async (b) => { S.customEdit = null; render(); return; },
   'cu-liquid': async (b) => { S.customEdit.liquid = b.dataset.v === '1'; render(); return; },
-  'cu-save': async (b) => { if (saveCustomEdit()) { S.tab = 'kesfet'; render(); toast(L("Kaydedildi")); } return; },
+  'cu-save': async (b) => { if (saveCustomEdit()) { if (!S.picker) S.tab = 'kesfet'; render(); toast(L("Kaydedildi")); } return; },
   'cu-delete': async (b) => {
       const E = S.customEdit;
       if (!(await uiDialog(L("“{n}” silinsin mi? Tariflerdeki kullanımları “bulunamadı” olarak kalır.", { n: E.name }), { ok: L("Sil"), cancel: L("Vazgeç") }))) return;
@@ -52,11 +58,16 @@ export const EXPLORE_ACTIONS = {
       setCustomFoods(list); S.customEdit = null; if (S.sel?.t === 'u') S.sel = null; render(); return;
     },
   'ex-form': async (b) => { S.sel = { ...S.sel, f: +b.dataset.f }; render(); return; },
-  'ex-back': async (b) => { S.sel = null; render(); window.scrollTo(0, S.browseScrollY || 0); return; },
-  'cats-toggle': async (b) => { S.catsOpen = !S.catsOpen; render(); $('.cats-toggle')?.focus(); return; },
+  'ex-back': async () => {
+    const previous = S.browseOpener;
+    S.sel = null;
+    render(); window.scrollTo(0, S.browseScrollY || 0);
+    ((previous && $(previous)) || $('#q'))?.focus({ preventScroll: true });
+  },
+  'cats-toggle': async () => { S.catsOpen = !(S.catsOpen ?? S.settings.catGrid); render(); },
   'search-recent': async (b) => { S.q = b.dataset.q; S.cat = null; render(); return; },
   'search-clear': async (b) => { S.searches = []; saveSearches([]); render(); return; },
-  'ex-clear': async (b) => { S.q = ''; render(); return; },
+  'ex-clear': async () => { S.q = ''; render(); $('#q')?.focus(); },
   'ex-add-recipe': async (b) => { addToRecipe(S.sel, S.amount); render(); return; },
   'ex-add-compare': async (b) => { addToCompare(S.sel, S.amount); render(); return; },
 };

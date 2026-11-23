@@ -1,7 +1,7 @@
 import { NUTRIENTS, NUTRIENT_BY_KEY, SECTIONS } from './nutrients.js';
 import { EN_NUTRIENTS } from './i18n-nutrients.js';
 import { t, getLanguage, locale, L } from './i18n.js';
-import { esc, fmtNum, fmtAmount, fmtPct } from './util.js';
+import { esc, fmtNum, fmtAmount, fmtExactAmount, fmtPct } from './util.js';
 import { PROFILE_RANGES, bodyMetrics, energyEstimate, dayResult, nutrientComparison, weekSeries, localDay, shiftDay } from './personal.js';
 import { recipeContributions, LABELS as SRC_LABELS, usdaRecord } from './recipe-sources.js';
 import { basicCard } from './matrix.js';
@@ -9,7 +9,7 @@ import { renderMicronutrients } from './micronutrients.js';
 import { aminoNote } from './amino-daily.js';
 const label = n => getLanguage() === 'en' ? EN_NUTRIENTS[n.key] : n.label;
 const amount = (value, unit) => { if (value == null) return t('unknown'); const a = fmtAmount(value, unit); return `${a.n} ${esc(a.u)}`; };
-const dateText = day => new Intl.DateTimeFormat(locale(), { dateStyle: 'long' }).format(new Date(day + 'T12:00:00'));
+export const dateText = day => new Intl.DateTimeFormat(locale(), { dateStyle: 'long' }).format(new Date(day + 'T12:00:00'));
 const foodName = item => item.name; // resolve() adı zaten dile göre verir
 export function renderEnergy(profile, preview = false) {
   let energy, metrics;
@@ -23,7 +23,7 @@ export function renderEnergy(profile, preview = false) {
 function profileForm(profile) {
   const numeric = key => { const [min, max] = PROFILE_RANGES[key]; return `<label class="field"><span>${t(key)}</span><input type="number" min="${min}" max="${max}" step="${['age', 'metabolicAge'].includes(key) ? 1 : 'any'}" data-personal-field="${key}" value="${profile[key] ?? ''}" inputmode="decimal"><small>${min}–${max}</small></label>`; };
   const options = (key, values) => `<label class="field"><span>${t(key)}</span><select data-personal-field="${key}">${values.map(([v, keyLabel]) => `<option value="${v}" ${String(profile[key] ?? '') === String(v) ? 'selected' : ''}>${t(keyLabel)}</option>`).join('')}</select></label>`;
-  return `<section class="card personal-profile"><h2>${t('profileTitle')}</h2>
+  return `<div class="personal-profile">
     <div class="cu-grid profile-basic">${['age', 'height', 'weight'].map(numeric).join('')}${options('sex', [['unspecified', 'unspecified'], ['male', 'male'], ['female', 'female']])}${options('activity', [['', 'unspecified'], ['1.4', 'pal14'], ['1.6', 'pal16'], ['1.8', 'pal18'], ['2', 'pal20']])}</div>
     <details><summary>${t('tanita')}</summary><p class="hint">${t('deviceHint')}</p><div class="cu-grid">${['bodyFat', 'waterPct', 'muscleKg', 'boneKg', 'visceralLevel', 'metabolicAge', 'deviceRmr'].map(numeric).join('')}<label class="field"><span>${t('measuredOn')}</span><input type="date" data-personal-field="measuredOn" value="${profile.measuredOn}"></label></div><label class="field"><span>${t('note')}</span><textarea data-personal-field="note" maxlength="1000">${esc(profile.note)}</textarea></label></details>
     ${options('energySource', [['equation', 'equation'], ['device', 'device']])}
@@ -31,7 +31,7 @@ function profileForm(profile) {
     <div id="personal-preview">${renderEnergy(profile, true)}</div>
     <div class="presets"><button class="btn primary" data-action="personal-save">${t('saveProfile')}</button><button class="btn" data-action="personal-clear">${t('clearProfile')}</button><button class="btn" data-action="personal-efsa">${t('applyEfsa')}</button></div><p class="hint">${t('efsaHint')}</p>
     <p id="personal-save-status" role="status"></p>
-  </section>`;
+  </div>`;
 }
 export function renderDaySources(entries, resolve, key) {
   const n = NUTRIENT_BY_KEY[key];
@@ -78,7 +78,14 @@ export function renderWeek(state, day, resolve, consumedOnly, weekKey = 'energy'
       <span class="wk-v">${label}</span><span class="wk-bar"><i style="height:${h.toFixed(1)}%"></i></span><span class="wk-d">${esc(name)}</span></button>`;
   }).join('')}</div>${s.some((x) => x.partial) ? `<p class="hint">${L("≥: bazı kayıtlarda bu değerin verisi yok; gerçek değer daha yüksek olabilir.")}</p>` : ''}</div>`;
 }
-export function renderPersonal(state, draft, day, consumedOnly, settings, resolve, sourceKey, sourceOpen, undo, readError, microOpen = true, secOpen = {}, phone = false, weekKey = 'energy', hist = {}) {
+export function diaryAddedText(entry, resolve) {
+  const item = resolve(entry.ref);
+  return L("{n} · {g} {u} · {d} günlüğüne eklendi", {
+    n: item?.name || t('missingRecord'), g: fmtExactAmount(entry.g), u: item?.customLiquid ? 'mL' : 'g', d: dateText(entry.day),
+  });
+}
+
+export function renderPersonal(state, draft, day, consumedOnly, settings, resolve, sourceKey, sourceOpen, undo, readError, microOpen = true, secOpen = {}, phone = false, weekKey = 'energy', hist = {}, ui = {}) {
   const { entries, result } = dayResult(state, day, resolve, consumedOnly);
   // Boş durum yalnız günde hiç kayıt yokken; "yalnız tüketilenler" süzgeci matrisi gizlemez (Veri yok satırları anlamlıdır)
   const dayHasEntries = state.entries.some((e) => e.day === day);
@@ -88,21 +95,32 @@ export function renderPersonal(state, draft, day, consumedOnly, settings, resolv
   const complete = result.n > 0 && result.cov.energy === result.n;
   const difference = complete && target > 0 && result.v.energy != null ? result.v.energy - target : null;
   const done = Object.values(state.milestones).filter(Boolean).length;
-  return `<div class="personal"><header><h1>${t('dailyTitle')}</h1><p class="hint">${t('privacy')}</p></header>
+  const disclosure = (key, title, content) => `<details class="diary-disclosure" data-ux-details="${key}" ${ui.open?.[key] ? 'open' : ''}><summary>${title}</summary>${content}</details>`;
+  const feedback = ui.feedback?.day === day && entries.some(e => e.id === ui.feedback.id) ? ui.feedback : null;
+  return `<div class="personal diary"><header class="diary-heading"><h1 id="diary-title" tabindex="-1">${L("Günlük")}</h1>
+      <button class="btn primary" data-action="personal-add-food">${L("Besin ekle")}</button></header>
     ${readError ? `<p role="alert">${t('corruptPersonal')} <button class="btn" data-action="personal-raw">${t('rawBackup')}</button></p>` : ''}
-    ${settings.progressEnabled ? `<section class="card exploration-progress ${settings.progressAnimations ? 'progress-animated' : ''}" aria-label="${t('progressTitle')}"><h2>${t('progressTitle')}</h2><progress value="${done}" max="3" aria-label="${t('progressCount', { done })}"></progress><p>${t('progressCount', { done })}</p><p class="hint">${t('progressHint')}</p></section>` : ''}
-    ${profileForm(draft)}
-    <section class="card"><h2>${t('date')}: ${esc(dateText(day))}</h2><label class="field"><span>${t('date')}</span><input id="personal-day" type="date" value="${day}"></label><div class="presets"><button class="pchip ${!consumedOnly ? 'on' : ''}" data-action="personal-mode" data-mode="plan">${t('plan')}</button><button class="pchip ${consumedOnly ? 'on' : ''}" data-action="personal-mode" data-mode="consumed">${t('consumed')}</button><button class="btn primary" data-action="tab" data-tab="kesfet">${t('browseFood')}</button></div>
-    ${entries.length ? basicCard(result, settings, L("Günün temel besin değerleri"), { goals: true, pie: true, energyTarget: target, persona: { sex: ['female', 'male'].includes(state.profile?.sex) ? state.profile.sex : null } }) : ''}
-    <p>${t('loggedEnergy')}: <b>${amount(result.v.energy, 'kcal')}</b> · ${t('coverage', { known: result.cov.energy || 0, total: result.n })}</p><p>${t('dailyEnergy')}: <b>${target == null ? t('unknown') : amount(target, 'kcal')}</b> · ${t('energyGap')}: <b>${difference == null ? t(target == null ? 'noReference' : 'partial') : (difference > 0 ? '+' : '') + amount(difference, 'kcal')}</b></p><p class="hint">${t(manual ? 'manualEnergyHint' : state.profile.energySource === 'device' ? 'deviceEstimateHint' : 'estimateHint')}</p>
-    ${entries.length ? renderMicronutrients(result, settings, { open: microOpen, contributions: 'day' }) : ''}
-    ${entries.length ? `<ul class="source-ingredients">${entries.map(entry => { const item = resolve(entry.ref); return `<li><b>${item ? esc(foodName(item)) : t('missingRecord')}</b> · ${fmtNum(entry.g)} g<div class="presets"><button class="btn" data-action="personal-consumed" data-id="${entry.id}" aria-pressed="${entry.consumed}">${t(entry.consumed ? 'markPlanned' : 'markConsumed')}</button><button class="btn" data-action="personal-remove" data-id="${entry.id}">${t('remove')}</button></div></li>`; }).join('')}</ul>` : `<p>${t('emptyDay')}</p>`}
-    ${renderHistory(state, day, resolve, consumedOnly, { mode: hist.mode, month: hist.month, key: weekKey })}
-    ${entries.length ? `<div class="presets day-actions"><button class="btn" data-action="personal-to-recipe">🥣 ${L("Bu günü tarif olarak kaydet")}</button>${day !== localDay() ? `<button class="btn" data-action="personal-copy-day">📋 ${L("Bu günü bugüne kopyala")}</button>` : ''}</div>` : ''}
-    ${undo ? `<button class="btn" data-action="personal-undo">${t('undo')}</button>` : ''}
-    ${dayHasEntries ? `<details class="personal-sources" ${sourceOpen ? 'open' : ''}><summary>${t('source')}</summary><label class="field"><span>${t('nutrient')}</span><select id="personal-source-key">${NUTRIENTS.map(n => `<option value="${n.key}" ${n.key === sourceKey ? 'selected' : ''}>${esc(label(n))}</option>`).join('')}</select></label><div id="personal-sources-content">${renderDaySources(entries, resolve, sourceKey)}</div></details>` : ''}
-    ${dayHasEntries ? renderNutrients(result, settings, target > 0 ? { value: target, kind: manual ? 'manual' : 'estimate' } : null, state.profile, secOpen, phone) : `<p class="empty day-empty">${L("Bu güne henüz besin eklenmedi. Keşfet'te bir besin seç ve “Günlüğe ekle”ye dokun; günün bileşen matriksi burada oluşur.")}</p>`}
+    <section class="diary-day" aria-label="${t('date')}">
+      <div class="diary-date"><label class="field" for="personal-day"><span>${t('date')} · ${esc(dateText(day))}</span><input id="personal-day" type="date" value="${day}"></label>
+        <div class="presets" role="group" aria-label="${L("Gösterilen kayıtlar")}"><button class="pchip ${!consumedOnly ? 'on' : ''}" type="button" aria-pressed="${!consumedOnly}" data-action="personal-mode" data-mode="plan">${L("Tüm kayıtlar")}</button><button class="pchip ${consumedOnly ? 'on' : ''}" type="button" aria-pressed="${consumedOnly}" data-action="personal-mode" data-mode="consumed">${t('consumed')}</button></div>
+      </div>
+      <div class="day-feedback">${feedback ? `<p role="status">${esc(diaryAddedText(feedback, resolve))}</p>` : ''}${undo ? `<button class="linkish" data-action="personal-undo">${t('undo')}</button>` : ''}</div>
+      ${entries.length ? `<ul class="source-ingredients diary-entries">${entries.map(entry => {
+        const item = resolve(entry.ref);
+        return `<li><span><b>${item ? esc(foodName(item)) : t('missingRecord')}</b> · ${fmtExactAmount(entry.g)} ${item?.customLiquid ? 'mL' : 'g'}</span><div class="presets"><button class="btn" data-action="personal-consumed" data-id="${entry.id}" aria-pressed="${entry.consumed}">${t(entry.consumed ? 'markPlanned' : 'markConsumed')}</button><button class="btn" data-action="personal-remove" data-id="${entry.id}">${t('remove')}</button></div></li>`;
+      }).join('')}</ul>` : `<p class="empty day-empty">${dayHasEntries ? L("Bu gün tüketildi olarak işaretlenmiş kayıt yok.") : L("Bu güne henüz besin eklenmedi.")}</p>`}
+      ${entries.length ? basicCard(result, settings, L("Günün temel besin değerleri"), { goals: true, pie: true, overview: true, overviewOpen: ui.open?.['diary-reference'], overviewKey: 'diary-reference', energyTarget: target, persona: { sex: ['female', 'male'].includes(state.profile?.sex) ? state.profile.sex : null } }) : ''}
+      ${dayHasEntries ? `<div class="presets day-actions"><button class="btn" data-action="personal-to-recipe">${L("Bu günü tarif olarak kaydet")}</button>${day !== localDay() ? `<button class="btn" data-action="personal-copy-day">${L("Bu günü bugüne kopyala")}</button>` : ''}</div>` : ''}
     </section>
-    <section class="card"><div class="presets"><button class="btn" data-action="personal-export">${t('exportPersonal')}</button><button class="btn" data-action="open-file" data-id="personal-file">${t('importPersonal')}</button><input type="file" accept="application/json,.json" id="personal-file" hidden></div><p class="hint">${t('privacy')}</p></section>
+    ${dayHasEntries ? disclosure('diary-nutrients', L("Ayrıntılı besin değerleri"), `
+      ${entries.length ? renderMicronutrients(result, settings, { open: microOpen, contributions: 'day' }) : ''}
+      ${renderNutrients(result, settings, target > 0 ? { value: target, kind: manual ? 'manual' : 'estimate' } : null, state.profile, secOpen, phone)}`) : ''}
+    ${dayHasEntries ? `<details class="personal-sources diary-disclosure" ${sourceOpen ? 'open' : ''}><summary>${t('source')}</summary><label class="field"><span>${t('nutrient')}</span><select id="personal-source-key">${NUTRIENTS.map(n => `<option value="${n.key}" ${n.key === sourceKey ? 'selected' : ''}>${esc(label(n))}</option>`).join('')}</select></label><div id="personal-sources-content">${renderDaySources(entries, resolve, sourceKey)}</div></details>` : ''}
+    ${disclosure('diary-profile', L("Profil ve enerji hedefi"), `
+      ${profileForm(draft)}
+      <p>${t('loggedEnergy')}: <b>${amount(result.v.energy, 'kcal')}</b> · ${t('coverage', { known: result.cov.energy || 0, total: result.n })}</p><p>${t('dailyEnergy')}: <b>${target == null ? t('unknown') : amount(target, 'kcal')}</b> · ${t('energyGap')}: <b>${difference == null ? t(target == null ? 'noReference' : 'partial') : (difference > 0 ? '+' : '') + amount(difference, 'kcal')}</b></p><p class="hint">${t(manual ? 'manualEnergyHint' : state.profile.energySource === 'device' ? 'deviceEstimateHint' : 'estimateHint')}</p>`)}
+    ${disclosure('diary-history', L("Geçmiş"), renderHistory(state, day, resolve, consumedOnly, { mode: hist.mode, month: hist.month, key: weekKey, displayHeading: false }))}
+    ${settings.progressEnabled ? `<section class="exploration-progress ${settings.progressAnimations ? 'progress-animated' : ''}" aria-label="${t('progressTitle')}"><h2>${t('progressTitle')}</h2><progress value="${done}" max="3" aria-label="${t('progressCount', { done })}"></progress><p>${t('progressCount', { done })}</p><p class="hint">${t('progressHint')}</p></section>` : ''}
+    ${disclosure('diary-backup', L("Yedekleme"), `<div class="presets"><button class="btn" data-action="personal-export">${t('exportPersonal')}</button><button class="btn" data-action="open-file" data-id="personal-file">${t('importPersonal')}</button><input type="file" accept="application/json,.json" id="personal-file" hidden></div><p class="hint">${t('privacy')}</p>`)}
   </div>`;
 }

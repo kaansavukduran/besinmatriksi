@@ -1,3 +1,4 @@
+import { reveal } from './navigation.mjs';
 import { test, expect } from '@playwright/test';
 
 test('B141 kahve porsiyonu, dondurulmuş pizza ve cips gerçek arama yoluyla kullanılır', async ({ page }) => {
@@ -7,7 +8,7 @@ test('B141 kahve porsiyonu, dondurulmuş pizza ve cips gerçek arama yoluyla kul
     if (await page.locator('[data-action="ex-back"]').isVisible()) await page.locator('[data-action="ex-back"]').click();
     await page.locator('#q').fill(query);
     await page.locator(`#foodlist [data-id="${id}"]`).click();
-    await page.locator('[data-amount="ex"] [data-val="100"]').click();
+    await reveal(page, '[data-amount="ex"] .amount-options'); await page.locator('[data-amount="ex"] [data-val="100"]').click();
   };
   await pick('latte', 'latte_sutlu');
   const cup = page.locator('[data-amount="ex"] [data-val="180"]');

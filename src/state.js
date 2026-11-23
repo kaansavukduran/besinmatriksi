@@ -3,7 +3,7 @@
 import { loadSearches, loadProfiles, loadCollections, loadRecent, loadSettings, loadRecipes, loadCustom, saveSettings, newRecipe } from './store.js';
 import { loadPersonal, localDay } from './personal.js';
 import { FOODS, setCustomFoods } from './data.js';
-import { migrateAionOff, migrateFontV2 } from './settings.js';
+import { MATRIX_SECTIONS, migrateAionOff, migrateFontV2 } from './settings.js';
 import { setLanguage, preferredLanguage, L } from './i18n.js';
 
 export const S = {
@@ -12,6 +12,8 @@ export const S = {
   profiles: loadProfiles(),
   collections: loadCollections(), colPicker: false, sort: 'default', multi: false, picked: [], ingOpen: new Set(), settingsQ: '', rcQ: '', rcSort: 'manual', recent: loadRecent((r) => !!FOODS.find((f) => f.id === r.id)?.forms[r.f]),
   dietOpen: { ex: false, pk: false },
+  browseFilters: { ex: false },
+  uxDetails: {},
   cat: null,
   extGroup: null,
   extPage: 0,
@@ -19,7 +21,7 @@ export const S = {
   q: '',
   sel: null, // ref
   amount: 100,
-  closed: new Set(),
+  closed: new Set(['micro', ...MATRIX_SECTIONS.map(section => section.id).filter(id => id !== 'protein')]),
   settings: loadSettings(),
   recipes: loadRecipes(),
   activeRecipe: null,
@@ -29,7 +31,6 @@ export const S = {
   recipeSourcesOpen: false,
   compare: [],
   // B179: telefonda Kıyasla temel değerlerle açılır ("Tümü" ~8900 px tablo); masaüstünde geniş tablo sığar, tümü açık
-  cmpQ: '',
   cmpSection: typeof innerWidth === 'number' && innerWidth <= 600 ? 'temel' : 'all',
   picker: null, // { target, cat, q, sel, amount }
   customEdit: null, // { id?, name, liquid, portion, v: {} }

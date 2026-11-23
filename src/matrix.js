@@ -289,6 +289,7 @@ function coverage(r, cfg) {
 // Temel değerler: herkesin ilk baktığı 8 bileşen; ayrıntılar altında kalır. Ölçülmemiş = "veri yok", kısmi kapsam belirtilir.
 export const BASIC_KEYS = ['energy', 'protein', 'carb_avail', 'sugars', 'fat', 'sfa', 'fiber', 'salt'];
 const BASIC_SHORT = { energy: 'Kalori', protein: 'Protein', carb_avail: 'Karbonhidrat', sugars: 'Şeker', fat: 'Yağ', sfa: 'Doymuş yağ', fiber: 'Lif', salt: 'Tuz' };
+const OVERVIEW_KEYS = new Set(['energy', 'protein', 'carb_avail', 'fat', 'fiber']);
 // Temel besin değerleri: her karoda günlük referansa göre çubuk ve yüzde.
 // Kişisel bilgi yoksa ortalama kadın ve erkek (PHE 2016, 19–64 yaş); elle hedef veya kişisel enerji varsa onlar.
 const WHO = { female: "Kadın", male: "Erkek", you: "Sen", both: "Günlük" };
@@ -296,6 +297,7 @@ export function basicCard(r, cfg, title = null, opts = {}) {
   cfg = normalizeSettings(cfg);
   const persona = { ...(opts.persona || {}), custom: cfg.referenceMode === 'custom' ? cfg.targets : null };
   if (opts.energyTarget > 0 && !(persona.energy > 0)) persona.energy = opts.energyTarget;
+  const overview = [];
   const tiles = BASIC_KEYS.map((k) => {
     const n = NUTRIENT_BY_KEY[k];
     if (!n) return '';
@@ -304,6 +306,7 @@ export function basicCard(r, cfg, title = null, opts = {}) {
     const kj = k === 'energy' && cfg.energyUnit === 'kj' && r.v.energy_kj != null;
     const kjAlt = k === 'energy' && cfg.energyUnit === 'both' && x != null && r.v.energy_kj != null ? ` <span class="kj-alt">· ${fmtNum(r.v.energy_kj, cfg.precision)} kJ</span>` : '';
     const val = x == null ? `<b class="miss">${L("veri yok")}</b>` : kj ? `<b>${partial ? '≥ ' : ''}${fmtNum(r.v.energy_kj, cfg.precision)} <span class="unit">kJ</span></b>` : `<b>${partial ? '≥ ' : ''}${fmtAmount(x, n.unit, cfg.precision).n} <span class="unit">${esc(fmtAmount(x, n.unit).u)}</span>${kjAlt}</b>`;
+    if (opts.overview && OVERVIEW_KEYS.has(k)) overview.push(`<div data-overview="${k}"><dt>${L(BASIC_SHORT[k])}</dt><dd>${val}</dd></div>`);
     const refs = x == null || !cfg.showNrv ? [] : dailyRefs(k, persona);
     const kind = refKind(k);
     const bars = refs.map((ref) => {
@@ -329,7 +332,10 @@ export function basicCard(r, cfg, title = null, opts = {}) {
   // Pasta (kalori nereden geliyor) temel değerlerle aynı kartta: solda pasta, sağda 8 karo
   const pie = opts.pie ? macroPie(r, cfg, { inline: true }) : '';
   const pieNote = pie ? ' ' + L("Pasta: kalorinin protein, karbonhidrat, yağ ve liften gelen payı (Atwater 4 / 4 / 9 / 2 kcal/g; yaklaşık).") : '';
-  return `<section class="card basic-card${opts.goals ? ' goals' : ''}${pie ? ' with-pie' : ''}" aria-label="${L("Temel besin değerleri")}"><h3>${title || L("Temel besin değerleri")}</h3><div class="basic-layout">${pie}<div class="basic-tiles"><div class="basic-grid">${tiles}</div></div></div><p class="hint basic-src">${foot}${pieNote}</p></section>`;
+  const full = `<div class="basic-layout">${pie}<div class="basic-tiles"><div class="basic-grid">${tiles}</div></div></div><p class="hint basic-src">${foot}${pieNote}</p>`;
+  const content = opts.overview ? `<h2>${title || L("Temel besin değerleri")}</h2><dl class="food-overview">${overview.join('')}</dl>
+    <details class="food-reference" data-ux-details="${opts.overviewKey || 'food-reference'}" ${opts.overviewOpen ? 'open' : ''}><summary>${L("Grafik ve günlük referanslar")}</summary>${full}</details>` : `<h3>${title || L("Temel besin değerleri")}</h3>${full}`;
+  return `<section class="basic-card${opts.overview ? ' food-overview-card' : ' card'}${opts.goals ? ' goals' : ''}${pie ? ' with-pie' : ''}" aria-label="${L("Temel besin değerleri")}">${content}</section>`;
 }
 
 export function renderMatrix(r, cfg, ctx = {}) {
@@ -341,7 +347,7 @@ export function renderMatrix(r, cfg, ctx = {}) {
   // satırlarda yalnız farklı kaynaklar (FDC, Flavonoid, tahmin…) etiketlenir.
   cfg.baseSrc = dominantSource(r.s);
   const open = (id) => !ctx.closed?.has(id);
-  const d = [ctx.recipe ? '' : basicCard(r, cfg, null, { persona: ctx.persona, pie: true })];
+  const d = [ctx.recipe ? '' : basicCard(r, cfg, null, { persona: ctx.persona, pie: true, overview: ctx.overview, overviewOpen: ctx.overviewOpen })];
   // Hesaplanan göstergeler temel değer + pasta kartının hemen altında (gizlenmediyse)
   const hesapFirst = cfg.sectionOrder.includes('hesap') && !cfg.hiddenSections.includes('hesap');
   if (hesapFirst) d.push(derivedCard(r, cfg, open('hesap')));

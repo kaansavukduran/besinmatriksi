@@ -1,9 +1,10 @@
+import { category } from './navigation.mjs';
 import {test,expect} from '@playwright/test';
 for(const language of ['tr','en'])test(`B154 apricot ${language}: plain name,aliases,source note and saved recipe`,async({page})=>{
  await page.addInitScript(language=>{if(!localStorage.getItem('bm.settings.v2'))localStorage.setItem('bm.settings.v2',JSON.stringify({version:2,settings:{language}}));},language);await page.goto('/');
- await page.locator('.explore>.cats [data-cat="meyve"]').click();const food=page.locator('#foodlist [data-id="kuru_kayisi"]');
+ await category(page, 'meyve');const food=page.locator('#foodlist [data-id="kuru_kayisi"]');
  for(const q of language==='tr'?['kuru kayısı','kayisi kurusu','kükürtlü kuru kayısı']:['dried apricots','sulphured','sulfured']){await page.locator('#q').fill(q);await expect(food.locator('.fn')).toHaveText(language==='tr'?'Kuru kayısı':'Dried apricots');}
- await food.click();await expect(page.locator('.detail .dhead h2')).toHaveText(language==='tr'?'Kuru kayısı':'Dried apricots');
+ await food.click();await expect(page.locator('#food-title')).toHaveText(language==='tr'?'Kuru kayısı':'Dried apricots');
  const tolerance=page.locator('#matrix [data-sec="tolerans"]');if(!await tolerance.evaluate(el=>el.open))await tolerance.locator('summary').click();await expect(tolerance.locator('.note')).toContainText(language==='tr'?'kükürt dioksitle işlenmiş':'treated with sulfur dioxide');await expect(tolerance.locator('.chip.warn')).toContainText(language==='tr'?'sülfit':'sulphite');await expect(page.locator('#matrix [data-basic="energy"]')).toContainText('241');
- await page.locator('[data-action="ex-add-recipe"]').click();await page.locator('.tabs [data-tab="tarif"]').click();await expect(page.locator('.ing-h>b')).toHaveText(language==='tr'?'Kuru kayısı':'Dried apricots');const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('bm.recipes.v1')));expect(saved[0].items[0].ref).toEqual({t:'c',id:'kuru_kayisi',f:0});await page.reload();await page.locator('.tabs [data-tab="tarif"]').click();await expect(page.locator('.ing-h>b')).toHaveText(language==='tr'?'Kuru kayısı':'Dried apricots');
+ await page.locator('[data-action="ex-add-recipe"]').click();await page.locator('.tabs [data-tab="tarif"]').click();await expect(page.locator('.ingredient-info > b')).toHaveText(language==='tr'?'Kuru kayısı':'Dried apricots');const saved=await page.evaluate(()=>JSON.parse(localStorage.getItem('bm.recipes.v1')));expect(saved[0].items[0].ref).toEqual({t:'c',id:'kuru_kayisi',f:0});await page.reload();await page.locator('.tabs [data-tab="tarif"]').click();await expect(page.locator('.ingredient-info > b')).toHaveText(language==='tr'?'Kuru kayısı':'Dried apricots');
 });

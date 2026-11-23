@@ -1,3 +1,4 @@
+import { plateIllustration } from '../kitchen-art.js';
 // B225: Ayarlar ve Bilgi sekmeleri app.js'ten ayrıldı; davranış aynı
 import { S } from '../state.js';
 import { esc, fmtNum } from '../util.js';
@@ -147,7 +148,8 @@ export function renderSettings() {
 export function renderAbout() {
   // B180: telefonda ~7600 px metin duvarıydı. Önce tanıtım, sürüm ve veri dürüstlüğü; uzun kaynak listesi ve lisanslar katlanır.
   return `<div class="about card">
-    <h2>Besin Matriksi</h2>
+    ${S.settings.emoji ? plateIllustration : ''}
+    <h1>Besin Matriksi</h1>
     <p>${L("Çevrimdışı çalışan, ayrıntılı besin bileşimi gezgini ve tarif hesaplayıcı. Bitkisel besinler ağırlıklı; hayvansal besinler ayrı kategorilerde ve etiketli (Ayarlar'dan gizlenebilir). İnternet bağlantısı gerekmez; hiçbir veri cihazdan çıkmaz.")}</p>
     <p class="hint">${L("Sürüm {v} · veri: {src} · {n} küratörlü besin / {f} biçim.", { v: esc(window.__APP_VERSION__ || ''), src: esc(L(META.sources)), n: META.curated, f: META.forms })}</p>
     ${META.recipeEstimatedForms != null ? `<p class="hint">${L("Kapsam özeti: {r} tarif hesabı (tahmin) biçimi, {u} verisiz biçim, {z} varsayılan sıfır hücresi, {e} geniş katalog kaydı.", { r: fmtNum(META.recipeEstimatedForms), u: fmtNum(META.unavailableForms), z: fmtNum(META.assumedZeroCells || 0), e: fmtNum(META.ext) })}</p>` : ''}
