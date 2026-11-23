@@ -74,6 +74,7 @@ export function resolve(ref) {
       cofidCalculated: form.cofidCalculated || false,
       matvaretabellen: form.matvaretabellen || null,
       ciqual: form.ciqual || null,
+      study: form.study || null,
     };
   }
   if (ref.t === 'x') {

@@ -1,5 +1,5 @@
 Besin Matriksi
-Version: 1.1.2-beta.75
+Version: 1.1.2-beta.76
 License: MIT
 
 MIT License
@@ -1147,3 +1147,13 @@ Anses. Du Chaffaut, L., Oseredczuk, M. and Gauvreau-Béziat, J. Table de composi
 English workbook: https://doi.org/10.5281/zenodo.17550133
 Licence: https://creativecommons.org/licenses/by/4.0/
 Adapted subset with selected positive numerical values and app nutrient keys. See data/raw/CIQUAL_2025_SUBSET.json.
+
+========================================
+
+Unsulphured sun-dried apricot measurements
+Version: 2026, sample KUus-tr
+License: CC BY 4.0
+
+Smanalieva J., Iskakova J., Shaikieva N., Foerster A., Hellwig A., Schwarzenbolz U. and Henle T. Comparative Analysis of the Nutrient Composition and Polyphenol Content of Organic and Sulphured Dried Apricots From Central Asia. International Journal of Food Science (2026). https://doi.org/10.1155/ijfo/7273055
+Licence: https://creativecommons.org/licenses/by/4.0/
+Selected means for sample KUus-tr from Tables 2–4 and ascorbic acid from Figure 1. Amino acids converted from g to mg. See data/raw/APRICOT_KUUS_TR_2026.json.

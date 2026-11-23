@@ -1,11 +1,23 @@
 import { category, tab } from './navigation.mjs';
 import {test,expect} from '@playwright/test';
 for(const language of ['tr','en']){
- test(`B155 missing dried fruit ${language}: common names,empty measurements and label entry`,async({page})=>{
+ test(`B269 gün kurusu ${language}: arama, çalışma ölçümü, eksik enerji ve etiket girişi`,async({page})=>{
   await page.addInitScript(language=>localStorage.setItem('bm.settings.v2',JSON.stringify({version:2,settings:{language}})),language);await page.goto('/');await category(page, 'meyve');
   const dry=page.locator('#foodlist [data-catalog-group="kurumeyve"]');for(const id of ['gun_kurusu_kayisi','kuru_dut','kuru_cilek','kuru_ananas','kuru_kivi'])await expect(dry.locator(`[data-id="${id}"]`)).toHaveCount(1);
   for(const query of language==='tr'?['gün kurusu','günkurusu','gunkursu']:['sun-dried apricots','unsulfured apricot']){await page.locator('#q').fill(query);await expect(page.locator('#foodlist [data-id="gun_kurusu_kayisi"]')).toBeVisible();}
-  await page.locator('#foodlist [data-id="gun_kurusu_kayisi"]').click();await expect(page.locator('.detail .unavail')).toContainText(language==='tr'?'kopyalanmadı':'not copied');await expect(page.locator('#matrix [data-basic="energy"] b')).toHaveText(language==='tr'?'veri yok':'no data');await expect(page.locator('#matrix [data-basic="energy"] .gref')).toHaveCount(0);await expect(page.locator('.unavail [data-action="cu-new"]')).toBeVisible();
+  await page.locator('#foodlist [data-id="gun_kurusu_kayisi"]').click();
+  await expect(page.locator('.detail .unavail')).toContainText(language==='tr'?'kükürtsüz':'unsulphured');
+  await expect(page.locator('#matrix [data-basic="energy"] b')).toHaveText(language==='tr'?'veri yok':'no data');
+  await expect(page.locator('#matrix [data-basic="energy"] .gref')).toHaveCount(0);
+  await expect(page.locator('#matrix [data-basic="protein"] b')).toContainText(language==='tr'?'2,44':'2.44');
+  await expect(page.locator('#matrix .idcard a')).toHaveAttribute('href','https://doi.org/10.1155/ijfo/7273055');
+  await expect(page.locator('.unavail [data-action="cu-new"]')).toBeVisible();
+  await page.locator('[data-action="ex-add-recipe"]').click();
+  await tab(page, 'tarif');
+  await page.locator('#recipe-sources summary').click();
+  await page.locator('#recipe-source-nutrient').selectOption('lys');
+  await expect(page.locator('#recipe-source-rows')).toContainText('KUus-tr');
+  await expect(page.locator('#recipe-source-rows')).toContainText('33 mg');
  });
  test(`B155 measured dried fruit ${language}: named dry sections,source values and honest mixed recipe`,async({page})=>{
   await page.addInitScript(language=>{if(!localStorage.getItem('bm.settings.v2'))localStorage.setItem('bm.settings.v2',JSON.stringify({version:2,settings:{language}}));},language);await page.goto('/');await category(page, 'meyve');

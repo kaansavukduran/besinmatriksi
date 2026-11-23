@@ -249,7 +249,7 @@ export function renderExplore() {
         <button class="btn" data-action="ex-add-recipe">${tr('addRecipe')}</button>
       </div>
       <div id="food-day-feedback" class="day-feedback">${renderDayFeedback()}</div>
-      ${item.food && !Object.keys(item.v || {}).length ? `<div class="unavail"><p>${esc(item.note || '')}</p><button class="btn" data-action="cu-new" data-name="${esc(item.name)}">＋ ${L("Etiketten kendi besinim olarak ekle")}</button></div>` : ''}
+      ${item.food && (item.study || !Object.keys(item.v || {}).length) ? `<div class="unavail"><p>${esc(item.note || '')}</p><button class="btn" data-action="cu-new" data-name="${esc(item.name)}">＋ ${L("Etiketten kendi besinim olarak ekle")}</button></div>` : ''}
       <details class="food-tools" data-ux-details="food-tools" ${S.uxDetails['food-tools'] ? 'open' : ''}>
         <summary>${L("Besin işlemleri")}</summary>
         <div class="presets">

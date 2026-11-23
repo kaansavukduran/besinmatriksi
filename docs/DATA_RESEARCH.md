@@ -198,3 +198,13 @@ Anses’in Ciqual 2025 İngilizce çalışma kitabı Zenodo üzerinden indirildi
 | Ispanak, çiğ | `20059` | 98 mg klorür. Diğer değerler mevcut kaynaklarından gelir. |
 
 Klorür için mevcut kaydın hazırlama biçimi, su, protein, yağ ve sodyum değerleri karşılaştırıldı. Havuç ve kırmızı lahanada sodyum farkı mevcut çapraz kaynak ölçütünü aştığı için bu değerler eklenmedi. Ciqual’ın genel bitki demlemesi `18022` kaydı var, ancak adaçayı, ıhlamur, nane ve rooibos için ayrı demleme değerleri vermiyor. Kuru kayısı kaynak satırlarında kükürt uygulaması belirtilmiyor. Nar ekşisiyle kamış melası ayrı ürünlerdir. Bu kayıtlar açık veri boşluğu olarak duruyor. [Ciqual yöntem belgesi](https://ciqual.anses.fr/cms/sites/default/files/inline-files/Table%20Ciqual%202025%20doc%20ENG_2025_11_19.pdf)
+
+## B269 gün kurusu kayısı ölçümü
+
+Smanalieva ve arkadaşlarının CC BY 4.0 makalesinde `KUus-tr` numunesi Türkiye kökenli, çekirdeği çıkarılmış, kükürtsüz ve güneşte kurutulmuş bir paketli kayısıdır. Almanya’daki perakende satıştan alınan numuneye paketleme öncesi yıkama ve kontrollü ek kurutma uygulanmış. Yayımlanan ortalamalar bu örneğe aittir. [Makale](https://doi.org/10.1155/ijfo/7273055)
+
+- **Tablo 2.** Satıldığı ağırlıkla 100 g için 22,31 g su, 2,44 g protein, 0,66 g yağ, 2,55 g kül, 10,10 g glikoz, 6,89 g fruktoz ve 16,07 g sakkaroz. Ham lif, toplam diyet lifi alanına yazılmaz. Sorbitol çalışmada ayrı ölçüldü. Katalogda ayrı bir sorbitol alanı bulunmuyor.
+- **Tablo 3.** Ayrı tanımlanmış 12 amino asidin bildirilen g/100 g değerleri mg/100 g birimine çevrildi. Saptanmayan, ayrı ölçülmeyen ve çalışmada aykırı olarak tanımlanan valin sayısal profile alınmadı. Birleşik aspartat/asparajin ve glutamat/glutamin ayrı ayrı yazılmadı. Eksik esansiyel veri nedeniyle tam amino asit skoru gösterilemez.
+- **Tablo 4 ve Şekil 1.** Sekiz mineral ve C vitamini eklendi. 100 g için potasyum 693,79 mg, kalsiyum 54,77 mg ve C vitamini 1,6 mg. Enerji, toplam karbonhidrat, toplam şeker ve toplam diyet lifi alanları boş kalır. Tarifler ölçümü bulunan bileşenleri toplar ve eksik enerji kapsamını gösterir.
+
+33 tamamen boş biçimden biri kısmi profille dolduruldu. Kayısı araştırması genel kuru dut, kuru çilek veya kuru kivi ölçümü sağlamaz. [Makale tabloları](https://pmc.ncbi.nlm.nih.gov/articles/PMC13483295/)

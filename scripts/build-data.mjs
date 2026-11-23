@@ -178,6 +178,7 @@ const matvaretabellenIodine = new Map(matvaretabellenData.iodineRecords.map(row 
 const ciqualData = JSON.parse(fs.readFileSync(path.join(root, 'data/raw/CIQUAL_2025_SUBSET.json'), 'utf8'));
 const ciqual = new Map(ciqualData.records.filter(row => !row.form).map(row => [row.id, row]));
 const ciqualChloride = new Map(ciqualData.records.filter(row => row.form).map(row => [row.form, row]));
+const apricotStudy = JSON.parse(fs.readFileSync(path.join(root, 'data/raw/APRICOT_KUUS_TR_2026.json'), 'utf8'));
 function fillCiqualChloride(foodId, key, v, s) {
   const row = ciqualChloride.get(`${foodId}/${key}`);
   if (!row || v.chloride != null) return null;
@@ -405,6 +406,18 @@ for (const food of FOODS) {
     if (!FORM_LABELS[key]) throw new Error('Bilinmeyen form: ' + key);
     const v = {}, s = {}, alt = {}, sd = {};
     let usda = null, ic = null, cofidCode = null, iodineSource = null, chlorideSource = null;
+    if (ndb?.startsWith('S')) {
+      const { id, author, year, url, values } = apricotStudy;
+      if (ndb !== `S${id}` || new URL(url).origin !== 'https://doi.org') throw new Error('Araştırma kaydı yok: ' + ndb);
+      for (const [nutrient, amount] of Object.entries(values)) {
+        if (!NUTRIENT_BY_KEY[nutrient] || !Number.isFinite(amount) || amount <= 0) {
+          throw new Error(`Araştırma değeri geçersiz: ${id}/${nutrient}`);
+        }
+        v[nutrient] = amount;
+        s[nutrient] = 'S';
+      }
+      return { key, label: custom || FORM_LABELS[key], usda: null, study: { id, author, year, url }, ifct: null, estFrom: null, portions: [], v, s };
+    }
     if (ndb?.startsWith('A')) {
       const row = ciqual.get(ndb.slice(1));
       if (!row || row.values.energy == null || row.values.protein == null) throw new Error('Ciqual profili eksik: ' + ndb);

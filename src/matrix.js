@@ -14,11 +14,11 @@ const MEASURED_ZERO_SRC = new Set(['u', 'i', 'k', 'f', 'F', 'N', 'y', 'L', 'I', 
 
 const nl = nutrientLabel;
 
-const SRC_LABEL = { r: 'Tahmin (tarif)', u: 'USDA', N: 'USDA FNDDS', F: 'USDA FDC', f: 'USDA Flavonoid', y: 'USDA İzoflavon', L: 'USDA SR Legacy', I: 'USDA İyot', C: 'USDA Kolin', P: 'USDA Proantosiyanidin', U: 'USDA Pürin', B: 'UK CoFID 2021', M: SOURCES.M.short, A: SOURCES.A.short, z: 'Varsayılan 0', i: 'IFCT', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
+const SRC_LABEL = { r: 'Tahmin (tarif)', u: 'USDA', N: 'USDA FNDDS', F: 'USDA FDC', f: 'USDA Flavonoid', y: 'USDA İzoflavon', L: 'USDA SR Legacy', I: 'USDA İyot', C: 'USDA Kolin', P: 'USDA Proantosiyanidin', U: 'USDA Pürin', B: 'UK CoFID 2021', M: SOURCES.M.short, A: SOURCES.A.short, S: SOURCES.S.short, z: 'Varsayılan 0', i: 'IFCT', e: 'Tahmin', d: 'Hesap', m: 'Karma', k: 'Etiket' };
 const SRC_TITLE = {
   r: SOURCES.r.long, u: SOURCES.u.long, N: SOURCES.N.long, F: SOURCES.F.long, f: SOURCES.f.long, y: SOURCES.y.long, L: SOURCES.L.long, I: SOURCES.I.long, C: SOURCES.C.long, P: SOURCES.P.long, B: SOURCES.B.long, U: SOURCES.U.long, z: SOURCES.z.long, i: SOURCES.i.long, e: SOURCES.e.long,
   d: 'Diğer ölçülmüş değerlerden hesaplandı (ör. tuz = sodyum × 2,5)', m: 'Tarifteki malzemeler farklı kaynaklardan', k: 'Kullanıcının ürün etiketinden girdiği değer',
-  M: SOURCES.M.long, A: SOURCES.A.long,
+  M: SOURCES.M.long, A: SOURCES.A.long, S: SOURCES.S.long,
 };
 
 export function dominantSource(sources) {
@@ -36,6 +36,7 @@ export function sourceRecordId(s, item) {
   if (s === 'B' && item.cofid) return `CoFID ${item.cofid}`;
   if (s === 'M' && item.matvaretabellen) return `Matvaretabellen ${item.matvaretabellen.id}`;
   if (s === 'A' && item.ciqual) return `Ciqual ${item.ciqual.id}`;
+  if (s === 'S' && item.study) return `${L(item.study.author)} (${item.study.year}) · ${item.study.id}`;
   if (s === 'i' && item.ifct?.code) return `IFCT ${item.ifct.code}`;
   return '';
 }
@@ -239,7 +240,7 @@ function toleranceCard(r, item, cfg, open) {
 }
 
 function safetyExtra(cfg, open) {
-  const items = ['Pestisit kalıntıları', 'Küf toksinleri (aflatoksin, okratoksin)', 'Akrilamid, PAH, nitrozaminler, 3-MCPD', 'Mikrobiyal bulaşma', 'Ambalajdan geçen maddeler', 'İyot', 'Florür'];
+  const items = ['Pestisit kalıntıları', 'Küf toksinleri (aflatoksin, okratoksin)', 'Akrilamid, PAH, nitrozaminler, 3-MCPD', 'Mikrobiyal bulaşma', 'Ambalajdan geçen maddeler'];
   return `<details class="sec" data-sec="kalinti" ${open ? 'open' : ''}><summary><span class="ico">${cfg.emoji ? '🧫' : ''}</span><span class="st">${L("Kalıntılar, bulaşanlar ve kapsam dışı")}</span></summary>
     <p class="empty">${L("Bu başlıklar ürün partisine, bölgeye ve işleme bağlıdır; uygulamadaki açık veri setlerinde ölçüm yok:")}</p>
     <div class="chips">${items.map((x) => `<span class="chip">${L(x)}: ${L("veri yok")}</span>`).join('')}</div>
@@ -281,6 +282,10 @@ function identityCard(item, r, cfg, ctx) {
       const row = item.ciqual;
       const detail = item.usda ? ` · ${L('Klorür kaynağı')}` : '';
       rows.push([SOURCES.A.short, `<span lang="en">${esc(row.name)}</span> · ${esc(row.id)}${detail}`]);
+    }
+    if (item.study) {
+      const { id, author, year, url } = item.study;
+      rows.push([SOURCES.S.short, `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(L(author))} (${year})</a> · ${esc(id)}`]);
     }
     if (item.recipeOf) rows.push(['Tahmin (tarif)', L("Ölçüm değil; USDA malzemelerinden şu oranla hesaplandı:") + ' ' + item.recipeOf.map((x) => `${pctText(fmtNum(x.pct))} ${esc(x.desc)}`).join(' + ')]);
     if (item.recipeYield) rows.push([L('Pişme verimi'), L("Pişmiş ağırlık / çiğ malzeme ağırlığı: %{n}; kayıp su sayıldı. Vitaminler, şeker türleri, amino asitler ve yağ asidi ayrıntısı ısıyla değiştiği için hesaplanmadı (veri yok).", { n: fmtNum(item.recipeYield) })]);

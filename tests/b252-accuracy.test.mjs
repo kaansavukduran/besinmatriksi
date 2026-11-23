@@ -57,7 +57,7 @@ test('B252-D: meta gerçek tarif tahmini, varsayılan sıfır ve CoFID hücre sa
   assert.ok(DB.meta.recipeEstimatedCells >= 7000, `recipeEstimatedCells=${DB.meta.recipeEstimatedCells}`);
   assert.ok(DB.meta.assumedZeroCells >= 5000, `assumedZeroCells=${DB.meta.assumedZeroCells}`);
   assert.ok(DB.meta.cofidFilledCells >= 120, `cofidFilledCells=${DB.meta.cofidFilledCells}`);
-  assert.equal(DB.meta.unavailableForms, 33); // B266: Matvaretabellen beluga ve psyllium
+  assert.equal(DB.meta.unavailableForms, 32); // B269: gün kurusu kayısının kısmi ölçümü var
 });
 
 test('B254: siyah pirinç USDA Foundation 2710825 ile, elma/domates/patates/kabak/yulaf/hurma UK CoFID 2021 ile doğrulandı', () => {
@@ -88,4 +88,13 @@ test('B252-F: oksalat/kalsiyum hazırlama notu kesin emilim iddiası taşımaz',
   const html = renderMatrix(r, DEFAULT_SETTINGS, { item: { name: 'Ispanak', formLabel: 'Çiğ', cat: 'yesil' } });
   assert.doesNotMatch(html, /kalsiyumun emilimi düşüktür/);
   assert.match(html, /emilimini azaltabilir/);
+});
+
+test('B269 iyot ve florür ölçümleri kalıntı bölümünde genel veri boşluğu sayılmaz', () => {
+  const item = resolveLocal('elma');
+  const html = renderMatrix(scaleItem(item, 100), DEFAULT_SETTINGS, { item });
+  const residues = html.match(/data-sec="kalinti"[^>]*>[\s\S]*?<\/details>/)?.[0];
+  assert.ok(residues);
+  assert.doesNotMatch(residues, /(?:İyot|Florür): veri yok/);
+  assert.match(residues, /Pestisit kalıntıları: veri yok/);
 });

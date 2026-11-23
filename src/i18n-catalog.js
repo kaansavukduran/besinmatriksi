@@ -1,7 +1,10 @@
 // B141 katalog açıklamaları; ana sözlük tarafından kullanılır.
 export const CATALOG_EN = {
   "Değerler hazır su kefiri içindir. Marka ve fermantasyon süresi bileşimi değiştirir.": "Values are for a ready-to-drink water kefir. Brands and fermentation times affect its composition.",
-  "Gün kurusu kayısı için bu katalogdaki kaynaklarda doğrulanmış ayrı besin ölçümü yok. Kükürt dioksitle işlenmiş kuru kayısı değerleri buraya kopyalanmadı; ambalaj değerlerini Kendi besinim ile ekleyebilirsin.": "There is no verified separate nutrient measurement for unsulphured sun-dried apricots in this catalogue’s sources. Values for sulphur-dioxide-treated dried apricots were not copied here; add package values using My foods.",
+  "Ölçümler Türkiye kökenli, kükürtsüz ve güneşte kurutulmuş bir paketli kayısı örneğine ait. Ürüne paketlemeden önce kontrollü ek kurutma uygulanmış. Enerji ve toplam diyet lifi ölçümü bulunmuyor.": "Measurements come from a retail sample of unsulphured sun-dried apricots of Turkish origin. The product underwent controlled additional drying before packaging. Energy and total dietary fibre were not reported.",
+  "Araştırma ölçümü": "Research measurement",
+  "Yayımlanmış araştırmadaki örneğin bileşim ölçümü": "Composition measured in a sample from a published study",
+  "Smanalieva ve ark.": "Smanalieva et al.",
   "Bu kuru meyve için bu katalogdaki kaynaklarda doğrulanmış ayrı besin ölçümü yok. Taze meyve veya başka kurutulmuş ürünlerin değerleri kullanılmadı; ambalaj değerlerini Kendi besinim ile ekleyebilirsin.": "There is no verified separate nutrient measurement for this dried fruit in this catalogue’s sources. Values from fresh fruit or other dried products were not used; add package values using My foods.",
   "USDA şeker ilaveli kurutulmuş ürün kaydıdır; şekersiz ürünlerin ölçümü değildir. Ambalajdaki değerler farklı olabilir.": "USDA record for a dried product with added sugar; this is not a measurement for an unsweetened product. Package values may differ.",
   "USDA kükürt dioksitle işlenmiş kuru armut kaydıdır. İşlenmemiş armut kurusu için ayrı bir ölçüm değildir.": "USDA record for sulphur-dioxide-treated dried pears. This is not a separate measurement for untreated dried pears.",

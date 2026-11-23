@@ -1,4 +1,12 @@
-# 🫐 Besin Matriksi 1.1.2 Beta 75
+# 🫐 Besin Matriksi 1.1.2 Beta 76
+
+- Gün kurusu kayısıya Türkiye kökenli kükürtsüz örnekten 28 bileşen eklendi. Protein, yağ, ölçülen şekerler, amino asitler, mineraller ve C vitamini ayrıntıda görülebilir.
+- Çalışmada bildirilmeyen enerji ve toplam diyet lifi açık veri boşluğu olarak gösterilir.
+- İyot ve florürün kapsamı ilgili mineral satırlarından okunur. Kalıntılar bölümü yalnız kalıntı ve bulaşanları gösterir.
+
+[Kaynak ve ölçüm temeli](DATA_RESEARCH.md#b269-gün-kurusu-kayısı-ölçümü)
+
+## Beta 75
 
 - Pirinç ve mısır makarnası, kırmızı mercimek makarnası, taze adaçayı ve su kefiri eklendi. İki makarnanın değerleri haşlanmış ve tuz eklenmemiş biçim içindir.
 - Brokoli ve ıspanakta klorür değeri eklendi. Ciqual kayıt kodları besin ayrıntısı, tarif katkısı ve veri kaynaklarında görülebilir.

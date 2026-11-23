@@ -9,10 +9,24 @@ test('B155 nine dried-fruit selections use their own USDA dry/prepared records a
  for(const id of ['kuru_mango','kuru_turna_yemisi','kuru_yaban_mersini']){assert.match(food(id).tr,/şekerli/);assert.match(food(id).forms[0].usda.desc,/sweetened/);}
  assert.deepEqual(food('kuru_armut').allergens,['sulfit']);assert.match(food('muz_cipsi').tr,/kızartılmış/);
 });
-test('B155 sun-dried apricot and three unmeasured dried fruits are separate data gaps',()=>{
- for(const id of ['gun_kurusu_kayisi','kuru_dut','kuru_cilek','kuru_kivi']){const f=food(id),fm=f.forms[0];assert.equal(categoryContains(f,'meyve'),true);assert.deepEqual(fm.v,{});assert.deepEqual(fm.s,{});assert.equal(fm.usda,null);assert.ok(fm.unavailable);}
+test('B155 three unmeasured dried fruits keep their data gaps',()=>{
+ for(const id of ['kuru_dut','kuru_cilek','kuru_kivi']){const f=food(id),fm=f.forms[0];assert.equal(categoryContains(f,'meyve'),true);assert.deepEqual(fm.v,{});assert.deepEqual(fm.s,{});assert.equal(fm.usda,null);assert.ok(fm.unavailable);}
  const sun=food('gun_kurusu_kayisi');for(const q of ['gün kurusu','günkurusu','gunkursu','kükürtsüz kuru kayısı','unsulfured apricot'])for(const t of norm(q).split(' '))assert.ok(searchKey(sun).includes(t),q);
  assert.equal(food('kuru_kayisi').forms[0].usda.ndb,'09032');assert.equal(food('kuru_kayisi').forms[0].v.energy,241);assert.ok(!food('kuru_kayisi').tr.includes('Gün kurusu'));
+});
+
+test('B269 gün kurusu kayısının kendi numunesi ve ölçülmemiş alanları korunur', () => {
+  const [f] = food('gun_kurusu_kayisi').forms;
+  assert.equal(f.usda, null);
+  assert.equal(f.unavailable, undefined);
+  assert.equal(f.study.id, 'KUus-tr');
+  assert.equal(f.study.url, 'https://doi.org/10.1155/ijfo/7273055');
+  assert.equal(f.v.protein, 2.44);
+  assert.equal(f.v.k, 693.79);
+  assert.equal(f.v.lys, 33);
+  assert.equal(f.v.vitc, 1.6);
+  for (const key of ['energy', 'fiber', 'carb', 'sugars', 'val', 'met', 'trp']) assert.equal(f.v[key], undefined, key);
+  assert.ok(Object.values(f.s).every(source => source === 'S'));
 });
 
 test('B264 kuru ananas: CoFID hesabı ve şekerli FNDDS kaydı ayrı, iz değer sayılmaz', () => {

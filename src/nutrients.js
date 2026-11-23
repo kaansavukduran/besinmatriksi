@@ -333,6 +333,7 @@ export const SOURCES = {
   B: { short: 'UK CoFID 2021', long: "McCance and Widdowson's The Composition of Foods Integrated Dataset 2021 (UK, Open Government Licence v3); doğrulanmış besin ve tüketim biçimi eşlemesi" },
   M: { short: 'Matvaretabellen', long: 'Norwegian Food Composition Table, Norwegian Food Safety Authority (CC BY 4.0)' },
   A: { short: 'Anses–Ciqual 2025', long: 'Anses, Ciqual French food composition table 2025 (CC BY 4.0)' },
+  S: { short: 'Araştırma ölçümü', long: 'Yayımlanmış araştırmadaki örneğin bileşim ölçümü' },
   r: { short: 'Tahmin (tarif)', long: 'USDA malzemelerinden tarif oranıyla hesaplanan tahmin; ölçüm değildir' },
   e: { short: 'Tahmin', long: 'IFCT 2017 profil oranı × USDA formunun toplam protein/yağ değeri (aynı besinin çiğ/kuru ölçümünden ölçeklenmiş tahmin)' },
 };

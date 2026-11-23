@@ -950,7 +950,9 @@ FOODS.push(...BEVERAGE_ADDITIONS);
 
 // B155: dried fruit identities; missing measurements stay empty, never copied from fresh/sulfured fruit.
 export const DRIED_FRUIT_ADDITIONS = [
- F("gun_kurusu_kayisi","Gün kurusu kayısı","sun dried apricot unsulphured","kurumeyve",[["kurutulmus", null, null]],{"unavailable": "Gün kurusu kayısı için bu katalogdaki kaynaklarda doğrulanmış ayrı besin ölçümü yok. Kükürt dioksitle işlenmiş kuru kayısı değerleri buraya kopyalanmadı; ambalaj değerlerini Kendi besinim ile ekleyebilirsin."}),
+ F('gun_kurusu_kayisi', 'Gün kurusu kayısı', 'sun dried apricot unsulphured', 'kurumeyve', [['kurutulmus', 'SKUus-tr', null]], {
+   note: 'Ölçümler Türkiye kökenli, kükürtsüz ve güneşte kurutulmuş bir paketli kayısı örneğine ait. Ürüne paketlemeden önce kontrollü ek kurutma uygulanmış. Enerji ve toplam diyet lifi ölçümü bulunmuyor.',
+ }),
  F("kuru_dut","Kuru dut","dried mulberry mulberries","kurumeyve",[["kurutulmus", null, null]],{"unavailable": "Bu kuru meyve için bu katalogdaki kaynaklarda doğrulanmış ayrı besin ölçümü yok. Taze meyve veya başka kurutulmuş ürünlerin değerleri kullanılmadı; ambalaj değerlerini Kendi besinim ile ekleyebilirsin."}),
  F("kuru_cilek","Kuru çilek","dried strawberry strawberries","kurumeyve",[["kurutulmus", null, null]],{"unavailable": "Bu kuru meyve için bu katalogdaki kaynaklarda doğrulanmış ayrı besin ölçümü yok. Taze meyve veya başka kurutulmuş ürünlerin değerleri kullanılmadı; ambalaj değerlerini Kendi besinim ile ekleyebilirsin."}),
  F('kuru_ananas', 'Kuru ananas (şeker eklenmemiş)', 'dried pineapple without added sugar', 'kurumeyve', [['kurutulmus', 'B14-396', null, 'Kurutulmuş (CoFID hesabı)']]),

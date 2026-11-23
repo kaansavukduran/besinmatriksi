@@ -18,9 +18,10 @@ test('her formun doğrulanmış değerleri veya açık kaynak boşluğu var', ()
     for (const fm of f.forms) {
       if (fm.unavailable) assert.deepEqual(fm.v, {});
       else if (fm.computed) assert.ok(Object.values(fm.s).every((x) => x === 'd'), `${f.id}/${fm.key}`);
+      else if (fm.study) assert.ok(fm.v.protein != null && Object.values(fm.s).every(source => source === 'S'), `${f.id}/${fm.key}`);
       else assert.ok(fm.v.energy != null && fm.v.protein != null, `${f.id}/${fm.key}`);
       for (const k of Object.keys(fm.v)) assert.ok(keys.has(k), `bilinmeyen anahtar ${k}`);
-      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P', 'U', 'z', 'B', 'M', 'A'].includes(s), `${f.id} ${k} ${s}`);
+      for (const [k, s] of Object.entries(fm.s)) assert.ok(['u', 'f', 'y', 'F', 'N', 'd', 'r', 'L', 'I', 'C', 'P', 'U', 'z', 'B', 'M', 'A', 'S'].includes(s), `${f.id} ${k} ${s}`);
     }
   }
 });

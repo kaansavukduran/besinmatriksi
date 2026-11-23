@@ -5,6 +5,7 @@ export async function reveal(page, selector) {
 
 export async function tab(page, id) {
   const link = page.locator(`.tabs [data-tab="${id}"]`);
+  await link.waitFor({ state: 'attached' });
   if (!(await link.isVisible())) await page.locator('#nav-more-button').click();
   await link.click();
 }
