@@ -1516,4 +1516,5 @@
 - Kullanıcı GitHub Pages ve Cloudflare Pages web yayınına yetki verdi. Cloudflare üretim dalı `main` olarak ayarlandı ve otomatik dağıtım doğrulandı.
 - İki web adresi README’nin üstüne eklendi, Vercel yapılandırması depodan çıkarıldı ve Vercel projesi duraklatıldı. GitHub Hakkında kutusunun düzenlenmesi için API HTTP 403 döndürdü.
 - `node --test --test-isolation=none tests/*.test.mjs` 357/357, `npm run build` başarılı. Mevcut kurulum paketlerinin kaynağı `v1.1.2-beta.70`.
+- İlk beta.71 dağıtımı `187a96f` ile iki adreste tamamlandı. Cloudflare’ın `/index.html` → `/` yönlendirmesi ilk çevrimdışı açılışta yeniden üretildi. Service worker yönlendirilmiş yanıtı atlayıp önbellekteki ana sayfayı kullanır. Düzeltmeden sonra 16 Chromium senaryosu geçti. [İlk GitHub Pages yayını](https://github.com/kaansavukduran/besinmatriksi/actions/runs/45151450490)
 

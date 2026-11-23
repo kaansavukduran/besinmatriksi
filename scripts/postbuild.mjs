@@ -44,7 +44,11 @@ self.addEventListener('fetch', (e) => {
         if (res.ok) cache.put('./index.html', res.clone()).catch(() => {});
         return res;
       } catch {
-        return (await cache.match('./index.html', { ignoreVary: true })) || (await cache.match('./', { ignoreVary: true })) || Response.error();
+        const index = await cache.match('./index.html', { ignoreVary: true });
+        // Cloudflare Pages /index.html yolunu / adresine yönlendirir. Tarayıcı
+        // gezinme yanıtı olarak önbellekteki yönlendirilmiş kopyayı kabul etmez.
+        if (index && !index.redirected) return index;
+        return (await cache.match('./', { ignoreVary: true })) || Response.error();
       }
     })());
     return;

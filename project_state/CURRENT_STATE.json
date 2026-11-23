@@ -2,14 +2,14 @@
   "schema_version": "1",
   "project": "Besin Matriksi",
   "product_version": "1.1.2-beta.71",
-  "development_state": "WEB_PUBLICATION_REQUESTED",
+  "development_state": "WEB_DEPLOYED",
   "last_forge_at": "2026-11-23",
-  "last_completed_forge": "B261",
-  "active_forge": "B262",
-  "next_recommended_forge": "B262 GitHub Pages ve Cloudflare Pages canlı doğrulama",
+  "last_completed_forge": "B262",
+  "active_forge": null,
+  "next_recommended_forge": "B263 ilk kullanım ve fiziksel cihaz kabulü",
   "branch": "main",
   "pull_request": null,
-  "validated_code_commit": "c7164871f2e94c939459f82359a7190b3c71c808",
+  "validated_code_commit": "187a96f5ad7621f3054e2912337482377d9bf90c",
   "package_source_commit": "c7164871f2e94c939459f82359a7190b3c71c808",
   "verified_gates": [
     {
@@ -71,7 +71,7 @@
     }
   ],
   "remaining_forges": [
-    "B262-web-verification",
+    "B263-first-use-acceptance",
     "B031",
     "B021",
     "B052-signing"
@@ -317,13 +317,13 @@
   },
   "pending_forges": [
     {
-      "id": "B262-web-verification",
-      "state": "DEPLOY_AND_VERIFY",
-      "reason": "The user authorized beta.71 web publication. Verify both production destinations at the same commit. First-use research and physical device tests are pending separately."
+      "id": "B263-first-use-acceptance",
+      "state": "NOT_RUN",
+      "reason": "The user authorized beta.71 web publication. First-use research, physical devices and assistive technology tests are pending separately."
     }
   ],
   "remaining": [
-    "B262-web-verification",
+    "B263-first-use-acceptance",
     "B021",
     "B031",
     "B052-signing"

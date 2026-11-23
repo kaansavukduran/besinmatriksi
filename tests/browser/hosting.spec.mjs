@@ -3,18 +3,24 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 
-// Pages gibi yalnız /besinmatriksi/ altında statik dosya sun. Kök yola düşen
-// varlık veya service worker isteği 404 olur; göreli yol hataları gizlenmez.
+// Ayrı yayın dizinleri kullan. Kök yola düşen varlık veya service worker isteği
+// 404 olur; göreli yol hataları gizlenmez.
 const root = path.resolve('dist');
-const prefix = '/besinmatriksi/';
+const githubPrefix = '/besinmatriksi/';
+const cloudflarePrefix = '/cloudflare/';
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.webmanifest': 'application/manifest+json', '.svg': 'image/svg+xml', '.png': 'image/png', '.woff2': 'font/woff2' };
-let server, address;
+let server, origin;
 
 test.beforeAll(async () => {
   server = createServer(async (req, res) => {
     const pathname = new URL(req.url, 'http://localhost').pathname;
+    const prefix = [githubPrefix, cloudflarePrefix].find(candidate => pathname.startsWith(candidate));
+    if (!prefix) return res.writeHead(404).end();
+    if (pathname === `${cloudflarePrefix}index.html`) {
+      return res.writeHead(308, { Location: cloudflarePrefix }).end();
+    }
     const file = path.resolve(root, pathname.slice(prefix.length) || 'index.html');
-    if (!pathname.startsWith(prefix) || (file !== root && !file.startsWith(root + path.sep))) {
+    if (file !== root && !file.startsWith(root + path.sep)) {
       res.writeHead(404).end(); return;
     }
     try {
@@ -24,12 +30,13 @@ test.beforeAll(async () => {
     } catch { res.writeHead(404).end(); }
   });
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-  address = `http://127.0.0.1:${server.address().port}${prefix}`;
+  origin = `http://127.0.0.1:${server.address().port}`;
 });
 
 test.afterAll(async () => { await new Promise(resolve => server.close(resolve)); });
 
 test('Pages alt yolunda açılır, kayıtlı tarif ve çevrimdışı besin verisi korunur', async ({ page, context }) => {
+  const address = `${origin}${githubPrefix}`;
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));
   page.on('response', response => { if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`); });
@@ -56,4 +63,17 @@ test('Pages alt yolunda açılır, kayıtlı tarif ve çevrimdışı besin veris
   await page.locator('#foodlist [data-id="nohut"]').click();
   await expect(page.locator('#matrix')).toContainText('Nohut');
   expect(errors).toEqual([]);
+});
+
+test('Cloudflare index.html yönlendirmesi ilk çevrimdışı açılışı engellemez', async ({ page, context }) => {
+  await page.goto(`${origin}${cloudflarePrefix}`);
+  await page.locator('#q').fill('muz');
+  await page.locator('#foodlist [data-id="muz"]').click();
+  await page.locator('[data-action="ex-add-day"]').click();
+  await page.locator('[data-action="personal-show-added"]').click();
+  await expect(page.locator('.diary-entries')).toContainText('Muz · 100 g');
+  await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
+  await context.setOffline(true);
+  await page.reload();
+  await expect(page.locator('.diary-entries')).toContainText('Muz · 100 g');
 });

@@ -49,6 +49,8 @@ PWA'nın ilk çevrimiçi yüklemesi önbelleğe alınmalıdır; tek HTML dosyas�
 
 `.github/workflows/pages.yml`, kanonik yayın dalı `main` güncellendiğinde (veya elle `workflow_dispatch` ile) veri determinizmi, bildirim doğrulaması, birim testleri ve web derlemesini çalıştırır, ardından `dist` çıktısını GitHub Pages'e yayımlar. Yeni bir depo kurulumunda yönetici **Settings → Pages → Build and deployment → Source → GitHub Actions** seçmelidir. Dağıtım durumu [Pages iş akışında](https://github.com/kaansavukduran/besinmatriksi/actions/workflows/pages.yml) izlenebilir.
 
+Cloudflare Pages aynı `main` dalını otomatik derler ve `dist` çıktısını yayımlar.
+
 Vite varlıkları, manifest ve service worker göreli yollar kullanır; aynı çıktı kök alan adında ve `/besinmatriksi/` altında çalışır. İlk açılıştan sonra telefonda **Ana ekrana ekle / Uygulamayı yükle** kullanılabilir. Bu alan adlarının cihaz kayıtları ayrıdır; tarif ve tercihleri taşımak için yedek dışa/içe aktarma kullanılır.
 
 ## Veri kapsamı ve lisanslar
