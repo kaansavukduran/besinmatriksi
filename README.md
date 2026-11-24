@@ -7,7 +7,7 @@ Windows · macOS · Linux · Android · iPhone · tarayıcı/PWA · tek HTML.
 **[Cloudflare Pages](https://besinmatriksi.pages.dev/)** ·
 **[Sürümler / Releases](https://github.com/kaansavukduran/besinmatriksi/releases)** ·
 [Kurulum adımları](docs/INSTALL.md) · [Sürüm notları](docs/RELEASE_NOTES.md) ·
-[Proje ve Aion lore’u](docs/lore/README.md)
+[Geliştirici lore dizini](LORE/README.md)
 
 ## İndirip dene
 
