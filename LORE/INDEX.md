@@ -1,6 +1,6 @@
 # Besin Matriksi lore
 
-[Güncel durum](STATUS.md) ile başla. Göreve göre ilgili dosyayı aç.
+[Güncel durumu](STATE.md) aç ve kayıtlı revizyonu dalın güncel başıyla karşılaştır. Göreve göre ilgili dosyayı aç.
 
 | Görev | Dosya |
 | --- | --- |
