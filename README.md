@@ -6,7 +6,8 @@ Windows · macOS · Linux · Android · iPhone · tarayıcı/PWA · tek HTML.
 **[GitHub Pages](https://kaansavukduran.github.io/besinmatriksi/)** ·
 **[Cloudflare Pages](https://besinmatriksi.pages.dev/)** ·
 **[Sürümler / Releases](https://github.com/kaansavukduran/besinmatriksi/releases)** ·
-[Kurulum adımları](docs/INSTALL.md) · [Sürüm notları](docs/RELEASE_NOTES.md)
+[Kurulum adımları](docs/INSTALL.md) · [Sürüm notları](docs/RELEASE_NOTES.md) ·
+[Proje ve Aion lore’u](docs/lore/README.md)
 
 ## İndirip dene
 
@@ -157,9 +158,9 @@ içindedir. `NUT_DATA.txt.gz` yalnız geliştirme için sıkıştırılmış ham
 uygulama hazır JSON'u kullanır. Besin eklerken doğru USDA kayıt ve tüketim biçimini
 `data/catalog.mjs` içinde eşle; kaynağı olmayan alanı doldurma.
 
-Devam dalı `codex/forge-devam`. Önce `project_state/CURRENT_STATE.json`, sonra
-[ROADMAP](docs/ROADMAP.md) ve Forge günlüğü okunur. Saatlik görev de aynı kalıcı
-kayıtlardan ilerler; çalışma ortamı ve kullanım limitleri geçerlidir.
+Güncel uygulama kodu `main` dalındadır. Bir çalışmayı devralırken
+[proje kararlarını](docs/lore/PROJECT.md), [durum kaydını](project_state/CURRENT_STATE.json)
+ve [Forge günlüğünü](project_state/FORGE_LOG.md) incele.
 
 ### Günlük Toplam Tarif
 
