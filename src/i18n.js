@@ -6,7 +6,8 @@ export function registerUiEn(dict) { uiEn = dict; }
 export async function ensureLanguage(value = language) {
   const target = value === 'en' ? 'en' : 'tr';
   if (target !== 'en' || uiEn) return true;
-  uiEnPromise ||= import('./i18n-ui.js').then((m) => { uiEn = m.UI_EN; return true; });
+  // Yükleme başarısız olursa söz önbellekte kalmaz; sonraki çağrı yeniden dener (çevrimdışı açılış, eski sayfa önbelleği)
+  uiEnPromise ||= import('./i18n-ui.js').then((m) => { uiEn = m.UI_EN; return true; }).catch((error) => { uiEnPromise = null; throw error; });
   return uiEnPromise;
 }
 export function preferredLanguage(preference = 'auto', languages = globalThis.navigator?.languages || []) {

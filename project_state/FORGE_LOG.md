@@ -1535,3 +1535,16 @@
 - Matvaretabellen CC BY 4.0 kaynağından beluga mercimeği ve psyllium kabuğuna 66 sayısal değer eklendi. 13 eşleme ile 20 CoFID boşluğu dolduruldu. Tamamen boş biçimler 35’ten 33’e indi.
 - Kaynak kimlikleri besin detayı, tarif katkıları ve CSV’de korunur. [Kaynak denetimi](../docs/DATA_RESEARCH.md#b266-beluga-mercimeği-psyllium-ve-mikro-besin-dolgusu)
 - Matvaretabellen alt kümesi ve oluşturulan veri ikinci üretimde aynı SHA-256 sonucunu verdi. 26 lisans bildirimi, 361 birim ve 32 hedefli masaüstü/telefon senaryosu geçti. Beta.73 web yayını için `main` güncellendi.
+
+## B270 · 2026-11-26 · Yazılım denetimi ve kod optimizasyonu (main fbf218a)
+
+- Hedef: `origin/main` `fbf218a` (B269, 1.1.2-beta.76). Başlangıç: `npm ci`, lisans denetimi, `npm test` 365/365, build + build:single, Playwright Chromium 433/433. Uzak CI: son üç `main` koşusunda "Tarayıcı uyumu" kırmızı (3 düşen, 2 kararsız; WebKit).
+- D1 (Orta): İngilizce cihazda sözlük parçası (`i18n-ui`) yüklenemezse uygulama hiç açılmıyordu (`src/main.js`, hata yolu yok; 10 sn sonra kurtarma ekranı). Yeniden üretim: parça isteği engellenince `__bmBooted` false. Düzeltme: yükleme başarısızsa açılış Türkçe metinle sürer.
+- D2 (Düşük): `ensureLanguage` başarısız sözü önbellekte tutuyordu; artık sıfırlanır ve sonraki çağrı yeniden dener (Chromium başarısız modül adresini aynı sayfada hatırlayabilir; yeniden açılışta yüklenir).
+- D3 (Düşük): `applySettings` içindeki dil yüklemesi yakalanmamış Promise reddi üretiyordu; yakalanır.
+- D4 (Orta, erişilebilirlik): CI WebKit (Safari, iPhone, iPad) `first-use.spec.mjs:37`: günlük seçicisi onaylanınca odak "Besin ekle" düğmesine dönmüyordu (Received: inactive). Escape yolu geçiyor. WebKit yerelde yok (BLOCKED_ENVIRONMENT). Düzeltme: dialog kapandıktan bir görev sonra odak gövdedeyse açan denetime dön. Chromium'da WebKit benzeri kaybı taklit eden test düzeltmesiz düşüyor, düzeltmeyle geçiyor; gerçek WebKit doğrulaması CI'da.
+- Optimizasyon (ölçüm: 390×844, 4× CPU, 5 koşu medyanı): `#foodlist .foods` için `content-visibility: auto` → Keşfet'e dönüş 61 → 36 ms, listeye geri dönüş 71 → 49 ms. Matriks bölümleri artık kapalı açıldığından aynı kural detayda kazanç getirmedi (168 → 165 ms), eklenmedi. Ayarlar (127–183 ms) incelendi: tek pahalı kart yok (yeniden yerleşim 7,6 ms; maliyet ~1.100 kutunun ilk çizimi); durma kriteri.
+- Regresyon kalkanı: `scripts/check-bundle.mjs` gzip bütçeleri (index 115, content 85, catalog 360, i18n-ui 70, foods-ext 1.700, style 26, Türkçe ilk yük 580 KB); CI `npm run build` ardından çalıştırır. Şu an Türkçe ilk yük 462 KB.
+- Güvenlik taraması: kullanıcı adlarının HTML'e yazıldığı yerler `esc`/`textContent` ile; CSV formül enjeksiyonu korumalı. Kopya kod (3+ satır) bulunmadı.
+- Test: `lang-fallback.spec.mjs` (D1, D3; yeniden açılışta İngilizce), `focus-restore.spec.mjs` (D4), `ux-flow.spec.mjs` B270, `bundle-budget.test.mjs`.
+- Kanıt: `npm test` 368/368; build + build:single; Playwright Chromium tam koşu 439/439. Açık: B186 iPhone/iPad kararsızlığı (CI'da yeniden denemede geçiyor), WebKit doğrulaması push sonrası CI'da.

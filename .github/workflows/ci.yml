@@ -20,6 +20,7 @@ jobs:
       - run: node scripts/build-notices.mjs --check
       - run: npm test
       - run: npm run build
+      - run: node scripts/check-bundle.mjs dist # B270: gzip paket bütçesi
       - run: npm run build:single
       - run: npx playwright install --with-deps chromium || (echo "::warning::apt bağımlılıkları kurulamadı; yalnız Chromium kuruluyor" && npx playwright install chromium)
       - run: npm run test:browser

@@ -5,8 +5,10 @@ import { ensureLanguage, preferredLanguage, L } from './i18n.js';
 
 window.__APP_VERSION__ = __APP_VERSION__;
 if (preferredLanguage(S.settings.language) === 'en') {
+  // İngilizce sözlük yüklenemezse (bağlantı yok, yayından sonra eski parça adı) uygulama yine açılır; metinler Türkçe kalır
   ensureLanguage('en').then(() => {
     if (S.recipes.length === 1 && !S.recipes[0].items.length && S.recipes[0].name === 'İlk tarifim') S.recipes[0].name = L("İlk tarifim");
+  }, () => {}).then(() => {
     start();
     window.__bmBooted = true;
   });

@@ -81,7 +81,7 @@ function applySettings() {
   const s = S.settings, r = document.documentElement;
   const lang = preferredLanguage(s.language);
   setLanguage(lang); r.lang = lang;
-  if (lang === 'en' && !hasUiEn()) ensureLanguage('en').then(() => render());
+  if (lang === 'en' && !hasUiEn()) ensureLanguage('en').then(() => render(), () => {}); // yüklenemezse Türkçe kalır; sonraki çağrı yeniden dener
   r.style.zoom = String(s.uiScale / 100); r.style.setProperty('--ui-zoom', s.uiScale / 100);
   r.dataset.uiScaled = String(s.uiScale !== 100);
   updateLayout();
@@ -327,6 +327,12 @@ export function render() {
   document.querySelectorAll('[data-keep-scroll]').forEach((el) => { if (keep[el.dataset.keepScroll] != null) el.scrollTop = keep[el.dataset.keepScroll].top; el.scrollLeft = keep[el.dataset.keepScroll]?.left || 0; });
   window.scrollTo(0, winY);
   syncModalFocus(!document.querySelector('.modal') && wasModal ? modalOpener : focusedSelector);
+  // D4: WebKit (Safari/iOS) dialog kapanışından sonra odağı gövdeye bırakabiliyor (düğme tıklamayla odak almaz); bir görev sonra hâlâ
+  // odak yoksa açan denetime geri dön. Chromium/Firefox'ta odak zaten açandadır, bu adım bir şey yapmaz.
+  if (wasModal && modalOpener && !document.querySelector('.modal')) {
+    const opener = modalOpener;
+    setTimeout(() => { const a = document.activeElement; if ((!a || a === document.body) && !document.querySelector('.modal')) document.querySelector(opener)?.focus({ preventScroll: true }); }, 0);
+  }
   if (focusedId) {
     const el = document.getElementById(focusedId);
     if (el) { el.focus(); if (selStart != null && el.setSelectionRange) try { el.setSelectionRange(selStart, selStart); } catch {} }
