@@ -1548,3 +1548,9 @@
 - Güvenlik taraması: kullanıcı adlarının HTML'e yazıldığı yerler `esc`/`textContent` ile; CSV formül enjeksiyonu korumalı. Kopya kod (3+ satır) bulunmadı.
 - Test: `lang-fallback.spec.mjs` (D1, D3; yeniden açılışta İngilizce), `focus-restore.spec.mjs` (D4), `ux-flow.spec.mjs` B270, `bundle-budget.test.mjs`.
 - Kanıt: `npm test` 368/368; build + build:single; Playwright Chromium tam koşu 439/439. Açık: B186 iPhone/iPad kararsızlığı (CI'da yeniden denemede geçiyor), WebKit doğrulaması push sonrası CI'da.
+
+## B271 · 2026-11-26 · CI doğrulaması: D4 WebKit'te geçti; liste çizim optimizasyonu geri alındı
+
+- `e737617` main'e ve çalışma dalına gönderildi (Kaan onayı). CI 45768379018: "Tarayıcı uyumu" (Firefox, Safari/WebKit, iPhone, iPad) **yeşil**: `first-use.spec.mjs:37` artık geçiyor (D4 doğrulandı). Kalan kararsızlar: B186 (iPhone, iPad) ve `b252-ux.spec.mjs:78` (iPhone), yeniden denemede geçti.
+- Chromium "test" işi kırmızı: `micro-catalog.spec.mjs:205` (B142). Kök neden B270'teki `#foodlist .foods { content-visibility: auto }`: tek sonuç ekran dışında kalınca grup çizilmiyor, `innerText` boş dönüyor (ad "" okunuyor). Uygulama kodu `innerText` kullanmıyor; kullanıcı kaydırınca öğe çiziliyor. Ama çizime bağlı ölçümler ekran dışında farklılaşıyor ve kazanç küçüktü (4× CPU ~25 ms). Test esnetilmedi; optimizasyon ve testi geri alındı. Paket bütçesi ve D1–D4 kalır.
+- Kanıt: `npm test` 368/368; build + build:single; bütçe ilk yük 461,6 / 580 KB; micro-catalog + ux-flow + first-use 36/36; Playwright Chromium tam koşu 437/437.

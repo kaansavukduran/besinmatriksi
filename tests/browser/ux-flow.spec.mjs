@@ -42,16 +42,3 @@ test('B248 telefon ilk ekran: ilk besin alt menünün üstünde, yatay taşma yo
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
   }
 });
-
-// B270: besin listesindeki ekran dışı gruplar sonradan çizilir; kaydırınca görünür, yazdırmada hepsi çizilir
-test('B270 besin grupları content-visibility: kaydırınca ve yazdırmada görünür', async ({ page }) => {
-  await page.goto('/');
-  const groups = page.locator('#foodlist .foods');
-  await expect(groups.first()).toBeVisible();
-  expect(await groups.first().evaluate((e) => getComputedStyle(e).contentVisibility)).toBe('auto');
-  const far = page.locator('#foodlist .food').last();
-  await far.scrollIntoViewIfNeeded();
-  await expect(far).toBeVisible();
-  await page.emulateMedia({ media: 'print' });
-  expect(await groups.last().evaluate((e) => getComputedStyle(e).contentVisibility)).toBe('visible');
-});

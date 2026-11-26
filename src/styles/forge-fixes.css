@@ -352,10 +352,3 @@ table.cmp thead th:first-child { position: sticky; left: 0; z-index: 2; backgrou
   .tabs { flex-wrap: wrap; overflow-x: visible; gap: 4px; }
   .tabs .tab { padding: 0 .62rem; font-size: .92rem; }
 }
-
-
-/* B270 perf: besin listesindeki ekran dışı gruplar kaydırınca yaklaşınca çizilir (4× CPU, 390 px: Keşfet'e dönüş 61 → 36 ms,
-   listeye geri dönüş 71 → 49 ms). Görünüm değişmez; "auto" boyut bir kez çizilince hatırlanır; yazdırmada hepsi çizilir.
-   Ayarlar kartlarında denendi, kullanılmadı: ekran dışı karttaki denetim kaydırılmadan etkinleşmiyordu, kazanç küçüktü. */
-#foodlist .foods { content-visibility: auto; contain-intrinsic-size: auto 900px; }
-@media print { #foodlist .foods { content-visibility: visible; } }
